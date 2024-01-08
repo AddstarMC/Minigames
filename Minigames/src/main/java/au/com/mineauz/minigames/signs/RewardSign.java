@@ -43,7 +43,7 @@ public class RewardSign implements MinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        if (!event.getLine(2).equals("")) {
+        if (!event.getLine(2).isEmpty()) {
             event.setLine(1, ChatColor.GREEN + getName());
             return true;
         }

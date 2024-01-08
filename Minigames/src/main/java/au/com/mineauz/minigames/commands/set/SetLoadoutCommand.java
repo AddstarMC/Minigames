@@ -2,6 +2,8 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
@@ -38,24 +40,11 @@ public class SetLoadoutCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Opens the Loadout edit window for the desired Minigames Loadouts.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LOADOUT_DESCRIPTION);
     }
-
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{
-                "/minigame set <Minigame> loadout"
-        };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to edit a Minigames loadouts!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LOADOUT_USAGE);
     }
 
     @Override
@@ -64,8 +53,8 @@ public class SetLoadoutCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
 
         MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
         Menu loadouts = new Menu(6, getName(), player);

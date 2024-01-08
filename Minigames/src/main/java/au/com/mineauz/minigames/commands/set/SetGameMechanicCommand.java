@@ -71,7 +71,7 @@ public class SetGameMechanicCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(GameMechanics.getGameMechanics().stream().map(GameMechanicBase::getMechanic).toList(), args[0]);

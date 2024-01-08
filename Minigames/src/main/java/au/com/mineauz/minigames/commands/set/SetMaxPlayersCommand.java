@@ -1,9 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,22 +33,11 @@ public class SetMaxPlayersCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the maximum players allowed to play a multiplayer Minigame. (Default: 4)";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MAXPLAYERS_DESCRIPTION);
     }
-
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> maxplayers <Number>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the maximum players for a Minigame!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MAXPLAYERS_USAGE);
     }
 
     @Override
@@ -53,21 +46,26 @@ public class SetMaxPlayersCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].matches("[0-9]+")) {
                 int max = Integer.parseInt(args[0]);
                 minigame.setMaxPlayers(max);
-                sender.sendMessage(ChatColor.GRAY + "Maximum players has been set to " + max + " for " + minigame);
+                MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MAXPLAYERS_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(max)));
                 return true;
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          String alias, @NotNull String @NotNull [] args) {
         return null;
     }

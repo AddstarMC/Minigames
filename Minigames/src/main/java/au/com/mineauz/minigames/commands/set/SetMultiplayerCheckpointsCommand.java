@@ -40,12 +40,6 @@ public class SetMultiplayerCheckpointsCommand implements ICommand {
     public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MULTIPLYCHKPNTS_DESCRITON);
     }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
     @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MULTIPLYCHKPNTS_USAGE);

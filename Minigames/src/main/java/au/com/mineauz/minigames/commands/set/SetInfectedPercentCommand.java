@@ -47,7 +47,7 @@ public class SetInfectedPercentCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].matches("[0-9]+")) {

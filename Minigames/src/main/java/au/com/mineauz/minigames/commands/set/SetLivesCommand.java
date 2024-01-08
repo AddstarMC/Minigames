@@ -1,9 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,22 +33,11 @@ public class SetLivesCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the amount of lives a player has in the Minigame. If they run out, they are booted from the game. 0 means unlimited.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LIVES_DESCRIPTION);
     }
-
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> lives <number>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the number of lives in a Minigame!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LIVES_USAGE);
     }
 
     @Override
@@ -53,14 +46,16 @@ public class SetLivesCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].matches("[0-9]+")) {
                 int lives = Integer.parseInt(args[0]);
                 minigame.setLives(lives);
 
-                sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + "'s lives has been set to " + lives);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LIVES_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(lives)));
                 return true;
             }
         }
@@ -68,7 +63,7 @@ public class SetLivesCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          String alias, @NotNull String @NotNull [] args) {
         return null;
     }

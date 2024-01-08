@@ -35,18 +35,12 @@ public class SetLateJoinCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Enables a player to join after the game has already started. This can only be used in Multiplayer Minigames.\n" +
-                "Warning: Do not use this in an LMS Minigame, for obvious reasons.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LATEJOIN_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> latejoin <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LATEJOIN_USAGE);
     }
 
     @Override
@@ -63,7 +57,7 @@ public class SetLateJoinCommand implements ICommand {
             if (bool != null) {
                 minigame.setLateJoin(bool);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LATEJOIN,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LATEJOIN_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                 bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
@@ -77,10 +71,11 @@ public class SetLateJoinCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          String alias, @NotNull String @NotNull [] args) {
-        if (args.length == 1)
+        if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
+        }
         return null;
     }
 

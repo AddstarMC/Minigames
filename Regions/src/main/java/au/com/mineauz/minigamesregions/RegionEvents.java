@@ -138,7 +138,7 @@ public class RegionEvents implements Listener {
                     region.execute(Triggers.getTrigger("GAME_JOIN"), ply);
             }
         });
-        if (event.getMinigame().getPlayers().size() == 0) {
+        if (event.getMinigame().getPlayers().isEmpty()) {
             for (Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()) {
                 for (RegionExecutor ex : region.getExecutors()) {
                     if (ex.getTrigger().getName().equalsIgnoreCase("TICK")) {

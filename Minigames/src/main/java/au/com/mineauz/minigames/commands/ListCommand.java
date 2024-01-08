@@ -47,8 +47,8 @@ public class ListCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         List<String> mglist = plugin.getConfig().getStringList("minigames");
         StringBuilder minigames = new StringBuilder();
 

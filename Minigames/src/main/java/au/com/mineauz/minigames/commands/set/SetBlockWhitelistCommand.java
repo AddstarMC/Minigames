@@ -135,7 +135,7 @@ public class SetBlockWhitelistCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false", "add", "remove", "list", "clear"), args[0]);

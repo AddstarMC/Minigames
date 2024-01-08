@@ -49,7 +49,7 @@ public class LobbyLocationMode implements ToolMode {
     @Override
     public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
                              @Nullable Team team, @NotNull PlayerInteractEvent event) {
-        minigame.setLobbyPosition(mgPlayer.getLocation());
+        minigame.setLobbyLocation(mgPlayer.getLocation());
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SET_LOBBYLOCATION);
     }
 

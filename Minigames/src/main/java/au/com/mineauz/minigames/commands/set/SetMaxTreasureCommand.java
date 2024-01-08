@@ -1,10 +1,15 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,22 +35,12 @@ public class SetMaxTreasureCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the maximum number of items to spawn in a treasure hunt chest.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MAXTREASURE_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> maxtreasure <Number>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the max treasure for a Minigame!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MAXTREASURE_USAGE);
     }
 
     @Override
@@ -55,14 +50,26 @@ public class SetMaxTreasureCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (args[0].matches("[0-9]+")) {
-                int amount = Integer.parseInt(args[0]);
-                TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
-                thm.setMaxTreasure(amount);
-                sender.sendMessage(ChatColor.GRAY + "Maximum items has been set to " + amount + " for " + minigame);
-                return true;
+            TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+            if (thm != null) {
+                if (args[0].matches("[0-9]+")) {
+                    int amount = Integer.parseInt(args[0]);
+                    thm.setMaxTreasure(amount);
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_MAXTREASURE_SUCCESS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(amount)));
+                    return true;
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                }
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), MgModules.TREASURE_HUNT.getName()));
             }
         }
         return false;

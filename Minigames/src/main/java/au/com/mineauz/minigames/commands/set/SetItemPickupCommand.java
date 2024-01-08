@@ -35,17 +35,12 @@ public class SetItemPickupCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Changes whether a player can pickup items when in a Minigame. (Enabled by default)";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_ITEMSPICKUP_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> itempickup <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_ITEMSPICKUP_USAGE);
     }
 
     @Override
@@ -62,7 +57,7 @@ public class SetItemPickupCommand implements ICommand {
             if (bool != null) {
                 minigame.setItemPickup(bool);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_ITEMSPICKUP,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_ITEMSPICKUP_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                 bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));

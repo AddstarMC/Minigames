@@ -86,8 +86,8 @@ public class RegionSwapAction extends AbstractAction {
 
         Region startRegion = null;
         Region targetRegion = null;
-        ArrayList<BlockState> startRegionBlocks = new ArrayList<BlockState>();
-        ArrayList<BlockState> targetRegionBlocks = new ArrayList<BlockState>();
+        ArrayList<BlockState> startRegionBlocks = new ArrayList<>();
+        ArrayList<BlockState> targetRegionBlocks = new ArrayList<>();
 
         if (mgPlayer == null || !mgPlayer.isInMinigame()) {
             return;

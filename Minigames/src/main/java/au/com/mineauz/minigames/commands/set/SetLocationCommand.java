@@ -1,17 +1,22 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetLocationCommand implements ICommand {
+public class SetLocationCommand implements ICommand { //todo i feel like this should be better identifiable not only does his not set a location but a hint, it isn't intuitive, that this belongs to treasure hunt
 
     @Override
     public @NotNull String getName() {
@@ -30,22 +35,12 @@ public class SetLocationCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the location name for a treasure hunt Minigame.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LOCATION_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> location <Location Name Here>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set a Minigames location!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LOCATION_USAGE);
     }
 
     @Override
@@ -54,26 +49,30 @@ public class SetLocationCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            StringBuilder location = new StringBuilder();
-            for (int i = 0; i < args.length; i++) {
-                location.append(args[i]);
-                if (i != args.length - 1) {
-                    location.append(" ");
-                }
-            }
             TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
-            thm.setLocation(location.toString());
-            sender.sendMessage(ChatColor.GRAY + "The location name for " + minigame + " has been set to " + location);
+
+            if (thm != null) {
+                String location = String.join(" ", args);
+                thm.setLocation(location);
+
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LOCATION_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.LOCATION.getKey(), location));
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TREASURE_HUNT.getName()));
+            }
             return true;
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          String alias, @NotNull String @NotNull [] args) {
         return null;
     }

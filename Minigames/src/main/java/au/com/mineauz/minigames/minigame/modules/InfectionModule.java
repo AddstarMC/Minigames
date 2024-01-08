@@ -61,7 +61,7 @@ public class InfectionModule extends MinigameModule {
             @Override
             public String getValue() {
                 if (infectedTeam.getFlag() != null) {
-                    if (infectedTeam.getFlag().equalsIgnoreCase("None")) {
+                    if (infectedTeam.getFlag().equalsIgnoreCase(TeamColor.NONE.toString())) {
                         return infectedTeam.getFlag();
                     } else if (TeamColor.matchColor(infectedTeam.getFlag()) == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
                             TeamColor.matchColor(infectedTeam.getFlag()) == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
@@ -161,32 +161,28 @@ public class InfectionModule extends MinigameModule {
         infectedPercent.setFlag(amount);
     }
 
-    public TeamColor getInfectedTeam() {
-        if (infectedTeam.getFlag() != null) {
+    public @NotNull TeamColor getInfectedTeam() {
+        if (infectedTeam.getFlag() != null && !infectedTeam.getFlag().equalsIgnoreCase(TeamColor.NONE.toString())) {
             TeamColor team = TeamColor.matchColor(infectedTeam.getFlag());
             if (team == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
                     team == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
                     TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(team.toString().toLowerCase())) {
                 return team;
             } else {
-                return null;
+                return TeamColor.NONE;
             }
         } else {
-            return null;
+            return TeamColor.NONE;
         }
     }
 
-    public void setInfectedTeam(@Nullable TeamColor teamColor) {
-        if (teamColor != null) {
-            if (teamColor == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
-                    teamColor == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
-                    TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(teamColor.toString().toLowerCase())) {
-                this.infectedTeam.setFlag(teamColor.toString());
-            } else
-                this.infectedTeam.setFlag(null);
-        } else {
-            this.infectedTeam.setFlag(null);
-        }
+    public void setInfectedTeam(@NotNull TeamColor teamColor) {
+        if (teamColor == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                teamColor == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(teamColor.toString().toLowerCase())) {
+            this.infectedTeam.setFlag(teamColor.toString());
+        } else
+            this.infectedTeam.setFlag(TeamColor.NONE.toString());
     }
 
     public TeamColor getDefaultInfectedTeam() {

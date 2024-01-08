@@ -55,8 +55,8 @@ public class BackupCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (Minigames.getPlugin().getMinigameManager().hasMinigame(args[0])) {
                 minigame = Minigames.getPlugin().getMinigameManager().getMinigame(args[0]);

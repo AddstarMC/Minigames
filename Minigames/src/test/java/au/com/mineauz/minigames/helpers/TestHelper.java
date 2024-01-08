@@ -57,12 +57,12 @@ public class TestHelper {
             }
 
             @Override
-            public String getAsString() {
-                return null;
+            public @NotNull String getAsString() {
+                return "TestGame";
             }
 
             @Override
-            public String getAsString(boolean b) {
+            public @NotNull String getAsString(boolean b) {
                 return "SIGN";
             }
 

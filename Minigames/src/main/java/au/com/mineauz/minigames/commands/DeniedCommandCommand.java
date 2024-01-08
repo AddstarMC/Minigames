@@ -62,23 +62,7 @@ public class DeniedCommandCommand implements ICommand {
                 sender.sendMessage(ChatColor.GRAY + "Removed \"" + args[1] + "\" from the denied command list.");
                 return true;
             } else if (args[0].equalsIgnoreCase("list")) {
-                StringBuilder coms = new StringBuilder();
-                boolean switchColour = false;
-                for (String par : plugin.getPlayerManager().getDeniedCommands()) {
-                    if (switchColour) {
-                        coms.append(ChatColor.WHITE).append(par);
-                        if (!par.equalsIgnoreCase(plugin.getPlayerManager().getDeniedCommands().get(plugin.getPlayerManager().getDeniedCommands().size() - 1))) {
-                            coms.append(ChatColor.WHITE + ", ");
-                        }
-                        switchColour = false;
-                    } else {
-                        coms.append(ChatColor.GRAY).append(par);
-                        if (!par.equalsIgnoreCase(plugin.getPlayerManager().getDeniedCommands().get(plugin.getPlayerManager().getDeniedCommands().size() - 1))) {
-                            coms.append(ChatColor.WHITE + ", ");
-                        }
-                        switchColour = true;
-                    }
-                }
+                String coms = String.join(", ", plugin.getPlayerManager().getDeniedCommands());
                 sender.sendMessage(ChatColor.GRAY + "Disabled Commands: " + coms);
                 return true;
             }

@@ -2,12 +2,18 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,24 +38,12 @@ public class SetLobbyCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the lobby position of a Minigame to where you are standing. You can also modify lobby settings using this command.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LOBBY_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> lobby",
-                "/minigame set <Minigame> lobby <canMove/canInteract/teleport> <playerWait/startWait> <true/false>",
-                "/minigame set <Minigame> lobby <playerWait> <time>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the Minigames Lobby Position!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LOBBY_USAGE);
     }
 
     @Override
@@ -58,75 +52,103 @@ public class SetLobbyCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args == null) {
-            minigame.setLobbyLocation(((Player) sender).getLocation());
-            sender.sendMessage(ChatColor.GRAY + "Lobby position has been set for " + minigame);
+            if (sender instanceof Entity entity) {
+                minigame.setLobbyLocation(entity.getLocation());
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LOBBY_LOCATION,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+            } else { // not a player
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTAPLAYER);
+            }
         } else {
             LobbySettingsModule lobby = LobbySettingsModule.getMinigameModule(minigame);
             if (args.length == 3) {
-                if (args[0].equalsIgnoreCase("canmove")) {
-                    boolean v = Boolean.getBoolean(args[2]);
-                    if (args[1].equalsIgnoreCase("playerwait")) {
-                        lobby.setCanMovePlayerWait(v);
-                        if (v)
-                            sender.sendMessage(ChatColor.GRAY + "Allowed players to move in lobby on player wait.");
-                        else
-                            sender.sendMessage(ChatColor.GRAY + "Disallowed players to move in lobby on player wait.");
-                    } else if (args[1].equalsIgnoreCase("startwait")) {
-                        lobby.setCanMoveStartWait(v);
-                        if (v)
-                            sender.sendMessage(ChatColor.GRAY + "Allowed players to move in lobby on start wait.");
-                        else
-                            sender.sendMessage(ChatColor.GRAY + "Disallowed players to move in lobby on start wait.");
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Invalid syntax!");
-                        return false;
+
+                switch (args[0].toLowerCase()) {
+                    case "canmove" -> {
+                        Boolean canMove = BooleanUtils.toBooleanObject(args[2]);
+                        if (canMove != null) {
+                            if (args[1].equalsIgnoreCase("playerwait")) {
+                                lobby.setCanMovePlayerWait(canMove);
+
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LOBBY_CANMOVE_PLAYERWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                                canMove ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                            } else if (args[1].equalsIgnoreCase("startwait")) {
+                                lobby.setCanMoveStartWait(canMove);
+
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LOBBY_CANMOVE_START,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                                canMove ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                            } else {
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                                return false;
+                            }
+                        } else {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
+                        }
                     }
-                } else if (args[0].equalsIgnoreCase("caninteract")) {
-                    boolean v = Boolean.getBoolean(args[2]);
-                    if (args[1].equalsIgnoreCase("playerwait")) {
-                        lobby.setCanInteractPlayerWait(v);
-                        if (v)
-                            sender.sendMessage(ChatColor.GRAY + "Allowed players to interact in lobby on player wait.");
-                        else
-                            sender.sendMessage(ChatColor.GRAY + "Disallowed players to interact in lobby on player wait.");
-                    } else if (args[1].equalsIgnoreCase("startwait")) {
-                        lobby.setCanInteractStartWait(v);
-                        if (v)
-                            sender.sendMessage(ChatColor.GRAY + "Allowed players to interact in lobby on start wait.");
-                        else
-                            sender.sendMessage(ChatColor.GRAY + "Disallowed players to interact in lobby on start wait.");
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Invalid syntax!");
-                        return false;
+                    case "caninteract" -> {
+                        Boolean canInteract = BooleanUtils.toBooleanObject(args[2]);
+                        if (canInteract != null) {
+                            if (args[1].equalsIgnoreCase("playerwait")) {
+                                lobby.setCanInteractPlayerWait(canInteract);
+
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LOBBY_CANINTERACT_PLAYERWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                                canInteract ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                            } else if (args[1].equalsIgnoreCase("startwait")) {
+                                lobby.setCanInteractStartWait(canInteract);
+
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LOBBY_CANINTERACT_STARTWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                                canInteract ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                            } else {
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                                return false;
+                            }
+                        } else {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
+                        }
                     }
-                } else if (args[0].equalsIgnoreCase("teleport")) {
-                    boolean v = Boolean.parseBoolean(args[2]);
-                    if (args[1].equalsIgnoreCase("playerwait")) {
-                        lobby.setTeleportOnPlayerWait(v);
-                        if (v)
-                            sender.sendMessage(ChatColor.GRAY + "Allowed players to teleport out of lobby on player wait.");
-                        else
-                            sender.sendMessage(ChatColor.GRAY + "Disallowed players to teleport out of lobby on player wait.");
-                    } else if (args[1].equalsIgnoreCase("startwait")) {
-                        lobby.setTeleportOnStart(v);
-                        if (v)
-                            sender.sendMessage(ChatColor.GRAY + "Allowed players to teleport out of lobby on start.");
-                        else
-                            sender.sendMessage(ChatColor.GRAY + "Disallowed players to teleport out of lobby on start.");
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Invalid syntax!");
-                        return false;
+                    case "teleport" -> {
+                        Boolean teleport = BooleanUtils.toBooleanObject(args[2]);
+                        if (teleport != null) {
+                            if (args[1].equalsIgnoreCase("playerwait")) {
+                                lobby.setTeleportOnPlayerWait(teleport);
+
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LOBBY_TELEPORT_PLAYERWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                                teleport ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                            } else if (args[1].equalsIgnoreCase("startwait")) {
+                                lobby.setTeleportOnStart(teleport);
+
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LOBBY_TELEPORT_STARTWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                                teleport ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                            } else {
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                                return false;
+                            }
+                        } else {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
+                        }
                     }
-                } else {
-                    sender.sendMessage(ChatColor.RED + "Invalid syntax!");
-                    return false;
+                    default ->
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("playerWait")) {
-                    try {
+                    if (args[1].matches("[0-9]+")) {
                         int value = Integer.parseInt(args[1]);
                         if (value < 0) {
                             value = 0;
@@ -139,8 +161,9 @@ public class SetLobbyCommand implements ICommand {
                         } else {
                             sender.sendMessage(ChatColor.GRAY + "Using player wait time of " + value + " seconds.");
                         }
-                    } catch (NumberFormatException e) {
-                        sender.sendMessage(ChatColor.RED + "Invalid syntax!");
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                         return false;
                     }
                 }
@@ -150,8 +173,8 @@ public class SetLobbyCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                         String alias, @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
             return switch (args.length) {
                 case 1 ->

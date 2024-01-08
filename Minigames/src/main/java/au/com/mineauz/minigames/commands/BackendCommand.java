@@ -55,7 +55,8 @@ public class BackendCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(final @NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args == null || args.length != 2) {
             return false;
         }

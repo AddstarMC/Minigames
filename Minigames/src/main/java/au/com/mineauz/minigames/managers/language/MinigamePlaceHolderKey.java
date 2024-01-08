@@ -22,7 +22,7 @@ public enum MinigamePlaceHolderKey implements PlaceHolderKey {
     OTHER_TEAM("other_team"),
     PERMISSION("permission"),
     PLAYER("player"),
-    POSITION("position"),
+    LOCATION("location"),
     REGION("region"),
     REVERTS("reverts"),
     SCORE("score"),

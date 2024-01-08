@@ -31,20 +31,9 @@ public class SetObjectiveCommand implements ICommand {
     public @NotNull Component getDescription() {
         return "Sets the objective description for the player to see when they join a Minigame. Typing \"null\" will remove the objective.";
     }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
     @Override
     public String[] getUsage() {
         return new String[]{"/minigame set <Minigame> objective <Objective Here>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the objective!";
     }
 
     @Override
@@ -53,8 +42,8 @@ public class SetObjectiveCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (!args[0].equals("null")) {
                 StringBuilder obj = new StringBuilder();

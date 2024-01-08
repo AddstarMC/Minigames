@@ -145,7 +145,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         MinigameMessageManager.debugMessage(mgm.getName(false) + " treasure chest spawned at: " + rpos);
         MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_TREASUREHUNT_SPAWN,
                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(maxradius)),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.POSITION.getKey(), thm.getLocation())),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.LOCATION.getKey(), thm.getLocation())),
                 mgm, "minigame.treasure.announce");
 
         mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
@@ -275,7 +275,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             Component hint1 = MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_TREASUREHUNT_HINT1,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(true)),
                     Placeholder.component(MinigamePlaceHolderKey.DIRECTION.getKey(), dir),
-                    Placeholder.parsed(MinigamePlaceHolderKey.POSITION.getKey(), thm.getLocation()));
+                    Placeholder.parsed(MinigamePlaceHolderKey.LOCATION.getKey(), thm.getLocation()));
             MinigameMessageManager.broadcast(hint1, mgm, "minigame.treasure.announce");
             thm.addHint(hint1);
         } else if (time == hintTime2) {
@@ -327,7 +327,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             if (!thm.isTreasureFound()) {
                 MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_TREASUREHUNT_DESPAWN,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(true)),
-                                Placeholder.component(MinigamePlaceHolderKey.POSITION.getKey(), MinigameMessageManager.formatBlockPostion(old))),
+                                Placeholder.component(MinigamePlaceHolderKey.LOCATION.getKey(), MinigameMessageManager.formatBlockPostion(old))),
                         mgm, "minigame.treasure.announce");
             }
             thm.setTreasureFound(false);

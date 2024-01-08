@@ -1,9 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,22 +33,12 @@ public class SetMinScoreCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the minimum score amount for deathmatch and team deathmatch minigames. (Default: 5)";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MINSCORE_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> minscore <Number>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the minimum score for a Minigame!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MINSCORE_USAGE);
     }
 
     @Override
@@ -53,21 +47,27 @@ public class SetMinScoreCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].matches("[0-9]+")) {
                 int minscore = Integer.parseInt(args[0]);
                 minigame.setMinScore(minscore);
-                sender.sendMessage(ChatColor.GRAY + "Minimum score has been set to " + minscore + " for " + minigame.getName(false));
+
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_MINSCORE_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(minscore)));
                 return true;
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          String alias, @NotNull String @NotNull [] args) {
         return null;
     }

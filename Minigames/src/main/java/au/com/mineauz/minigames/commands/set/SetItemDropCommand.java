@@ -35,18 +35,12 @@ public class SetItemDropCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets whether players can drop items on the ground either after they die or by dropping it themselves. (Both disabled by default)";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_ITEMSDROP_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"player", "death"};
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> itemdrop player <true/false>",
-                "/minigame set <Minigame> itemdrop death <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_ITEMSDROP_USAGE);
     }
 
     @Override
@@ -55,7 +49,7 @@ public class SetItemDropCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("player") && args.length >= 2) {
@@ -94,10 +88,13 @@ public class SetItemDropCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          String alias, @NotNull String @NotNull [] args) {
-        if (args.length == 1)
+        if (args.length == 1) {
+            return MinigameUtils.tabCompleteMatch(List.of("death", "player"), args[0]);
+        } else if (args.length == 2) {
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
+        }
         return null;
     }
 
