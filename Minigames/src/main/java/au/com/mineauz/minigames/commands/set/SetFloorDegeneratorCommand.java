@@ -18,7 +18,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SetFloorDegeneratorCommand implements ICommand {
 
@@ -55,7 +57,8 @@ public class SetFloorDegeneratorCommand implements ICommand {
     //todo this can easily expanded, so multiple degen regions are possible. Will implement, if needed.
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
+
         if (args != null) {
             if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
@@ -116,12 +119,12 @@ public class SetFloorDegeneratorCommand implements ICommand {
                     }
                     case "time" -> {
                         if (args.length >= 2) {
-                            if (args[1].matches("[0-9]+")) {
+                            Long millis = MinigameUtils.parsePeriod(String.join(" ", args));
 
-                                int time = Integer.parseInt(args[1]);
-                                minigame.setFloorDegenTime(time);
+                            if (millis != null) {
+                                minigame.setFloorDegenTime(TimeUnit.MILLISECONDS.toSeconds(millis));
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLOORDEGEN_TIME,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(time)));
+                                        Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                             } else {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTTIME,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
@@ -140,11 +143,13 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("1", "2", "create", "clear", "type", "time"), args[0]);
         } else if (args[0].equalsIgnoreCase("type")) {
             return MinigameUtils.tabCompleteMatch(List.of("random", "inward", "circle"), args[1]);
+        } else if (args[0].equalsIgnoreCase("time")) {
+            return List.of("s", "m", "h");
         }
         return null;
     }

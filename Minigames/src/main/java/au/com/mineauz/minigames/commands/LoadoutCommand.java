@@ -52,7 +52,7 @@ public class LoadoutCommand implements ICommand {
     }
 
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
         if (ply.isInMinigame()) {
             if (args == null) {
@@ -74,7 +74,7 @@ public class LoadoutCommand implements ICommand {
     }
 
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @Nullable [] args) {
+                                                         @NotNull String @Nullable [] args) {
         if (args != null) {
             MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             if (ply.isInMinigame()) {

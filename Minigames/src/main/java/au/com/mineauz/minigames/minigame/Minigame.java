@@ -10,7 +10,7 @@ import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.objects.RegenRegionSetResult;
+import au.com.mineauz.minigames.objects.RegenRegionChangeResult;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
@@ -51,7 +51,7 @@ public class Minigame implements ScriptObject {
     private final StringFlag degenType = new StringFlag("inward", "degentype");
     private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
     private final RegionFlag floorDegen = new RegionFlag(null, "sfloor", "sfloorpos.1", "sfloorpos.2");
-    private final IntegerFlag floorDegenTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
+    private final LongFlag floorDegenTime = new LongFlag(Minigames.getPlugin().getConfig().getLong("multiplayer.floordegenerator.time"), "floordegentime");
     // Respawn Module
     private final BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
     private final LocationListFlag startLocations = new LocationListFlag(null, "startpos");
@@ -233,7 +233,13 @@ public class Minigame implements ScriptObject {
         return configFlags.get(name);
     }
 
-    public MinigameModule addModule(@NotNull ModuleFactory factory) {
+    /**
+     * returns the old module registed with the same name or null if there wasn't one.
+     *
+     * @param factory
+     * @return
+     */
+    public @Nullable MinigameModule addModule(@NotNull ModuleFactory factory) {
         return modules.put(factory.getName(), factory.makeNewModule(this));
     }
 
@@ -852,24 +858,41 @@ public class Minigame implements ScriptObject {
         return randomizeChests.getFlag();
     }
 
-    public void setRandomizeChests(boolean randomizeChests) {
-        this.randomizeChests.setFlag(randomizeChests);
-    }
-
     public int getMinChestRandom() {
         return minChestRandom.getFlag();
     }
 
-    public void setMinChestRandom(int minChestRandom) {
-        this.minChestRandom.setFlag(minChestRandom);
+    /**
+     * @param minChestRandom
+     * @param maxChestRandom
+     * @return true whenever the parameters where valid and randomizing chests is enabled (true) or not (false)
+     */
+    public boolean setChestRandoms(int minChestRandom, int maxChestRandom) {
+        int min;
+        int max;
+        boolean returnValue;
+        if (minChestRandom >= 0 && maxChestRandom > 0) {
+            this.randomizeChests.setFlag(true);
+
+            min = Math.min(minChestRandom, maxChestRandom);
+            max = Math.max(minChestRandom, maxChestRandom);
+            returnValue = true;
+        } else { // bounds are not meet. disable random chests
+            this.randomizeChests.setFlag(false);
+
+            min = minChestRandom;
+            max = maxChestRandom;
+            returnValue = false;
+        }
+
+        this.minChestRandom.setFlag(min);
+        this.maxChestRandom.setFlag(max);
+
+        return returnValue;
     }
 
     public int getMaxChestRandom() {
         return maxChestRandom.getFlag();
-    }
-
-    public void setMaxChestRandom(int maxChestRandom) {
-        this.maxChestRandom.setFlag(maxChestRandom);
     }
 
     public Collection<MgRegion> getRegenRegions() {
@@ -880,8 +903,15 @@ public class Minigame implements ScriptObject {
         return regenRegions.getFlag().get(name);
     }
 
-    public boolean removeRegenRegion(String name) {
-        return regenRegions.getFlag().remove(name) != null;
+    public RegenRegionChangeResult removeRegenRegion(String name) {
+        boolean removed = regenRegions.getFlag().remove(name) != null;
+
+        long numOfBlocksTotal = 0;
+        for (MgRegion region : regenRegions.getFlag().values()) {
+            numOfBlocksTotal += (long) Math.ceil(region.getVolume());
+        }
+
+        return new RegenRegionChangeResult(removed, numOfBlocksTotal);
     }
 
     /**
@@ -894,7 +924,7 @@ public class Minigame implements ScriptObject {
      * @return a record containing whenever this was a success or not
      * and the total number of all blocks in regen regions after the setting would happen
      */
-    public RegenRegionSetResult setRegenRegion(MgRegion newRegenRegion) {
+    public RegenRegionChangeResult setRegenRegion(MgRegion newRegenRegion) {
         long numOfBlocksTotal = (long) Math.ceil(newRegenRegion.getVolume());
 
         for (MgRegion region : regenRegions.getFlag().values()) {
@@ -903,9 +933,9 @@ public class Minigame implements ScriptObject {
 
         if (numOfBlocksTotal <= maxBlocksRegenRegions.getFlag()) {
             regenRegions.getFlag().put(newRegenRegion.getName(), newRegenRegion);
-            return new RegenRegionSetResult(true, numOfBlocksTotal);
+            return new RegenRegionChangeResult(true, numOfBlocksTotal);
         } else {
-            return new RegenRegionSetResult(false, numOfBlocksTotal);
+            return new RegenRegionChangeResult(false, numOfBlocksTotal);
         }
     }
 
@@ -945,11 +975,11 @@ public class Minigame implements ScriptObject {
         this.lives.setFlag((float) lives);
     }
 
-    public int getFloorDegenTime() {
+    public long getFloorDegenTime() {
         return floorDegenTime.getFlag();
     }
 
-    public void setFloorDegenTime(int floorDegenTime) {
+    public void setFloorDegenTime(long floorDegenTime) {
         this.floorDegenTime.setFlag(floorDegenTime);
     }
 

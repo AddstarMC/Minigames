@@ -2,15 +2,21 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SetRestartDelayCommand implements ICommand {
 
@@ -31,22 +37,12 @@ public class SetRestartDelayCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets how long it will take for a Treasure Hunt Minigame to respawn its treasure.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_RESTARTDELAY_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> restartdelay <time>[m|h]"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the restart delay for a treasure hunt game!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_RESTARTDELAY_USAGE);
     }
 
     @Override
@@ -55,29 +51,33 @@ public class SetRestartDelayCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (args[0].matches("[0-9]+([mh])?")) {
-                int time = Integer.parseInt(args[0].replaceAll("[mh]", ""));
-                String mod = args[0].replaceAll("[0-9]", "");
-                if (mod.equals("m"))
-                    time *= 60;
-                else if (mod.equals("h"))
-                    time = time * 60 * 60;
+            TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
 
-                TreasureHuntModule.getMinigameModule(minigame).setTreasureWaitTime(time);
-                sender.sendMessage(ChatColor.GRAY + minigame.getName(false) +
-                        "'s restart delay has been set to " + MinigameUtils.convertTime(time));
-                return true;
+            if (thm != null) {
+                Long millis = MinigameUtils.parsePeriod(args[0]);
+                if (millis != null) {
+
+                    thm.setTreasureWaitTime(TimeUnit.MILLISECONDS.toSeconds(millis));
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_RESTARTDELAY_SUCCESS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
+                    return true;
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTTIME,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                }
             }
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

@@ -53,7 +53,7 @@ public class EnableAllCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
         List<Minigame> minigames = new ArrayList<>(mdata.getAllMinigames().values());
         if (args != null) {
@@ -73,7 +73,7 @@ public class EnableAllCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }

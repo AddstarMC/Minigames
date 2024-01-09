@@ -50,7 +50,7 @@ public class MinigameTimer {
     }
 
     private void runTimer() {
-        time -= 1;
+        time--;
         if (minigame.isUsingXPBarTimer()) {
             float timeper = ((Integer) time).floatValue() / ((Integer) otime).floatValue();
             int level = 0;
@@ -72,7 +72,7 @@ public class MinigameTimer {
         if (timeMsg.contains(time) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_TIMELEFT,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(time))));
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(time))));
         }
 
         if (time <= 0) {
@@ -80,9 +80,9 @@ public class MinigameTimer {
             stopTimer();
         }
 
-        if (time > 0)
+        if (time > 0) {
             Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
-
+        }
     }
 
     public void stopTimer() {

@@ -67,7 +67,7 @@ public class SetNodeCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             RegionModule rmod = RegionModule.getMinigameModule(minigame);
@@ -103,7 +103,7 @@ public class SetNodeCommand implements ICommand {
     // create, modify, delete
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();
             tab.add("create");

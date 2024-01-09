@@ -23,6 +23,10 @@ public class CommandReward extends RewardType {
         super(rewards);
     }
 
+    public static CommandReward getMinigameReward(@NotNull Rewards rewards) {
+        return (CommandReward) RewardTypes.getRewardType(RewardTypes.MgRewardType.COMMAND.getName(), rewards);
+    }
+
     @Override
     public String getName() {
         return "COMMAND";

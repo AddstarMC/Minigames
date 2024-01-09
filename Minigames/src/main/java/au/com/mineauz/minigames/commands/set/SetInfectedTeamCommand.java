@@ -55,7 +55,7 @@ public class SetInfectedTeamCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
 
@@ -99,7 +99,7 @@ public class SetInfectedTeamCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
         if (infectionModule != null) {
             if (args.length == 1) {

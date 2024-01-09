@@ -53,7 +53,7 @@ public class SetLobbyCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args == null) {
             if (sender instanceof Entity entity) {
                 minigame.setLobbyLocation(entity.getLocation());
@@ -174,7 +174,7 @@ public class SetLobbyCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         String alias, @NotNull String @Nullable [] args) {
+                                                         @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
             return switch (args.length) {
                 case 1 ->

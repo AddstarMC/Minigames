@@ -96,22 +96,13 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                 cmdFile.write("| '''" + command.getName() + "'''");
                 cmdFile.newLine();
                 if (command.getUsage() != null) {
-                    int count = 0;
-                    cmdFile.write("| ");
-                    for (String use : command.getUsage()) {
-                        cmdFile.write(use);
-                        count++;
-                        if (count != command.getUsage().length) {
-                            cmdFile.write("\n\n");
-                        }
-                    }
-                } else
+                    cmdFile.write("| " + command.getUsage());
+                } else {
                     cmdFile.write("| N/A");
+                }
                 cmdFile.newLine();
-                if (command.getDescription() != null)
-                    cmdFile.write("| " + command.getDescription());
-                else
-                    cmdFile.write("| N/A");
+                command.getDescription();
+                cmdFile.write("| " + command.getDescription());
                 cmdFile.newLine();
                 if (command.getPermission() != null)
                     cmdFile.write("| " + command.getPermission());
@@ -171,13 +162,10 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
             if (comd != null) {
                 if (ply != null || comd.canBeConsole()) {
                     if (ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))) {
-                        boolean returnValue = comd.onCommand(sender, null, label, shortArgs);
+                        boolean returnValue = comd.onCommand(sender, null, shortArgs);
                         if (!returnValue) {
                             sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
                             sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
-                            if (comd.getParameters() != null) {
-                                sender.sendMessage(ChatColor.BLUE + "Parameters: " + ChatColor.WHITE + String.join(", ", comd.getParameters()));
-                            }
                             sender.sendMessage(ChatColor.BLUE + "Usage: " + ChatColor.WHITE + "<newline>" + comd.getUsage());
                             if (comd.getAliases() != null) {
                                 sender.sendMessage(ChatColor.BLUE + "Aliases: " + ChatColor.WHITE + String.join(", ", comd.getAliases()));
@@ -204,10 +192,6 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args != null && args.length > 0) {
-            Player ply = null;
-            if (sender instanceof Player) {
-                ply = (Player) sender;
-            }
             ICommand comd = null;
             String[] shortArgs = null;
 
@@ -221,9 +205,9 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
             }
 
             if (comd != null) {
-                if (ply != null) {
+                if (sender instanceof Player) { // todo ok, but why? let the commands test if a player was needed.
                     if (args.length > 1) {
-                        List<String> l = comd.onTabComplete(sender, null, alias, shortArgs);
+                        List<String> l = comd.onTabComplete(sender, null, shortArgs);
                         return Objects.requireNonNullElseGet(l, () -> List.of(""));
                     }
                 }

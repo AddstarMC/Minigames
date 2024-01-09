@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -45,11 +46,6 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public Component getUsage() {
         return Component.text("/minigame info [<minigame>]");
     }
@@ -61,44 +57,44 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame, @NotNull String label, @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame, @NotNull String @Nullable [] args) {
         if (args != null) {
             minigame = plugin.getMinigameManager().getMinigame(args[0]);
         }
         if (minigame != null) {
-            Component output = Component.empty();
+            TextComponent.Builder outputBuilder = Component.text();
 
-            output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_HEADER,
+            outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_HEADER,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)))).appendNewline();
-            output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_DIVIDER_LARGE)).appendNewline();
-            output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_DESCRIPTION,
+            outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_DIVIDER_LARGE)).appendNewline();
+            outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_DESCRIPTION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.OBJECTIVE.getKey(), minigame.getObjective()))).appendNewline();
-            output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_GAMETYPE,
+            outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_GAMETYPE,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), minigame.getType().getName()))).appendNewline();
 
             if (minigame.isEnabled() && minigame.hasStarted()) {
                 if (minigame.getMinigameTimer() != null && minigame.getMinigameTimer().getTimeLeft() > 0) {
-                    output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_TIMER,
+                    outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_TIMER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minigame.getMinigameTimer().getTimeLeft())))).appendNewline();
                 }
                 if (minigame.hasPlayers()) {
-                    output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_PLAYERHEADER,
+                    outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_PLAYERHEADER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigame.getPlayers().size())),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getMaxPlayers())))).appendNewline();
                     if (minigame.isTeamGame()) {
                         for (Team team : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                            output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_TEAMDATA,
+                            outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_TEAMDATA,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), team.getDisplayName()),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(team.getScore())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), team.getColor().name()))).appendNewline();
-                            output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_DIVIDER_SMALL)).appendNewline();
+                            outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_DIVIDER_SMALL)).appendNewline();
                             for (MinigamePlayer mgPlayer : team.getPlayers()) {
                                 Component playerComponent = Component.text(mgPlayer.getDisplayName(minigame.usePlayerDisplayNames()));
                                 if (minigame.isTeamGame()) {
                                     playerComponent = playerComponent.color(mgPlayer.getTeam().getTextColor());
                                 }
 
-                                output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_PLAYERDATA,
+                                outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_PLAYERDATA,
                                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), playerComponent),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.DEATHS.getKey(), String.valueOf(mgPlayer.getDeaths())),
@@ -113,7 +109,7 @@ public class InfoCommand implements ICommand {
                                 playerComponent = playerComponent.color(mgPlayer.getTeam().getTextColor());
                             }
 
-                            output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_PLAYERDATA,
+                            outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_PLAYERDATA,
                                     Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), playerComponent),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.DEATHS.getKey(), String.valueOf(mgPlayer.getDeaths())),
@@ -122,17 +118,17 @@ public class InfoCommand implements ICommand {
                         }
                     }
                 } else {
-                    output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_NOPLAYER));
+                    outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_NOPLAYER));
                 }
             } else {
                 if (minigame.isEnabled()) {
-                    output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_ERROR_NOTSTARTED));
+                    outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_ERROR_NOTSTARTED));
                 } else {
-                    output = output.append(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_ERROR_NOTENABLED));
+                    outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_ERROR_NOTENABLED));
                 }
             }
 
-            MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, output);
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, outputBuilder.build());
             return true;
         } else {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_INFO_OUTPUT_NOMINIGAME);
@@ -141,7 +137,7 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);

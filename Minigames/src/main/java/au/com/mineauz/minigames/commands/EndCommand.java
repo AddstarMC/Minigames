@@ -64,7 +64,7 @@ public class EndCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args == null && sender instanceof Player) {
             MinigamePlayer ply = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
             if (ply.isInMinigame()) {
@@ -159,7 +159,7 @@ public class EndCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> plt = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 2);
             for (Player pl : plugin.getServer().getOnlinePlayers()) {

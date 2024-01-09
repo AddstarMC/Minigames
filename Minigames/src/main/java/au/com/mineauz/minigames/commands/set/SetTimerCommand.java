@@ -56,7 +56,7 @@ public class SetTimerCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             String @NotNull [] args) {
         if (args != null) {
             if (args[0].matches("[0-9]+[mh]?")) {
                 boolean hours = false;
@@ -95,7 +95,7 @@ public class SetTimerCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

@@ -16,7 +16,9 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SetGameOverCommand implements ICommand {
 
@@ -52,18 +54,18 @@ public class SetGameOverCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             GameOverModule gameOverModule = GameOverModule.getMinigameModule(minigame);
 
             if (gameOverModule != null) {
                 if (args[0].equalsIgnoreCase("timer") && args.length == 2) {
-                    if (args[1].matches("[0-9]+")) {
-                        int t = Integer.parseInt(args[1]);
-                        gameOverModule.setTimer(t);
+                    Long millis = MinigameUtils.parsePeriod(args[1]);
+                    if (millis != null) {
+                        gameOverModule.setTimer(TimeUnit.MICROSECONDS.toSeconds(millis));
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_GAMEOVER_TIME,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(t)));
+                                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTTIME,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
@@ -123,13 +125,17 @@ public class SetGameOverCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("timer", "invincible", "humiliation", "interact"), args[0]);
-        } else if (args.length == 2 && (args[0].equalsIgnoreCase("invincible") ||
-                args[0].equalsIgnoreCase("humiliation") ||
-                args[0].equalsIgnoreCase("interact"))) {
-            return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[1]);
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("invincible") ||
+                    args[0].equalsIgnoreCase("humiliation") ||
+                    args[0].equalsIgnoreCase("interact")) {
+                return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[1]);
+            } else if (args[0].equalsIgnoreCase("timer")) {
+                return List.of("s", "m", "h");
+            }
         }
         return null;
     }

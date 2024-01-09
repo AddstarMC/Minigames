@@ -58,7 +58,7 @@ public class StopCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
 
@@ -79,7 +79,7 @@ public class StopCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         List<String> mgs = new ArrayList<>();
         for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {
             if (mg.getType() == MinigameType.GLOBAL)

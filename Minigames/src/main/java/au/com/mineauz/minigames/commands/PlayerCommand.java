@@ -38,11 +38,6 @@ public class PlayerCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"<PlayersName>", "list"};
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{
                 "/minigame player <PlayerName>",
@@ -62,7 +57,7 @@ public class PlayerCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("list")) {
                 List<MinigamePlayer> pls = new ArrayList<>();
@@ -107,7 +102,7 @@ public class PlayerCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> plys = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 1);
             for (Player ply : plugin.getServer().getOnlinePlayers()) {

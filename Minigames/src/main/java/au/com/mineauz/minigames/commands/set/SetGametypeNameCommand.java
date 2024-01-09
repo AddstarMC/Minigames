@@ -48,7 +48,7 @@ public class SetGametypeNameCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("null")) {
                 minigame.setGameTypeName(null);
@@ -69,7 +69,7 @@ public class SetGametypeNameCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

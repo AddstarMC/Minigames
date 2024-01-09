@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.LongFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
@@ -21,6 +22,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.*;
 
 public class TreasureHuntModule extends MinigameModule {
@@ -29,8 +31,8 @@ public class TreasureHuntModule extends MinigameModule {
     private final IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
     private final IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
     private final IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
-    private final IntegerFlag treasureWaitTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("treasurehunt.waittime"), "treasurehuntwait");
-    private final IntegerFlag hintWaitTime = new IntegerFlag(500, "hintWaitTime");
+    private final LongFlag treasureWaitTime = new LongFlag(Minigames.getPlugin().getConfig().getLong("treasurehunt.waittime"), "treasurehuntwait");
+    private final LongFlag hintWaitTime = new LongFlag(500L, "hintWaitTime");
     private final ArrayList<Component> curHints = new ArrayList<>();
     private final Map<UUID, Long> hintUse = new HashMap<>();
     //Unsaved Data
@@ -177,11 +179,11 @@ public class TreasureHuntModule extends MinigameModule {
         curHints.clear();
     }
 
-    public int getTreasureWaitTime() {
+    public long getTreasureWaitTime() {
         return treasureWaitTime.getFlag();
     }
 
-    public void setTreasureWaitTime(int time) {
+    public void setTreasureWaitTime(long time) {
         treasureWaitTime.setFlag(time);
     }
 
@@ -230,7 +232,7 @@ public class TreasureHuntModule extends MinigameModule {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_DISTANCE1);
                 }
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_TIMELEFT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(getMinigame().getMinigameTimer().getTimeLeft())));
+                        Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(getMinigame().getMinigameTimer().getTimeLeft()))));
 
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_GLOBALHINTS);
                 if (getCurrentHints().isEmpty()) {
@@ -250,7 +252,7 @@ public class TreasureHuntModule extends MinigameModule {
                         Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(nextUse)));
 
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_TIMELEFT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(getMinigame().getMinigameTimer().getTimeLeft())));
+                        Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(getMinigame().getMinigameTimer().getTimeLeft()))));
             }
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_WRONGWORLD,
@@ -258,11 +260,11 @@ public class TreasureHuntModule extends MinigameModule {
         }
     }
 
-    public int getHintDelay() {
+    public long getHintDelay() {
         return hintWaitTime.getFlag();
     }
 
-    public void setHintDelay(int time) {
+    public void setHintDelay(long time) {
         hintWaitTime.setFlag(time);
     }
 }

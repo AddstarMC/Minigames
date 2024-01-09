@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.LongFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GameOverModule extends MinigameModule {
-    private final IntegerFlag timer = new IntegerFlag(0, "gameOver.timer");
+    private final LongFlag timer = new LongFlag(0L, "gameOver.timer");
     private final BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
     private final BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
     private final BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
@@ -167,11 +167,11 @@ public class GameOverModule extends MinigameModule {
         this.losers.addAll(losers);
     }
 
-    public int getTimer() {
+    public long getTimer() {
         return timer.getFlag();
     }
 
-    public void setTimer(int amount) {
+    public void setTimer(long amount) {
         timer.setFlag(amount);
     }
 

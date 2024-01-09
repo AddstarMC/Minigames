@@ -15,7 +15,9 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SetHintDelayCommand implements ICommand {
 
@@ -51,25 +53,19 @@ public class SetHintDelayCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             TreasureHuntModule treasureHuntModule = TreasureHuntModule.getMinigameModule(minigame);
 
             if (treasureHuntModule != null) {
-                if (args[0].matches("[0-9]+([mh])?")) {
-                    int time = Integer.parseInt(args[0].replaceAll("[mh]", ""));
-                    String mod = args[0].replaceAll("[0-9]", "");
-                    if (mod.equals("m")) {
-                        time *= 60;
-                    } else if (mod.equals("h")) {
-                        time = time * 60 * 60;
-                    }
+                Long millis = MinigameUtils.parsePeriod(args[0]);
 
-                    treasureHuntModule.setHintDelay(time);
+                if (millis != null) {
+                    treasureHuntModule.setHintDelay(TimeUnit.MILLISECONDS.toSeconds(millis));
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_HINTDELAY_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(time)));
+                            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                     return true;
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTTIME,
@@ -86,8 +82,9 @@ public class SetHintDelayCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
-        return null;
+                                                         @NotNull String @NotNull [] args) {
+        return List.of("s", "m", "h");
+
     }
 
 }

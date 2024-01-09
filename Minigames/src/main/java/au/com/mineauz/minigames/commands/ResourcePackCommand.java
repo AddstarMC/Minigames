@@ -72,7 +72,7 @@ public class ResourcePackCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(final @NotNull CommandSender sender, Minigame minigame, @NotNull String label, @NotNull String @Nullable [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, Minigame minigame, @NotNull String @Nullable [] args) {
         ResourcePack pack;
         switch (args[0]) {
             case "apply":
@@ -143,7 +143,7 @@ public class ResourcePackCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @NotNull [] args) {
         List<String> result = new ArrayList<>();
         switch (args.length) {
             case 1:

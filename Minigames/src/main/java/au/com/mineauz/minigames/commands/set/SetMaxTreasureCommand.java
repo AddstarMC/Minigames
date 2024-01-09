@@ -50,7 +50,7 @@ public class SetMaxTreasureCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
             if (thm != null) {
@@ -77,7 +77,7 @@ public class SetMaxTreasureCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

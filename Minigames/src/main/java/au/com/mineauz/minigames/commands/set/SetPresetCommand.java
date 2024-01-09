@@ -2,10 +2,12 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.presets.PresetLoader;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,56 +33,39 @@ public class SetPresetCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Automatically sets up a Minigame using a preset provided. " +
-                "You can add your own presets to the Minigames/presets folder.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_PRESET_DESCRIPTION);
     }
-
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_PRESET_USAGE);
     }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> preset <Preset>",
-                "/minigame set <Minigame> preset <Preset> info"
-        };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to use a preset on a Minigame!";
-    }
-
     @Override
     public @Nullable String getPermission() {
         return "minigame.set.preset";
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
-                sender.sendMessage(PresetLoader.loadPreset(args[0], minigame));
+                MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, PresetLoader.loadPreset(args[0], minigame));
                 return true;
             } else if (args.length >= 2) {
-                sender.sendMessage(ChatColor.AQUA + "------------------Preset Info------------------");
-                sender.sendMessage(PresetLoader.getPresetInfo(args[0]));
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_PRESET_HEADER);
+                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, PresetLoader.getPresetInfo(args[0]));
                 return true;
-            } else {
-                sender.sendMessage(ChatColor.GRAY + "Please specify the name of the preset!");
             }
-
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
-        if (args.length == 2)
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                         @NotNull String @NotNull [] args) {
+        if (args.length == 2) {
             return MinigameUtils.tabCompleteMatch(List.of("info"), args[1]);
+        }
         return null;
     }
 

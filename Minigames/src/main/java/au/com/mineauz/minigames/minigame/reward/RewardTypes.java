@@ -1,38 +1,62 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import au.com.mineauz.minigames.Minigames;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class RewardTypes {
-    private static final Map<String, Class<? extends RewardType>> types = new HashMap<>();
+    private static final Map<String, RewardTypeFactory> types = new HashMap<>();
 
-    static {
-        addRewardType("ITEM", ItemReward.class);
-        addRewardType("MONEY", MoneyReward.class);
-        addRewardType("COMMAND", CommandReward.class);
+    public interface RewardTypeFactory {
+        @NotNull RewardType makeNewType(@NotNull Rewards rewards);
+
+        @NotNull String getName();
     }
 
-    public static void addRewardType(String name, Class<? extends RewardType> type) {
-        if (types.containsKey(name.toUpperCase())) {
-            throw new InvalidRewardTypeException("A reward type already exists by that name");
-        } else {
-            types.put(name.toUpperCase(), type);
+    public enum MgRewardType implements RewardTypeFactory {
+        COMMAND(CommandReward::new),
+        ITEM(ItemReward::new),
+        MONEY(MoneyReward::new);
+
+        final @NotNull Function<@NotNull Rewards, ? extends @NotNull RewardType> init;
+
+        MgRewardType(@NotNull Function<@NotNull Rewards, ? extends @NotNull RewardType> init) {
+            this.init = init;
+        }
+
+        @Override
+        public @NotNull RewardType makeNewType(@NotNull Rewards rewards) {
+            return init.apply(rewards);
+        }
+
+        @Override
+        public @NotNull String getName() {
+            return toString();
         }
     }
 
-    public static RewardType getRewardType(String name, Rewards rewards) {
+    static {
+        for (MgRewardType factory : MgRewardType.values()) {
+            addRewardType(factory);
+        }
+    }
+
+    public static void addRewardType(RewardTypeFactory factory) {
+        if (types.containsKey(factory.getName())) {
+            throw new InvalidRewardTypeException("A reward type already exists by that name");
+        } else {
+            types.put(factory.getName(), factory);
+        }
+    }
+
+    public static @Nullable RewardType getRewardType(final @NotNull String name, @NotNull Rewards rewards) {
         if (types.containsKey(name.toUpperCase())) {
-            try {
-                return types.get(name.toUpperCase()).getDeclaredConstructor(Rewards.class).newInstance(rewards);
-            } catch (InstantiationException | SecurityException | NoSuchMethodException | InvocationTargetException |
-                     IllegalArgumentException | IllegalAccessException e) {
-                Minigames.getCmpnntLogger().error("", e);
-            }
+            return types.get(name.toUpperCase()).makeNewType(rewards);
         }
         return null;
     }

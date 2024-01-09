@@ -56,7 +56,7 @@ public class BackupCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             if (Minigames.getPlugin().getMinigameManager().hasMinigame(args[0])) {
                 minigame = Minigames.getPlugin().getMinigameManager().getMinigame(args[0]);
@@ -102,8 +102,8 @@ public class BackupCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                         @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
                 return MinigameUtils.tabCompleteMatch(new ArrayList<>(Minigames.getPlugin().getMinigameManager().getAllMinigames().keySet()), args[0]);

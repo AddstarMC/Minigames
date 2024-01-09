@@ -62,7 +62,7 @@ public class SetStartCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, String @NotNull [] args) {
         Player player = (Player) sender;
 
         if (args == null) {
@@ -126,7 +126,7 @@ public class SetStartCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(minigame).getTeamsNameMap().size() + 1);
         if (args.length == 1) {
             TeamsModule.getMinigameModule(minigame).getTeamsNameMap().keySet().forEach(teamName -> teams.add(WordUtils.capitalize(teamName)));

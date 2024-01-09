@@ -55,7 +55,7 @@ public class SetSpectatorSpawnCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             String @NotNull [] args) {
         Player ply = (Player) sender;
         minigame.setSpectatorLocation(ply.getLocation());
         ply.sendMessage(ChatColor.GRAY + "Set the spectator start point to where you are standing");
@@ -64,7 +64,7 @@ public class SetSpectatorSpawnCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

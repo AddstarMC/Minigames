@@ -26,6 +26,10 @@ public class MoneyReward extends RewardType {
         super(rewards);
     }
 
+    public static MoneyReward getMinigameReward(@NotNull Rewards rewards) {
+        return (MoneyReward) RewardTypes.getRewardType(RewardTypes.MgRewardType.MONEY.getName(), rewards);
+    }
+
     @Override
     public String getName() {
         return "MONEY";

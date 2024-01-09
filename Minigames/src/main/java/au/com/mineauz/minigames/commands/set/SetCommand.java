@@ -71,7 +71,7 @@ public class SetCommand implements ICommand {
         registerSetCommand(new SetItemPickupCommand());
         registerSetCommand(new SetBlockBreakCommand());
         registerSetCommand(new SetBlockPlaceCommand());
-        registerSetCommand(new SetPlayersGamemodeCommand());
+        registerSetCommand(new SetGamemodeCommand());
         registerSetCommand(new SetBlockWhitelistCommand());
         registerSetCommand(new SetBlocksDropCommand());
         registerSetCommand(new SetGameMechanicCommand());
@@ -133,11 +133,8 @@ public class SetCommand implements ICommand {
                     cmdFile.write("| N/A");
                 }
                 cmdFile.newLine();
-                if (command.getDescription() != null) {
-                    cmdFile.write("| " + command.getDescription());
-                } else {
-                    cmdFile.write("| N/A");
-                }
+                command.getDescription();
+                cmdFile.write("| " + command.getDescription());
                 cmdFile.newLine();
                 if (command.getPermission() != null) {
                     cmdFile.write("| " + command.getPermission());
@@ -198,7 +195,7 @@ public class SetCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame ignored,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
 
         if (args != null) {
             ICommand comd = null;
@@ -236,7 +233,7 @@ public class SetCommand implements ICommand {
             if (comd != null && minigame != null) {
                 if (sender instanceof Player || comd.canBeConsole()) {
                     if (comd.getPermission() == null || sender.hasPermission(comd.getPermission())) {
-                        boolean returnValue = comd.onCommand(sender, minigame, label, shortArgs);
+                        boolean returnValue = comd.onCommand(sender, minigame, shortArgs);
                         if (!returnValue) {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_HEADER);
 
@@ -267,7 +264,7 @@ public class SetCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @Nullable [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
             Player ply = null;
             if (sender instanceof Player) {
@@ -291,7 +288,7 @@ public class SetCommand implements ICommand {
 
                 if (comd != null) {
                     if (ply != null) {
-                        List<String> l = comd.onTabComplete(sender, mgm, alias, shortArgs);
+                        List<String> l = comd.onTabComplete(sender, mgm, shortArgs);
                         return Objects.requireNonNullElseGet(l, () -> List.of(""));
                     }
                 } else {

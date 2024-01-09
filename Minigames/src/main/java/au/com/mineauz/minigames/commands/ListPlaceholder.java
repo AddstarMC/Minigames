@@ -35,11 +35,6 @@ public class ListPlaceholder implements ICommand { //todo needs pages
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{"/minigame placeholders"};
     }
@@ -50,7 +45,7 @@ public class ListPlaceholder implements ICommand { //todo needs pages
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, String @NotNull [] args) {
         Set<String> placeholders = plugin.getPlaceHolderManager().getRegisteredPlaceHolders();
         StringBuilder result = new StringBuilder();
         for (String pHolder : placeholders) {
@@ -63,7 +58,7 @@ public class ListPlaceholder implements ICommand { //todo needs pages
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @NotNull [] args) {
         return null;
     }
 }

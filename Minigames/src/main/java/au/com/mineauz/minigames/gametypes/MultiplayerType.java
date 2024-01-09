@@ -16,6 +16,7 @@ import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -390,14 +391,14 @@ public class MultiplayerType extends MinigameTypeBase {
                             }
 
                             //build score message
-                            Component scores = Component.empty();
+                            TextComponent.Builder scores = Component.text();
                             List<Team> teams = TeamsModule.getMinigameModule(mgm).getTeams();
 
                             for (int i = 0; i < teams.size(); ) {
-                                scores = scores.append(Component.text(teams.get(i).getColor().name())).append(Component.text(teams.get(i).getScore()));
+                                scores.append(Component.text(teams.get(i).getColor().name())).append(Component.text(teams.get(i).getScore()));
 
                                 if (++i < teams.size()) {
-                                    scores = scores.append(Component.text(" : ", NamedTextColor.WHITE));
+                                    scores.append(Component.text(" : ", NamedTextColor.WHITE));
                                 }
                             }
 
@@ -423,14 +424,14 @@ public class MultiplayerType extends MinigameTypeBase {
                                 }
 
                                 //build score message
-                                Component scores = Component.empty();
+                                TextComponent.Builder scores = Component.text();
                                 List<Team> teams = TeamsModule.getMinigameModule(mgm).getTeams();
 
                                 for (int i = 0; i < teams.size(); ) {
-                                    scores = scores.append(Component.text(teams.get(i).getColor().name())).append(Component.text(teams.get(i).getScore()));
+                                    scores.append(Component.text(teams.get(i).getColor().name())).append(Component.text(teams.get(i).getScore()));
 
                                     if (++i < teams.size()) {
-                                        scores = scores.append(Component.text(" : ", NamedTextColor.WHITE));
+                                        scores.append(Component.text(" : ", NamedTextColor.WHITE));
                                     }
                                 }
 

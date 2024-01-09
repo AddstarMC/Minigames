@@ -26,7 +26,7 @@ public class LongFlag extends Flag<Long> {
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem) {
-        return null;
+        return null; //todo menu items
     }
 
     @Override

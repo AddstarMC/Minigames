@@ -59,7 +59,7 @@ public class SetSurvivorTeamCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, String @NotNull [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("None")) {
                 InfectionModule.getMinigameModule(minigame).setSurvivorTeam(null);
@@ -83,7 +83,7 @@ public class SetSurvivorTeamCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> teams = new ArrayList<>();
             for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {

@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.BooleanUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,19 +35,12 @@ public class SetPaintballCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets a Minigame to be in paintball mode. This lets snowballs damage players. " +
-                "(Default: false, default damage: 2)";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_PAINTBALL_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"damage"};
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> paintball <true/false>",
-                "/minigame set <Minigame> paintball damage <Number>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_PAINTBALL_USAGE);
     }
 
     @Override
@@ -58,7 +50,7 @@ public class SetPaintballCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
                 Boolean bool = BooleanUtils.toBooleanObject(args[0]);
@@ -78,8 +70,14 @@ public class SetPaintballCommand implements ICommand {
             } else if (args.length >= 2) {
                 if (args[0].equalsIgnoreCase("damage") && args[1].matches("[0-9]+")) {
                     minigame.setPaintBallDamage(Integer.parseInt(args[1]));
-                    sender.sendMessage(ChatColor.GRAY + "Paintball damage has been set to " + args[1] + " for " + minigame);
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_PAINTBALL_DAMAGE,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), args[1]));
                     return true;
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                 }
             }
         }
@@ -88,10 +86,12 @@ public class SetPaintballCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
-        if (args.length == 1)
+                                                         @NotNull String @NotNull [] args) {
+        if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("true", "false", "damage"), args[0]);
-        return null;
+        } else {
+            return null;
+        }
     }
 
 }

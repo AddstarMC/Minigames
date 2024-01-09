@@ -56,7 +56,7 @@ public class QuitCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args == null && sender instanceof Player) {
             MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
             if (player.isInMinigame()) {
@@ -117,7 +117,7 @@ public class QuitCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> plys = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 1);
             for (Player ply : plugin.getServer().getOnlinePlayers()) {

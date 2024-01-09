@@ -59,7 +59,7 @@ public class DebugCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
             switch (args[0].toUpperCase()) {
                 case "ON" -> {
@@ -100,7 +100,7 @@ public class DebugCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         List<String> out = new ArrayList<>();
         if (args.length == 0) {
             out.add("NO");

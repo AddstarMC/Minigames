@@ -3,147 +3,153 @@ package au.com.mineauz.minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Stack;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MinigameUtils {
+    private static final @NotNull Pattern PERIOD_PATTERN = Pattern.compile("(\\d+)\\s*((ms)|[tsmhdw])", Pattern.CASE_INSENSITIVE);
 
     /**
-     * Converts seconds into weeks, days, hours, minutes and seconds to be neatly
-     * displayed.
+     * Try to get a time period of a string.
+     * using the same time unit more than once is permitted.
+     * If no time unit follows a number, it gets treated as seconds.
      *
-     * @param time  - The time in seconds to be converted
-     * @param small - If the time should be shortened to: hh:mm:ss
-     * @return A message with a neat time
+     * @return the parsed duration, or null if not possible
      */
-    public static String convertTime(int time, boolean small) { //todo use TimeUnit; make reverse methode
-        int weeks = 0;
-        int days = 0;
-        int hours = 0;
-        int minutes = 0;
-        int seconds = 0;
-        int rtime = time;
-        String msg = "";
+    public static @Nullable Long parsePeriod(@NotNull String periodStr) {
+        Matcher matcher = PERIOD_PATTERN.matcher(periodStr);
+        Long millis = null;
 
-        if (time > 604800) {
-            weeks = rtime / 604800;
-            rtime = rtime - weeks * 604800;
-            days = rtime / 86400;
-            rtime = rtime - days * 86400;
-            hours = rtime / 3600;
-            rtime = rtime - hours * 3600;
-            minutes = rtime / 60;
-            rtime = rtime - minutes * 60;
-            seconds = rtime;
-        } else if (time > 86400) {
-            days = rtime / 86400;
-            rtime = rtime - days * 86400;
-            hours = rtime / 3600;
-            rtime = rtime - hours * 3600;
-            minutes = rtime / 60;
-            rtime = rtime - minutes * 60;
-            seconds = rtime;
-        } else if (time > 3600) {
-            hours = rtime / 3600;
-            rtime = rtime - hours * 3600;
-            minutes = rtime / 60;
-            seconds = rtime - minutes * 60;
-        } else if (time > 60) {
-            minutes = time / 60;
-            seconds = rtime - minutes * 60;
-        } else {
-            seconds = time;
-        }
-
-        if (weeks != 0) {
-            if (!small)
-                msg = String.format(getLang("time.weeks"), weeks);
-            else {
-                msg = weeks + "w";
+        while (matcher.find()) {
+            // we got a match.
+            if (millis == null) {
+                millis = 0L;
             }
-        }
-        if (days != 0) {
-            if (!msg.isEmpty()) {
-                if (!small) {
-                    if (seconds != 0 || hours != 0 || minutes != 0) {
-                        msg += ", ";
-                    } else {
-                        msg += " " + getLang("time.and") + " ";
-                    }
+
+            try {
+                long num = Long.parseLong(matcher.group(1));
+
+                if (matcher.groupCount() > 1) {
+                    String typ = matcher.group(2);
+                    millis += switch (typ) { // from periodPattern
+                        case "ms" -> num;
+                        case "t" -> TimeUnit.SECONDS.toMillis(20L * num); // ticks
+                        case "s" -> TimeUnit.SECONDS.toMillis(num);
+                        case "m" -> TimeUnit.MINUTES.toMillis(num);
+                        case "h" -> TimeUnit.HOURS.toMillis(num);
+                        case "d" -> TimeUnit.DAYS.toMillis(num);
+                        case "w" -> TimeUnit.DAYS.toMillis(num * 7);
+                        default -> 0; // should never get reached because of pattern
+                    };
                 } else {
-                    msg += ":";
+                    millis += TimeUnit.SECONDS.toMillis(num);
                 }
+            } catch (NumberFormatException e) {
+                Minigames.getPlugin().getComponentLogger().warn("Couldn't get time period for " + periodStr, e);
             }
-            if (!small)
-                msg += String.format(getLang("time.days"), days);
-            else
-                msg += days + "d";
         }
-        if (hours != 0) {
-            if (!msg.isEmpty()) {
-                if (!small) {
-                    if (seconds != 0 || minutes != 0) {
-                        msg += ", ";
-                    } else {
-                        msg += " " + getLang("time.and") + " ";
-                    }
-                } else
-                    msg += ":";
-            }
-            if (!small)
-                msg += String.format(getLang("time.hours"), hours);
-            else
-                msg += hours + "h";
-        }
-        if (minutes != 0) {
-            if (!msg.isEmpty()) {
-                if (!small) {
-                    if (seconds != 0) {
-                        msg += ", ";
-                    } else {
-                        msg += " " + getLang("time.and") + " ";
-                    }
-                } else
-                    msg += ":";
-            }
-            if (!small)
-                msg += String.format(getLang("time.minutes"), minutes);
-            else
-                msg += minutes + "m";
-        }
-        if (seconds != 0 || msg.isEmpty()) {
-            if (!msg.isEmpty()) {
-                if (!small)
-                    msg += " " + getLang("time.and") + " ";
-                else
-                    msg += ":";
-            }
-            if (!small)
-                msg += String.format(getLang("time.seconds"), seconds);
-            else
-                msg += seconds + "s";
-        }
-
-        return msg;
+        return millis;
     }
 
     /**
      * Converts seconds into weeks, days, hours, minutes and seconds to be neatly
      * displayed.
      *
-     * @param time - The time in seconds to be converted
+     * @param duration  - The duration to be converted
+     * @param small - If the time should be shortened to: hh:mm:ss
      * @return A message with a neat time
      */
-    public static String convertTime(int time) {
-        return convertTime(time, false);
+    public static Component convertTime(Duration duration, boolean small) { //todo make reverse methode
+        long weeks = duration.toDaysPart() / 7L;
+        long days = duration.toDaysPart() % 7L;
+        int hours = duration.toHoursPart();
+        int minutes = duration.toMinutesPart();
+        int seconds = duration.toSecondsPart();
+
+        Stack<Component> timeComponents = new Stack<>();
+
+        if (small) {
+            if (weeks != 0) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_WEEKS_SHORT,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(weeks))));
+            }
+            if (days != 0) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_DAYS_SHORT,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(days))));
+            }
+            if (hours != 0) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_HOURS_SHORT,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(hours))));
+            }
+            if (minutes != 0) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_MINUTES_SHORT,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minutes))));
+            }
+
+            if (seconds != 0 || timeComponents.isEmpty()) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_SECONDS_SHORT,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(seconds))));
+            }
+
+            return Component.join(JoinConfiguration.separator(Component.text(":")), timeComponents);
+        } else {
+            if (weeks != 0) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_WEEKS_LONG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(weeks))));
+            }
+            if (days != 0) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_DAYS_LONG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(days))));
+            }
+            if (hours != 0) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_HOURS_LONG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(hours))));
+            }
+            if (minutes != 0) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_MINUTES_LONG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minutes))));
+            }
+            if (seconds != 0 || timeComponents.isEmpty()) {
+                timeComponents.add(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_SECONDS_LONG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(seconds))));
+            }
+
+            Component lastTimeComponent = timeComponents.pop();
+            if (!timeComponents.isEmpty()) {
+                return Component.join(JoinConfiguration.commas(true), timeComponents).
+                        appendSpace().append(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_AND)).appendSpace().
+                        append(lastTimeComponent);
+            } else {
+                return lastTimeComponent;
+            }
+        }
+    }
+
+    /**
+     * Converts seconds into weeks, days, hours, minutes and seconds to be neatly
+     * displayed.
+     *
+     * @param duration - The time to be converted
+     * @return A message with a neat time
+     */
+    public static Component convertTime(Duration duration) {
+        return convertTime(duration, false);
     }
 
     /**

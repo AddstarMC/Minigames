@@ -63,7 +63,7 @@ public class TeleportCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             List<Player> plys = plugin.getServer().matchPlayer(args[0]);
             MinigamePlayer ply;
@@ -195,7 +195,7 @@ public class TeleportCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> pl = new ArrayList<>();
             for (Player p : plugin.getServer().getOnlinePlayers()) {

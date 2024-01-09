@@ -50,7 +50,7 @@ public class SetItemDropCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("player") && args.length >= 2) {
                 Boolean bool = BooleanUtils.toBooleanObject(args[1]);
@@ -89,7 +89,7 @@ public class SetItemDropCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("death", "player"), args[0]);
         } else if (args.length == 2) {

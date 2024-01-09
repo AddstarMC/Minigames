@@ -58,7 +58,7 @@ public class SetUsePermissionsCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             String @NotNull [] args) {
         if (args != null) {
             boolean bool = Boolean.parseBoolean(args[0]);
             minigame.setUsePermissions(bool);
@@ -70,7 +70,7 @@ public class SetUsePermissionsCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

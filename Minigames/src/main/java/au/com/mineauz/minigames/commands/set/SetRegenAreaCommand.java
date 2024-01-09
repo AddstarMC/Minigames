@@ -3,14 +3,19 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.objects.RegenRegionSetResult;
+import au.com.mineauz.minigames.objects.RegenRegionChangeResult;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -41,27 +46,12 @@ public class SetRegenAreaCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Creates and deletes regeneration regions. This only needs to be used for Minigames that have things like leaf decay, fire, tnt etc." +
-                " If the Minigame has anything that the player doesn't directly interact with that breaks, this should be used.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REGENAREA_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"select", "create", "delete", /*"modify"*/};
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{
-                "/minigame set <Minigame> regenarea select <1/2>",
-                "/minigame set <Minigame> regenarea create <name>",
-                "/minigame set <Minigame> regenarea list <page>",
-                "/minigame set <Minigame> regenarea delete <name>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the regen area of a Minigame!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REGENAREA_USAGE);
     }
 
     @Override
@@ -90,53 +80,66 @@ public class SetRegenAreaCommand implements ICommand {
         //don't try to access more books than exits
         final int MAX_BOOKS_THIS_PAGE = Math.min(NUM_OF_REGIONS, PAGE * REGIONS_PER_PAGE);
 
-        Component componentList = LegacyComponentSerializer.legacyAmpersand().deserialize(String.format("&6-----------{Regen Regions &e%s&6/&e%s}-----------", PAGE, NUM_OF_PAGES));
+        TextComponent.Builder listBuilder = Component.text();
+        listBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REGENAREA_LIST_HEADER,
+                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(PAGE)),
+                Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(NUM_OF_PAGES))));
 
         //add the books for the page
         for (int id = (PAGE - 1) * REGIONS_PER_PAGE; id < MAX_BOOKS_THIS_PAGE; id++) {
             MgRegion region = regions.get(id);
+            listBuilder.appendNewline();
 
-            componentList = componentList.appendNewline();
-            componentList = componentList.append(Component.text(region.getName() +
-                    " from " + region.getMinX() + ", " + region.getMinY() + ", " + region.getMinZ() +
-                    " to " + region.getMaxX() + ", " + region.getMaxY() + ", " + region.getMaxZ() +
-                    "(" + region.getVolume() + ")"));
+            listBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.REGION_DESCRIBE,
+                    Placeholder.component(MinigamePlaceHolderKey.POSITION_1.getKey(),
+                            MinigameMessageManager.getMgMessage(MinigameLangKey.REGION_POSITION,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMinX())),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMinY())),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMinZ())))),
+                    Placeholder.component(MinigamePlaceHolderKey.POSITION_2.getKey(),
+                            MinigameMessageManager.getMgMessage(MinigameLangKey.REGION_POSITION,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMaxX())),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMaxY())),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMaxZ()))))));
         }
 
+        //todo footer in messages and not legacy formatting
         //add footer
-        componentList = componentList.appendNewline();
-        componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize("&2--"));
+        listBuilder.appendNewline();
+        listBuilder.append(LegacyComponentSerializer.legacySection().deserialize("&2--"));
 
         //back button or none
         if (PAGE > 1) {
-            componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize(String.format("&6<<( &e%s&6 ) ", PAGE - 1)).clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName(false) + " regenarea list " + (PAGE - 1))));
+            listBuilder.append(LegacyComponentSerializer.legacySection().deserialize(String.format("&6<<( &e%s&6 ) ", PAGE - 1)).
+                    clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName(false) + " regenarea list " + (PAGE - 1))));
         } else {
-            componentList = componentList.append(Component.text("-------"));
+            listBuilder.append(Component.text("-------"));
         }
 
         //inner part, separating both buttons
-        componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize("&2---<*>---"));
+        listBuilder.append(LegacyComponentSerializer.legacySection().deserialize("&2---<*>---"));
 
         //next button
         if (PAGE < NUM_OF_PAGES) {
-            componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize(String.format("&6 ( &e%s&6 )>>", PAGE + 1)).clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName(false) + " regenarea list " + (PAGE + 1))));
+            listBuilder.append(LegacyComponentSerializer.legacySection().deserialize(String.format("&6 ( &e%s&6 )>>", PAGE + 1)).
+                    clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName(false) + " regenarea list " + (PAGE + 1))));
         } else {
-            componentList = componentList.append(Component.text("-------"));
+            listBuilder.append(Component.text("-------"));
         }
-        componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize("&2--"));
+        listBuilder.append(LegacyComponentSerializer.legacySection().deserialize("&2--"));
 
-        return componentList;
+        return listBuilder.build();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 
                 if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-                    mgPlayer.sendInfoMessage(makeList(minigame, 1));
+                    MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makeList(minigame, 1));
 
                 } else if (args.length == 2) {
                     switch (args[0].toLowerCase()) {
@@ -149,13 +152,18 @@ public class SetRegenAreaCommand implements ICommand {
                                 mgPlayer.clearSelection();
                                 mgPlayer.setSelection(placerLoc, p2);
 
-                                mgPlayer.sendInfoMessage(Component.text("Point 1 selected", NamedTextColor.GRAY));
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_SELECT_POINT,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), "1"));
                             } else if (args[1].equals("2")) {
                                 Location p2 = mgPlayer.getSelectionLocations()[0];
                                 mgPlayer.clearSelection();
                                 mgPlayer.setSelection(p2, placerLoc);
 
-                                mgPlayer.sendInfoMessage(Component.text("Point 2 selected", NamedTextColor.GRAY));
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_SELECT_POINT,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), "2"));
+                            } else {
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                             }
                             return true;
                         }
@@ -164,45 +172,64 @@ public class SetRegenAreaCommand implements ICommand {
                                 String name = args[1];
                                 MgRegion region = minigame.getRegenRegion(name);
 
-                                RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
+                                RegenRegionChangeResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
 
                                 if (result.success()) {
                                     if (region == null) {
-                                        mgPlayer.sendInfoMessage(Component.text("Created a new regen region in " + minigame + " called " + name + ", " + result.numOfBlocksTotal() + "/" + minigame.getRegenBlocklimit()));
+                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_REGENREGION_CREATED,
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                                     } else {
-                                        mgPlayer.sendInfoMessage(Component.text("Updated region " + name + " in " + minigame));
+                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_REGENREGION_UPDATED,
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                                     }
 
                                     mgPlayer.clearSelection();
                                 } else {
-                                    mgPlayer.sendMessage(Component.text("Error: the limit of Blocks of all regen areas together has been reached +(" + result.numOfBlocksTotal() + "/" + minigame.getRegenBlocklimit() + ")." +
-                                            " Please contact an admin if necessary.", NamedTextColor.RED), MinigameMessageType.ERROR);
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_REGENREGION_ERROR_LIMIT,
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                                 }
                             } else {
-                                mgPlayer.sendMessage(Component.text("You need to select a region with right click first!"), MinigameMessageType.ERROR);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REGENAREA_ERROR_NOTSELECTED);
                             }
 
                             return true;
                         }
                         case "list" -> {
+                            Tag.selfClosingInserting(Component.text());
+
                             if (args[1].matches("\\d+")) {
-                                mgPlayer.sendInfoMessage(makeList(minigame, Integer.parseInt(args[1])));
+                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, makeList(minigame, Integer.parseInt(args[1])));
                             } else {
-                                mgPlayer.sendMessage(Component.text(args[1] + "Is not a valid number!"), MinigameMessageType.ERROR);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                             }
                         }
                         case "delete" -> {
-                            if (minigame.removeRegenRegion(args[1])) {
-                                mgPlayer.sendInfoMessage(Component.text("Removed the regen region named " + args[1] + " from " + minigame.getName(false), NamedTextColor.GRAY));
+                            RegenRegionChangeResult result = minigame.removeRegenRegion(args[1]);
+
+                            if (result.success()) {
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_REGENREGION_REMOVED,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), args[1]),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                             } else {
-                                mgPlayer.sendInfoMessage(Component.text("No regen region by the name " + args[1] + " was found in " + minigame.getName(false), NamedTextColor.GRAY));
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOREGENREION,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), args[1]));
                             }
                             return true;
                         }
                     }
                 }
             } else {
-                sender.sendMessage(Component.text("You have to be a player.", NamedTextColor.RED));
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTAPLAYER);
                 return false;
             }
 
@@ -213,7 +240,7 @@ public class SetRegenAreaCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();

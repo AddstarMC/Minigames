@@ -65,7 +65,7 @@ public class SetTeamCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             TeamsModule tmod = TeamsModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("add")) {
@@ -195,7 +195,7 @@ public class SetTeamCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("add", "rename", "remove", "list", "maxplayers"), args[0]);
         else if (args.length == 2) {

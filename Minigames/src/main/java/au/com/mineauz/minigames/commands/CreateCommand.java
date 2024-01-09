@@ -54,7 +54,7 @@ public class CreateCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String label, @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String @Nullable [] args) {
         if (args != null) {
             Player player = (Player) sender;
             String mgmName = args[0];
@@ -94,7 +94,7 @@ public class CreateCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 2) {
             List<String> types = new ArrayList<>(MinigameType.values().length);
             for (MinigameType type : MinigameType.values()) {

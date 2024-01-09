@@ -60,7 +60,7 @@ public class ScoreboardCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(final @NotNull CommandSender sender, Minigame ignore, @NotNull String label, @NotNull String @Nullable [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, Minigame ignore, @NotNull String @Nullable [] args) {
         if (args == null || args.length < 3) {
             return false;
         }
@@ -163,7 +163,7 @@ public class ScoreboardCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame ignore, String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame ignore, @NotNull String @NotNull [] args) {
         if (args.length == 1) { // Minigame
             List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);

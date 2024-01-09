@@ -55,7 +55,7 @@ public class HintCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
         if (args != null) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
@@ -106,7 +106,7 @@ public class HintCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>();
             for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {

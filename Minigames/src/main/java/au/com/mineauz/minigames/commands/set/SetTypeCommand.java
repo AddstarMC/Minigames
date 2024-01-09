@@ -63,7 +63,7 @@ public class SetTypeCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             String @NotNull [] args) {
         if (args != null) {
             if (MinigameType.hasValue(args[0])) {
                 minigame.setType(MinigameType.valueOf(args[0].toUpperCase()));
@@ -78,7 +78,7 @@ public class SetTypeCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> types = new ArrayList<>();
             for (MinigameType t : MinigameType.values()) {

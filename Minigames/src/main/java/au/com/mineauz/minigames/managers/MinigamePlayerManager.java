@@ -23,6 +23,7 @@ import au.com.mineauz.minigames.stats.DynamicMinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
@@ -69,7 +70,7 @@ public class MinigamePlayerManager {
         JoinMinigameEvent event = new JoinMinigameEvent(mgPlayer, minigame);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            Minigames.log.info("Start Event was cancelled..: " + event);
+            Minigames.getCmpnntLogger().info("Join Event was cancelled: " + event);
             return;
         }
         if (!mgManager.minigameStartStateCheck(minigame, mgPlayer)) return;
@@ -621,7 +622,7 @@ public class MinigamePlayerManager {
                     if (loc != null) {
                         mgPlayer.teleport(loc);
                     } else {
-                        Minigames.log.warning("Minigame " + minigame.getName(true) + " has no end location set! (Player: " + mgPlayer.getName() + ")");
+                        Minigames.getCmpnntLogger().warn("Minigame " + minigame.getName(true) + " has no end location set! (Player: " + mgPlayer.getName() + ")");
                     }
                 } else {
                     if (!isWinner) {
@@ -915,12 +916,12 @@ public class MinigamePlayerManager {
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
                             Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), score)), minigame, MinigameMessageType.WIN);
                 } else if (winners.size() > 1) {
-                    Component winComp = Component.empty();
+                    TextComponent.Builder winComp = Component.text();
                     winners.sort(Comparator.comparingInt(MinigamePlayer::getScore));
 
                     for (MinigamePlayer pl : winners) {
                         if (winners.indexOf(pl) < 2) {
-                            winComp = winComp.append(Component.text(pl.getDisplayName(minigame.usePlayerDisplayNames())));
+                            winComp.append(Component.text(pl.getDisplayName(minigame.usePlayerDisplayNames())));
                             if (winners.indexOf(pl) + 2 >= winners.size()) {
                                 winComp.append(" and ");
                             } else {

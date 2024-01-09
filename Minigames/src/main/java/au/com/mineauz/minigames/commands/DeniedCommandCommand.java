@@ -51,7 +51,7 @@ public class DeniedCommandCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("add") && args.length >= 2) {
                 plugin.getPlayerManager().addDeniedCommand(args[1]);
@@ -72,7 +72,7 @@ public class DeniedCommandCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> ls = new ArrayList<>();
             Collections.addAll(ls, getParameters());

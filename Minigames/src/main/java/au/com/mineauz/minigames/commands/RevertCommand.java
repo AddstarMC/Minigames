@@ -58,7 +58,7 @@ public class RevertCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
 
         if (player.isInMinigame()) {
@@ -78,7 +78,7 @@ public class RevertCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

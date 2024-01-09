@@ -50,7 +50,7 @@ public class SetFlightCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null && args.length == 2) {
             switch (args[0].toLowerCase()) {
                 case "enabled" -> {
@@ -96,7 +96,7 @@ public class SetFlightCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         String alias, @NotNull String @Nullable [] args) {
+                                                         @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
                 return MinigameUtils.tabCompleteMatch(List.of("enabled", "startflying"), args[0]);

@@ -1,9 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,11 +33,11 @@ public class SetObjectiveCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the objective description for the player to see when they join a Minigame. Typing \"null\" will remove the objective.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_OBJECTIVE_DESCRIPTION);
     }
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> objective <Objective Here>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SEt_OBJECTIVE_USAGE);
     }
 
     @Override
@@ -43,22 +47,16 @@ public class SetObjectiveCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (!args[0].equals("null")) {
-                StringBuilder obj = new StringBuilder();
-                int count = 0;
-                for (String arg : args) {
-                    obj.append(arg);
-                    count++;
-                    if (count != args.length)
-                        obj.append(" ");
-                }
-                minigame.setObjective(obj.toString());
-                sender.sendMessage(ChatColor.GRAY + "The objective for " + minigame + " has been set.");
-            } else {
+            if (args.length == 1 && args[0].equalsIgnoreCase("null")) {
                 minigame.setObjective(null);
-                sender.sendMessage(ChatColor.GRAY + "The objective for " + minigame + " has been removed.");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_OBJECTIVE_REMOVE,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+            } else {
+                minigame.setObjective(String.join(" ", args));
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_OBJECTIVE_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
             }
 
             return true;
@@ -68,7 +66,7 @@ public class SetObjectiveCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

@@ -1,5 +1,9 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public enum RewardRarity {
     VERY_COMMON(0.5),
     COMMON(0.25),
@@ -17,7 +21,7 @@ public enum RewardRarity {
         return rarity;
     }
 
-    public RewardRarity getPreviousRarity() {
+    public @NotNull RewardRarity getPreviousRarity() {
         return switch (this) {
             case VERY_COMMON -> COMMON;
             case COMMON -> NORMAL;
@@ -27,13 +31,23 @@ public enum RewardRarity {
 
     }
 
-    public RewardRarity getNextRarity() {
+    public @NotNull RewardRarity getNextRarity() {
         return switch (this) {
             case VERY_RARE -> RARE;
             case RARE -> NORMAL;
             case NORMAL -> COMMON;
             default -> VERY_COMMON;
         };
+    }
 
+    @Contract("null -> null")
+    public static @Nullable RewardRarity matchRarity(@Nullable String toMatch) {
+        for (RewardRarity rarity : RewardRarity.values()) {
+            if (rarity.toString().equalsIgnoreCase(toMatch)) {
+                return rarity;
+            }
+        }
+
+        return null;
     }
 }

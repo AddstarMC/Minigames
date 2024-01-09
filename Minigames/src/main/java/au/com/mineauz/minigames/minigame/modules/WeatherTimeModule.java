@@ -33,6 +33,10 @@ public class WeatherTimeModule extends MinigameModule {
         super(mgm, name);
     }
 
+    public static WeatherTimeModule getMinigameModule(Minigame minigame) {
+        return (WeatherTimeModule) minigame.getModule(MgModules.WEATHER_TIME.getName());
+    }
+
     @Override
     public boolean useSeparateConfig() {
         return false;

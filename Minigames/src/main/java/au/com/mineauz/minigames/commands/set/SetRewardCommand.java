@@ -2,11 +2,19 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.*;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,10 +22,13 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SetRewardCommand implements ICommand {
+    private final static Pattern MONEY_PATTERN = Pattern.compile("\\$-?(\\d+(\\.\\d+)?)");
 
     @Override
     public @NotNull String getName() {
@@ -36,22 +47,11 @@ public class SetRewardCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return """
-                Sets the players reward for completing the Minigame for the first time. This can be one item or a randomly selected item added to the rewards, depending on its defined rarity.\s
-                Possible rarities are: very_common, common, normal, rare and very_rare
-                NOTE: This can only be used on minigames using the standard reward scheme""";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REWARD_DESCRIPTION);
     }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
     @Override
     public Component getUsage() {
-        return new String[]{"/minigame set <Minigame> reward <Item Name> [Quantity] [Rarity]",
-                "/minigame set <Minigame> reward $<Money Amount> [Rarity]"
-        };
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REWARD_USAGE);
     }
 
     @Override
@@ -59,113 +59,166 @@ public class SetRewardCommand implements ICommand {
         return "minigame.set.reward";
     }
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+    private static void setItemReward(@NotNull Minigame minigame, @NotNull Rewards rewards, @NotNull CommandSender sender,
+                                      @NotNull ItemStack item, @NotNull RewardRarity rarity, boolean isPrimary) {
+        if (item.getType().isAir()) {
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REWARD_ITEM_ERROR_AIR,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+            return;
+        }
+
+        ItemReward ir = ItemReward.getMinigameReward(rewards);
+        ir.setRewardItem(item);
+        ir.setRarity(rarity);
+        rewards.addReward(ir);
+
+        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
+                isPrimary ? MinigameLangKey.COMMAND_SET_REWARD_ITEM_SUCCESS : MinigameLangKey.COMMAND_SET_REWARD2_ITEM_SUCCESS,
+                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item.displayName()),
+                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                Placeholder.unparsed(MinigamePlaceHolderKey.RARITY.getKey(), rarity.toString().toLowerCase().replace("_", " ")));
+    }
+
+    protected static boolean processRewardCommands(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                   @NotNull String @Nullable [] args, boolean isPrimary) {
         if (args != null) {
             RewardsModule module = RewardsModule.getModule(minigame);
-            if (!(module.getScheme() instanceof StandardRewardScheme)) {
-                sender.sendMessage(ChatColor.RED + "This command can only be used on minigames that use the standard reward scheme");
-                return true;
-            }
 
-            Rewards rewards = ((StandardRewardScheme) module.getScheme()).getPrimaryReward();
+            if (module.getScheme() instanceof StandardRewardScheme standardRewardScheme) {
+                Rewards rewards;
+                if (isPrimary) {
+                    rewards = standardRewardScheme.getPrimaryReward();
+                } else {
+                    rewards = standardRewardScheme.getSecondaryReward();
+                }
 
-            int quantity = 1;
-            double money = -1;
-            if (args.length >= 2 && args[1].matches("[0-9]+")) {
-                quantity = Integer.parseInt(args[1]);
-            }
+                if (args.length >= 1) {
+                    if (args[0].startsWith("$")) {
+                        Economy economy = plugin.getEconomy();
 
-            Material mat = null;
-            ItemStack item = null;
-            if (args[0].startsWith("$")) {
-                try {
-                    money = Double.parseDouble(args[0].replace("$", ""));
-                } catch (NumberFormatException ignored) {
+                        if (economy != null) {
+                            Matcher matcher = MONEY_PATTERN.matcher(args[0]);
+
+                            if (matcher.matches()) {
+                                double money = Double.parseDouble(matcher.group(1));
+
+                                RewardRarity rarity;
+                                if (args.length >= 2) {
+                                    rarity = RewardRarity.matchRarity(args[1]);
+
+                                    if (rarity == null) {
+                                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                                        return false;
+                                    }
+                                } else {
+                                    rarity = RewardRarity.NORMAL;
+                                }
+
+                                MoneyReward moneyReward = MoneyReward.getMinigameReward(rewards);
+                                moneyReward.setRewardMoney(money);
+                                moneyReward.setRarity(rarity);
+                                rewards.addReward(moneyReward);
+
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
+                                        isPrimary ? MinigameLangKey.COMMAND_SET_REWARD_MONEY_SUCCESS : MinigameLangKey.COMMAND_SET_REWARD2_MONEY_SUCCESS,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), economy.format(money)),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.RARITY.getKey(), rarity.toString().toLowerCase().replace("_", " ")));
+                            } else {
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                            }
+                        } else if (args[0].equals("SLOT")) {
+                            if (sender instanceof Player player) {
+                                ItemStack item = player.getInventory().getItemInMainHand();
+
+                                RewardRarity rarity;
+                                if (args.length == 2) {
+                                    rarity = RewardRarity.matchRarity(args[1]);
+
+                                    if (rarity == null) {
+                                        return false;
+                                    }
+                                } else {
+                                    rarity = RewardRarity.NORMAL;
+                                }
+
+                                setItemReward(minigame, rewards, sender, item, rarity, isPrimary);
+                                return true;
+
+                            } else {
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTAPLAYER);
+                            }
+                        } else {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.REWARD_ERROR_NOVAULT,
+                                    Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
+                                            Component.text("spigot.net", Style.style(TextDecoration.UNDERLINED)).
+                                                    clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/vault.34315/"))));
+                        }
+
+                        return true;
+                    } else {
+                        Material mat = Material.matchMaterial(args[0]);
+
+                        if (mat != null) {
+                            int quantity = 1;
+                            if (args.length >= 2) {
+                                if (args[1].matches("[0-9]+")) {
+                                    quantity = Integer.parseInt(args[1]);
+                                } else {
+                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+
+                                    return false;
+                                }
+                            }
+
+                            ItemStack item = new ItemStack(mat, quantity);
+
+                            RewardRarity rarity;
+                            if (args.length >= 3) {
+                                rarity = RewardRarity.matchRarity(args[2]);
+
+                                if (rarity == null) {
+                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                                    return false;
+                                }
+                            } else {
+                                rarity = RewardRarity.NORMAL;
+                            }
+
+                            setItemReward(minigame, rewards, sender, item, rarity, isPrimary);
+                            return true;
+
+                        } else {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTMATERIAL,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                        }
+                    }
                 }
             } else {
-                mat = Material.matchMaterial(args[0]);
-                item = mat == null ? null : new ItemStack(mat, quantity);
-            }
-
-            if (item != null && item.getType() != Material.AIR) {
-                RewardRarity rarity = RewardRarity.NORMAL;
-                if (args.length == 3) {
-                    rarity = RewardRarity.valueOf(args[2].toUpperCase());
-                }
-                ItemReward ir = (ItemReward) RewardTypes.getRewardType("ITEM", rewards);
-                ir.setRewardItem(item);
-                ir.setRarity(rarity);
-                rewards.addReward(ir);
-
-                Component itemName;
-                if (mat.isItem()) {
-                    itemName = Component.translatable(item.getType().getItemTranslationKey());
-                } else if (mat.isBlock()) {
-                    itemName = Component.translatable(item.getType().getBlockTranslationKey());
-                } else {
-                    itemName = Component.text(mat.toString().toLowerCase().replace("_", " "));
-                }
-
-                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + itemName + " to primary rewards of \"" + minigame.getName(false) + "\" "
-                        + "with a rarity of \"" + rarity.toString().toLowerCase().replace("_", " ") + "\"");
-                return true;
-            } else if (sender instanceof Player player && args[0].equals("SLOT")) {
-                item = player.getInventory().getItemInMainHand();
-                mat = item.getType();
-                RewardRarity rarity = RewardRarity.NORMAL;
-                if (args.length == 2) {
-                    rarity = RewardRarity.valueOf(args[1].toUpperCase());
-                }
-                ItemReward ir = (ItemReward) RewardTypes.getRewardType("ITEM", rewards);
-                ir.setRewardItem(item);
-                ir.setRarity(rarity);
-                rewards.addReward(ir);
-
-                Component itemName;
-                if (mat.isItem()) {
-                    itemName = Component.translatable(item.getType().getItemTranslationKey());
-                } else if (mat.isBlock()) {
-                    itemName = Component.translatable(item.getType().getBlockTranslationKey());
-                } else {
-                    itemName = Component.text(mat.toString().toLowerCase().replace("_", " "));
-                }
-
-                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + itemName + " to primary rewards of \"" + minigame.getName(false) + "\" "
-                        + "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
-                return true;
-            } else if (item != null && item.getType() == Material.AIR) {
-                sender.sendMessage(ChatColor.RED + "Primary rewards for \"" + minigame.getName(false) + "\" cannot be Air!");
-                return true;
-            } else if (money != -1 && plugin.hasEconomy()) {
-                RewardRarity rarity = RewardRarity.NORMAL;
-                if (args.length == 2) {
-                    rarity = RewardRarity.valueOf(args[1].toUpperCase());
-                }
-                MoneyReward mr = (MoneyReward) RewardTypes.getRewardType("MONEY", rewards);
-                mr.setRewardMoney(money);
-                mr.setRarity(rarity);
-                rewards.addReward(mr);
-                sender.sendMessage(ChatColor.GRAY + "Added $" + money + " to primary rewards of \"" + minigame.getName(false) + "\" "
-                        + "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
-                return true;
-            } else if (!plugin.hasEconomy()) {
-                sender.sendMessage(ChatColor.RED + "Vault required to set a money reward! Download from dev.bukkit.org");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REWARD_ERROR_SCHEME);
                 return true;
             }
         }
         return false;
+
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
+        return processRewardCommands(sender, minigame, args, true);
     }
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 3 || (args.length == 2 && args[0].startsWith("$"))) {
-            List<String> ls = new ArrayList<>();
-            for (RewardRarity r : RewardRarity.values()) {
-                ls.add(r.toString());
-            }
+            List<String> ls = Arrays.stream(RewardRarity.values()).map(RewardRarity::toString).toList();
             return MinigameUtils.tabCompleteMatch(ls, args[args.length - 1]);
         }
         return null;

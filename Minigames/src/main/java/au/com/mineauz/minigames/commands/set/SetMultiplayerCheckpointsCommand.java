@@ -52,7 +52,7 @@ public class SetMultiplayerCheckpointsCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame, //set commands always have not null minigame parameter
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             Boolean bool = BooleanUtils.toBooleanObject(args[0]);
 
@@ -75,7 +75,7 @@ public class SetMultiplayerCheckpointsCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;
