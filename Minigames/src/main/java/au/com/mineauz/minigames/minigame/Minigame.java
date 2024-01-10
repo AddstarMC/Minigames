@@ -306,7 +306,11 @@ public class Minigame implements ScriptObject {
     }
 
     public void setStartLocation(Location loc) {
-        startLocations.getFlag().set(0, loc);
+        if (startLocations.getFlag().isEmpty()) {
+            startLocations.getFlag().add(loc);
+        } else {
+            startLocations.getFlag().set(0, loc);
+        }
     }
 
     public void addStartLocation(Location loc) {
