@@ -42,28 +42,10 @@ public class ResourcePackCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        List<String> result = new ArrayList<>();
-        result.add("apply");
-        result.add("addnew");
-        result.add("clear");
-        result.add("remove");
-        result.add("list");
-        String[] res = new String[result.size()];
-        result.toArray(res);
-        return res;
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{
                 "/minigame resourcepack <options>"
         };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You cannot use this command";
     }
 
     @Override

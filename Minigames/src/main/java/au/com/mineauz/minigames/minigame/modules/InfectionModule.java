@@ -202,19 +202,19 @@ public class InfectionModule extends MinigameModule {
             return null;
     }
 
-    public void setSurvivorTeam(String sTeam) {
-        if (sTeam != null) {
-            if (sTeam.equalsIgnoreCase("None")) {
-                this.survivorTeam.setFlag("None");
-            } else if (TeamColor.matchColor(sTeam) == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
-                    TeamColor.matchColor(sTeam) == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
-                    TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(sTeam.toLowerCase()))
-                this.survivorTeam.setFlag(sTeam);
-            else {
-                this.survivorTeam.setFlag(null);
-            }
+    public boolean setSurvivorTeam(@NotNull TeamColor sTeam) {
+        TeamsModule teamsModule = TeamsModule.getMinigameModule(getMinigame());
+
+        if (sTeam == TeamColor.NONE ||
+                sTeam == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                sTeam == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                (teamsModule != null && teamsModule.getTeamsNameMap().containsKey(sTeam.toString().toLowerCase()))) {
+            this.survivorTeam.setFlag(sTeam.toString());
+
+            return true;
         } else {
             this.survivorTeam.setFlag(null);
+            return false;
         }
     }
 

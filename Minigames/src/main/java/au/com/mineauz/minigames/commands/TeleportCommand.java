@@ -42,11 +42,6 @@ public class TeleportCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{
                 "/minigame teleport <Player> <x> <y> <z> [yaw] [pitch]",

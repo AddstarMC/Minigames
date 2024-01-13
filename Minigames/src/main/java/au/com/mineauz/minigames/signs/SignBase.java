@@ -1,10 +1,12 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.events.TakeFlagEvent;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.CTFFlag;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Tag;

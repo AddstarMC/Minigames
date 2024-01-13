@@ -27,7 +27,9 @@ public interface ICommand {
      * but calls the same command.
      * if this returns null, no aliases exists. Only {@link #getName()} is always valid
      */
-    @NotNull String @Nullable [] getAliases();
+    default @NotNull String @Nullable [] getAliases() {
+        return null;
+    }
 
     /**
      * If the command can be called from the console or if it is strictly only callable by a player

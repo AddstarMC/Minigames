@@ -30,11 +30,6 @@ public class ScoreboardCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -42,11 +37,6 @@ public class ScoreboardCommand implements ICommand {
     @Override
     public @NotNull Component getDescription() {
         return "Displays a scoreboard of the desired Minigame, SQL must be enabled!";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
     }
 
     @Override

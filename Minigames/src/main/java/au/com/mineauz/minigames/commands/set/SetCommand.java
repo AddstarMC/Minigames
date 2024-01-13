@@ -4,9 +4,10 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -169,23 +170,18 @@ public class SetCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DESCRIPTION);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_DESCRIPTION);
     }
 
     @Override
     public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_USAGE);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_USAGE);
     }
 
     @Override
@@ -235,16 +231,16 @@ public class SetCommand implements ICommand {
                     if (comd.getPermission() == null || sender.hasPermission(comd.getPermission())) {
                         boolean returnValue = comd.onCommand(sender, minigame, shortArgs);
                         if (!returnValue) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_HEADER);
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_HEADER);
 
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_DESCRIPTION,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_DESCRIPTION,
                                     Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getDescription()));
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_USAGE,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_USAGE,
                                     Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getUsage()));
                             if (comd.getAliases() != null) {
                                 String aliases = String.join("<gray>, </gray>", comd.getAliases());
 
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_ALIASES,
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_ALIASES,
                                         Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), aliases));
                             }
                         }
@@ -252,7 +248,7 @@ public class SetCommand implements ICommand {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTAPLAYER);
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
                 }
                 return true;
             } else if (minigame == null) {

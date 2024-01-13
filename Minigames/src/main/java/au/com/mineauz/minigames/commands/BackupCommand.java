@@ -22,11 +22,6 @@ public class BackupCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -35,11 +30,6 @@ public class BackupCommand implements ICommand {
     public @NotNull Component getDescription() {
         return "Backs up or restores the regen area of a Minigame in case of regeneration failure.\n"
                 + "Note: This is not 100% accurate, some blocks may not return to their original state.";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
     }
 
     @Override

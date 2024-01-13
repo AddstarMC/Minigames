@@ -3,8 +3,8 @@ package au.com.mineauz.minigames;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.sounds.MGSounds;
@@ -19,12 +19,12 @@ public class MinigameTimer {
     private static final Minigames plugin = Minigames.getPlugin();
     private final Minigame minigame;
     private final List<Integer> timeMsg = new ArrayList<>();
-    private int time = 0;
-    private int otime = 0;
+    private long time = 0;
+    private long otime = 0;
     private int taskID = -1;
     private boolean broadcastTime = true;
 
-    public MinigameTimer(Minigame minigame, int time) {
+    public MinigameTimer(Minigame minigame, long time) {
         this.time = time;
         otime = time;
         this.minigame = minigame;

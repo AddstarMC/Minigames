@@ -4,8 +4,12 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,22 +35,11 @@ public class SetStoreCheckpointsCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMinigamesMessage("command.checkpoint.saving.description");
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_STORECHECKPOINT_DESCRIPTION);
     }
-
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> storecheckpoints <true/false>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return MinigameMessageManager.getMinigamesMessage("command.checkpoint.saving.nopermission");
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_STORECHECKPOINT_USAGE);
     }
 
     @Override
@@ -55,22 +48,32 @@ public class SetStoreCheckpointsCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String @Nullable [] args) {
         if (args != null) {
-            boolean bool = Boolean.parseBoolean(args[0]);
-            minigame.setSaveCheckpoint(bool);
-            MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, null, "command.checkpoint.saving.toggle", Boolean.toString(bool), minigame.getName(true));
-            return true;
+            Boolean bool = BooleanUtils.toBooleanObject(args[0]);
+
+            if (bool != null) {
+                minigame.setSaveCheckpoint(bool);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_STORECHECKPOINT_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
+                                MinigameMessageManager.getMgMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
+                return true;
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+            }
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
-        if (args.length == 1)
+        if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
+        }
         return null;
     }
 

@@ -28,11 +28,6 @@ public class DebugCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -40,11 +35,6 @@ public class DebugCommand implements ICommand {
     @Override
     public @NotNull Component getDescription() {
         return "Debugs stuff.";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
     }
 
     @Override

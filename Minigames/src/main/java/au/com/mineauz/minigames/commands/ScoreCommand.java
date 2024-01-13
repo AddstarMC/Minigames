@@ -25,11 +25,6 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -40,21 +35,11 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"get", "set", "add"};
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{"/minigame score get <Player or Team> [Minigame]",
                 "/minigame score set <Player or Team> <NewScore> [Minigame]",
                 "/minigame score add <Player or Team> [ExtraPoints] [Minigame]"
         };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to interact with a Minigames score!";
     }
 
     @Override

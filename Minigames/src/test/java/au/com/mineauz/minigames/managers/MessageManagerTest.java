@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.managers;
 
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;

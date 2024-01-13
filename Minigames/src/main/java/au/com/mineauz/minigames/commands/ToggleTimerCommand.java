@@ -19,11 +19,6 @@ public class ToggleTimerCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -31,11 +26,6 @@ public class ToggleTimerCommand implements ICommand {
     @Override
     public @NotNull Component getDescription() {
         return "Toggles a multiplayer Minigames countdown timer to pause or continue.";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
     }
 
     @Override

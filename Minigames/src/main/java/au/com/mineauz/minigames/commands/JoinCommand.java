@@ -21,11 +21,6 @@ public class JoinCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return false;
     }
@@ -33,11 +28,6 @@ public class JoinCommand implements ICommand {
     @Override
     public @NotNull Component getDescription() {
         return MinigameUtils.getLang("command.join.description");
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
     }
 
     @Override

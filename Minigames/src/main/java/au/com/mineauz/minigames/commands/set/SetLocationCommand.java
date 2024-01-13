@@ -2,9 +2,9 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
@@ -24,23 +24,18 @@ public class SetLocationCommand implements ICommand { //todo i feel like this sh
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LOCATION_DESCRIPTION);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOCATION_DESCRIPTION);
     }
 
     @Override
     public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_LOCATION_USAGE);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOCATION_USAGE);
     }
 
     @Override
@@ -58,11 +53,11 @@ public class SetLocationCommand implements ICommand { //todo i feel like this sh
                 String location = String.join(" ", args);
                 thm.setLocation(location);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_LOCATION_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOCATION_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.unparsed(MinigamePlaceHolderKey.LOCATION.getKey(), location));
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TREASURE_HUNT.getName()));
             }

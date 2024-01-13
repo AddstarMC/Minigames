@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Location;
@@ -93,9 +94,9 @@ public class Team implements ScriptObject {
     }
 
     /**
-     * Gets the teams ChatColor alternative.
+     * Gets the teams TextColor alternative.
      *
-     * @return The ChatColor
+     * @return The TextColor
      */
     public @NotNull NamedTextColor getTextColor() {
         return color.getColor();
@@ -128,8 +129,8 @@ public class Team implements ScriptObject {
      *
      * @return The colored display name or the team color followed by "Team"
      */
-    public String getColoredDisplayName() {
-        return getTextColor() + getDisplayName();
+    public Component getColoredDisplayName() {
+        return Component.text(getDisplayName(), getTextColor());
     }
 
     public Set<Flag<?>> getFlags() {

@@ -3,9 +3,10 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.*;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
@@ -27,17 +28,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SetRewardCommand implements ICommand {
+public class SetRewardCommand implements ICommand { //todo allow commands
     private final static Pattern MONEY_PATTERN = Pattern.compile("\\$-?(\\d+(\\.\\d+)?)");
 
     @Override
     public @NotNull String getName() {
         return "reward";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
     }
 
     @Override
@@ -47,11 +43,11 @@ public class SetRewardCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REWARD_DESCRIPTION);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD_DESCRIPTION);
     }
     @Override
     public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REWARD_USAGE);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD_USAGE);
     }
 
     @Override
@@ -62,7 +58,7 @@ public class SetRewardCommand implements ICommand {
     private static void setItemReward(@NotNull Minigame minigame, @NotNull Rewards rewards, @NotNull CommandSender sender,
                                       @NotNull ItemStack item, @NotNull RewardRarity rarity, boolean isPrimary) {
         if (item.getType().isAir()) {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REWARD_ITEM_ERROR_AIR,
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_AIR,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
             return;
         }
@@ -73,7 +69,7 @@ public class SetRewardCommand implements ICommand {
         rewards.addReward(ir);
 
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
-                isPrimary ? MinigameLangKey.COMMAND_SET_REWARD_ITEM_SUCCESS : MinigameLangKey.COMMAND_SET_REWARD2_ITEM_SUCCESS,
+                isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_ITEM_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_ITEM_SUCCESS,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item.displayName()),
                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
@@ -108,7 +104,7 @@ public class SetRewardCommand implements ICommand {
                                     rarity = RewardRarity.matchRarity(args[1]);
 
                                     if (rarity == null) {
-                                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
+                                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                                         return false;
                                     }
@@ -122,12 +118,12 @@ public class SetRewardCommand implements ICommand {
                                 rewards.addReward(moneyReward);
 
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
-                                        isPrimary ? MinigameLangKey.COMMAND_SET_REWARD_MONEY_SUCCESS : MinigameLangKey.COMMAND_SET_REWARD2_MONEY_SUCCESS,
+                                        isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_MONEY_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_MONEY_SUCCESS,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), economy.format(money)),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.RARITY.getKey(), rarity.toString().toLowerCase().replace("_", " ")));
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                             }
                         } else if (args[0].equals("SLOT")) {
@@ -149,7 +145,7 @@ public class SetRewardCommand implements ICommand {
                                 return true;
 
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTAPLAYER);
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
                             }
                         } else {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.REWARD_ERROR_NOVAULT,
@@ -168,7 +164,7 @@ public class SetRewardCommand implements ICommand {
                                 if (args[1].matches("[0-9]+")) {
                                     quantity = Integer.parseInt(args[1]);
                                 } else {
-                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
 
                                     return false;
@@ -182,7 +178,7 @@ public class SetRewardCommand implements ICommand {
                                 rarity = RewardRarity.matchRarity(args[2]);
 
                                 if (rarity == null) {
-                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
+                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                                     return false;
                                 }
@@ -194,13 +190,13 @@ public class SetRewardCommand implements ICommand {
                             return true;
 
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTMATERIAL,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                         }
                     }
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REWARD_ERROR_SCHEME);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ERROR_SCHEME);
                 return true;
             }
         }

@@ -37,18 +37,8 @@ public class RevertCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{"/minigame revert"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return MinigameUtils.getLang("command.revert.noPermission");
     }
 
     @Override
@@ -64,12 +54,6 @@ public class RevertCommand implements ICommand {
         if (player.isInMinigame()) {
             plugin.getPlayerManager().revertToCheckpoint(player);
         }
-//        else if(plugin.playerManager.hasStoredPlayerCheckpoint(player)){
-//            StoredPlayerCheckpoints spc = plugin.playerManager.getPlayersStoredCheckpoints(player);
-//            if(spc.hasGlobalCheckpoint()){
-//                player.getPlayer().teleport(spc.getGlobalCheckpoint());
-//            }
-//        }
         else {
             player.sendMessage(MinigameUtils.getLang("command.revert.noGlobal"), MinigameMessageType.ERROR);
         }

@@ -27,11 +27,6 @@ public class ToolCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return false;
     }
@@ -39,18 +34,6 @@ public class ToolCommand implements ICommand {
     @Override
     public @NotNull Component getDescription() {
         return "Spawns the Minigame tool for use in setting locations in a Minigame.";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        String[] arr = new String[ToolModes.getToolModes().size() + 4];
-        for (int i = 0; i < arr.length - 4; i++)
-            arr[i] = ToolModes.getToolModes().get(i).getName().toLowerCase();
-        arr[arr.length - 4] = "team";
-        arr[arr.length - 3] = "minigame";
-        arr[arr.length - 2] = "select";
-        arr[arr.length - 1] = "deselect";
-        return arr;
     }
 
     @Override
@@ -62,11 +45,6 @@ public class ToolCommand implements ICommand {
                 "/minigame tool select",
                 "/minigame tool deselect"
         };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to use the Minigame Tool!";
     }
 
     @Override

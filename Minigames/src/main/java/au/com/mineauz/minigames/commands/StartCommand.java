@@ -23,11 +23,6 @@ public class StartCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -38,18 +33,8 @@ public class StartCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{"/minigame start <Minigame>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to start a Minigame";
     }
 
     @Override

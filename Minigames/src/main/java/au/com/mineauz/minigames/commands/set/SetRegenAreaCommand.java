@@ -4,9 +4,10 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -35,23 +36,18 @@ public class SetRegenAreaCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return false;
     }
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REGENAREA_DESCRIPTION);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_DESCRIPTION);
     }
 
     @Override
     public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REGENAREA_USAGE);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_USAGE);
     }
 
     @Override
@@ -81,7 +77,7 @@ public class SetRegenAreaCommand implements ICommand {
         final int MAX_BOOKS_THIS_PAGE = Math.min(NUM_OF_REGIONS, PAGE * REGIONS_PER_PAGE);
 
         TextComponent.Builder listBuilder = Component.text();
-        listBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_REGENAREA_LIST_HEADER,
+        listBuilder.append(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_LIST_HEADER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(PAGE)),
                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(NUM_OF_PAGES))));
 
@@ -162,7 +158,7 @@ public class SetRegenAreaCommand implements ICommand {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_SELECT_POINT,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), "2"));
                             } else {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                             }
                             return true;
@@ -196,7 +192,7 @@ public class SetRegenAreaCommand implements ICommand {
                                             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                                 }
                             } else {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_REGENAREA_ERROR_NOTSELECTED);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REGENAREA_ERROR_NOTSELECTED);
                             }
 
                             return true;
@@ -207,7 +203,7 @@ public class SetRegenAreaCommand implements ICommand {
                             if (args[1].matches("\\d+")) {
                                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, makeList(minigame, Integer.parseInt(args[1])));
                             } else {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTNUMBER,
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                             }
                         }
@@ -229,7 +225,7 @@ public class SetRegenAreaCommand implements ICommand {
                     }
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTAPLAYER);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
                 return false;
             }
 

@@ -83,7 +83,7 @@ public class TeamsModule extends MinigameModule {
      * @param color {@link TeamColor}
      * @return {@link Team}
      */
-    public Team addTeam(TeamColor color) {
+    public @NotNull Team addTeam(@NotNull TeamColor color) {
         return addTeam(color, "");
     }
 
@@ -95,7 +95,7 @@ public class TeamsModule extends MinigameModule {
      * @param name  Team name
      * @return Team
      */
-    public Team addTeam(TeamColor color, String name) {
+    public @NotNull Team addTeam(@NotNull TeamColor color, @Nullable String name) {
         if (!hasTeam(color)) {
             teams.put(color, new Team(color, getMinigame()));
             String teamNameString = color.toString().toLowerCase();
@@ -117,7 +117,7 @@ public class TeamsModule extends MinigameModule {
      * @param color {@link TeamColor}  the TeamColor to set
      * @param team  The new Team
      */
-    public void addTeam(TeamColor color, Team team) {
+    public void addTeam(@NotNull TeamColor color, @NotNull Team team) {
         teams.put(color, team);
         String sbTeam = color.toString().toLowerCase();
         Scoreboard scoreboard = getMinigame().getScoreboardManager();
@@ -138,7 +138,7 @@ public class TeamsModule extends MinigameModule {
      * @param color {@link TeamColor}
      * @return boolean
      */
-    public boolean hasTeam(TeamColor color) {
+    public boolean hasTeam(@NotNull TeamColor color) {
         return teams.containsKey(color);
     }
 
@@ -147,7 +147,7 @@ public class TeamsModule extends MinigameModule {
      *
      * @param color {@link TeamColor}
      */
-    public void removeTeam(TeamColor color) {
+    public void removeTeam(@NotNull TeamColor color) {
         if (hasTeam(color)) {
             teams.remove(color);
             org.bukkit.scoreboard.Team bukkitTeam =

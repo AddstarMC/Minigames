@@ -42,20 +42,10 @@ public class GlobalLoadoutCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{
                 "/minigame globalloadout"
         };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to edit global loadouts!";
     }
 
     @Override

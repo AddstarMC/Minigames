@@ -3,9 +3,13 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,39 +25,18 @@ public class SetTypeCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets a Minigames game type. All types can be seen in the parameter section. (also can be used as an alias of preset).";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_TYPE_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        String[] mgtypes = new String[plugin.getMinigameManager().getMinigameTypes().size() + 1];
-        int inc = 0;
-        for (MinigameType type : MinigameType.values()) {
-            mgtypes[inc] = type.toString();
-            inc++;
-        }
-        return mgtypes;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> type <Type>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set a Minigames type!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_TYPE_USAGE);
     }
 
     @Override
@@ -62,14 +45,18 @@ public class SetTypeCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
             if (MinigameType.hasValue(args[0])) {
-                minigame.setType(MinigameType.valueOf(args[0].toUpperCase()));
-                sender.sendMessage(ChatColor.GRAY + "Minigame type has been set to " + args[0]);
+                MinigameType type = MinigameType.valueOf(args[0].toUpperCase());
+
+                minigame.setType(type);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TYPE_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), type.getName()));
             } else {
-                sender.sendMessage(ChatColor.RED + "Error: Invalid minigame type!");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_TYPE_ERROR_NOTTYPE,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
             return true;
         }
@@ -77,7 +64,7 @@ public class SetTypeCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> types = new ArrayList<>();

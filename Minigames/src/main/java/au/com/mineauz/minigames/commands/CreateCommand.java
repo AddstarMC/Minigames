@@ -23,11 +23,6 @@ public class CreateCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return false;
     }
@@ -41,11 +36,6 @@ public class CreateCommand implements ICommand {
     @Override
     public String[] getUsage() {
         return new String[]{"/minigame create <Minigame> [type]"};
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
     }
 
     @Override

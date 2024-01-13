@@ -36,11 +36,6 @@ public class DisableAllCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{"/minigame disableall [ExcludedMinigame]..."};
     }

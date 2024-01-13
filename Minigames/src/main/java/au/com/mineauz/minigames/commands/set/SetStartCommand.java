@@ -2,13 +2,19 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -25,35 +31,18 @@ public class SetStartCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return false;
     }
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the start point for the Minigame. Adding a player number sets that specific players start point.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_START_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> start [player number]",
-                "/minigame set <Minigame> start <team colour> [player number]",
-                "/minigame set <Minigame> start clear [team colour]"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set a players start point!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_START_USAGE);
     }
 
     @Override
@@ -62,79 +51,153 @@ public class SetStartCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, String @NotNull [] args) {
-        Player player = (Player) sender;
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
 
-        if (args == null) {
-            minigame.setStartLocation(player.getLocation());
-            sender.sendMessage(ChatColor.GRAY + "Starting position has been set for " + minigame.getName(false));
-            return true;
-        } else if (args.length == 1 && args[0].matches("[0-9]+")) {
-            int position = Integer.parseInt(args[0]);
+        if (args != null && args[0].equalsIgnoreCase("clear")) {
+            TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
-            if (position >= 1) {
-                minigame.addStartLocation(player.getLocation(), position);
-                sender.sendMessage(ChatColor.GRAY + "Starting position has been set for player " + args[0]);
-            } else {
-                sender.sendMessage(ChatColor.RED + "Error: Invalid starting position: " + args[0]);
-                return false;
-            }
-            return true;
-        } else if (args.length == 2 && TeamColor.matchColor(args[0]) != null && args[1].matches("[0-9]+")) {
-            int position = Integer.parseInt(args[1]);
-            Team team = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[0]));
-            if (team == null) {
-                sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[0]);
-                return false;
-            }
+            if (teamsModule != null) {
+                if (args.length >= 2) {
+                    TeamColor teamColor = TeamColor.matchColor(args[1]);
 
-            if (position >= 1) {
-                team.addStartLocation(player.getLocation(), position);
-                sender.sendMessage(ChatColor.GRAY + "Starting position for " +
-                        team.getTextColor() + team.getDisplayName() + ChatColor.GRAY + " has been set for position " + position);
-            } else {
-                sender.sendMessage(ChatColor.RED + "Error: Invalid starting position: " + args[1]);
-                return false;
-            }
-            return true;
-        } else if (args[0].equalsIgnoreCase("clear")) {
-            if (args.length >= 2) {
-                //check for team
-                if (TeamColor.matchColor(args[1]) != null) {
-                    Team team = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[1]));
-                    if (team == null) {
-                        sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[1]);
+                    if (teamColor != null) {
+                        Team team = teamsModule.getTeam(TeamColor.matchColor(args[1]));
+
+                        if (team != null) {
+                            team.getStartLocations().clear();
+
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_START_CLEAR_TEAM,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
+                        } else {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                            return false;
+                        }
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                         return false;
                     }
-
-                    team.getStartLocations().clear();
-                    sender.sendMessage(ChatColor.GRAY + "Starting positions for " + team.getTextColor() + team.getDisplayName() + ChatColor.GRAY +
-                            " have been cleared in " + minigame);
                 } else {
-                    sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[1]);
+                    minigame.getStartLocations().clear();
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_START_CLEAR_SINGLE,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                }
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
+                return false;
+            }
+        } else if (sender instanceof Player player) {
+            int number;
+            TeamColor teamColor = null;
+            Location startLocation = player.getLocation();
+            TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+            if (args == null) {
+                number = 1;
+            } else if (args.length == 1) {
+                if (args[0].matches("\\d+")) {
+                    number = Integer.parseInt(args[0]);
+                } else {
+                    if (teamsModule != null) {
+                        teamColor = TeamColor.matchColor(args[0]);
+
+                        if (teamColor != null) {
+                            number = 1;
+                        } else {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                            return false;
+                        }
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
+                        return true;
+                    }
+                }
+            } else if (teamsModule != null) {
+                teamColor = TeamColor.matchColor(args[0]);
+
+                if (teamColor != null) {
+                    if (args[1].matches("\\d+")) {
+                        number = Integer.parseInt(args[1]);
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                        return false;
+                    }
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+
                     return false;
                 }
             } else {
-                minigame.getStartLocations().clear();
-                sender.sendMessage(ChatColor.GRAY + "Starting positions have been cleared in " + minigame);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
+                return true;
             }
 
-            return true;
+            if (number > 0) {
+                if (teamColor == null) {
+                    minigame.addStartLocation(startLocation, number);
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_START_ADD_SINGLE,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(number)));
+                } else {
+                    Team team = teamsModule.getTeam(teamColor);
+
+                    if (team != null) {
+                        team.addStartLocation(startLocation, number);
+
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_START_ADD_TEAM,
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(number)));
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
+                                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamColor.getCompName()));
+                        return false;
+                    }
+                }
+
+            } else { // not valid number
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_RANGE,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), "0"),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(Integer.MAX_VALUE)));
+                return false;
+            }
+        } else {
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
         }
-        return false;
+
+        return true;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
-        List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(minigame).getTeamsNameMap().size() + 1);
-        if (args.length == 1) {
-            TeamsModule.getMinigameModule(minigame).getTeamsNameMap().keySet().forEach(teamName -> teams.add(WordUtils.capitalize(teamName)));
-            teams.add("Clear");
-            return MinigameUtils.tabCompleteMatch(teams, args[0]);
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("clear")) {
-            return MinigameUtils.tabCompleteMatch(teams, args[1]);
+        TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+
+        if (teamsModule != null) {
+            List<String> teams = new ArrayList<>(teamsModule.getTeamsNameMap().size() + 1);
+            for (String t : teamsModule.getTeamsNameMap().keySet()) {
+                teams.add(WordUtils.capitalize(t.replace("_", " ")));
+            }
+            if (args.length == 1) {
+                teams.add("Clear");
+                return MinigameUtils.tabCompleteMatch(teams, args[0]);
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("clear")) {
+                return MinigameUtils.tabCompleteMatch(teams, args[1]);
+            }
+        } else if (args.length == 1) {
+            return MinigameUtils.tabCompleteMatch(List.of("clear"), args[0]);
         }
+
         return null;
     }
 }

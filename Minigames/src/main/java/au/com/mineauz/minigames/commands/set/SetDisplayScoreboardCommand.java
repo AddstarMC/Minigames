@@ -3,9 +3,9 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -40,12 +40,12 @@ public class SetDisplayScoreboardCommand implements ICommand { //todo allow side
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DISPLAYSCOREBOARD_DESCRIPTION);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_DISPLAYSCOREBOARD_DESCRIPTION);
     }
 
     @Override
     public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DISPLAYSCOREBOARD_USAGE);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_DISPLAYSCOREBOARD_USAGE);
     }
 
     @Override
@@ -64,16 +64,16 @@ public class SetDisplayScoreboardCommand implements ICommand { //todo allow side
 
                 if (bool) {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
-                            MinigameLangKey.COMMAND_SET_DISPLAYSCOREBOARD_SUCCESS,
+                            MgCommandLangKey.COMMAND_SET_DISPLAYSCOREBOARD_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
-                            MinigameLangKey.COMMAND_SET_DISPLAYSCOREBOARD_REMOVED,
+                            MgCommandLangKey.COMMAND_SET_DISPLAYSCOREBOARD_REMOVED,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 }
                 return true;
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
         }

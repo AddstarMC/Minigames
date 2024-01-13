@@ -21,11 +21,6 @@ public class DeleteCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -33,11 +28,6 @@ public class DeleteCommand implements ICommand {
     @Override
     public @NotNull Component getDescription() {
         return "Deletes a Minigame from existence. It will be gone forever! (A very long time)";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
     }
 
     @Override

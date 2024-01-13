@@ -2,9 +2,9 @@ package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
-import au.com.mineauz.minigames.managers.language.LangKey;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.audience.Audience;
@@ -145,7 +145,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         return bundle.getString(key.getPath());
     }
 
-    public static void sendClickedCommandMessage(@NotNull Audience target, @NotNull String command, @Nullable String identifier, @NotNull LangKey key,
+    public static void sendClickedCommandMessage(@NotNull Audience target, @NotNull String command,
+                                                 @Nullable String identifier, @NotNull LangKey key,
                                                  @NotNull TagResolver... resolvers) {
         Component init = getPluginPrefix(MinigameMessageType.INFO);
         Component message = getMessage(identifier, key, resolvers).
@@ -153,7 +154,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         target.sendMessage(init.append(message));
     }
 
-    public static void sendMessage(MinigamePlayer mgPlayer, MinigameMessageType type, @Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
+    public static void sendMessage(MinigamePlayer mgPlayer, MinigameMessageType type, @Nullable String identifier,
+                                   @NotNull LangKey key, TagResolver... resolvers) {
         sendMessage(mgPlayer.getPlayer(), type, identifier, key, resolvers);
     }
 
@@ -211,31 +213,37 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         }
     }
 
-    public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @Nullable String identifier, @NotNull LangKey key) {
+    public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
+                                   @Nullable String identifier, @NotNull LangKey key) {
         audience.sendMessage(getPluginPrefix(messageType).append(getMessage(identifier, key)));
     }
 
-    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull MinigameLangKey key) {
+    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull LangKey key) {
         sendMessage(audience, messageType, null, key);
     }
 
-    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
+    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
+                                     @NotNull LangKey key, @NotNull TagResolver... resolvers) {
         sendMessage(audience, messageType, null, key, resolvers);
     }
 
-    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType messageType, @NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
+    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType messageType,
+                                     @NotNull LangKey key, @NotNull TagResolver... resolvers) {
         sendMessage(mgPlayer.getPlayer(), messageType, null, key, resolvers);
     }
 
-    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @NotNull MinigameLangKey key) {
+    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type,
+                                     @NotNull MinigameLangKey key) {
         sendMessage(mgPlayer.getPlayer(), type, null, key);
     }
 
-    public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull Component message) {
+    public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
+                                   @NotNull Component message) {
         audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
 
-    public static void sendMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @NotNull Component message) {
+    public static void sendMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type,
+                                   @NotNull Component message) {
         sendMessage(mgPlayer.getPlayer(), type, message);
     }
 

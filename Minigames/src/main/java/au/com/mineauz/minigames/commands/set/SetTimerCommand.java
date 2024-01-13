@@ -2,14 +2,21 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SetTimerCommand implements ICommand {
 
@@ -19,34 +26,18 @@ public class SetTimerCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the maximum time length (in seconds) for a Minigame. Adding 'm' or 'h' to the end of the time will use " +
-                "minutes or hours instead. The highest score at the end of this time wins.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_TIMER_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> timer <Number>[m|h]", "/minigame set <Minigame> timer useXPBar <true/false>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the Minigames time length!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_TIMER_USAGE);
     }
 
     @Override
@@ -55,38 +46,37 @@ public class SetTimerCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (args[0].matches("[0-9]+[mh]?")) {
-                boolean hours = false;
-                boolean minutes = false;
-                if (args[0].contains("h")) {
-                    hours = true;
-                } else if (args[0].contains("m")) {
-                    minutes = true;
-                }
+            Long millis = MinigameUtils.parsePeriod(args[0]);
 
-                int time = Integer.parseInt(args[0].replace("m", "").replace("h", ""));
-                if (hours) {
-                    time = time * 60 * 60;
-                } else if (minutes) {
-                    time = time * 60;
-                }
-                minigame.setTimer(time);
-                if (time != 0) {
-                    sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been set to " + MinigameUtils.convertTime(time) + ".");
+            if (millis != null) {
+                minigame.setTimer(TimeUnit.MILLISECONDS.toSeconds(millis));
+                if (millis <= 0) {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TIMER_SUCCESS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                 } else {
-                    sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been removed.");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TIMER_REMOVE,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 }
                 return true;
-            } else if (args[0].equalsIgnoreCase("usexpbar") && args.length == 2) {
-                boolean bool = Boolean.parseBoolean(args[1]);
-                minigame.setUseXPBarTimer(bool);
-                if (bool)
-                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the XP bar.");
-                else
-                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will no longer show the timer in the XP bar.");
+            } else if (args[0].equalsIgnoreCase("usexpbar") && args.length >= 2) {
+                Boolean bool = BooleanUtils.toBooleanObject(args[1]);
+                if (bool != null) {
+                    minigame.setUseXPBarTimer(bool);
+                    if (bool) {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TIMER_XPBAR_SUCCESS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TIMER_XPBAR_REMOVE,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                    }
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                }
                 return true;
             }
         }
@@ -94,7 +84,7 @@ public class SetTimerCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         return null;
     }

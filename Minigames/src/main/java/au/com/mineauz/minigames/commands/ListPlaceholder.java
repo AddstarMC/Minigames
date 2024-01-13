@@ -20,11 +20,6 @@ public class ListPlaceholder implements ICommand { //todo needs pages
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }

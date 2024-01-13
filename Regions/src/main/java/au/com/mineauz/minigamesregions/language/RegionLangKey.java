@@ -1,6 +1,6 @@
 package au.com.mineauz.minigamesregions.language;
 
-import au.com.mineauz.minigames.managers.language.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import org.jetbrains.annotations.NotNull;
 
 public enum RegionLangKey implements LangKey {

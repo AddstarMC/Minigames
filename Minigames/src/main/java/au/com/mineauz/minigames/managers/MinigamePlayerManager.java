@@ -5,7 +5,8 @@ import au.com.mineauz.minigames.MultiplayerBets;
 import au.com.mineauz.minigames.commands.QuitCommand;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
@@ -106,10 +107,10 @@ public class MinigamePlayerManager {
 
         //Give them the objective
         if (minigame.getObjective() != null) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.COMMAND_DIVIDER_LARGE);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_DIVIDER_LARGE);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_JOIN_OBJECTIVE,
                     Placeholder.parsed(MinigamePlaceHolderKey.OBJECTIVE.getKey(), minigame.getObjective()));
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.COMMAND_DIVIDER_LARGE);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_DIVIDER_LARGE);
         }
         //Prepare regeneration region for rollback.
         mgManager.addRegenDataToRecorder(minigame);

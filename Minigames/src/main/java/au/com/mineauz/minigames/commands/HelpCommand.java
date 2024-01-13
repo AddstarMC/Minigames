@@ -19,11 +19,6 @@ public class HelpCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -31,11 +26,6 @@ public class HelpCommand implements ICommand {
     @Override
     public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage("command.help.description");
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
     }
 
     @Override

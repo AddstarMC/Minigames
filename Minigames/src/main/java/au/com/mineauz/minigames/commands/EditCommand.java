@@ -21,11 +21,6 @@ public class EditCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return false;
     }
@@ -37,18 +32,8 @@ public class EditCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{"/minigame edit <Minigame>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to use the Minigame edit menu.";
     }
 
     @Override

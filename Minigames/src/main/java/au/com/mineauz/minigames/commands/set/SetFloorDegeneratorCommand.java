@@ -4,9 +4,10 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -41,12 +42,12 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_FLOORDEGEN_DESCRIPTION);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_FLOORDEGEN_DESCRIPTION);
     }
 
     @Override
     public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_FLOORDEGEN_USAGE);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_FLOORDEGEN_USAGE);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
                             mgPlayer.clearSelection();
 
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLOORDEGEN_CREATE,
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_CREATE,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                         } else {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
@@ -95,7 +96,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
                     }
                     case "clear" -> {
                         minigame.removeFloorDegen();
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLOORDEGEN_CLEAR,
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_CLEAR,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                     }
                     case "type" -> {
@@ -108,12 +109,12 @@ public class SetFloorDegeneratorCommand implements ICommand {
                                         minigame.setDegenRandomChance(Integer.parseInt(args[2]));
                                     }
 
-                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLOORDEGEN_TYPE,
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_TYPE,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]),
                                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                                 }
                                 default ->
-                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_FLOORDEGEN_ERROR_NOTYPE);
+                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_ERROR_NOTYPE);
                             }
                         }
                     }
@@ -123,16 +124,16 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
                             if (millis != null) {
                                 minigame.setFloorDegenTime(TimeUnit.MILLISECONDS.toSeconds(millis));
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLOORDEGEN_TIME,
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_TIME,
                                         Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                             } else {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTTIME,
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                             }
                         }
                     }
                     default ->
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             }

@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.LongFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -19,7 +19,7 @@ public class LobbySettingsModule extends MinigameModule {
     private final BooleanFlag canInteractStartWait = new BooleanFlag(true, "canInteractStartWait");
     private final BooleanFlag teleportOnPlayerWait = new BooleanFlag(false, "teleportOnPlayerWait");
     private final BooleanFlag teleportOnStart = new BooleanFlag(true, "teleportOnStart");
-    private final IntegerFlag playerWaitTime = new IntegerFlag(0, "playerWaitTime");
+    private final LongFlag playerWaitTime = new LongFlag(0L, "playerWaitTime");
 
     public LobbySettingsModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
@@ -201,23 +201,23 @@ public class LobbySettingsModule extends MinigameModule {
         };
     }
 
-    public int getPlayerWaitTime() {
+    public long getPlayerWaitTime() {
         return playerWaitTime.getFlag();
     }
 
-    public void setPlayerWaitTime(int time) {
+    public void setPlayerWaitTime(long time) {
         playerWaitTime.setFlag(time);
     }
 
-    public Callback<Integer> getPlayerWaitTimeCallback() {
+    public Callback<Long> getPlayerWaitTimeCallback() {
         return new Callback<>() {
             @Override
-            public Integer getValue() {
+            public Long getValue() {
                 return playerWaitTime.getFlag();
             }
 
             @Override
-            public void setValue(Integer value) {
+            public void setValue(Long value) {
                 playerWaitTime.setFlag(value);
             }
         };

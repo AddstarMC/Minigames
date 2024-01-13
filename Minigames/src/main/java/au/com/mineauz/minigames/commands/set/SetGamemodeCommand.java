@@ -3,9 +3,9 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -36,12 +36,12 @@ public class SetGamemodeCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_GAMEMODE_DESCRIPTION);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_GAMEMODE_DESCRIPTION);
     }
 
     @Override
     public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_GAMEMODE_USAGE);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_GAMEMODE_USAGE);
     }
 
     @Override
@@ -51,6 +51,7 @@ public class SetGamemodeCommand implements ICommand {
 
     private @Nullable GameMode matchGameMode(@NotNull String toMatch) {
         if (toMatch.matches("[0-9]+")) {
+            //the moment, the support gets dropped, we will also drop the support for it.
             return GameMode.getByValue(Integer.parseInt(toMatch));
         } else {
             for (GameMode gameMode : GameMode.values()) {
@@ -73,7 +74,7 @@ public class SetGamemodeCommand implements ICommand {
             if (gameMode != null) {
                 minigame.setDefaultGamemode(gameMode);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_GAMEMODE_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMEMODE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(gameMode.translationKey())));
             }

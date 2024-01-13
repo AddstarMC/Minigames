@@ -46,11 +46,6 @@ public class PlayerCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You don't have permission to view current Minigame players!";
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return "minigame.player";
     }

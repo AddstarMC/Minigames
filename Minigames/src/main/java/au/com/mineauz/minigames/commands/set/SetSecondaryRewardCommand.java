@@ -2,6 +2,8 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import net.kyori.adventure.text.Component;
@@ -33,17 +35,17 @@ public class SetSecondaryRewardCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return """
-                Sets the players secondary reward for completing the Minigame after the first time.This can be one item or a randomly selected item added to the rewards, depending on its defined rarity.\s
-                Possible rarities are: very_common, common, normal, rare and very_rare
-                NOTE: This can only be used on minigames using the standard reward scheme""";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD2_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> reward2 <Item Name> [Quantity] [Rarity]",
-                "/minigame set <Minigame> reward2 $<Money Amount> [Rarity]"
-        };
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD2_USAGE);
+    }
+
+    @Override
+    public @Nullable String getPermission() {
+        return "";
     }
 
     @Override

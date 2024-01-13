@@ -22,11 +22,6 @@ public class StopCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -37,18 +32,8 @@ public class StopCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{"/minigame stop <Minigame>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to stop Global Minigames!";
     }
 
     @Override

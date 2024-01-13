@@ -3,9 +3,10 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -39,12 +40,12 @@ public class SetBlockWhitelistCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_WHITELIST_DESCRIPTION);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_WHITELIST_DESCRIPTION);
     }
 
     @Override
     public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_WHITELIST_USAGE);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_WHITELIST_USAGE);
     }
 
     @Override
@@ -71,11 +72,11 @@ public class SetBlockWhitelistCommand implements ICommand {
                         addedMat = Component.text(WordUtils.capitalize(mat.toString().replace("_", " ").toLowerCase()));
                     }
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_WHITELIST_ADDED,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_ADDED,
                             Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), addedMat),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTMATERIAL,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                 }
             } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
@@ -93,24 +94,24 @@ public class SetBlockWhitelistCommand implements ICommand {
                         removedMat = Component.text(WordUtils.capitalize(mat.toString().replace("_", " ").toLowerCase()));
                     }
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_WHITELIST_REMOVE,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_REMOVE,
                             Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), removedMat),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTMATERIAL,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                 }
             } else if (args[0].equalsIgnoreCase("clear")) {
                 minigame.getRecorderData().getWBBlocks().clear();
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_WHITELIST_CLEAR,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_CLEAR,
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
                                 minigame.getRecorderData().getWhitelistMode() ? MinigameLangKey.CONFIG_WHITELIST : MinigameLangKey.CONFIG_BLACKLIST)),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
             } else if (args[0].equalsIgnoreCase("list")) { //todo set list doesn't feel right
                 String whiteListedBlocks = minigame.getRecorderData().getWBBlocks().stream().map(Material::toString).collect(Collectors.joining("<gray>, </gray>"));
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_WHITELIST_LIST,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_LIST,
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
                                 minigame.getRecorderData().getWhitelistMode() ? MinigameLangKey.CONFIG_WHITELIST : MinigameLangKey.CONFIG_BLACKLIST)),
                         Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), whiteListedBlocks));
@@ -120,12 +121,12 @@ public class SetBlockWhitelistCommand implements ICommand {
                 if (bool != null) {
                     minigame.getRecorderData().setWhitelistMode(bool);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_WHITELIST_MODE,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_MODE,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
                                     bool ? MinigameLangKey.CONFIG_WHITELIST : MinigameLangKey.CONFIG_BLACKLIST)));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             }

@@ -35,11 +35,6 @@ public class DeniedCommandCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"add", "remove", "list"};
-    }
-
-    @Override
     public String[] getUsage() {
         return new String[]{"/minigame deniedcommand add <Command>", "/minigame deniedcommand remove <Command>", "/minigame deniedcommand list"};
     }
@@ -75,7 +70,7 @@ public class DeniedCommandCommand implements ICommand {
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> ls = new ArrayList<>();
-            Collections.addAll(ls, getParameters());
+            Collections.addAll(ls, {"add", "remove", "list"});
             return MinigameUtils.tabCompleteMatch(ls, args[0]);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             return MinigameUtils.tabCompleteMatch(plugin.getPlayerManager().getDeniedCommands(), args[1]);

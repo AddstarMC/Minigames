@@ -14,7 +14,7 @@ public class MenuItemTime extends MenuItemInteger {
         super(name, displayItem, value, min, max);
     }
 
-    public MenuItemTime(Component name, List<Component> description, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
+    public MenuItemTime(Component name, List<Component> description, Material displayItem, Callback<Long> value, Integer min, Integer max) {
         super(name, description, displayItem, value, min, max);
     }
 

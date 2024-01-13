@@ -61,9 +61,9 @@ public class Minigame implements ScriptObject {
     private final LocationFlag lobbyLocation = new LocationFlag(null, "lobbypos");
     private final LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
     private final BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
-    private final IntegerFlag timer = new IntegerFlag(0, "timer");
+    private final LongFlag timer = new LongFlag(0L, "timer");
     private final BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
-    private final IntegerFlag startWaitTime = new IntegerFlag(0, "startWaitTime");
+    private final LongFlag startWaitTime = new LongFlag(0L, "startWaitTime");
     private final BooleanFlag showCompletionTime = new BooleanFlag(false, "showCompletionTime");
     private final BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
     private final BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
@@ -638,11 +638,11 @@ public class Minigame implements ScriptObject {
         sFloorDegen = new FloorDegenerator(floorDegen.getFlag(), this);
     }
 
-    public int getTimer() {
+    public long getTimer() {
         return timer.getFlag();
     }
 
-    public void setTimer(int time) {
+    public void setTimer(long time) {
         timer.setFlag(time);
     }
 
@@ -654,11 +654,11 @@ public class Minigame implements ScriptObject {
         this.useXPBarTimer.setFlag(useXPBarTimer);
     }
 
-    public int getStartWaitTime() {
+    public long getStartWaitTime() {
         return startWaitTime.getFlag();
     }
 
-    public void setStartWaitTime(int startWaitTime) {
+    public void setStartWaitTime(long startWaitTime) {
         this.startWaitTime.setFlag(startWaitTime);
     }
 

@@ -2,9 +2,14 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,22 +35,11 @@ public class SetSpectateCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Enables or disabled spectator fly mode for a Minigame. (Default: false)";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SPECTATOR_DESCRIPTION);
     }
-
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> spectatefly <true/false>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to enable or disable spectator fly mode in a Minigame!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SPECTATOR_USAGE);
     }
 
     @Override
@@ -54,16 +48,23 @@ public class SetSpectateCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
-            boolean bool = Boolean.parseBoolean(args[0]);
-            minigame.setCanSpectateFly(bool);
-            if (bool) {
-                sender.sendMessage(ChatColor.GRAY + "Enabled spectator flying in " + minigame);
-            } else
-                sender.sendMessage(ChatColor.GRAY + "Disabled spectator flying in " + minigame);
-            return true;
+            Boolean bool = BooleanUtils.toBooleanObject(args[0]);
+            if (bool != null) {
+                minigame.setCanSpectateFly(bool);
+
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_SPECTATOR_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
+                                MinigameMessageManager.getMgMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
+
+                return true;
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+            }
         }
         return false;
     }
@@ -71,8 +72,9 @@ public class SetSpectateCommand implements ICommand {
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
-        if (args.length == 1)
+        if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
+        }
         return null;
     }
 

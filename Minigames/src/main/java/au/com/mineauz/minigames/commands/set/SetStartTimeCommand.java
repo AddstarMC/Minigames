@@ -1,14 +1,21 @@
 package au.com.mineauz.minigames.commands.set;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SetStartTimeCommand implements ICommand {
 
@@ -18,34 +25,18 @@ public class SetStartTimeCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
 
     @Override
     public @NotNull Component getDescription() {
-        return "Overrides the default game start timer in the lobby after waiting for players time has expired or maximum players are reached. " +
-                "If time is 0 then the default time is used. (Default: 0)";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_STARTTIME_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> starttime <Time>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to modify the start time of a Minigame!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_STARTTIME_USAGE);
     }
 
     @Override
@@ -54,19 +45,28 @@ public class SetStartTimeCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (args[0].matches("[0-9]+")) {
-                int time = Integer.parseInt(args[0]);
-                minigame.setStartWaitTime(time);
-                if (time != 0) {
-                    sender.sendMessage(ChatColor.GRAY + "Start time has been set to " + time + " seconds for " + minigame);
+            Long millis = MinigameUtils.parsePeriod(args[0]);
+
+            if (millis != null) {
+
+                if (millis > 0) {
+                    minigame.setStartWaitTime(TimeUnit.MILLISECONDS.toSeconds(millis));
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_STARTTIME_SUCCESS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                 } else {
-                    sender.sendMessage(ChatColor.GRAY + "Start time for " + minigame + " has been reset.");
+                    minigame.setStartWaitTime(0L);
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_STARTTIME_RESET,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + args[0] + " is not a valid number!");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
             return true;
         }
@@ -74,7 +74,7 @@ public class SetStartTimeCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         return null;
     }

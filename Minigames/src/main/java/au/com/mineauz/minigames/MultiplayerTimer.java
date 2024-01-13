@@ -2,7 +2,7 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
-import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -16,18 +16,19 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MultiplayerTimer {
     private static final Minigames plugin = Minigames.getPlugin();
-    private final int oLobbyWaitTime;
-    private final int oStartWaitTime;
+    private final long oLobbyWaitTime;
+    private final long oStartWaitTime;
     private final Minigame minigame;
     private final MinigamePlayerManager playerManager = plugin.getPlayerManager();
-    private final List<Integer> timeMsg = new ArrayList<>();
-    private int currentLobbyWaitTime;
-    private int startWaitTime;
+    private final List<Long> timeMsg = new ArrayList<>();
+    private long currentLobbyWaitTime;
+    private long startWaitTime;
     private boolean paused = false;
     private int taskID = -1;
 
@@ -129,7 +130,7 @@ public class MultiplayerTimer {
                 minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
                 plugin.getMinigameManager().sendMinigameMessage(minigame,
                         MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_TIMELEFT,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(minigame.getTimer()))));
+                                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(minigame.getTimer())))));
             }
 
             Bukkit.getScheduler().cancelTask(taskID);
@@ -161,7 +162,7 @@ public class MultiplayerTimer {
         }
     }
 
-    public int getPlayerWaitTimeLeft() {
+    public long getPlayerWaitTimeLeft() {
         return currentLobbyWaitTime;
     }
 

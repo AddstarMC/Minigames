@@ -18,13 +18,8 @@ import java.util.List;
 
 public class LoadoutCommand implements ICommand {
 
-
     public @NotNull String getName() {
         return "loadout";
-    }
-
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
     }
 
     public boolean canBeConsole() {
@@ -41,10 +36,6 @@ public class LoadoutCommand implements ICommand {
 
     public String[] getUsage() {
         return new String[]{"/minigame loadout", "/minigame loadout <LoadoutName>"};
-    }
-
-    public String getPermissionMessage() {
-        return MinigameUtils.getLang("command.loadout.noPermission");
     }
 
     public @Nullable String getPermission() {

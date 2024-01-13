@@ -1,9 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -30,22 +34,12 @@ public class SetSpectatorSpawnCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the start position for spectators";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SPECTATORSPAWN_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> spectatorstart"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You don't have permission to set the spectator start point!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SPECTATORSPAWN_USAGE);
     }
 
     @Override
@@ -54,16 +48,20 @@ public class SetSpectatorSpawnCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             String @NotNull [] args) {
-        Player ply = (Player) sender;
-        minigame.setSpectatorLocation(ply.getLocation());
-        ply.sendMessage(ChatColor.GRAY + "Set the spectator start point to where you are standing");
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
+        if (sender instanceof Player player) {
+            minigame.setSpectatorLocation(player.getLocation());
+            MinigameMessageManager.sendMgMessage(player, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_SPECTATORSPAWN_SUCCESS,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+        } else {
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
+        }
         return true;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         return null;
     }

@@ -2,14 +2,19 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
+import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,22 +40,11 @@ public class SetSurvivorTeamCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Set which team color will represent the Survivor team in an Infection Minigame (Default: blue).";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_DESCRIPTION);
     }
-
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> survivorteam <TeamColor>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the survivor team of an Infection Minigame!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_USAGE);
     }
 
     @Override
@@ -59,41 +53,69 @@ public class SetSurvivorTeamCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String @Nullable [] args) {
+        InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
+
         if (args != null) {
-            if (args[0].equalsIgnoreCase("None")) {
-                InfectionModule.getMinigameModule(minigame).setSurvivorTeam(null);
-                sender.sendMessage(ChatColor.GRAY + "The survivor team of " + minigame + " has been set to none.");
-            } else if (args[0].equalsIgnoreCase("Default")) {
-                InfectionModule.getMinigameModule(minigame).setSurvivorTeam(WordUtils.capitalize(InfectionModule.getMinigameModule(minigame).getDefaultSurvivorTeam().toString().toLowerCase().replace("_", " ")));
-                sender.sendMessage(ChatColor.GRAY + "The survivor team of " + minigame + " has been set to " +
-                        WordUtils.capitalize(InfectionModule.getMinigameModule(minigame).getDefaultSurvivorTeam().toString().toLowerCase().replace("_", " ")));
-            } else {
-                if (TeamColor.matchColor(args[0]) == InfectionModule.getMinigameModule(minigame).getDefaultInfectedTeam() ||
-                        TeamColor.matchColor(args[0]) == InfectionModule.getMinigameModule(minigame).getDefaultSurvivorTeam() ||
-                        TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.matchColor(args[0]))) {
-                    InfectionModule.getMinigameModule(minigame).setSurvivorTeam(args[0]);
-                    sender.sendMessage(ChatColor.GRAY + "The survivor team of " + minigame + " has been set to " + args[0] + ".");
-                } else {
-                    sender.sendMessage(ChatColor.RED + "There is no team for the color " + args[0]);
+            if (infectionModule != null) {
+                TeamColor teamColor = TeamColor.matchColor(args[0]);
+
+                if (args[0].equalsIgnoreCase("Default")) {
+                    teamColor = infectionModule.getDefaultSurvivorTeam();
                 }
+
+                if (teamColor != null) {
+                    TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+
+                    if (teamColor == infectionModule.getDefaultInfectedTeam() ||
+                            teamColor == infectionModule.getDefaultSurvivorTeam() ||
+                            (teamsModule != null && teamsModule.hasTeam(teamColor))) {
+                        infectionModule.setSurvivorTeam(teamColor);
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_SUCCESS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                    }
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                    return false;
+                }
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.INFECTION.getName()));
             }
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> teams = new ArrayList<>();
-            for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                teams.add(t.getColor().toString().toLowerCase());
+            InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
+            if (infectionModule != null) {
+                List<String> teams = new ArrayList<>();
+
+                TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+                if (teamsModule != null) {
+                    for (Team t : teamsModule.getTeams()) {
+                        teams.add(t.getColor().toString().toLowerCase());
+                    }
+                }
+
+                teams.add(TeamColor.NONE.toString());
+                teams.add("default");
+
+                teams.add(WordUtils.capitalize(infectionModule.getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
+                teams.add(WordUtils.capitalize(infectionModule.getDefaultSurvivorTeam().toString().toLowerCase().replace("_", " ")));
+
+                return MinigameUtils.tabCompleteMatch(teams, args[0]);
             }
-            teams.add("none");
-            teams.add("default");
-            teams.add(WordUtils.capitalize(InfectionModule.getMinigameModule(minigame).getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
-            teams.add(WordUtils.capitalize(InfectionModule.getMinigameModule(minigame).getDefaultSurvivorTeam().toString().toLowerCase().replace("_", " ")));
-            return MinigameUtils.tabCompleteMatch(teams, args[0]);
         }
         return null;
     }

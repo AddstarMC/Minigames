@@ -25,11 +25,6 @@ public class BackendCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }
@@ -37,11 +32,6 @@ public class BackendCommand implements ICommand {
     @Override
     public @NotNull Component getDescription() {
         return "Allows access to export and change the backend used by minigames.";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"export", "switch"};
     }
 
     @Override
