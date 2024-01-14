@@ -105,15 +105,6 @@ public class SingleplayerType extends MinigameTypeBase {
 
     @Override
     public void endMinigame(@NotNull List<@NotNull MinigamePlayer> winners, @Nullable List<@Nullable MinigamePlayer> losers, @NotNull Minigame mgm) {
-        /*if(mgm.getBlockRecorder().hasData()){
-            if(!mgm.getPlayers().isEmpty()){
-                for(MinigamePlayer player : winners){
-                    mgm.getBlockRecorder().restoreBlocks(player);
-                    mgm.getBlockRecorder().restoreEntities(player);
-                }
-            }
-        }*/
-
         for (MinigamePlayer player : winners) {
             if (player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))) {
                 player.getStoredPlayerCheckpoints().removeCheckpoint(mgm.getName(false));

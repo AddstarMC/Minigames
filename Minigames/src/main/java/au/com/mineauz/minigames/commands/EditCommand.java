@@ -42,7 +42,7 @@ public class EditCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
                              @NotNull String @Nullable [] args) {
 
         if (args != null) {
@@ -55,11 +55,6 @@ public class EditCommand implements ICommand {
                 }
                 MinigamePlayer player = plugin.getPlayerManager()
                         .getMinigamePlayer((Player) sender);
-                if (player == null) {
-                    plugin.getLogger().warning("Player is null");
-                    Thread.dumpStack();
-                    return false;
-                }
                 mgm.displayMenu(player);
             } else {
                 sender.sendMessage(ChatColor.RED

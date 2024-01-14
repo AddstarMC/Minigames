@@ -89,18 +89,6 @@ public class Rewards {
         items.add(reward);
     }
 
-//    public RewardItem addItem(ItemStack item, RewardRarity rarity){
-//        RewardItem ritem = new RewardItem(item, rarity);
-//        items.add(ritem);
-//        return ritem;
-//    }
-//
-//    public RewardItem addMoney(double money, RewardRarity rarity){
-//        RewardItem ritem = new RewardItem(money, rarity);
-//        items.add(ritem);
-//        return ritem;
-//    }
-
     public void removeReward(RewardType item) {
         items.remove(item);
     }

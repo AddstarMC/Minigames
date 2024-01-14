@@ -40,7 +40,8 @@ public class ListPlaceholder implements ICommand { //todo needs pages
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
+                             @NotNull String @Nullable [] args) {
         Set<String> placeholders = plugin.getPlaceHolderManager().getRegisteredPlaceHolders();
         StringBuilder result = new StringBuilder();
         for (String pHolder : placeholders) {

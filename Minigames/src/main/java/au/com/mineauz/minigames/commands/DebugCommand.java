@@ -133,15 +133,7 @@ public class DebugCommand implements ICommand {
                     plugin.getStartupLog()));
             PasteFile startupExceptionsLog = new PasteFile("startupExceptions.log", new PasteContent(PasteContent.ContentType.TEXT,
                     plugin.getStartupExceptionLog()));
- /*           List<PasteFile> gamesConfigs =  new ArrayList<>();
-            Minigames.getPlugin().getMinigameManager().getAllMinigames().forEach((s, minigame1) -> {
-                PasteContent content = new PasteContent(PasteContent.ContentType.TEXT,
-                      getFile(dataPath.resolve("/minigames/" + s + "/config.yml")));
-                PasteFile file = new PasteFile(s+"-config.yml",content);
-                gamesConfigs.add(file);
-            });*/
             PasteBuilder builder = new PasteBuilder();
-            //gamesConfigs.forEach(builder::addFile);
             builder.addFile(startupLog);
             builder.addFile(startupExceptionsLog);
             try {

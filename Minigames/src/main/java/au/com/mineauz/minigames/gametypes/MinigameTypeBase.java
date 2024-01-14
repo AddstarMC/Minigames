@@ -2,8 +2,8 @@ package au.com.mineauz.minigames.gametypes;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.Listener;
@@ -57,26 +57,4 @@ public abstract class MinigameTypeBase implements Listener {
             player.setRequiredQuit(true);
         }
     }
-
-//    private static void giveRewardItem(MinigamePlayer player, RewardType reward){
-//        if(!player.isInMinigame()){
-//            if(!player.getPlayer().isDead())
-//                player.getPlayer().getInventory().addItem(reward.getItem());
-//            else{
-//                int c = 0;
-//                for(ItemStack i : player.getOfflineMinigamePlayer().getStoredItems()){
-//                    if(i == null){
-//                        player.getOfflineMinigamePlayer().getStoredItems()[c] = reward.getItem();
-//                        break;
-//                    }
-//                    c++; //TODO: Add temp reward item to player instead and give it to them on respawn
-//                }
-//                player.getOfflineMinigamePlayer().savePlayerData();
-//            }
-//        }
-//        else{
-//            player.addTempRewardItem(reward.getItem());
-//        }
-//        player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), MinigameMessageType.WIN);
-//    }
 }

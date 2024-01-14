@@ -12,8 +12,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -119,16 +117,6 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
         }
-    }
-
-    @Override
-    public void onEntityLeftClick(@Nullable MinigamePlayer mgPlayer, @Nullable Minigame minigame, @Nullable Team team, @Nullable EntityDamageByEntityEvent event) {
-
-    }
-
-    @Override
-    public void onEntityRightClick(@Nullable MinigamePlayer mgPlayer, @Nullable Minigame minigame, @Nullable Team team, @Nullable PlayerInteractEntityEvent event) {
-
     }
 
     @Override

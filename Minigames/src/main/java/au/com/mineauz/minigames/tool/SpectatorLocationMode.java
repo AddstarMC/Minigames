@@ -8,8 +8,6 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,16 +49,6 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
                              @Nullable Team team, @NotNull PlayerInteractEvent event) {
         minigame.setSpectatorLocation(mgPlayer.getLocation());
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SET_SPECTATORLOCATION);
-    }
-
-    @Override
-    public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
-
-    }
-
-    @Override
-    public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
-
     }
 
     @Override

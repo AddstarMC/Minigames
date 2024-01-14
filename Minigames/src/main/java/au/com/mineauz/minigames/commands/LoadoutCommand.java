@@ -30,10 +30,6 @@ public class LoadoutCommand implements ICommand {
         return MinigameUtils.getLang("command.loadout.description");
     }
 
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
     public String[] getUsage() {
         return new String[]{"/minigame loadout", "/minigame loadout <LoadoutName>"};
     }

@@ -5,10 +5,10 @@ import au.com.mineauz.minigames.MultiplayerBets;
 import au.com.mineauz.minigames.commands.QuitCommand;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -1066,11 +1066,11 @@ public class MinigamePlayerManager {
         }, delay);
     }
 
-    public List<String> getDeniedCommands() {
+    public @NotNull List<@NotNull String> getDeniedCommands() {
         return deniedCommands;
     }
 
-    public void setDeniedCommands(List<String> deniedCommands) {
+    public void setDeniedCommands(@NotNull List<@NotNull String> deniedCommands) {
         this.deniedCommands = deniedCommands;
     }
 
