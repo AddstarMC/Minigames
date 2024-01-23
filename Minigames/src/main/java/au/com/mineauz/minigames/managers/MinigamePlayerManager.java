@@ -511,8 +511,8 @@ public class MinigamePlayerManager {
                 }
                 mgPlayer.getPlayer().setFallDistance(0);
                 mgPlayer.getPlayer().setNoDamageTicks(60);
-                final Player fplayer = player.getPlayer();
-                for (PotionEffect potion : player.getPlayer().getActivePotionEffects()) {
+                final Player fplayer = mgPlayer.getPlayer();
+                for (PotionEffect potion : mgPlayer.getPlayer().getActivePotionEffects()) {
                     mgPlayer.getPlayer().removePotionEffect(potion.getType());
                 }
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.setFireTicks(0));
@@ -532,7 +532,7 @@ public class MinigamePlayerManager {
                 if (loc != null) {
                     mgPlayer.teleport(loc);
                 } else {
-                    Minigames.log.warning("Minigame " + minigame.getName(true) + " has no end location set! (Player: " + player.getName() + ")");
+                    Minigames.getCmpnntLogger().warn("Minigame " + minigame.getName(true) + " has no end location set! (Player: " + mgPlayer.getName() + ")");
                 }
 
                 mgPlayer.setStartPos(null);
@@ -543,8 +543,11 @@ public class MinigamePlayerManager {
                     pl.getPlayer().showPlayer(plugin, mgPlayer.getPlayer());
                 }
 
-                mgPlayer.sendMessage(MessageManager.getMinigamesMessage("player.spectate.quit.plyMsg", minigame.getName(true)), MinigameMessageType.ERROR);
-                mgManager.sendMinigameMessage(minigame, MessageManager.getMinigamesMessage("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), MinigameMessageType.ERROR, player);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_SPECTATE_QUIT_PLAYERMSG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
+                mgManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_SPECTATE_QUIT_MINIGAMEMSG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), MinigameMessageType.ERROR, mgPlayer);
             } else {
                 if (mgPlayer.getEndTime() == 0)
                     mgPlayer.setEndTime(System.currentTimeMillis());

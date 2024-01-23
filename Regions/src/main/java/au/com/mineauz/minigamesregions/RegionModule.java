@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -32,6 +33,10 @@ public class RegionModule extends MinigameModule {
 
     public RegionModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
+    }
+
+    public static @Nullable RegionModule getMinigameModule(@NotNull Minigame mgm) {
+        return ((RegionModule) mgm.getModule(getFactory().getName()));
     }
 
     public static @NotNull ModuleFactory getFactory() {

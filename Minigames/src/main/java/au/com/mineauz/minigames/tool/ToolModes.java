@@ -11,7 +11,7 @@ public class ToolModes {
     static {
         addToolMode(new StartLocationMode());
         addToolMode(new SpectatorLocationMode());
-        addToolMode(new QuitPositionMode());
+        addToolMode(new QuitLocationMode());
         addToolMode(new EndLocationMode());
         addToolMode(new LobbyLocationMode());
         addToolMode(new RegenAreaMode());

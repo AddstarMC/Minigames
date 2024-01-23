@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class QuitPositionMode implements ToolMode {
+public class QuitLocationMode implements ToolMode {
 
     @Override
     public String getName() {

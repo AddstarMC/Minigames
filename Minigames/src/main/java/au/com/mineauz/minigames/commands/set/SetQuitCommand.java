@@ -55,7 +55,8 @@ public class SetQuitCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

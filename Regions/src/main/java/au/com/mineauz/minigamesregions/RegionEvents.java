@@ -227,7 +227,7 @@ public class RegionEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void playersEnded(EndedMinigameEvent event) {
         if (RegionModule.getMinigameModule(event.getMinigame()) == null) {
-            Minigames.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
+            MinigameMessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
             return;
         }
         for (Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()) {

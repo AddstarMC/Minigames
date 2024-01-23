@@ -53,8 +53,8 @@ public class LobbyLocationMode implements ToolMode {
 
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        if (minigame.getLobbyPosition() != null) {
-            mgPlayer.getPlayer().sendBlockChange(minigame.getLobbyPosition(), Material.SKELETON_SKULL.createBlockData());
+        if (minigame.getLobbyLocation() != null) {
+            mgPlayer.getPlayer().sendBlockChange(minigame.getLobbyLocation(), Material.SKELETON_SKULL.createBlockData());
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_LOBBYLOCATION);
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOLOBBYLOCATION);
@@ -63,9 +63,9 @@ public class LobbyLocationMode implements ToolMode {
 
     @Override
     public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        if (minigame.getLobbyPosition() != null) {
-            mgPlayer.getPlayer().sendBlockChange(minigame.getLobbyPosition(),
-                    minigame.getLobbyPosition().getBlock().getBlockData());
+        if (minigame.getLobbyLocation() != null) {
+            mgPlayer.getPlayer().sendBlockChange(minigame.getLobbyLocation(),
+                    minigame.getLobbyLocation().getBlock().getBlockData());
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_DESELECTED_LOBBYLOCATION);
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOLOBBYLOCATION);

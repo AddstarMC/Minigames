@@ -29,9 +29,6 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
-/**
- *
- */
 public class RecorderData implements Listener {
     // list of blocks that need another block to not break
     private static final ArrayList<Material> supportedMats = new ArrayList<>();

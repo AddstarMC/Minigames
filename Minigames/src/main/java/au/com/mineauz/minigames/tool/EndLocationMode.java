@@ -23,7 +23,7 @@ public class EndLocationMode implements ToolMode {
 
     @Override
     public Component getDisplayName() {
-        return "End Position";
+        return "End Location";
     }
 
     @Override
@@ -47,14 +47,14 @@ public class EndLocationMode implements ToolMode {
     @Override
     public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
                              @Nullable Team team, @NotNull PlayerInteractEvent event) {
-        minigame.setEndPosition(mgPlayer.getLocation());
+        minigame.setEndLocation(mgPlayer.getLocation());
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SET_ENDLOCATION);
     }
 
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        if (minigame.getEndPosition() != null) {
-            mgPlayer.getPlayer().sendBlockChange(minigame.getEndPosition(),
+        if (minigame.getEndLocation() != null) {
+            mgPlayer.getPlayer().sendBlockChange(minigame.getEndLocation(),
                     Material.SKELETON_SKULL.createBlockData());
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_ENDLOCATION);
         } else {
@@ -64,9 +64,9 @@ public class EndLocationMode implements ToolMode {
 
     @Override
     public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        if (minigame.getEndPosition() != null) {
-            mgPlayer.getPlayer().sendBlockChange(minigame.getEndPosition(),
-                    minigame.getEndPosition().getBlock().getBlockData());
+        if (minigame.getEndLocation() != null) {
+            mgPlayer.getPlayer().sendBlockChange(minigame.getEndLocation(),
+                    minigame.getEndLocation().getBlock().getBlockData());
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_DESELECTED_ENDLOCATION);
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOENDLOCATION);
