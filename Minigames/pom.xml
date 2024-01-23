@@ -75,9 +75,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.MockBukkit</groupId>
-            <artifactId>MockBukkit</artifactId>
-            <version>v3.4.3</version>
+            <groupId>com.github.seeseemelk</groupId>
+            <artifactId>MockBukkit-v1.20</artifactId>
+            <version>3.9.0</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
