@@ -1,3 +1,5 @@
+# This branch prematurely merges paper + Devfeuer, because the lang changes profit from a fix over there
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ebc703ec975419ebe693158241259cd)](https://app.codacy.com/app/Narimm/Minigames?utm_source=github.com&utm_medium=referral&utm_content=AddstarMC/Minigames&utm_campaign=Badge_Grade_Settings)
 [![Stories in Ready](https://badge.waffle.io/AddstarMC/Minigames.png?label=ready&title=Ready)](https://waffle.io/AddstarMC/Minigames?utm_source=badge)
  
