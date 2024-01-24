@@ -8,8 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class DeniedCommandCommand implements ICommand {
@@ -69,9 +67,7 @@ public class DeniedCommandCommand implements ICommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> ls = new ArrayList<>();
-            Collections.addAll(ls, {"add", "remove", "list"});
-            return MinigameUtils.tabCompleteMatch(ls, args[0]);
+            return MinigameUtils.tabCompleteMatch(List.of("add", "remove", "list"), args[0]);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             return MinigameUtils.tabCompleteMatch(plugin.getPlayerManager().getDeniedCommands(), args[1]);
         }

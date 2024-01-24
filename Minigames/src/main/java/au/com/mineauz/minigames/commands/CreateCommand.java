@@ -4,8 +4,11 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,13 +32,12 @@ public class CreateCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Creates a Minigame using the specified name. Optionally, adding the type at the end will " +
-                "set the type of minigame straight up. (Type defaults to SINGLEPLAYER)";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_CREATE_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame create <Minigame> [type]"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_CREATE_USAGE);
     }
 
     @Override
@@ -44,7 +46,7 @@ public class CreateCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame, @NotNull String @Nullable [] args) {
         if (args != null) {
             Player player = (Player) sender;
             String mgmName = args[0];
@@ -52,16 +54,21 @@ public class CreateCommand implements ICommand {
                 throw new CommandException("Name is not valid for use in a Config.");
             }
             if (!plugin.getMinigameManager().hasMinigame(mgmName)) {
-                MinigameType type = MinigameType.SINGLEPLAYER;
+                MinigameType type;
                 if (args.length >= 2) {
                     if (MinigameType.hasValue(args[1].toUpperCase())) {
                         type = MinigameType.valueOf(args[1].toUpperCase());
                     } else {
-                        MinigameMessageManager.sendMessage(player, MinigameMessageType.ERROR, null, "command.create.noName", args[1]);
+                        MinigameMessageManager.sendMgMessage(player, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTYPE,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                        return false;
                     }
+                } else {
+                    type = MinigameType.SINGLEPLAYER;
                 }
                 Minigame mgm = new Minigame(mgmName, type, player.getLocation());
-                MinigameMessageManager.sendMessage(player, MinigameMessageType.INFO, null, "command.create.success", args[0]);
+                MinigameMessageManager.sendMgMessage(player, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_CREATE_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
                 List<String> mgs;
                 if (plugin.getConfig().contains("minigames")) {
                     mgs = plugin.getConfig().getStringList("minigames");
@@ -75,7 +82,7 @@ public class CreateCommand implements ICommand {
                 mgm.saveMinigame();
                 plugin.getMinigameManager().addMinigame(mgm);
             } else {
-                MinigameMessageManager.sendMessage(sender, MinigameMessageType.ERROR, null, "command.create.nameexists");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_CREATE_ERROR_EXISTS);
             }
             return true;
         }
@@ -83,7 +90,7 @@ public class CreateCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @Nullable Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 2) {
             List<String> types = new ArrayList<>(MinigameType.values().length);

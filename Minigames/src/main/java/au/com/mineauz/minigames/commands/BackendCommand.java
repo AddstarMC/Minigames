@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.backend.ExportNotifier;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -31,12 +33,15 @@ public class BackendCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Allows access to export and change the backend used by minigames.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_BACKEND_DESCRIPTION);
     }
 
     @Override
     public Component getUsage() {
-        return new String[]{"/minigame backend export <type>", "/minigame backend switch <type>"};
+        return new String[]{
+                "/minigame backend export <type>",
+                "/minigame backend switch <type>"
+        };
     }
 
     @Override
@@ -61,7 +66,7 @@ public class BackendCommand implements ICommand {
                 Futures.addCallback(future, new FutureCallback<>() {
                     @Override
                     public void onFailure(@NotNull Throwable t) {
-                        sender.sendMessage(ChatColor.RED + "An internal error occurred while exporting.");
+                        sender.sendMessage(ChatColor.RED + "An internal error occurred while exporting." + t.getMessage());
                     }
 
                     @Override
@@ -91,8 +96,6 @@ public class BackendCommand implements ICommand {
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
             }
-        } else {
-            sender.sendMessage(ChatColor.RED + "Unknown option " + args[0]);
         }
 
         return true;

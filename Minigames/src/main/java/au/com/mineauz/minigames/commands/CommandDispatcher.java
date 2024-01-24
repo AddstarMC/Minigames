@@ -11,36 +11,13 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 public class CommandDispatcher implements CommandExecutor, TabCompleter {
     private static final Map<String, ICommand> commands = new HashMap<>();
     private static final Minigames plugin = Minigames.getPlugin();
-    private static BufferedWriter cmdFile;
 
     static {
-        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
-            try {
-                cmdFile = new BufferedWriter(new FileWriter(plugin.getDataFolder() + "/cmds.txt"));
-                cmdFile.write("{| class=\"wikitable\"");
-                cmdFile.newLine();
-                cmdFile.write("! Command");
-                cmdFile.newLine();
-                cmdFile.write("! Syntax");
-                cmdFile.newLine();
-                cmdFile.write("! Description");
-                cmdFile.newLine();
-                cmdFile.write("! Permission");
-                cmdFile.newLine();
-                cmdFile.write("! Alias");
-                cmdFile.newLine();
-            } catch (IOException e) {
-                Minigames.getCmpnntLogger().warn("Couldn't output cmds to file!", e);
-            }
-        }
         registerCommand(new CreateCommand());
         registerCommand(new SetCommand());
         registerCommand(new JoinCommand());
@@ -75,57 +52,10 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new BackendCommand());
         registerCommand(new InfoCommand());
         registerCommand(new ResourcePackCommand());
-
-        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
-            try {
-                cmdFile.write("|}");
-                cmdFile.close();
-            } catch (IOException e) {
-                Minigames.getCmpnntLogger().warn("Couldn't save cmds file!", e);
-            }
-        }
     }
 
     public static void registerCommand(ICommand command) {
         commands.put(command.getName(), command);
-
-        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
-            try {
-                cmdFile.write("|-");
-                cmdFile.newLine();
-                cmdFile.write("| '''" + command.getName() + "'''");
-                cmdFile.newLine();
-                if (command.getUsage() != null) {
-                    cmdFile.write("| " + command.getUsage());
-                } else {
-                    cmdFile.write("| N/A");
-                }
-                cmdFile.newLine();
-                command.getDescription();
-                cmdFile.write("| " + command.getDescription());
-                cmdFile.newLine();
-                if (command.getPermission() != null)
-                    cmdFile.write("| " + command.getPermission());
-                else
-                    cmdFile.write("| N/A");
-                cmdFile.newLine();
-                if (command.getAliases() != null) {
-                    int count = 0;
-                    cmdFile.write("| ");
-                    for (String alias : command.getAliases()) {
-                        cmdFile.write(alias);
-                        count++;
-                        if (count != command.getAliases().length) {
-                            cmdFile.write("\n\n");
-                        }
-                    }
-                } else
-                    cmdFile.write("| N/A");
-                cmdFile.newLine();
-            } catch (IOException e) {
-                //Failed to write
-            }
-        }
     }
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
@@ -182,7 +112,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
             }
         } else {
             sender.sendMessage(ChatColor.GREEN + "Minigames");
-            sender.sendMessage(ChatColor.GRAY + "By: " + plugin.getDescription().getAuthors().get(0));
+            sender.sendMessage(ChatColor.GRAY + "By: " + plugin.getDescription().getAuthors());
             sender.sendMessage(ChatColor.GRAY + "Version: " + plugin.getDescription().getVersion());
             sender.sendMessage(ChatColor.GRAY + "Type /minigame help for help");
             return true;
@@ -205,11 +135,9 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
             }
 
             if (comd != null) {
-                if (sender instanceof Player) { // todo ok, but why? let the commands test if a player was needed.
-                    if (args.length > 1) {
-                        List<String> l = comd.onTabComplete(sender, null, shortArgs);
-                        return Objects.requireNonNullElseGet(l, () -> List.of(""));
-                    }
+                if (args.length > 1) {
+                    List<String> l = comd.onTabComplete(sender, null, shortArgs);
+                    return Objects.requireNonNullElseGet(l, () -> List.of(""));
                 }
             } else {
                 List<String> ls = new ArrayList<>(commands.keySet());

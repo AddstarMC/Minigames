@@ -327,7 +327,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             if (!thm.isTreasureFound()) {
                 MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_TREASUREHUNT_DESPAWN,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(true)),
-                                Placeholder.component(MinigamePlaceHolderKey.LOCATION.getKey(), MinigameMessageManager.formatBlockPostion(old))),
+                                Placeholder.component(MinigamePlaceHolderKey.LOCATION.getKey(), MinigameMessageManager.formatBlockLocation(old))),
                         mgm, "minigame.treasure.announce");
             }
             thm.setTreasureFound(false);

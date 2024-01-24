@@ -121,7 +121,7 @@ public class Minigame implements ScriptObject {
     private MultiplayerBets mpBets = null;
     private boolean playersAtStart = false;
 
-    public Minigame(String name, MinigameType type, Location start) {
+    public Minigame(@NotNull String name, @NotNull MinigameType type, @NotNull Location start) {
         this.name = name;
         setup(type, start);
     }
