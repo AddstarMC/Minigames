@@ -314,11 +314,11 @@ public class MinigameManager {
             type = MinigameMessageType.INFO;
         }
         finalMessage += message;
-        final List<MinigamePlayer> sendto = new ArrayList<>();
+        final Set<MinigamePlayer> sendto = new HashSet<>();
         sendto.addAll(minigame.getPlayers());
         sendto.addAll(minigame.getSpectators());
         if (exclude != null) {
-            sendto.removeAll(exclude);
+            exclude.forEach(sendto::remove);
         }
         for (final MinigamePlayer pl : sendto) {
             pl.sendMessage(finalMessage, type);
