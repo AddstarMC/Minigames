@@ -12,7 +12,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -51,10 +50,9 @@ public class SetRegenAreaCommand implements ICommand {
     @Override
     public String[] getUsage() {
         return new String[]{
-                "/minigame set <Minigame> regenarea select <1/2>",
                 "/minigame set <Minigame> regenarea create <name>",
                 "/minigame set <Minigame> regenarea list <page>",
-                "/minigame set <Minigame> regenarea delete <name>" };
+                "/minigame set <Minigame> regenarea remove <name>"};
     }
 
     @Override
@@ -138,25 +136,6 @@ public class SetRegenAreaCommand implements ICommand {
 
                 } else if (args.length == 2) {
                     switch (args[0].toLowerCase()) {
-                        case "select" -> {
-                            Location placerLoc = mgPlayer.getLocation();
-                            placerLoc.subtract(0, 1, 0);
-
-                            if (args[1].equals("1")) {
-                                Location p2 = mgPlayer.getSelectionPoints()[1];
-                                mgPlayer.clearSelection();
-                                mgPlayer.setSelection(placerLoc, p2);
-
-                                mgPlayer.sendInfoMessage(Component.text("Point 1 selected", NamedTextColor.GRAY));
-                            } else {
-                                Location p2 = mgPlayer.getSelectionPoints()[0];
-                                mgPlayer.clearSelection();
-                                mgPlayer.setSelection(p2, placerLoc);
-
-                                mgPlayer.sendInfoMessage(Component.text("Point 2 selected", NamedTextColor.GRAY));
-                            }
-                            return true;
-                        }
                         case "create" -> {
                             if (mgPlayer.hasSelection()) {
                                 String name = args[1];
@@ -189,7 +168,7 @@ public class SetRegenAreaCommand implements ICommand {
                                 mgPlayer.sendMessage(Component.text(args[1] + "Is not a valid number!"), MinigameMessageType.ERROR);
                             }
                         }
-                        case "delete" -> {
+                        case "remove" -> {
                             if (minigame.removeRegenRegion(args[1])) {
                                 mgPlayer.sendInfoMessage(Component.text("Removed the regen region named " + args[1] + " from " + minigame.getName(false), NamedTextColor.GRAY));
                             } else {
@@ -215,17 +194,13 @@ public class SetRegenAreaCommand implements ICommand {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();
-            tab.add("select");
             tab.add("create");
             tab.add("list");
-            tab.add("delete");
+            tab.add("remove");
             return MinigameUtils.tabCompleteMatch(tab, args[0]);
         } else if (args.length == 2) {
             List<String> tab = new ArrayList<>();
-            if (args[0].equalsIgnoreCase("select")) {
-                tab.add("1");
-                tab.add("2");
-            } else if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("delete")) {
+            if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("remove")) {
                 for (MgRegion region : minigame.getRegenRegions()) {
                     tab.add(region.getName());
                 }

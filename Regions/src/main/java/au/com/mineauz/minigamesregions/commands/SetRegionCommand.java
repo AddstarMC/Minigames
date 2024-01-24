@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,12 +33,12 @@ public class SetRegionCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Creates, edits and deletes Minigame regions";
+        return "Creates, edits and removes Minigame regions";
     }
 
     @Override
     public String[] getParameters() {
-        return new String[]{"select", "create", "delete", "modify"};
+        return new String[]{"select", "create", "remove", "modify"};
     }
 
     @Override
@@ -47,7 +46,7 @@ public class SetRegionCommand implements ICommand {
         return new String[]{
                 "/minigame set <Minigame> region select <1/2>",
                 "/minigame set <Minigame> region create <name>",
-                "/minigame set <Minigame> region delete <name>",
+                "/minigame set <Minigame> region remove <name>",
                 "/minigame set <Minigame> region modify"
         };
     }
@@ -69,25 +68,7 @@ public class SetRegionCommand implements ICommand {
             MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             RegionModule rmod = RegionModule.getMinigameModule(minigame);
             if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("select")) {
-                    Location ploc = ply.getLocation();
-                    ploc.setY(ploc.getY() - 1);
-
-                    if (args[1].equals("1")) {
-                        Location p2 = ply.getSelectionPoints()[1];
-                        ply.clearSelection();
-                        ply.setSelection(ploc, p2);
-
-                        ply.sendInfoMessage(ChatColor.GRAY + "Point 1 selected");
-                    } else {
-                        Location p2 = ply.getSelectionPoints()[0];
-                        ply.clearSelection();
-                        ply.setSelection(p2, ploc);
-
-                        ply.sendInfoMessage(ChatColor.GRAY + "Point 2 selected");
-                    }
-                    return true;
-                } else if (args[0].equalsIgnoreCase("create")) {
+                if (args[0].equalsIgnoreCase("create")) {
                     if (ply.hasSelection()) {
                         String name = args[1];
                         rmod.addRegion(name, new Region(name, minigame, ply.getSelectionPoints()[0], ply.getSelectionPoints()[1]));
@@ -98,7 +79,7 @@ public class SetRegionCommand implements ICommand {
                         ply.sendInfoMessage(ChatColor.RED + "You have not made a selection!");
                     }
                     return true;
-                } else if (args[0].equalsIgnoreCase("delete")) {
+                } else if (args[0].equalsIgnoreCase("remove")) {
                     if (rmod.hasRegion(args[1])) {
                         rmod.removeRegion(args[1]);
                         ply.sendInfoMessage(ChatColor.GRAY + "Removed the region named " + args[1] + " from " + minigame.getName(false));
@@ -124,17 +105,13 @@ public class SetRegionCommand implements ICommand {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();
-            tab.add("select");
             tab.add("create");
             tab.add("modify");
-            tab.add("delete");
+            tab.add("remove");
             return MinigameUtils.tabCompleteMatch(tab, args[0]);
         } else if (args.length == 2) {
             List<String> tab = new ArrayList<>();
-            if (args[0].equalsIgnoreCase("select")) {
-                tab.add("1");
-                tab.add("2");
-            } else if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("delete")) {
+            if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("remove")) {
                 RegionModule rmod = RegionModule.getMinigameModule(minigame);
                 for (Region reg : rmod.getRegions()) {
                     tab.add(reg.getName());

@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -43,7 +42,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return new String[]{"1", "2", "create", "clear", "type", "time"};
+        return new String[]{"create", "remove", "type", "time"};
     }
 
     @Override
@@ -68,23 +67,8 @@ public class SetFloorDegeneratorCommand implements ICommand {
         if (args != null) {
             if (sender instanceof Player player){
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
-                Location placerLoc = mgPlayer.getLocation();
 
                 switch (args[0].toLowerCase()){
-                    case "1" -> {
-                        Location p2 = mgPlayer.getSelectionPoints()[1];
-                        mgPlayer.clearSelection();
-                        mgPlayer.setSelection(placerLoc, p2);
-
-                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator point 1  for " + minigame +"selected" , NamedTextColor.GRAY));
-                    }
-                    case "2" -> {
-                        Location p2 = mgPlayer.getSelectionPoints()[0];
-                        mgPlayer.clearSelection();
-                        mgPlayer.setSelection(p2, placerLoc);
-
-                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator point 2  for " + minigame +"selected", NamedTextColor.GRAY));
-                    }
                     case "create" -> {
                         if (mgPlayer.hasSelection()) {
                             minigame.setFloorDegen(new MgRegion("degen", mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
@@ -96,7 +80,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
                             mgPlayer.sendInfoMessage(Component.text("You have not made a selection!", NamedTextColor.RED));
                         }
                     }
-                    case "clear" -> {
+                    case "remove" -> {
                         minigame.removeFloorDegen();
                         mgPlayer.sendInfoMessage(Component.text("Floor degenerator corners have been removed for " + minigame, NamedTextColor.GRAY ));
                     }
@@ -138,7 +122,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("1", "2", "create", "clear", "type", "time"), args[0]);
+            return MinigameUtils.tabCompleteMatch(List.of("create", "remove", "type", "time"), args[0]);
         } else if (args[0].equalsIgnoreCase("type")) {
             return MinigameUtils.tabCompleteMatch(List.of("random", "inward", "circle"), args[1]);
         }
