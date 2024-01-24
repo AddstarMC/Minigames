@@ -34,6 +34,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -630,13 +631,14 @@ public class Events implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void clickMenu(InventoryClickEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getWhoClicked());
-        if (ply.isInMenu()) {
-            if (event.getRawSlot() < ply.getMenu().getSize()) {
-                if (!ply.getMenu().getAllowModify() || ply.getMenu().hasMenuItem(event.getRawSlot()))
+        MinigamePlayer mgPlayer = pdata.getMinigamePlayer(((Player) event.getWhoClicked()));
+        if (mgPlayer.isInMenu()) {
+            if (event.getRawSlot() < mgPlayer.getMenu().getSize()) {
+                if (!mgPlayer.getMenu().getAllowModify() || mgPlayer.getMenu().hasMenuItem(event.getRawSlot())) {
                     event.setCancelled(true);
+                }
 
-                MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
+                MenuItem item = mgPlayer.getMenu().getClicked(event.getRawSlot());
                 if (item != null) {
                     ItemStack disItem = null;
                     switch (event.getClick()) {
@@ -654,12 +656,38 @@ public class Events implements Listener {
 
                     event.setCurrentItem(disItem);
                 }
+                /*
+                 * Cancel special cases, where event.getRawSlot() is not in the Menu inventory,
+                 *  but the event modifies it anyway
+                 */
+            } else if (!mgPlayer.getMenu().getAllowModify()) {
+                Inventory topInv = event.getView().getTopInventory();
+                switch (event.getAction()) {
+                    case NOTHING, DROP_ALL_CURSOR, DROP_ONE_CURSOR, UNKNOWN -> {
+                    } // nothing
+                    case PICKUP_ALL, PICKUP_SOME, PICKUP_HALF, PICKUP_ONE, DROP_ALL_SLOT, DROP_ONE_SLOT, HOTBAR_MOVE_AND_READD, // may take
+                            PLACE_ALL, PLACE_SOME, PLACE_ONE, /*may place*/
+                            SWAP_WITH_CURSOR, HOTBAR_SWAP /*may give and take*/ -> {
+                        if (event.getClickedInventory() == topInv) {
+                            event.setCancelled(true);
+                        }
+                    }
+                    case COLLECT_TO_CURSOR -> { // may take complex
+                        if (topInv.contains(event.getCursor().getType())) {
+                            event.setCancelled(true);
+                        }
+                    }
+                    case MOVE_TO_OTHER_INVENTORY -> {
+                        event.setCancelled(true);
+                    } // definitely one or the other
+                }
             }
-        } else if (ply.isInMinigame()) {
-            if (!ply.getLoadout().allowOffHand() && event.getSlot() == 40) {
+
+        } else if (mgPlayer.isInMinigame()) {
+            if (!mgPlayer.getLoadout().allowOffHand() && event.getSlot() == 40) {
                 event.setCancelled(true);
-            } else if ((ply.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) ||
-                    (ply.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35)) {
+            } else if ((mgPlayer.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) ||
+                    (mgPlayer.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35)) {
                 event.setCancelled(true);
             }
         }
