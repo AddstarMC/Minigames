@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -19,17 +20,17 @@ public class FlightAction extends AbstractAction {
     private final BooleanFlag startFly = new BooleanFlag(false, "startFly");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "FLIGHT";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Player Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Allow Flight", setFly.getFlag());
         out.put("Flight On", startFly.getFlag());
     }
@@ -45,13 +46,13 @@ public class FlightAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         debug(player, region);
         execute(player);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(MinigamePlayer player, @NotNull Node node) {
         debug(player, node);
         execute(player);
     }
@@ -63,13 +64,13 @@ public class FlightAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         setFly.saveValue(path, config);
         startFly.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         setFly.loadValue(path, config);
         startFly.loadValue(path, config);
     }

@@ -6,31 +6,30 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public interface ActionInterface {
-    String getName();
+    @NotNull String getName();
 
-    String getCategory();
+    @NotNull String getCategory();
 
-    void describe(Map<String, Object> out);
+    void describe(@NotNull Map<@NotNull String, @NotNull Object> out);
 
     boolean useInRegions();
 
     boolean useInNodes();
 
-    void executeRegionAction(MinigamePlayer player, Region region);
+    void executeRegionAction(MinigamePlayer player, @NotNull Region region);
 
-    void executeNodeAction(MinigamePlayer player, Node node);
+    void executeNodeAction(MinigamePlayer player, @NotNull Node node);
 
-    void saveArguments(FileConfiguration config, String path);
+    void saveArguments(@NotNull FileConfiguration config, @NotNull String path);
 
-    void loadArguments(FileConfiguration config, String path);
+    void loadArguments(@NotNull FileConfiguration config, @NotNull String path);
 
     boolean displayMenu(MinigamePlayer player, Menu previous);
 
     void debug(MinigamePlayer p, ScriptObject obj);
-
-
 }

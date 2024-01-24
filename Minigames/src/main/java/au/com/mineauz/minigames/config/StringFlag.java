@@ -43,8 +43,6 @@ public class StringFlag extends Flag<String> {
             public void setValue(String value) {
                 setFlag(value);
             }
-
-
         });
     }
 
@@ -61,8 +59,6 @@ public class StringFlag extends Flag<String> {
             public void setValue(String value) {
                 setFlag(value);
             }
-
-
         });
     }
 

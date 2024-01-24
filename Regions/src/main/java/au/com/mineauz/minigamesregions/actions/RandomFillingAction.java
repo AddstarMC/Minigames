@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -32,17 +33,17 @@ public class RandomFillingAction extends AbstractAction {
     private final BooleanFlag replaceAll = new BooleanFlag(true, "replaceAll");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "RANDOM_FILLING";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("To", toType.getFlag());
         out.put("Chance", percentageChance.getFlag());
         out.put("Replace misses with air", replaceAll.getFlag());
@@ -60,7 +61,7 @@ public class RandomFillingAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
+                                    @NotNull Region region) {
         debug(player, region);
         Location temp = region.getFirstPoint();
         Random rndGen = new Random();
@@ -88,13 +89,13 @@ public class RandomFillingAction extends AbstractAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
+                                  @NotNull Node node) {
         debug(player, node);
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         toType.saveValue(path, config);
         percentageChance.saveValue(path, config);
         replaceAll.saveValue(path, config);
@@ -102,8 +103,8 @@ public class RandomFillingAction extends AbstractAction {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         toType.loadValue(path, config);
         percentageChance.loadValue(path, config);
         replaceAll.loadValue(path, config);

@@ -15,6 +15,7 @@ import au.com.mineauz.minigamesregions.Region;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
@@ -26,17 +27,17 @@ public class BroadcastAction extends AbstractAction {
     private final BooleanFlag redText = new BooleanFlag(false, "redText");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "BROADCAST";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Minigame Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Message", message.getFlag());
         out.put("Is Excluding", excludeExecutor.getFlag());
         out.put("Red Text", redText.getFlag());
@@ -53,7 +54,7 @@ public class BroadcastAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(final MinigamePlayer player, final Region region) {
+    public void executeRegionAction(final MinigamePlayer player, final @NotNull Region region) {
         ScriptObject base = new ScriptObject() {
             @Override
             public Set<String> getKeys() {
@@ -85,7 +86,7 @@ public class BroadcastAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(final MinigamePlayer player, final Node node) {
+    public void executeNodeAction(final MinigamePlayer player, final @NotNull Node node) {
         ScriptObject base = new ScriptObject() {
             @Override
             public Set<String> getKeys() {
@@ -137,14 +138,14 @@ public class BroadcastAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         message.saveValue(path, config);
         excludeExecutor.saveValue(path, config);
         redText.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         message.loadValue(path, config);
         excludeExecutor.loadValue(path, config);
         redText.loadValue(path, config);

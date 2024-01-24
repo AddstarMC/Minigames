@@ -30,9 +30,9 @@ public class MenuItemBoolean extends MenuItem {
         } else {
             col = ChatColor.RED + "false";
         }
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = ChatColor.stripColor(getDescription().get(0));
+        if (getDescriptionStr() != null) {
+            description = getDescriptionStr();
+            String desc = ChatColor.stripColor(getDescriptionStr().get(0));
 
             if (desc.matches("true|false"))
                 description.set(0, col);
@@ -43,7 +43,7 @@ public class MenuItemBoolean extends MenuItem {
             description.add(col);
         }
 
-        setDescription(description);
+        setDescriptionStr(description);
     }
 
     @Override

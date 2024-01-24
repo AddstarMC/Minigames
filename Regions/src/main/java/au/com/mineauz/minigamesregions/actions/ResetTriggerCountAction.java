@@ -7,23 +7,24 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public class ResetTriggerCountAction extends AbstractAction {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "RESET_TRIGGER_COUNT";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Region/Node Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
     }
 
     @Override
@@ -37,25 +38,25 @@ public class ResetTriggerCountAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         debug(player, region);
         for (RegionExecutor ex : region.getExecutors())
             ex.setTriggerCount(0);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(MinigamePlayer player, @NotNull Node node) {
         debug(player, node);
         for (NodeExecutor ex : node.getExecutors())
             ex.setTriggerCount(0);
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
     }
 
     @Override

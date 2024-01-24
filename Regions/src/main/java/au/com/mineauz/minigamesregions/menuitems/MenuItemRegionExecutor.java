@@ -21,7 +21,7 @@ public class MenuItemRegionExecutor extends MenuItem {
         super("Region Executor:", Material.ENDER_PEARL);
         this.region = region;
         this.ex = ex;
-        setDescription(List.of(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY +
+        setDescriptionStr(List.of(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY +
                         WordUtils.capitalize(ex.getTrigger().getName()),
                 ChatColor.GREEN + "Actions: " + ChatColor.GRAY +
                         ex.getActions().size(),

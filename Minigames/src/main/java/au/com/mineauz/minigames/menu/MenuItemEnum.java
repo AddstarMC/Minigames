@@ -34,7 +34,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 
     protected final void updateDescription() {
         List<String> valueDesc = getValueDescription(callback.getValue());
-        super.setDescription(Lists.newArrayList(Iterators.concat(valueDesc.iterator(), baseDescription.iterator())));
+        super.setDescriptionStr(Lists.newArrayList(Iterators.concat(valueDesc.iterator(), baseDescription.iterator())));
     }
 
     protected List<String> getValueDescription(T value) {

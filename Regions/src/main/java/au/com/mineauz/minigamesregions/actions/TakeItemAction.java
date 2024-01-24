@@ -13,6 +13,7 @@ import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -22,17 +23,17 @@ public class TakeItemAction extends AbstractAction {
     private final IntegerFlag count = new IntegerFlag(1, "count");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "TAKE_ITEM";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Player Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Item", type.getFlag() + ":all");
         out.put("Count", count);
     }
@@ -48,13 +49,13 @@ public class TakeItemAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         debug(player, region);
         execute(player);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(MinigamePlayer player, @NotNull Node node) {
         debug(player, node);
         execute(player);
     }
@@ -88,13 +89,13 @@ public class TakeItemAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         type.saveValue(path, config);
         count.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         type.loadValue(path, config);
         count.loadValue(path, config);
     }

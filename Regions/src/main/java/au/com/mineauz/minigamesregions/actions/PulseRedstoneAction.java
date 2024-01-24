@@ -16,6 +16,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -25,17 +26,17 @@ public class PulseRedstoneAction extends AbstractAction {
     private final BooleanFlag torch = new BooleanFlag(false, "torch");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "PULSE_REDSTONE";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Time", MinigameUtils.convertTime(time.getFlag(), true));
         out.put("Use Torch", torch.getFlag());
     }
@@ -52,13 +53,13 @@ public class PulseRedstoneAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
+                                    @NotNull Region region) {
         debug(player, region);
     }
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
+                                  @NotNull Node node) {
         debug(player, node);
         BlockData bdata = Material.REDSTONE_BLOCK.createBlockData();
         if (torch.getFlag()) {
@@ -72,15 +73,15 @@ public class PulseRedstoneAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         time.saveValue(path, config);
         torch.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         time.loadValue(path, config);
         torch.loadValue(path, config);
     }

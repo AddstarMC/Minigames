@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,17 +24,17 @@ public class TriggerRandomAction extends AbstractAction {
     private final BooleanFlag randomPerTrigger = new BooleanFlag(false, "randomPerTrigger");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "TRIGGER_RANDOM";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Region/Node Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Trigger Count", timesTriggered.getFlag());
         out.put("Allow same", randomPerTrigger.getFlag());
     }
@@ -49,7 +50,7 @@ public class TriggerRandomAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         debug(player, region);
         List<RegionExecutor> exs = new ArrayList<>();
         for (RegionExecutor ex : region.getExecutors()) {
@@ -76,7 +77,7 @@ public class TriggerRandomAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(MinigamePlayer player, @NotNull Node node) {
         debug(player, node);
         List<NodeExecutor> exs = new ArrayList<>();
         for (NodeExecutor ex : node.getExecutors()) {
@@ -103,13 +104,13 @@ public class TriggerRandomAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         timesTriggered.saveValue(path, config);
         randomPerTrigger.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         timesTriggered.loadValue(path, config);
         randomPerTrigger.loadValue(path, config);
     }

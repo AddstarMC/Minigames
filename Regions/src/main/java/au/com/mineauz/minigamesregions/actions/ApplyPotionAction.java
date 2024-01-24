@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +25,17 @@ public class ApplyPotionAction extends AbstractAction {
     private final IntegerFlag amp = new IntegerFlag(1, "amplifier");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "APPLY_POTION";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Player Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Effect", type.getFlag() + " " + amp.getFlag());
         out.put("Duration", MinigameUtils.convertTime(amp.getFlag(), true));
     }
@@ -51,14 +52,14 @@ public class ApplyPotionAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
+                                    @NotNull Region region) {
         debug(player, region);
         execute(player);
     }
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
+                                  @NotNull Node node) {
         debug(player, node);
         execute(player);
     }
@@ -70,16 +71,16 @@ public class ApplyPotionAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         type.saveValue(path, config);
         dur.saveValue(path, config);
         amp.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         type.loadValue(path, config);
         dur.loadValue(path, config);
         amp.loadValue(path, config);

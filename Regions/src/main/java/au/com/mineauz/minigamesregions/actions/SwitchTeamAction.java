@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.Region;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,17 +24,17 @@ public class SwitchTeamAction extends AbstractAction {
 
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SWITCH_TEAM";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Team Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Team From", teamfrom.getFlag());
         out.put("Team To", teamto.getFlag());
     }
@@ -49,12 +50,12 @@ public class SwitchTeamAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         executeAction(player);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(MinigamePlayer player, @NotNull Node node) {
         executeAction(player);
     }
 
@@ -87,12 +88,12 @@ public class SwitchTeamAction extends AbstractAction {
 
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
 
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
 
     }
 

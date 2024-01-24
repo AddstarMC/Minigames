@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +15,14 @@ public abstract class AbstractAction implements ActionInterface {
     /**
      * Logs Debug re these 2 items.
      *
-     * @param p   the player
+     * @param mgPlayer   the player
      * @param obj a script object
      */
-    public void debug(final MinigamePlayer p, final ScriptObject obj) {
+    public void debug(final @NotNull MinigamePlayer mgPlayer, final @NotNull ScriptObject obj) {
         if (Minigames.getPlugin().isDebugging()) {
             Minigames.getPlugin().getLogger().info("Debug: Execute on Obj:"
                     + obj.getAsString() + " as Action: " + this + " Player: "
-                    + p.getAsString());
+                    + mgPlayer.getAsString());
         }
     }
 
@@ -30,7 +31,7 @@ public abstract class AbstractAction implements ActionInterface {
      *
      * @param winner the winner
      */
-    void setWinnersLosers(final MinigamePlayer winner) {
+    void setWinnersLosers(final @NotNull MinigamePlayer winner) {
         if (winner.getMinigame().getType() != MinigameType.SINGLEPLAYER) {
             final List<MinigamePlayer> w;
             final List<MinigamePlayer> l;

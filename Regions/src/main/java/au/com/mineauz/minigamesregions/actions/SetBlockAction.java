@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -23,17 +24,17 @@ public class SetBlockAction extends AbstractAction {
     private final IntegerFlag dur = new IntegerFlag(0, "dur");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SET_BLOCK";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         if (useBlockData.getFlag()) {
             out.put("Block", type.getFlag() + ":" + dur.getFlag());
         } else {
@@ -53,7 +54,7 @@ public class SetBlockAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
+                                    @NotNull Region region) {
         debug(player, region);
         Location temp = region.getFirstPoint();
         for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
@@ -77,7 +78,7 @@ public class SetBlockAction extends AbstractAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
+                                  @NotNull Node node) {
         debug(player, node);
         BlockState bs = node.getLocation().getBlock().getState();
         if (useBlockData.getFlag()) {
@@ -89,14 +90,14 @@ public class SetBlockAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         type.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         type.loadValue(path, config);
         useBlockData.loadValue(path, config);
         dur.loadValue(path, config);

@@ -14,6 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.material.Directional;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -26,17 +27,17 @@ public class SwapBlockAction extends AbstractAction {
 
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SWAP_BLOCK";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("From", matchType.getFlag());
 
         out.put("To", toType.getFlag());
@@ -55,7 +56,7 @@ public class SwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         debug(player, region);
         for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
             for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
@@ -93,21 +94,21 @@ public class SwapBlockAction extends AbstractAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
+                                  @NotNull Node node) {
         debug(player, node);
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         matchType.saveValue(path, config);
         toType.saveValue(path, config);
         keepAttachment.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         matchType.loadValue(path, config);
         toType.loadValue(path, config);
         keepAttachment.loadValue(path, config);

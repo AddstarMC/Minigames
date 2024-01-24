@@ -15,6 +15,7 @@ import au.com.mineauz.minigamesregions.triggers.Triggers;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -31,17 +32,17 @@ public class TimedTriggerAction extends AbstractAction {
     private final IntegerFlag delay = new IntegerFlag(20, "delay");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "TIMED_TRIGGER";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Remote Trigger Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Object to trigger", toTrigger.getFlag());
         out.put("Otherwise it is a;node", isRegion.getFlag());
         out.put("Delay in ticks", delay.getFlag());
@@ -58,12 +59,12 @@ public class TimedTriggerAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         execute(player, region);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(MinigamePlayer player, @NotNull Node node) {
         execute(player, node);
     }
 
@@ -91,14 +92,14 @@ public class TimedTriggerAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         toTrigger.saveValue(path, config);
         isRegion.saveValue(path, config);
         delay.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         toTrigger.loadValue(path, config);
         isRegion.loadValue(path, config);
         delay.loadValue(path, config);

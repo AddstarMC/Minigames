@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -20,17 +21,17 @@ public class TriggerNodeAction extends AbstractAction {
     private final StringFlag node = new StringFlag("None", "node");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "TRIGGER_NODE";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Remote Trigger Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Node", node.getName());
     }
 
@@ -46,7 +47,7 @@ public class TriggerNodeAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
+                                    @NotNull Region region) {
         debug(player, region);
         if (player == null || !player.isInMinigame()) return;
         Minigame mg = player.getMinigame();
@@ -58,7 +59,7 @@ public class TriggerNodeAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(MinigamePlayer player, @NotNull Node node) {
         debug(player, node);
         if (player == null || !player.isInMinigame()) return;
         Minigame mg = player.getMinigame();
@@ -70,14 +71,14 @@ public class TriggerNodeAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         node.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         node.loadValue(path, config);
     }
 

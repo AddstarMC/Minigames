@@ -12,7 +12,7 @@ public class MenuItemWhitelistBlock extends MenuItem {
 
     public MenuItemWhitelistBlock(Material displayItem, List<Material> whitelist) {
         super(WordUtils.capitalize(displayItem.toString().replace("_", " ")), displayItem);
-        setDescription(List.of("Right Click to remove"));
+        setDescriptionStr(List.of("Right Click to remove"));
         this.whitelist = whitelist;
     }
 

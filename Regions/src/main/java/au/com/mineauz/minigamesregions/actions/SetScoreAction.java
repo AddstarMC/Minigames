@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -16,17 +17,17 @@ public class SetScoreAction extends ScoreAction {
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SET_SCORE";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Minigame Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Score", amount.getFlag());
     }
 
@@ -42,7 +43,7 @@ public class SetScoreAction extends ScoreAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
+                                  @NotNull Node node) {
         if (player == null || !player.isInMinigame()) return;
         player.setScore(amount.getFlag());
         player.getMinigame().setScore(player, player.getScore());
@@ -50,7 +51,7 @@ public class SetScoreAction extends ScoreAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         if (player == null || !player.isInMinigame()) return;
         player.setScore(amount.getFlag());
         player.getMinigame().setScore(player, player.getScore());
@@ -59,14 +60,14 @@ public class SetScoreAction extends ScoreAction {
 
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         amount.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         amount.saveValue(path, config);
     }
 

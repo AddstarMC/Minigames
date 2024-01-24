@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Random;
@@ -18,17 +19,17 @@ public class LightningAction extends AbstractAction {
     private final BooleanFlag effect = new BooleanFlag(false, "effect");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "LIGHTNING";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "World Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Effect Only", effect.getFlag());
     }
 
@@ -43,7 +44,7 @@ public class LightningAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         debug(player, region);
         Random rand = new Random();
         double xrand = rand.nextDouble() *
@@ -68,7 +69,7 @@ public class LightningAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(MinigamePlayer player, @NotNull Node node) {
         debug(player, node);
         if (effect.getFlag())
             node.getLocation().getWorld().strikeLightningEffect(node.getLocation());
@@ -77,12 +78,12 @@ public class LightningAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         effect.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         effect.loadValue(path, config);
     }
 

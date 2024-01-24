@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,14 +33,28 @@ public class MenuItem {
         this.displayItem.setItemMeta(meta);
     }
 
-    public List<String> getDescription() {
+    @Deprecated(forRemoval = true)
+    public List<String> getDescriptionStr() {
         return displayItem.getItemMeta().getLore();
     }
 
-    public void setDescription(List<String> description) {
+
+    public List<Component> getDescriptionComp() {
+        return displayItem.getItemMeta().lore();
+    }
+
+    @Deprecated(forRemoval = true)
+    public void setDescriptionStr(List<String> description) {
         ItemMeta meta = displayItem.getItemMeta();
 
         meta.setLore(description);
+        displayItem.setItemMeta(meta);
+    }
+
+    public void setDescriptionComp(List<Component> description) {
+        ItemMeta meta = displayItem.getItemMeta();
+
+        meta.lore(description);
         displayItem.setItemMeta(meta);
     }
 
@@ -53,7 +68,7 @@ public class MenuItem {
 
     public void setItem(ItemStack item) {
         if (item == null) {
-            Bukkit.getLogger().fine("Item Stack was null on: " + this.getDescription().toString());
+            Bukkit.getLogger().fine("Item Stack was null on: " + this.getDescriptionStr().toString());
             return;
         }
         ItemMeta ometa = displayItem.getItemMeta();

@@ -54,9 +54,9 @@ public class MenuItemMaterial extends MenuItem {
         List<String> description;
         Material setting = materialCallback.getValue();
 
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = getDescription().get(0);
+        if (getDescriptionStr() != null) {
+            description = getDescriptionStr();
+            String desc = getDescriptionStr().get(0);
 
             if (desc.startsWith(ChatColor.GREEN.toString()))
                 description.set(0, ChatColor.GREEN.toString() + createDescription(setting));
@@ -66,7 +66,7 @@ public class MenuItemMaterial extends MenuItem {
             description = new ArrayList<>();
             description.add(ChatColor.GREEN.toString() + createDescription(setting));
         }
-        setDescription(description);
+        setDescriptionStr(description);
         setItem(new ItemStack(materialCallback.getValue(), 1));
     }
 

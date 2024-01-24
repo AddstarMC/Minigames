@@ -20,7 +20,7 @@ public class MenuItemTeam extends MenuItem {
     public MenuItemTeam(String name, Team team) {
         super(name, Material.LEATHER_CHESTPLATE);
 
-        setDescription(List.of(ChatColor.DARK_PURPLE + "(Right Click to delete)"));
+        setDescriptionStr(List.of(ChatColor.DARK_PURPLE + "(Right Click to delete)"));
         this.team = team;
         setTeamIcon();
     }
@@ -28,7 +28,7 @@ public class MenuItemTeam extends MenuItem {
     public MenuItemTeam(String name, List<String> description, Team team) {
         super(name, description, Material.LEATHER_CHESTPLATE);
 
-        getDescription().add(0, ChatColor.DARK_PURPLE + "(Right Click to delete)");
+        getDescriptionStr().add(0, ChatColor.DARK_PURPLE + "(Right Click to delete)");
         this.team = team;
         setTeamIcon();
     }

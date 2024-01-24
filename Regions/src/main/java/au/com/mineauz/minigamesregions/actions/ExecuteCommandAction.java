@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -24,17 +25,17 @@ public class ExecuteCommandAction extends AbstractAction {
     private final BooleanFlag silentExecute = new BooleanFlag(false, "silent");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "EXECUTE_COMMAND";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Server Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Command", comd.getFlag());
         out.put("Silent", silentExecute.getFlag());
     }
@@ -72,7 +73,7 @@ public class ExecuteCommandAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(final MinigamePlayer player, final Region region) {
+    public void executeRegionAction(final MinigamePlayer player, final @NotNull Region region) {
         debug(player, region);
         String command = replacePlayerTags(player, comd.getFlag());
         command = command.replace("{region}", region.getName());
@@ -110,7 +111,7 @@ public class ExecuteCommandAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(final MinigamePlayer player, final Node node) {
+    public void executeNodeAction(final MinigamePlayer player, final @NotNull Node node) {
         debug(player, node);
         String command = replacePlayerTags(player, comd.getFlag());
         command = command
@@ -160,15 +161,15 @@ public class ExecuteCommandAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         comd.saveValue(path, config);
         silentExecute.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         comd.loadValue(path, config);
         silentExecute.loadValue(path, config);
     }

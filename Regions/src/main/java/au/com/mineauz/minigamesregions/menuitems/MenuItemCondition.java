@@ -86,7 +86,7 @@ public class MenuItemCondition extends MenuItem {
             }
         }
 
-        setDescription(description);
+        setDescriptionStr(description);
     }
 
     @Override

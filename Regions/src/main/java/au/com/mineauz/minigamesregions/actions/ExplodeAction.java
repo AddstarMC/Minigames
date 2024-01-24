@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Random;
@@ -21,17 +22,17 @@ public class ExplodeAction extends AbstractAction {
     private final BooleanFlag fire = new BooleanFlag(false, "fire");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "EXPLODE";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "World Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Power", power.getFlag());
         out.put("With Fire", fire.getFlag());
     }
@@ -48,7 +49,7 @@ public class ExplodeAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
+                                    @NotNull Region region) {
         debug(player, region);
         Random rand = new Random();
         double xrand = rand.nextDouble() *
@@ -70,21 +71,21 @@ public class ExplodeAction extends AbstractAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
+                                  @NotNull Node node) {
         debug(player, node);
         node.getLocation().getWorld().createExplosion(node.getLocation(), power.getFlag(), fire.getFlag());
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         power.saveValue(path, config);
         fire.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         power.loadValue(path, config);
         fire.loadValue(path, config);
     }

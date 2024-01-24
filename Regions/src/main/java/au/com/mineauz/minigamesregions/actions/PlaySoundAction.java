@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +28,17 @@ public class PlaySoundAction extends AbstractAction {
     private final FloatFlag pit = new FloatFlag(1f, "pitch");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "PLAY_SOUND";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "World Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Sound", sound.getFlag());
         out.put("Volume", vol.getFlag());
         out.put("Pitch", pit.getFlag());
@@ -56,14 +57,14 @@ public class PlaySoundAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
+                                    @NotNull Region region) {
         debug(player, region);
         execute(player, player.getLocation());
     }
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
+                                  @NotNull Node node) {
         debug(player, node);
         execute(player, node.getLocation());
     }
@@ -83,8 +84,8 @@ public class PlaySoundAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         sound.saveValue(path, config);
         priv.saveValue(path, config);
         vol.saveValue(path, config);
@@ -92,8 +93,8 @@ public class PlaySoundAction extends AbstractAction {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         sound.loadValue(path, config);
         priv.loadValue(path, config);
         vol.loadValue(path, config);

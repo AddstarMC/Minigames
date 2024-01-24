@@ -39,10 +39,10 @@ public class MenuItemList extends MenuItem {
         if (after == options.size())
             after = 0;
 
-        if (getDescription() != null) {
-            description = getDescription();
-            if (getDescription().size() >= 3) {
-                String desc = ChatColor.stripColor(getDescription().get(1));
+        if (getDescriptionStr() != null) {
+            description = getDescriptionStr();
+            if (getDescriptionStr().size() >= 3) {
+                String desc = ChatColor.stripColor(getDescriptionStr().get(1));
 
                 if (options.contains(desc)) {
                     description.set(0, ChatColor.GRAY + options.get(before));
@@ -65,7 +65,7 @@ public class MenuItemList extends MenuItem {
             description.add(ChatColor.GRAY + options.get(after));
         }
 
-        setDescription(description);
+        setDescriptionStr(description);
     }
 
     @Override

@@ -32,21 +32,21 @@ public class RegionEvents implements Listener {
     private final MinigamePlayerManager pdata = plugin.getPlayerManager();
 
     private void executeRegionChanges(Minigame mg, MinigamePlayer ply) {
-        for (Region r : RegionModule.getMinigameModule(mg).getRegions()) {
-            if (r.playerInRegion(ply)) {
-                r.execute(Triggers.getTrigger("MOVE_IN_REGION"), ply);
+        for (Region region : RegionModule.getMinigameModule(mg).getRegions()) {
+            if (region.playerInRegion(ply)) {
+                region.execute(Triggers.getTrigger("MOVE_IN_REGION"), ply);
 
-                if (!r.hasPlayer(ply)) {
-                    r.addPlayer(ply);
-                    r.execute(Triggers.getTrigger("ENTER"), ply);
-                    EnterRegionEvent ev = new EnterRegionEvent(ply, r);
+                if (!region.hasPlayer(ply)) {
+                    region.addPlayer(ply);
+                    region.execute(Triggers.getTrigger("ENTER"), ply);
+                    EnterRegionEvent ev = new EnterRegionEvent(ply, region);
                     Bukkit.getPluginManager().callEvent(ev);
                 }
             } else {
-                if (r.hasPlayer(ply)) {
-                    r.removePlayer(ply);
-                    r.execute(Triggers.getTrigger("LEAVE"), ply);
-                    LeaveRegionEvent ev = new LeaveRegionEvent(ply, r);
+                if (region.hasPlayer(ply)) {
+                    region.removePlayer(ply);
+                    region.execute(Triggers.getTrigger("LEAVE"), ply);
+                    LeaveRegionEvent ev = new LeaveRegionEvent(ply, region);
                     Bukkit.getPluginManager().callEvent(ev);
                 }
             }
@@ -440,7 +440,6 @@ public class RegionEvents implements Listener {
             }
         }
     }
-
 
     private void executeTrigger(final Trigger trigger, final MinigamePlayer player) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {

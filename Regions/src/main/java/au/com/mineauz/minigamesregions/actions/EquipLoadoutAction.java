@@ -10,6 +10,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +22,17 @@ public class EquipLoadoutAction extends AbstractAction {
     private final BooleanFlag equipOnTrigger = new BooleanFlag(false, "equipOnTrigger");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "EQUIP_LOADOUT";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Minigame Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Loadout", loadout.getFlag());
     }
 
@@ -47,7 +48,7 @@ public class EquipLoadoutAction extends AbstractAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
+                                  @NotNull Node node) {
         debug(player, node);
         if (player == null || !player.isInMinigame()) return;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
@@ -59,7 +60,7 @@ public class EquipLoadoutAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
         debug(player, region);
         if (player == null || !player.isInMinigame()) return;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
@@ -71,14 +72,14 @@ public class EquipLoadoutAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         loadout.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         loadout.loadValue(path, config);
     }
 

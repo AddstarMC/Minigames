@@ -37,9 +37,9 @@ public class MenuItemInteger extends MenuItem {
 
     public void updateDescription() {
         List<String> description;
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = ChatColor.stripColor(getDescription().get(0));
+        if (getDescriptionStr() != null) {
+            description = getDescriptionStr();
+            String desc = ChatColor.stripColor(getDescriptionStr().get(0));
 
             if (desc.matches("-?[0-9]+"))
                 description.set(0, ChatColor.GREEN.toString() + value.getValue());
@@ -50,7 +50,7 @@ public class MenuItemInteger extends MenuItem {
             description.add(ChatColor.GREEN.toString() + value.getValue());
         }
 
-        setDescription(description);
+        setDescriptionStr(description);
     }
 
     @Override

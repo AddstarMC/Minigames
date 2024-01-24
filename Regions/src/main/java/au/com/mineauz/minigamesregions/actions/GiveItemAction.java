@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -26,17 +27,17 @@ public class GiveItemAction extends AbstractAction {
     private final StringFlag lore = new StringFlag(null, "lore");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "GIVE_ITEM";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Player Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Item", count.getFlag() + "x " + type.getFlag());
         out.put("Display Name", name.getFlag());
         out.put("Lore", lore.getFlag());
@@ -53,14 +54,14 @@ public class GiveItemAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(MinigamePlayer player, @NotNull Region region) {
 
         debug(player, region);
         execute(player);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(MinigamePlayer player, @NotNull Node node) {
         debug(player, node);
         execute(player);
     }
@@ -87,7 +88,7 @@ public class GiveItemAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         type.saveValue(path, config);
         count.saveValue(path, config);
         if (name.getFlag() != null)
@@ -97,7 +98,7 @@ public class GiveItemAction extends AbstractAction {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         type.loadValue(path, config);
         count.loadValue(path, config);
         if (config.contains(path + ".name"))

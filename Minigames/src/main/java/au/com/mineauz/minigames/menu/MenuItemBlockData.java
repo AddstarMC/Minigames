@@ -14,23 +14,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemBlockData extends MenuItem {
-    private Callback<BlockData> data;
+    private Callback<BlockData> dataCallback;
 
     public MenuItemBlockData(String name, Material displayItem) {
         super(name, displayItem);
-        data.setValue(displayItem.createBlockData());
-        setDescription(createDescription(data.getValue()));
+        dataCallback.setValue(displayItem.createBlockData());
+        setDescriptionStr(createDescription(dataCallback.getValue()));
     }
 
     public MenuItemBlockData(String name, Material displayItem, Callback<BlockData> callback) {
         super(name, displayItem);
-        this.data = callback;
-        setDescription(createDescription(data.getValue()));
+        this.dataCallback = callback;
+        setDescriptionStr(createDescription(dataCallback.getValue()));
     }
 
     @Override
     public void update() {
-        setDescription(createDescription(this.data.getValue()));
+        setDescriptionStr(createDescription(this.dataCallback.getValue()));
     }
 
     /**
@@ -61,7 +61,12 @@ public class MenuItemBlockData extends MenuItem {
     public ItemStack onClickWithItem(@Nullable ItemStack item) {
         try {
             BlockData data = item.getType().createBlockData();
-            this.data.setValue(data);
+            this.dataCallback.setValue(data);
+
+            // update the display item
+            ItemStack stackUpdate = getItem();
+            stackUpdate.setType(item.getType());
+            setItem(stackUpdate);
         } catch (IllegalArgumentException | NullPointerException e) {
             String name = "unknown";
             if (item != null) {
@@ -77,8 +82,16 @@ public class MenuItemBlockData extends MenuItem {
         String err = "No MgBlockData detected";
         try {
             BlockData d = Bukkit.createBlockData(entry);
-            data.setValue(d);
-            setDescription(createDescription(data.getValue()));
+            dataCallback.setValue(d);
+
+            // update the display item
+            setDescriptionStr(createDescription(dataCallback.getValue()));
+            if (d.getMaterial().isItem()) {
+                ItemStack stackUpdate = getItem();
+                stackUpdate.setType(d.getMaterial());
+                setItem(stackUpdate);
+            }
+
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
             return;

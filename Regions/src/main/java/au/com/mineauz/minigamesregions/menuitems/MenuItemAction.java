@@ -75,7 +75,7 @@ public class MenuItemAction extends MenuItem {
             }
         }
 
-        setDescription(description);
+        setDescriptionStr(description);
     }
 
     @Override

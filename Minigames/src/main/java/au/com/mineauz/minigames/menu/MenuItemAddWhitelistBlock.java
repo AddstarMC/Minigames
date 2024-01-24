@@ -13,7 +13,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
 
     public MenuItemAddWhitelistBlock(String name, List<Material> whitelist) {
         super(name, MenuUtility.getCreateMaterial());
-        setDescription(List.of("Left Click with item to", "add to whitelist/blacklist", "Click without item to", "manually add item."));
+        setDescriptionStr(List.of("Left Click with item to", "add to whitelist/blacklist", "Click without item to", "manually add item."));
         this.whitelist = whitelist;
     }
 
