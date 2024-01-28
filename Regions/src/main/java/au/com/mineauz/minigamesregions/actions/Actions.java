@@ -10,6 +10,7 @@ import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class Actions {
         actions.put(name, action);
     }
 
-    public static ActionInterface getActionByName(String name) {
+    public static @Nullable ActionInterface getActionByName(String name) {
         if (actions.containsKey(name.toUpperCase()))
             try {
                 return actions.get(name.toUpperCase()).newInstance();
@@ -87,7 +88,7 @@ public class Actions {
         Menu m = new Menu(3, "Actions", player);
         m.setPreviousPage(prev);
         for (ActionInterface act : exec.getActions()) {
-            m.addItem(new MenuItemAction(WordUtils.capitalize(act.getName()), Material.PAPER, exec, act));
+            m.addItem(new MenuItemAction(WordUtils.capitalizeFully(act.getName()), Material.PAPER, exec, act));
         }
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         m.addItem(new MenuItemActionAdd("Add Action", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);

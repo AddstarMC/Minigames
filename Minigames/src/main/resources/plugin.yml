@@ -3,7 +3,8 @@ main: au.com.mineauz.minigames.Minigames
 version: ${plugin.version}
 api-version: "${spigot.api.version}"
 author: _Razz_ Schmoller Addstar Narimm GreenSurvivors
-softdepend: [ 'Multiverse-Core' ]
+softdepend:
+    - WorldEdit
 description: ${project.description}
 
 libraries:

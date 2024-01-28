@@ -15,17 +15,17 @@ import java.util.Map;
 public class FallingBlockAction extends AbstractAction {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "FALLING_BLOCK";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "World Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
     }
 
     @Override
@@ -76,18 +76,17 @@ public class FallingBlockAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         return false;
     }
-
 }

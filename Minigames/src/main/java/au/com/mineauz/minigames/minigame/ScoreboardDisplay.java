@@ -212,10 +212,10 @@ public class ScoreboardDisplay {
 
         StatSettings settings = minigame.getSettings(stat);
         final MenuItemCustom statisticChoice = new MenuItemCustom("Statistic", Material.WRITABLE_BOOK);
-        statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings.getDisplayName()));
+        statisticChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + settings.getDisplayName()));
 
         final MenuItemCustom fieldChoice = new MenuItemCustom("Statistic Field", Material.PAPER);
-        fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
+        fieldChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
 
         statisticChoice.setClick(object -> {
             Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<>() {
@@ -228,7 +228,7 @@ public class ScoreboardDisplay {
                 public void setValue(MinigameStat value) {
                     stat = value;
                     StatSettings settings12 = minigame.getSettings(stat);
-                    statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings12.getDisplayName()));
+                    statisticChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + settings12.getDisplayName()));
 
                     // Check that the field is valid
                     StatValueField first = null;
@@ -247,7 +247,7 @@ public class ScoreboardDisplay {
                     // Update the field
                     if (!valid) {
                         field = first;
-                        fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.toString()));
+                        fieldChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + value.toString()));
                     }
                 }
             });
@@ -267,7 +267,7 @@ public class ScoreboardDisplay {
                 @Override
                 public void setValue(StatValueField value) {
                     field = value;
-                    fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.getTitle()));
+                    fieldChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + value.getTitle()));
                 }
             });
 
@@ -352,7 +352,7 @@ public class ScoreboardDisplay {
                 sign.getSide(Side.FRONT).setLine(0, ChatColor.BLUE + minigame.getName(true));
                 sign.getSide(Side.FRONT).setLine(1, ChatColor.GREEN + settings.getDisplayName());
                 sign.getSide(Side.FRONT).setLine(2, ChatColor.GREEN + field.getTitle());
-                sign.getSide(Side.FRONT).setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
+                sign.getSide(Side.FRONT).setLine(3, "(" + WordUtils.capitalizeFully(order.toString()) + ")");
                 sign.update();
 
                 sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));

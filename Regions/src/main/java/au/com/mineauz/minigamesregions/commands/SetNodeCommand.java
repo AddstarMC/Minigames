@@ -73,7 +73,7 @@ public class SetNodeCommand implements ICommand {
             RegionModule rmod = RegionModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("create") && args.length >= 2) {
                 if (!rmod.hasNode(args[1])) {
-                    rmod.addNode(args[1], new Node(args[1], mgPlayer.getLocation()));
+                    rmod.addNode(args[1], new Node(args[1], minigame, mgPlayer.getLocation()));
                     MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                             RegionLangKey.NODE_ADDED,
                             Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), args[1]),

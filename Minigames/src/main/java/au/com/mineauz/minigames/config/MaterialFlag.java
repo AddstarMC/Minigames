@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemMaterial;
 import org.bukkit.Material;
@@ -27,7 +28,7 @@ public class MaterialFlag extends Flag<Material> {
     @Override
     public void loadValue(String path, FileConfiguration config) {
         if (config.contains(path + "." + getName())) {
-            Material flag = Material.getMaterial(config.getString(path + "." + getName()));
+            Material flag = Material.matchMaterial(config.getString(path + "." + getName()));
             if (flag == null) {
                 flag = Material.STONE;
                 Minigames.getCmpnntLogger().warn("Failed to load Material from config at :" + path + "." + getName() + " Value: " + config.getString(path + "." + getName()));
@@ -38,13 +39,27 @@ public class MaterialFlag extends Flag<Material> {
         }
     }
 
-    @Override
-    public MenuItem getMenuItem(String name, org.bukkit.Material displayItem) {
-        return new MenuItemMaterial(name, getFlag());
+    public MenuItem getMenuItem(String name) {
+        return getMenuItem(name, getFlag());
     }
 
     @Override
-    public MenuItem getMenuItem(String name, org.bukkit.Material displayItem, List<String> description) {
-        return null;
+    public MenuItem getMenuItem(String name, Material displayItem) {
+        return getMenuItem(name, displayItem, null);
+    }
+
+    @Override
+    public MenuItem getMenuItem(String name, Material displayItem, List<String> description) {
+        return new MenuItemMaterial(name, description, displayItem, new Callback<>() {
+            @Override
+            public Material getValue() {
+                return getFlag();
+            }
+
+            @Override
+            public void setValue(Material value) {
+                setFlag(value);
+            }
+        });
     }
 }

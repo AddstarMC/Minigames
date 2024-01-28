@@ -11,6 +11,7 @@ import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class MatchTeamCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
         out.put("Team", team.getFlag());
     }
 
@@ -45,25 +46,25 @@ public class MatchTeamCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         if (player == null || !player.isInMinigame()) return false;
         return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         team.saveValue(path, config);
         saveInvert(config, path);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         team.loadValue(path, config);
         loadInvert(config, path);
     }
@@ -78,7 +79,7 @@ public class MatchTeamCondition extends ConditionInterface {
         m.addItem(new MenuItemList("Team Color", getTeamMaterial(), new Callback<>() {
             @Override
             public String getValue() {
-                return WordUtils.capitalize(team.getFlag().replace("_", " "));
+                return WordUtils.capitalizeFully(team.getFlag().replace("_", " "));
             }
 
             @Override
@@ -87,8 +88,8 @@ public class MatchTeamCondition extends ConditionInterface {
             }
         }, teams) {
             @Override
-            public ItemStack getItem() {
-                ItemStack stack = super.getItem();
+            public @NotNull ItemStack getDisplayItem() {
+                ItemStack stack = super.getDisplayItem();
                 stack.setType(getTeamMaterial());
                 return stack;
             }
@@ -110,7 +111,7 @@ public class MatchTeamCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
+    public boolean PlayerNeeded() {
         return true;
     }
 

@@ -85,7 +85,7 @@ public class ItemReward extends RewardType {
 
         public MenuItemReward(ItemReward reward) {
             super("PLACEHOLDER", List.of("Click with item", "to change."), Material.DIAMOND);
-            setItem(reward.getRewardItem());
+            setDisplayItem(reward.getRewardItem());
             for (RewardRarity rarity : RewardRarity.values()) {
                 options.add(rarity.toString());
             }
@@ -94,19 +94,19 @@ public class ItemReward extends RewardType {
         }
 
         @Override
-        public void setItem(ItemStack item) {
-            super.setItem(item);
-            ItemMeta meta = getItem().getItemMeta();
-            meta.setDisplayName(ChatColor.RESET + WordUtils.capitalize(item.getType().toString().replace("_", " ")));
-            getItem().setItemMeta(meta);
+        public void setDisplayItem(@NotNull ItemStack item) {
+            super.setDisplayItem(item);
+            ItemMeta meta = getDisplayItem().getItemMeta();
+            meta.setDisplayName(ChatColor.RESET + WordUtils.capitalizeFully(item.getType().toString().replace("_", " ")));
+            getDisplayItem().setItemMeta(meta);
         }
 
         @Override
         public ItemStack onClickWithItem(ItemStack item) {
-            setItem(item);
+            setDisplayItem(item);
             setRewardItem(item.clone());
             updateDescription();
-            return getItem();
+            return getDisplayItem();
         }
 
         public void updateDescription() {
@@ -125,10 +125,10 @@ public class ItemReward extends RewardType {
             if (after == options.size())
                 after = 0;
 
-            if (getDescription() != null) {
-                description = getDescription();
-                if (getDescription().size() >= 3) {
-                    String desc = ChatColor.stripColor(getDescription().get(1));
+            if (getDescriptionStr() != null) {
+                description = getDescriptionStr();
+                if (getDescriptionStr().size() >= 3) {
+                    String desc = ChatColor.stripColor(getDescriptionStr().get(1));
 
                     if (options.contains(desc)) {
                         description.set(0, ChatColor.GRAY + options.get(before));
@@ -154,7 +154,7 @@ public class ItemReward extends RewardType {
                 description.add(3, ChatColor.DARK_PURPLE + "Shift + Right Click to remove");
             }
 
-            setDescription(description);
+            setDescriptionStr(description);
         }
 
         @Override
@@ -167,7 +167,7 @@ public class ItemReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override
@@ -180,7 +180,7 @@ public class ItemReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override

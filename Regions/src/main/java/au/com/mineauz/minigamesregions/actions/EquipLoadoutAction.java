@@ -23,17 +23,17 @@ public class EquipLoadoutAction extends AbstractAction {
     private final BooleanFlag equipOnTrigger = new BooleanFlag(false, "equipOnTrigger");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "EQUIP_LOADOUT";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Minigame Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Loadout", loadout.getFlag());
     }
 
@@ -73,14 +73,14 @@ public class EquipLoadoutAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         loadout.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         loadout.loadValue(path, config);
     }
 

@@ -20,17 +20,17 @@ public class LightningAction extends AbstractAction {
     private final BooleanFlag effect = new BooleanFlag(false, "effect");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "LIGHTNING";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "World Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Effect Only", effect.getFlag());
     }
 
@@ -79,12 +79,12 @@ public class LightningAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         effect.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         effect.loadValue(path, config);
     }
 

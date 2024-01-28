@@ -22,8 +22,8 @@ public class MenuItemNodeExecutor extends MenuItem {
         super("Node Executor:", Material.ENDER_PEARL);
         this.node = node;
         this.ex = ex;
-        setDescription(List.of(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY +
-                        WordUtils.capitalize(ex.getTrigger().getName()),
+        setDescriptionStr(List.of(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY +
+                        WordUtils.capitalizeFully(ex.getTrigger().getName()),
                 ChatColor.GREEN + "Actions: " + ChatColor.GRAY +
                         ex.getActions().size(),
                 ChatColor.DARK_PURPLE + "(Right click to delete)",

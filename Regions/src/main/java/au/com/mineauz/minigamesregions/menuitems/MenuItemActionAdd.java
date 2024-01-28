@@ -34,18 +34,18 @@ public class MenuItemActionAdd extends MenuItem {
                 catname = catname.toLowerCase();
                 Menu cat;
                 if (!cats.containsKey(catname)) {
-                    cat = new Menu(6, WordUtils.capitalize(catname), getContainer().getViewer());
+                    cat = new Menu(6, WordUtils.capitalizeFully(catname), getContainer().getViewer());
                     cats.put(catname, cat);
-                    m.addItem(new MenuItemPage(WordUtils.capitalize(catname), Material.CHEST, cat));
+                    m.addItem(new MenuItemPage(WordUtils.capitalizeFully(catname), Material.CHEST, cat));
                     cat.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), m), cat.getSize() - 9);
                 } else
                     cat = cats.get(catname);
-                MenuItemCustom c = new MenuItemCustom(WordUtils.capitalize(act), Material.PAPER);
+                MenuItemCustom c = new MenuItemCustom(WordUtils.capitalizeFully(act), Material.PAPER);
                 final String fact = act;
                 c.setClick(object -> {
                     ActionInterface action = Actions.getActionByName(fact);
                     exec.addAction(action);
-                    getContainer().addItem(new MenuItemAction(WordUtils.capitalize(fact), Material.PAPER, exec, action));
+                    getContainer().addItem(new MenuItemAction(WordUtils.capitalizeFully(fact), Material.PAPER, exec, action));
                     getContainer().displayMenu(getContainer().getViewer());
                     return null;
                 });

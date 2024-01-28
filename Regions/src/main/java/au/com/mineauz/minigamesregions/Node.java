@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
@@ -18,14 +19,15 @@ import java.util.List;
 import java.util.Set;
 
 public class Node implements ExecutableScriptObject {
-
     private final String name;
+    private final Minigame minigame;
     private final List<NodeExecutor> executors = new ArrayList<>();
     private Location loc;
     private boolean enabled = true;
 
-    public Node(String name, Location loc) {
+    public Node(@NotNull String name, @NotNull Minigame minigame, @NotNull Location loc) {
         this.name = name;
+        this.minigame = minigame;
         this.loc = loc;
     }
 
@@ -79,8 +81,9 @@ public class Node implements ExecutableScriptObject {
         List<NodeExecutor> toExecute = new ArrayList<>();
         for (NodeExecutor exec : executors) {
             if (exec.getTrigger() == trigger) {
-                if (checkConditions(exec, player) && exec.canBeTriggered(player))
+                if (checkConditions(exec, player) && exec.canBeTriggered(player)) {
                     toExecute.add(exec);
+                }
             }
         }
         for (NodeExecutor exec : toExecute) {
@@ -90,10 +93,11 @@ public class Node implements ExecutableScriptObject {
 
     public boolean checkConditions(NodeExecutor exec, MinigamePlayer player) {
         for (ConditionInterface con : exec.getConditions()) {
-            boolean c = con.checkNodeCondition(player, this);
-            if (con.isInverted())
-                c = !c;
-            if (!c) {
+            boolean conditionCheck = con.checkNodeCondition(player, this);
+            if (con.isInverted()) {
+                conditionCheck = !conditionCheck;
+            }
+            if (!conditionCheck) {
                 return false;
             }
         }
@@ -132,5 +136,9 @@ public class Node implements ExecutableScriptObject {
     @Override
     public String getAsString() {
         return name;
+    }
+
+    public Minigame getMinigame() {
+        return minigame;
     }
 }

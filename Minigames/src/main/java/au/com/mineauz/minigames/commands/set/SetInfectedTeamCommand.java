@@ -117,8 +117,8 @@ public class SetInfectedTeamCommand implements ICommand {
                 }
                 teams.add(TeamColor.NONE.toString());
                 teams.add("default");
-                teams.add(WordUtils.capitalize(infectionModule.getDefaultInfectedTeam().toString().toLowerCase()));
-                teams.add(WordUtils.capitalize(infectionModule.getDefaultSurvivorTeam().toString().toLowerCase()));
+                teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultInfectedTeam().toString().toLowerCase()));
+                teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultSurvivorTeam().toString().toLowerCase()));
                 return MinigameUtils.tabCompleteMatch(teams, args[0]);
             }
         }

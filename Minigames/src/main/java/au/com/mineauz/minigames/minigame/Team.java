@@ -51,7 +51,7 @@ public class Team implements ScriptObject {
      */
     public Team(TeamColor color, Minigame minigame) {
         this.color = color;
-        displayName = WordUtils.capitalize(color.toString()) + " Team";
+        displayName = WordUtils.capitalizeFully(color.toString()) + " Team";
         scoreboardName = color.toString().toLowerCase();
         mgm = minigame;
     }
@@ -74,7 +74,7 @@ public class Team implements ScriptObject {
     public boolean setColor(TeamColor color) {
         if (!TeamsModule.getMinigameModule(mgm).hasTeam(color)) {
             if (displayName.toLowerCase().equals(this.color.toString().toLowerCase() + " team"))
-                displayName = WordUtils.capitalize(color.toString()) + " Team";
+                displayName = WordUtils.capitalizeFully(color.toString()) + " Team";
             TeamsModule.getMinigameModule(mgm).removeTeam(this.color);
             this.color = color;
             TeamsModule.getMinigameModule(mgm).addTeam(color, this);

@@ -17,8 +17,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.configuration.file.FileConfiguration;;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -219,17 +218,17 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "MEMORY_SWAP_BLOCK";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("From: ", matchType.getFlag());
         out.put("Block pool size", blockPool.size());
         out.put("Whitelist mode", whitelistMode.getFlag()); //todo this can be quite long, maybe cut it off
@@ -257,7 +256,7 @@ public class MemorySwapBlockAction extends AbstractAction {
      * skipped and the player will be warned.
      */
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
         ArrayList<Material> localMatPool = cleanUpBlockPool();
 
@@ -331,7 +330,7 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         matchType.saveValue(path, config);
         wbList.saveValue(path, config);
         whitelistMode.saveValue(path, config);
@@ -339,7 +338,7 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         matchType.loadValue(path, config);
         wbList.loadValue(path, config);
         whitelistMode.loadValue(path, config);
@@ -352,27 +351,7 @@ public class MemorySwapBlockAction extends AbstractAction {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced
-        m.addItem(new MenuItemMaterial("Match Block", matchType.getFlag(), new Callback<>() {
-
-            @Override
-            public Material getValue() {
-                return matchType.getFlag();
-            }
-
-            @Override
-            public void setValue(Material value) {
-                matchType.setFlag(value);
-            }
-
-
-        }) {
-            @Override
-            public ItemStack getItem() {
-                ItemStack stack = super.getItem();
-                stack.setType(Objects.requireNonNullElse(matchType.getFlag(), Material.COBBLESTONE));
-                return stack;
-            }
-        });
+        m.addItem(matchType.getMenuItem("Match Block"));
 
         //Menu entry for the white/blacklist entry, aka the blocks that will be only accounted for / removed from the block pool
         m.addItem(new MenuItemNewLine());

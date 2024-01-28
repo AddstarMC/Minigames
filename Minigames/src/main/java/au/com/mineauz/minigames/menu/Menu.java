@@ -44,7 +44,7 @@ public class Menu {
             item.setSlot(slot);
             pageMap.put(slot, item);
             if (inv != null) {
-                inv.setItem(slot, item.getItem());
+                inv.setItem(slot, item.getDisplayItem());
             }
             return true;
         }
@@ -141,7 +141,7 @@ public class Menu {
     private void populateMenu() {
         for (Integer key : pageMap.keySet()) {
             if (!(pageMap.get(key) instanceof MenuItemNewLine))
-                pageView[key] = pageMap.get(key).getItem();
+                pageView[key] = pageMap.get(key).getDisplayItem();
         }
     }
 

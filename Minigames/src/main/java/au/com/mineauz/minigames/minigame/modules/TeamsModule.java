@@ -174,7 +174,7 @@ public class TeamsModule extends MinigameModule {
                         return TeamColor.NONE.toString();
                     }
 
-                    return WordUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
+                    return WordUtils.capitalizeFully(defaultWinner.getFlag().replace("_", " "));
                 }
                 return TeamColor.NONE.toString();
             }
@@ -215,7 +215,7 @@ public class TeamsModule extends MinigameModule {
         List<MenuItem> items = new ArrayList<>();
         List<String> teams = new ArrayList<>(this.teams.size() + 1);
         for (TeamColor t : this.teams.keySet()) {
-            teams.add(WordUtils.capitalize(t.toString().replace("_", " ")));
+            teams.add(WordUtils.capitalizeFully(t.toString().replace("_", " ")));
         }
         teams.add("None");
         items.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));

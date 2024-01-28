@@ -37,7 +37,7 @@ public class MenuItemConditionAdd extends MenuItem {
             if ((Conditions.getConditionByName(con).useInNodes() && nexec != null) ||
                     (Conditions.getConditionByName(con).useInRegions() && rexec != null)) {
                 if (!Objects.requireNonNullElseGet(rexec, () -> nexec).getTrigger().triggerOnPlayerAvailable()) {
-                    if (Conditions.getConditionByName(con).onPlayerApplicable()) {
+                    if (Conditions.getConditionByName(con).PlayerNeeded()) {
                         continue;
                     }
                 }
@@ -47,22 +47,22 @@ public class MenuItemConditionAdd extends MenuItem {
                 catname = catname.toLowerCase();
                 Menu cat;
                 if (!cats.containsKey(catname)) {
-                    cat = new Menu(6, WordUtils.capitalize(catname), getContainer().getViewer());
+                    cat = new Menu(6, WordUtils.capitalizeFully(catname), getContainer().getViewer());
                     cats.put(catname, cat);
-                    m.addItem(new MenuItemPage(WordUtils.capitalize(catname), Material.CHEST, cat));
+                    m.addItem(new MenuItemPage(WordUtils.capitalizeFully(catname), Material.CHEST, cat));
                     cat.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), m), cat.getSize() - 9);
                 } else
                     cat = cats.get(catname);
-                MenuItemCustom c = new MenuItemCustom(WordUtils.capitalize(con), Material.PAPER);
+                MenuItemCustom c = new MenuItemCustom(WordUtils.capitalizeFully(con), Material.PAPER);
                 final String fcon = con;
                 c.setClick(object -> {
                     ConditionInterface condition = Conditions.getConditionByName(fcon);
                     if (rexec != null) {
                         rexec.addCondition(condition);
-                        getContainer().addItem(new MenuItemCondition(WordUtils.capitalize(fcon), Material.PAPER, rexec, condition));
+                        getContainer().addItem(new MenuItemCondition(WordUtils.capitalizeFully(fcon), Material.PAPER, rexec, condition));
                     } else {
                         nexec.addCondition(condition);
-                        getContainer().addItem(new MenuItemCondition(WordUtils.capitalize(fcon), Material.PAPER, nexec, condition));
+                        getContainer().addItem(new MenuItemCondition(WordUtils.capitalizeFully(fcon), Material.PAPER, nexec, condition));
                     }
                     getContainer().displayMenu(getContainer().getViewer());
                     return null;

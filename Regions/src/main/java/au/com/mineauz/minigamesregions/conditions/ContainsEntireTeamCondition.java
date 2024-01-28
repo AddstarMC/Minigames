@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
     }
 
     @Override
@@ -38,23 +39,23 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         return new HashSet<>(region.getPlayers()).containsAll(player.getTeam().getPlayers());
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         return false;
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         saveInvert(config, path);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         loadInvert(config, path);
     }
 
@@ -68,7 +69,7 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
+    public boolean PlayerNeeded() {
         return true;
     }
 }

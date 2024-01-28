@@ -26,7 +26,7 @@ public class MenuItemToolTeam extends MenuItemList {
             MinigameTool tool = MinigameUtils.getMinigameTool(ply);
             tool.setTeam(TeamColor.matchColor(value.getValue().replace(" ", "_")));
         }
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -37,6 +37,6 @@ public class MenuItemToolTeam extends MenuItemList {
             MinigameTool tool = MinigameUtils.getMinigameTool(ply);
             tool.setTeam(TeamColor.matchColor(value.getValue().replace(" ", "_")));
         }
-        return getItem();
+        return getDisplayItem();
     }
 }

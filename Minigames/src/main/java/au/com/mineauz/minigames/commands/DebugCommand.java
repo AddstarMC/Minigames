@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
-import com.google.common.base.Charsets;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
@@ -14,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kitteh.pastegg.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -102,7 +102,7 @@ public class DebugCommand implements ICommand {
 
     private String getFile(Path file) {
         try {
-            return Files.readString(file, Charsets.UTF_8);
+            return Files.readString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
             return ExceptionUtils.getStackTrace(e);
         }

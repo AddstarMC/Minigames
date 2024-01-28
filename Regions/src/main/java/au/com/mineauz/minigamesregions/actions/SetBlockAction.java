@@ -24,17 +24,17 @@ public class SetBlockAction extends AbstractAction {
     private final IntegerFlag dur = new IntegerFlag(0, "dur");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SET_BLOCK";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         if (useBlockData.getFlag()) {
             out.put("Block", type.getFlag() + ":" + dur.getFlag());
         } else {
@@ -90,14 +90,14 @@ public class SetBlockAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         type.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         type.loadValue(path, config);
         useBlockData.loadValue(path, config);
         dur.loadValue(path, config);
@@ -107,7 +107,7 @@ public class SetBlockAction extends AbstractAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Set Block", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.addItem(new MenuItemBlockData("Type", Material.STONE, new Callback<>() {
+        m.addItem(new MenuItemBlockData("Type", type.getFlag().getMaterial(), new Callback<>() {
             @Override
             public BlockData getValue() {
                 return type.getFlag();

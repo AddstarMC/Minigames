@@ -111,7 +111,7 @@ public class RegionToolMode implements ToolMode {
             Region region = module.getRegion(name);
 
             if (region == null) {
-                module.addRegion(name, new Region(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
+                module.addRegion(name, new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                         RegionLangKey.REGION_CREATED,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),

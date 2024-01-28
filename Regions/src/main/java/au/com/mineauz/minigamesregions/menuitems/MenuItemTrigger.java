@@ -19,14 +19,14 @@ public class MenuItemTrigger extends MenuItem {
     private Node node;
 
     public MenuItemTrigger(Trigger trigger, Region region, Menu previous) {
-        super(WordUtils.capitalize(trigger.getName().replace("_", " ")), Material.LEVER);
+        super(WordUtils.capitalizeFully(trigger.getName().replace("_", " ")), Material.LEVER);
         this.trigger = trigger;
         this.region = region;
         this.previous = previous;
     }
 
     public MenuItemTrigger(Trigger trigger, Node node, Menu previous) {
-        super(WordUtils.capitalize(trigger.getName().replace("_", " ")), Material.LEVER);
+        super(WordUtils.capitalizeFully(trigger.getName().replace("_", " ")), Material.LEVER);
         this.trigger = trigger;
         this.node = node;
         this.previous = previous;

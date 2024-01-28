@@ -224,7 +224,7 @@ public class LoadoutModule extends MinigameModule {
                         MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
                         if (!loadout.getItems().isEmpty()) {
                             ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItems()).get(0));
-                            c.setItem(item);
+                            c.setDisplayItem(item);
                         }
                         c.setClick(object -> {
                             mgPlayer.setLoadout(loadout);

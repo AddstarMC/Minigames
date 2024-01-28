@@ -87,13 +87,13 @@ public class CommandReward extends RewardType {
         }
 
         public void updateName(String newName) {
-            ItemMeta meta = getItem().getItemMeta();
+            ItemMeta meta = getDisplayItem().getItemMeta();
             if (newName.length() > 16) {
                 newName = newName.substring(0, 15);
                 newName += "...";
             }
             meta.setDisplayName(ChatColor.RESET + newName);
-            getItem().setItemMeta(meta);
+            getDisplayItem().setItemMeta(meta);
             getContainer().removeItem(getSlot());
             getContainer().addItem(this, getSlot());
         }
@@ -115,10 +115,10 @@ public class CommandReward extends RewardType {
             if (after == options.size())
                 after = 0;
 
-            if (getDescription() != null) {
-                description = getDescription();
-                if (getDescription().size() >= 3) {
-                    String desc = ChatColor.stripColor(getDescription().get(1));
+            if (getDescriptionStr() != null) {
+                description = getDescriptionStr();
+                if (getDescriptionStr().size() >= 3) {
+                    String desc = ChatColor.stripColor(getDescriptionStr().get(1));
 
                     if (options.contains(desc)) {
                         description.set(0, ChatColor.GRAY + options.get(before));
@@ -147,12 +147,12 @@ public class CommandReward extends RewardType {
                 description.add(4, ChatColor.DARK_PURPLE + "Shift + Right Click to remove");
             }
 
-            setDescription(description);
+            setDescriptionStr(description);
         }
 
         @Override
         public ItemStack onDoubleClick() {
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override
@@ -165,7 +165,7 @@ public class CommandReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override
@@ -178,7 +178,7 @@ public class CommandReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override

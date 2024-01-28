@@ -86,14 +86,14 @@ public class MenuItemCondition extends MenuItem {
             }
         }
 
-        setDescription(description);
+        setDescriptionStr(description);
     }
 
     @Override
     public ItemStack onClick() {
         if (con.displayMenu(getContainer().getViewer(), getContainer()))
             return null;
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

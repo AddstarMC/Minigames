@@ -27,17 +27,17 @@ public class MessageAction extends AbstractAction {
     private final StringFlag msg = new StringFlag("Hello World", "message");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "MESSAGE";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Minigame Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Message", msg.getFlag());
     }
 
@@ -135,12 +135,12 @@ public class MessageAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         msg.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         msg.loadValue(path, config);
     }
 

@@ -32,17 +32,17 @@ public class PlaySoundAction extends AbstractAction {
     private final FloatFlag pit = new FloatFlag(1f, "pitch");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "PLAY_SOUND";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "World Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Sound", sound.getFlag());
         out.put("Volume", vol.getFlag());
         out.put("Pitch", pit.getFlag());
@@ -88,8 +88,8 @@ public class PlaySoundAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         sound.saveValue(path, config);
         priv.saveValue(path, config);
         vol.saveValue(path, config);
@@ -97,8 +97,8 @@ public class PlaySoundAction extends AbstractAction {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         sound.loadValue(path, config);
         priv.loadValue(path, config);
         vol.loadValue(path, config);
@@ -111,7 +111,7 @@ public class PlaySoundAction extends AbstractAction {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         List<String> sounds = new ArrayList<>();
         for (Sound sound : Sound.values())
-            sounds.add(WordUtils.capitalize(sound.toString().replace("_", " ")));
+            sounds.add(WordUtils.capitalizeFully(sound.toString().replace("_", " ")));
         m.addItem(new MenuItemList("Sound", Material.NOTE_BLOCK, new Callback<>() {
 
             @Override
@@ -120,7 +120,7 @@ public class PlaySoundAction extends AbstractAction {
                 if (!s.toString().equals(sound.getFlag())) {
                     sound.setFlag(s.toString());
                 }
-                return WordUtils.capitalize(sound.getFlag().replace("_", " "));
+                return WordUtils.capitalizeFully(sound.getFlag().replace("_", " "));
             }
 
             @Override

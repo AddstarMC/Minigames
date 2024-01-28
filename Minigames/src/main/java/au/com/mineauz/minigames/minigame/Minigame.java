@@ -19,8 +19,6 @@ import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.text.WordUtils;
@@ -104,7 +102,7 @@ public class Minigame implements ScriptObject {
     private final IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
     @NotNull
     private final ScoreboardData sbData = new ScoreboardData();
-    private final Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
+    private final Map<MinigameStat, StatSettings> statSettings = new HashMap<>();
     //Unsaved data
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final List<MinigamePlayer> spectators = new ArrayList<>();
@@ -500,7 +498,7 @@ public class Minigame implements ScriptObject {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(type.getFlag().toString().replace("_", " "));
+                return WordUtils.capitalizeFully(type.getFlag().toString().replace("_", " "));
             }
 
             @Override
@@ -727,7 +725,7 @@ public class Minigame implements ScriptObject {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(defaultGamemode.getFlag().toString());
+                return WordUtils.capitalizeFully(defaultGamemode.getFlag().toString());
             }
 
             @Override
@@ -1064,7 +1062,7 @@ public class Minigame implements ScriptObject {
     }
 
     public Map<MinigameStat, StatSettings> getStatSettings(StoredGameStats stats) {
-        Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
+        Map<MinigameStat, StatSettings> settings = new HashMap<>();
 
         for (MinigameStat stat : stats.getStats().keySet()) {
             settings.put(stat, getSettings(stat));
@@ -1085,18 +1083,18 @@ public class Minigame implements ScriptObject {
         itemsMain.add(usePermissions.getMenuItem("Use Permissions", Material.PAPER));
         List<String> mgTypes = new ArrayList<>();
         for (MinigameType val : MinigameType.values()) {
-            mgTypes.add(WordUtils.capitalize(val.toString().replace("_", " ")));
+            mgTypes.add(WordUtils.capitalizeFully(val.toString().replace("_", " ")));
         }
         itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
         List<String> scoreTypes = new ArrayList<>();
         for (GameMechanicBase val : GameMechanics.getGameMechanics()) {
-            scoreTypes.add(WordUtils.capitalize(val.getMechanic()));
+            scoreTypes.add(WordUtils.capitalizeFully(val.getMechanic()));
         }
         itemsMain.add(new MenuItemList("Game Mechanic", List.of("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(mechanic.getFlag());
+                return WordUtils.capitalizeFully(mechanic.getFlag());
             }
 
             @Override
@@ -1113,7 +1111,7 @@ public class Minigame implements ScriptObject {
             if (getMechanic().displaySettings(mgm) != null &&
                     getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
                 return null;
-            return mechSettings.getItem();
+            return mechSettings.getDisplayItem();
         });
         itemsMain.add(mechSettings);
         MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
@@ -1183,7 +1181,7 @@ public class Minigame implements ScriptObject {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(degenType.getFlag());
+                return WordUtils.capitalizeFully(degenType.getFlag());
             }
 
             @Override
@@ -1276,7 +1274,7 @@ public class Minigame implements ScriptObject {
         List<MenuItem> itemsPlayer = new ArrayList<>(20);
         List<String> gmopts = new ArrayList<>();
         for (GameMode gm : GameMode.values()) {
-            gmopts.add(WordUtils.capitalize(gm.toString()));
+            gmopts.add(WordUtils.capitalizeFully(gm.toString()));
         }
         itemsPlayer.add(new MenuItemList("Players Gamemode", Material.CRAFTING_TABLE, getDefaultGamemodeCallback(), gmopts));
         itemsPlayer.add(allowEnderPearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
@@ -1427,8 +1425,9 @@ public class Minigame implements ScriptObject {
 
                 if (module.getFlags() != null) {
                     for (String flag : module.getFlags().keySet()) {
-                        if (modsave.getConfig().contains(name + "." + flag))
+                        if (modsave.getConfig().contains(name + "." + flag)) {
                             module.getFlags().get(flag).loadValue(name, modsave.getConfig());
+                        }
                     }
                 }
             }
@@ -1514,7 +1513,7 @@ public class Minigame implements ScriptObject {
 
     @Override
     public Set<String> getKeys() {
-        return ImmutableSet.of("players", "teams", "name", "displayname");
+        return Set.of("players", "teams", "name", "displayname");
     }
 
     @Override

@@ -41,17 +41,17 @@ public class RegionSwapAction extends AbstractAction {
     private final BooleanFlag swapRegion = new BooleanFlag(true, "swapRegion");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "REGION_SWAP_ACTION";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("From: ", fromRegion.getFlag());
         out.put("To: ", toRegion.getFlag());
         out.put("Swap: ", swapRegion.getFlag());
@@ -164,14 +164,14 @@ public class RegionSwapAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         fromRegion.saveValue(path, config);
         toRegion.saveValue(path, config);
         swapRegion.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         fromRegion.loadValue(path, config);
         toRegion.loadValue(path, config);
         swapRegion.loadValue(path, config);

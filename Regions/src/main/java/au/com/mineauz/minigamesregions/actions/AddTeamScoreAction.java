@@ -24,17 +24,17 @@ public class AddTeamScoreAction extends ScoreAction {
     private final StringFlag team = new StringFlag("NONE", "team");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "ADD_TEAM_SCORE";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Team Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Score", score.getFlag());
         out.put("Team", team.getFlag());
     }
@@ -77,15 +77,15 @@ public class AddTeamScoreAction extends ScoreAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         score.saveValue(path, config);
         team.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         score.loadValue(path, config);
         team.loadValue(path, config);
     }
@@ -114,7 +114,7 @@ public class AddTeamScoreAction extends ScoreAction {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(team.getFlag());
+                return WordUtils.capitalizeFully(team.getFlag());
             }
 
             @Override

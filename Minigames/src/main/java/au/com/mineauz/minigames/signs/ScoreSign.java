@@ -43,7 +43,7 @@ public class ScoreSign implements MinigameSign {
             event.setLine(1, ChatColor.GREEN + "Score");
             if (TeamColor.matchColor(event.getLine(3)) != null) {
                 TeamColor col = TeamColor.matchColor(event.getLine(3));
-                event.setLine(3, col.getColor() + WordUtils.capitalize(col.toString()));
+                event.setLine(3, col.getColor() + WordUtils.capitalizeFully(col.toString()));
             } else
                 event.setLine(3, "");
             return true;

@@ -54,7 +54,7 @@ public class MenuItemAddTeam extends MenuItem {
 
             List<String> teams = new ArrayList<>(tm.getTeams().size() + 1);
             for (Team t : tm.getTeams()) {
-                teams.add(WordUtils.capitalize(t.getColor().toString().replace("_", " ")));
+                teams.add(WordUtils.capitalizeFully(t.getColor().toString().replace("_", " ")));
             }
             teams.add("None");
             getContainer().removeItem(0);

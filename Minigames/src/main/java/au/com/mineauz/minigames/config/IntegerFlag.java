@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,7 +26,7 @@ public class IntegerFlag extends Flag<Integer> {
     }
 
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
+    public MenuItemInteger getMenuItem(String name, Material displayItem) {
         return new MenuItemInteger(name, displayItem, new Callback<>() {
 
             @Override
@@ -44,7 +43,7 @@ public class IntegerFlag extends Flag<Integer> {
         }, 0, null);
     }
 
-    public MenuItem getMenuItem(String name, Material displayItem, Integer min, Integer max) {
+    public MenuItemInteger getMenuItem(String name, Material displayItem, Integer min, Integer max) {
         return new MenuItemInteger(name, displayItem, new Callback<>() {
 
             @Override
@@ -62,7 +61,7 @@ public class IntegerFlag extends Flag<Integer> {
     }
 
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem, List<String> description) {
+    public MenuItemInteger getMenuItem(String name, Material displayItem, List<String> description) {
         return new MenuItemInteger(name, description, displayItem, new Callback<>() {
 
             @Override
@@ -79,7 +78,7 @@ public class IntegerFlag extends Flag<Integer> {
         }, 0, null);
     }
 
-    public MenuItem getMenuItem(String name, Material displayItem, List<String> description, Integer min, Integer max) {
+    public MenuItemInteger getMenuItem(String name, Material displayItem, List<String> description, Integer min, Integer max) {
         return new MenuItemInteger(name, description, displayItem, new Callback<>() {
 
             @Override

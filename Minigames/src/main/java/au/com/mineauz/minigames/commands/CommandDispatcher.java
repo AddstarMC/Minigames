@@ -52,6 +52,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new BackendCommand());
         registerCommand(new InfoCommand());
         registerCommand(new ResourcePackCommand());
+        registerCommand(new SelectCommand());
     }
 
     public static void registerCommand(ICommand command) {

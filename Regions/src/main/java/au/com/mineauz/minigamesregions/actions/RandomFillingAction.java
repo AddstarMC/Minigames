@@ -37,17 +37,17 @@ public class RandomFillingAction extends AbstractAction {
     private final BooleanFlag replaceAll = new BooleanFlag(true, "replaceAll");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "RANDOM_FILLING";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("To", toType.getFlag());
         out.put("Chance", percentageChance.getFlag());
         out.put("Replace misses with air", replaceAll.getFlag());
@@ -98,8 +98,8 @@ public class RandomFillingAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         toType.saveValue(path, config);
         percentageChance.saveValue(path, config);
         replaceAll.saveValue(path, config);
@@ -107,8 +107,8 @@ public class RandomFillingAction extends AbstractAction {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         toType.loadValue(path, config);
         percentageChance.loadValue(path, config);
         replaceAll.loadValue(path, config);
@@ -140,8 +140,8 @@ public class RandomFillingAction extends AbstractAction {
 
         }) {
             @Override
-            public ItemStack getItem() {
-                ItemStack stack = super.getItem();
+            public @NotNull ItemStack getDisplayItem() {
+                ItemStack stack = super.getDisplayItem();
                 Material m = Material.getMaterial(toType.getFlag());
                 stack.setType(Objects.requireNonNullElse(m, Material.COBBLESTONE));
                 return stack;

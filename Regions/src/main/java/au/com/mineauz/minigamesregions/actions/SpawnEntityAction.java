@@ -1,58 +1,87 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.config.ConfigSerializableBridge;
+import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.logging.Level;
+
+/*
+ * todo
+ * Entity settings:
+ *   rotation
+ *
+ * Living Entity Settings:
+ *   Potion effect
+ *   EntityEquipment
+ * Ageable:
+ *   setAge
+ * --> Breeadble
+ *   setAgeLock
+ */
 
 public class SpawnEntityAction extends AbstractAction {
+    /**
+     * Contains all entities that are problematic to spawn as is.
+     * Some problems may get resolved, if their (default)settings get added in the future;
+     * others probably stay problematic and shouldn't be spawn able like players
+     */
+    private final Set<EntityType> NOT_SPAWNABLE = Set.of( //todo enabled feature by world
+            EntityType.AREA_EFFECT_CLOUD, // todo needs effect
+            EntityType.BLOCK_DISPLAY, // todo needs block state/data and display settings
+            EntityType.DROPPED_ITEM, // todo needs ItemMeta
+            EntityType.FALLING_BLOCK, // todo needs block state/data
+            EntityType.FISHING_HOOK, // needs a fishing rod; we can't guarantee this
+            EntityType.GLOW_ITEM_FRAME, // hanging items need support and direction; we can't guarantee this
+            EntityType.ITEM_DISPLAY, // todo needs ItemMeta and display settings
+            EntityType.ITEM_FRAME, // hanging items need support and direction; we can't guarantee this
+            EntityType.LEASH_HITCH, // hanging items need support also does not easy leash an entity; we can't guarantee this
+            EntityType.LIGHTNING, // todo needs lightning settings
+            EntityType.PAINTING, // hanging items need support and direction; we can't guarantee this
+            EntityType.PLAYER, // we don't support npcs; todo maybe in the future integrate citizens support?
+            EntityType.TEXT_DISPLAY, // todo needs text and display settings
+            EntityType.UNKNOWN // not a spawn able entity type
+    );
 
-    private final StringFlag type = new StringFlag("ZOMBIE", "type");
-    private final Map<String, String> settings = new HashMap<>();
-
-    public SpawnEntityAction() {
-        addBaseSettings();
-    }
-
-    private void addBaseSettings() {
-        settings.put("velocityx", "0");
-        settings.put("velocityy", "0");
-        settings.put("velocityz", "0");
-    }
+    private final EnumFlag<EntityType> type = new EnumFlag<>(EntityType.ZOMBIE, "type");
+    private final Map<String, ConfigSerializableBridge<?>> settings = new HashMap<>();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SPAWN_ENTITY";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "World Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Type", type.getFlag());
-        out.put("Velocity", settings.get("velocityx") + "," + settings.get("velocityy") + "," + settings.get("velocityz"));
+
+        if (type.getFlag().isAlive() && settings.containsKey("displayname")) {
+            out.put("Display Name", settings.get("displayname").getObject());
+        }
     }
 
     @Override
@@ -72,169 +101,438 @@ public class SpawnEntityAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
-        debug(mgPlayer, node);
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
-        final Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf(type.getFlag()));
+        debug(mgPlayer, node);
+        node.getLocation().getWorld().spawnEntity(node.getLocation(), type.getFlag(), CreatureSpawnEvent.SpawnReason.CUSTOM, entity -> {
 
-        final double vx = Double.parseDouble(settings.get("velocityx"));
-        final double vy = Double.parseDouble(settings.get("velocityy"));
-        final double vz = Double.parseDouble(settings.get("velocityz"));
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> ent.setVelocity(new Vector(vx, vy, vz)));
-
-        if (ent instanceof LivingEntity lent) {
-            if (settings.containsKey("displayname")) {
-                lent.setCustomName(settings.get("displayname"));
-                lent.setCustomNameVisible(Boolean.getBoolean(settings.get("displaynamevisible")));
+            if (settings.containsKey("velocity")) {
+                final Vector velocity = (Vector) settings.get("velocity").getObject();
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> entity.setVelocity(velocity));
             }
-        }
 
-        ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.getPlugin(), true));
-        mgPlayer.getMinigame().getRecorderData().addEntity(ent, mgPlayer, true);
+            if (settings.containsKey("customName")) {
+                entity.customName(MiniMessage.miniMessage().deserialize((String) settings.get("customName").getObject()));
+            }
+
+            if (settings.containsKey("customNameVisible")) {
+                entity.setCustomNameVisible((Boolean) settings.get("customNameVisible").getObject());
+            }
+
+            if (settings.containsKey("visualFire")) {
+                entity.setVisualFire((Boolean) settings.get("visualFire").getObject());
+            }
+
+            if (settings.containsKey("persistent")) {
+                entity.setPersistent((Boolean) settings.get("persistent").getObject());
+            }
+
+            if (settings.containsKey("glowing")) {
+                entity.setGlowing((Boolean) settings.get("glowing").getObject());
+            }
+
+            if (settings.containsKey("invulnerable")) {
+                entity.setInvulnerable((Boolean) settings.get("invulnerable").getObject());
+            }
+
+            if (settings.containsKey("silent")) {
+                entity.setSilent((Boolean) settings.get("silent").getObject());
+            }
+
+            if (settings.containsKey("hasGravity")) {
+                entity.setGravity((Boolean) settings.get("hasGravity").getObject());
+            }
+
+            if (entity instanceof LivingEntity livingEntity) {
+                if (settings.containsKey("canPickupItems")) {
+                    livingEntity.setCanPickupItems((Boolean) settings.get("canPickupItems").getObject());
+                }
+
+                if (settings.containsKey("hasAI")) {
+                    livingEntity.setAI((Boolean) settings.get("hasAI").getObject());
+                }
+
+                if (settings.containsKey("isCollidable")) {
+                    livingEntity.setCollidable((Boolean) settings.get("isCollidable").getObject());
+                }
+            }
+
+            entity.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.getPlugin(), true)); //todo use in recorder to despawn + add parameter for specific Minigame
+            mgPlayer.getMinigame().getRecorderData().addEntity(entity, mgPlayer, true);
+        });
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         type.saveValue(path, config);
 
+        for (Map.Entry<String, ConfigSerializableBridge<?>> entry : settings.entrySet()) {
+            config.set(path + ".settings." + entry.getKey(), entry.getValue().serialize());
+        }
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         type.loadValue(path, config);
 
+        settings.clear();
+        ConfigurationSection section = config.getConfigurationSection(path + ".settings");
+        if (section != null) { // may was empty
+            Set<String> keys = section.getKeys(false);
+
+            for (String key : keys) {
+                ConfigSerializableBridge<?> serializableBridge = ConfigSerializableBridge.deserialize(config.get(path + ".settings." + key));
+
+                if (serializableBridge != null) {
+                    settings.put(key, serializableBridge);
+                } else {
+                    Minigames.log().log(Level.WARNING, "Key \"" + key + "\" of ConfigSerializableBridge in SpawnEntityAction of path \"" + path + ".settings." + key + "\" failed to load!");
+                }
+            }
+        }
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Spawn Entity", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        Menu menu = new Menu(3, "Spawn Entity", mgPlayer);
+        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), menu.getSize() - 9);
         List<String> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
-            if (type != EntityType.ITEM_FRAME && type != EntityType.LEASH_HITCH && type != EntityType.PLAYER &&
-                    type != EntityType.LIGHTNING && type != EntityType.PAINTING && type != EntityType.UNKNOWN &&
-                    type != EntityType.DROPPED_ITEM)
-                options.add(WordUtils.capitalize(type.toString().replace("_", " ")));
+            if (!NOT_SPAWNABLE.contains(type)) {
+                options.add(WordUtils.capitalizeFully(type.toString().toLowerCase().replace("_", " ")));
+            }
         }
-        m.addItem(new MenuItemList("Entity Type", Material.SKELETON_SKULL, new Callback<>() {
+        menu.addItem(new MenuItemList("Entity Type", Material.SKELETON_SKULL, new Callback<>() { //todo spawn egg?
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(type.getFlag().replace("_", " "));
+                return WordUtils.capitalizeFully(type.getFlag().toString().toLowerCase(Locale.ENGLISH).replace("_", " "));
             }
 
             @Override
             public void setValue(String value) {
-                type.setFlag(value.toUpperCase().replace(" ", "_"));
-                settings.clear();
-                addBaseSettings();
+                type.setFlag(EntityType.valueOf(value.toUpperCase().replace(" ", "_")));
             }
 
 
         }, options));
 
-        m.addItem(new MenuItemDecimal("X Velocity", Material.ARROW, new Callback<>() {
-
-            @Override
-            public Double getValue() {
-                return Double.valueOf(settings.get("velocityx"));
-            }
-
-            @Override
-            public void setValue(Double value) {
-                settings.put("velocityx", value.toString());
-            }
-
-
-        }, 0.5, 1, null, null));
-        m.addItem(new MenuItemDecimal("Y Velocity", Material.ARROW, new Callback<>() {
-
-            @Override
-            public Double getValue() {
-                return Double.valueOf(settings.get("velocityy"));
-            }
-
-            @Override
-            public void setValue(Double value) {
-                settings.put("velocityy", value.toString());
-            }
-
-
-        }, 0.5, 1, null, null));
-        m.addItem(new MenuItemDecimal("Z Velocity", Material.ARROW, new Callback<>() {
-
-            @Override
-            public Double getValue() {
-                return Double.valueOf(settings.get("velocityz"));
-            }
-
-            @Override
-            public void setValue(Double value) {
-                settings.put("velocityz", value.toString());
-            }
-
-
-        }, 0.5, 1, null, null));
-
-        m.addItem(new MenuItemNewLine());
-
-        final Menu eSet = new Menu(3, "Settings", mgPlayer);
-        final MenuItemPage backButton = new MenuItemPage("Back", MenuUtility.getBackMaterial(), m);
-        final MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
+        final MenuItemCustom customMenuItem = new MenuItemCustom("Entity Settings", Material.CHEST);
+        final Menu entitySettingsMenu = new Menu(6, "Settings", mgPlayer);
         final MinigamePlayer fply = mgPlayer;
-        cus.setClick(object -> {
-            if (type.getFlag().equals("ZOMBIE")) {
-                eSet.clearMenu();
-                eSet.addItem(backButton, eSet.getSize() - 9);
-                livingEntitySettings(eSet);
-                eSet.displayMenu(fply);
+        customMenuItem.setClick(object -> {
+            if (type.getFlag().isAlive()) {
+                entitySettingsMenu.clearMenu();
+
+                final MenuItemPage backButton = new MenuItemPage("Back", MenuUtility.getBackMaterial(), menu);
+                entitySettingsMenu.addItem(backButton, entitySettingsMenu.getSize() - 1);
+                populateEntitySettings(entitySettingsMenu, mgPlayer);
+
+                entitySettingsMenu.displayMenu(fply);
                 return null;
             }
-            return cus.getItem();
+            return customMenuItem.getDisplayItem();
         });
-        m.addItem(cus);
+        menu.addItem(customMenuItem);
 
-        m.displayMenu(mgPlayer);
+        menu.displayMenu(mgPlayer);
         return true;
     }
 
-    private void livingEntitySettings(Menu eSet) {
-        settings.put("displayname", "");
-        settings.put("displaynamevisible", "false");
-
-        eSet.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<>() {
-
+    private void populateEntitySettings(@NotNull Menu entitySettingsMenu, @NotNull MinigamePlayer mgPlayer) {
+        entitySettingsMenu.addItem(new MenuItemComponent("Display Name", Material.NAME_TAG, new Callback<>() {
             @Override
             public String getValue() {
-                return settings.get("displayname");
+                ConfigSerializableBridge<?> value = settings.get("customName");
+                if (value == null) {
+                    return "";
+                } else {
+                    return (String) value.getObject();
+                }
             }
 
             @Override
             public void setValue(String value) {
-                settings.put("displayname", value);
+                settings.put("customName", new ConfigSerializableBridge<>(value));
             }
-
-
         }));
-        eSet.addItem(new MenuItemBoolean("Display Name Visible", Material.ENDER_PEARL, new Callback<>() {
 
+        entitySettingsMenu.addItem(new MenuItemBoolean("Display Name Visible", Material.SPYGLASS, new Callback<>() {
             @Override
             public Boolean getValue() {
-                return Boolean.valueOf(settings.get("displaynamevisible"));
+                ConfigSerializableBridge<?> value = settings.get("customNameVisible");
+                if (value == null) {
+                    return false;
+                } else {
+                    return (Boolean) value.getObject();
+                }
             }
 
             @Override
             public void setValue(Boolean value) {
-                settings.put("displaynamevisible", value.toString());
+                settings.put("customNameVisible", new ConfigSerializableBridge<>(value));
+            }
+        }));
+
+        Menu velocityMenu = new Menu(3, "Entity velocity", mgPlayer);
+        final MenuItemPage backButton = new MenuItemPage("Back", MenuUtility.getBackMaterial(), entitySettingsMenu);
+        velocityMenu.addItem(backButton, velocityMenu.getSize() - 1);
+
+        velocityMenu.addItem(new MenuItemDecimal("X Velocity", Material.ARROW, new Callback<>() {
+            @Override
+            public Double getValue() {
+                ConfigSerializableBridge<?> value = settings.get("velocity");
+
+                if (value == null) {
+                    return 0D;
+                } else {
+                    return ((Vector) value.getObject()).getX();
+                }
+            }
+
+            @Override
+            public void setValue(Double value) {
+                Vector vector;
+
+                ConfigSerializableBridge<?> savedVelocity = settings.get("velocity");
+                if (savedVelocity == null) {
+                    vector = new Vector(value, 0, 0);
+                } else {
+                    vector = (Vector) savedVelocity.getObject();
+                    vector.setX(value);
+                }
+
+                settings.put("velocity", new ConfigSerializableBridge<>(vector));
             }
 
 
+        }, 0.5, 1, null, null));
+        velocityMenu.addItem(new MenuItemDecimal("Y Velocity", Material.ARROW, new Callback<>() {
+            @Override
+            public Double getValue() {
+                ConfigSerializableBridge<?> value = settings.get("velocity");
+
+                if (value == null) {
+                    return 0D;
+                } else {
+                    return ((Vector) value.getObject()).getY();
+                }
+            }
+
+            @Override
+            public void setValue(Double value) {
+                Vector vector;
+
+                ConfigSerializableBridge<?> savedVelocity = settings.get("velocity");
+                if (savedVelocity == null) {
+                    vector = new Vector(0, value, 0);
+                } else {
+                    vector = (Vector) savedVelocity.getObject();
+                    vector.setY(value);
+                }
+
+                settings.put("velocity", new ConfigSerializableBridge<>(vector));
+            }
+
+
+        }, 0.5, 1, null, null));
+        velocityMenu.addItem(new MenuItemDecimal("Z Velocity", Material.ARROW, new Callback<>() {
+
+            @Override
+            public Double getValue() {
+                ConfigSerializableBridge<?> value = settings.get("velocity");
+
+                if (value == null) {
+                    return 0D;
+                } else {
+                    return ((Vector) value.getObject()).getZ();
+                }
+            }
+
+            @Override
+            public void setValue(Double value) {
+                Vector vector;
+
+                ConfigSerializableBridge<?> savedVelocity = settings.get("velocity");
+                if (savedVelocity == null) {
+                    vector = new Vector(0, 0, value);
+                } else {
+                    vector = (Vector) savedVelocity.getObject();
+                    vector.setZ(value);
+                }
+
+                settings.put("velocity", new ConfigSerializableBridge<>(vector));
+            }
+        }, 0.5, 1, null, null));
+        entitySettingsMenu.addItem(new MenuItemPage("Velocity", Material.FIREWORK_ROCKET, velocityMenu));
+
+        entitySettingsMenu.addItem(new MenuItemBoolean("Visual fire", Material.CAMPFIRE, new Callback<>() {
+            @Override
+            public Boolean getValue() {
+                ConfigSerializableBridge<?> value = settings.get("visualFire");
+                if (value == null) {
+                    return false;
+                } else {
+                    return (Boolean) value.getObject();
+                }
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                settings.put("visualFire", new ConfigSerializableBridge<>(value));
+            }
         }));
+
+        entitySettingsMenu.addItem(new MenuItemBoolean("Persistent", Material.SLIME_BALL, new Callback<>() {
+            @Override
+            public Boolean getValue() {
+                ConfigSerializableBridge<?> value = settings.get("persistent");
+                if (value == null) {
+                    return false;
+                } else {
+                    return (Boolean) value.getObject();
+                }
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                settings.put("persistent", new ConfigSerializableBridge<>(value));
+            }
+        }));
+
+        entitySettingsMenu.addItem(new MenuItemBoolean("Glowing", Material.GLOWSTONE_DUST, new Callback<>() {
+            @Override
+            public Boolean getValue() {
+                ConfigSerializableBridge<?> value = settings.get("glowing");
+                if (value == null) {
+                    return false;
+                } else {
+                    return (Boolean) value.getObject();
+                }
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                settings.put("glowing", new ConfigSerializableBridge<>(value));
+            }
+        }));
+
+        entitySettingsMenu.addItem(new MenuItemBoolean("Invulnerable", Material.SHIELD, new Callback<>() {
+            @Override
+            public Boolean getValue() {
+                ConfigSerializableBridge<?> value = settings.get("invulnerable");
+                if (value == null) {
+                    return false;
+                } else {
+                    return (Boolean) value.getObject();
+                }
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                settings.put("invulnerable", new ConfigSerializableBridge<>(value));
+            }
+        }));
+
+        entitySettingsMenu.addItem(new MenuItemBoolean("Silent", Material.SCULK_SENSOR, new Callback<>() {
+            @Override
+            public Boolean getValue() {
+                ConfigSerializableBridge<?> value = settings.get("silent");
+                if (value == null) {
+                    return false;
+                } else {
+                    return (Boolean) value.getObject();
+                }
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                settings.put("silent", new ConfigSerializableBridge<>(value));
+            }
+        }));
+
+        // don't overflow to next page
+        entitySettingsMenu.addItem(new MenuItemNewLine());
+
+        entitySettingsMenu.addItem(new MenuItemBoolean("Has gravity", Material.ELYTRA, new Callback<>() {
+            @Override
+            public Boolean getValue() {
+                ConfigSerializableBridge<?> value = settings.get("hasGravity");
+                if (value == null) {
+                    return true;
+                } else {
+                    return (Boolean) value.getObject();
+                }
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                settings.put("hasGravity", new ConfigSerializableBridge<>(value));
+            }
+        }));
+
+        if (type.getFlag().isAlive()) {
+            entitySettingsMenu.addItem(new MenuItemNewLine());
+            populateLivingEntitySettings(entitySettingsMenu, mgPlayer);
+        }
     }
 
-    public void zombieSettings(Menu eSet) {
+    private void populateLivingEntitySettings(@NotNull Menu entitySettingsMenu, @NotNull MinigamePlayer mgPlayer) {
+        entitySettingsMenu.addItem(new MenuItemNewLine());
+
+        entitySettingsMenu.addItem(new MenuItemBoolean("Can pickup items", Material.HOPPER, new Callback<>() {
+            @Override
+            public Boolean getValue() {
+                ConfigSerializableBridge<?> value = settings.get("canPickupItems");
+                if (value == null) {
+                    return false;
+                } else {
+                    return (Boolean) value.getObject();
+                }
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                settings.put("canPickupItems", new ConfigSerializableBridge<>(value));
+            }
+        }));
+
+        entitySettingsMenu.addItem(new MenuItemBoolean("Has AI", Material.LIGHT, new Callback<>() {
+            @Override
+            public Boolean getValue() {
+                ConfigSerializableBridge<?> value = settings.get("hasAI");
+                if (value == null) {
+                    return false;
+                } else {
+                    return (Boolean) value.getObject();
+                }
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                settings.put("hasAI", new ConfigSerializableBridge<>(value));
+            }
+        }));
+
+        entitySettingsMenu.addItem(new MenuItemBoolean("Is collidable", Material.GLASS, new Callback<>() {
+            @Override
+            public Boolean getValue() {
+                ConfigSerializableBridge<?> value = settings.get("isCollidable");
+                if (value == null) {
+                    return false;
+                } else {
+                    return (Boolean) value.getObject();
+                }
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                settings.put("isCollidable", new ConfigSerializableBridge<>(value));
+            }
+        }));
+
 
     }
 }

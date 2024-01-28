@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.display.DisplayCuboid;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.DependencyManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -18,7 +19,6 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -29,6 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -510,53 +511,102 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void addSelectionPoint(final Location loc) {
-        if (this.selection1 == null) {
-            this.selection1 = loc;
-            this.showSelection(true);
-            MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
-        } else if (this.selection2 == null) {
-            this.selection2 = loc;
-            this.showSelection(true);
-            MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS2);
+        if (DependencyManager.isWorldEditEnabled()) {
+            if (DependencyManager.getLocation1(player) != null) {
+                if (DependencyManager.getLocation2(player) != null) {
+                    DependencyManager.clearSelection(player);
+                    DependencyManager.setPos1(player, loc);
+                    MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_RESTART);
+                    MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
+                } else {
+                    DependencyManager.setPos2(player, loc);
+                    MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS2);
+                }
+            } else {
+                DependencyManager.setPos1(player, loc);
+                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
+            }
         } else {
-            this.showSelection(false);
-            this.selection1 = loc;
-            MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_RESTART);
-            MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
-            this.selection2 = null;
-            this.showSelection(true);
+            if (this.selection1 == null) {
+                this.selection1 = loc;
+                this.showSelection(true);
+                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
+            } else if (this.selection2 == null) {
+                this.selection2 = loc;
+                this.showSelection(true);
+                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS2);
+            } else {
+                this.showSelection(false);
+                this.selection1 = loc;
+                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_RESTART);
+                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
+                this.selection2 = null;
+                this.showSelection(true);
+            }
         }
     }
 
     public boolean hasSelection() {
-        return this.selection1 != null && this.selection2 != null;
+        if (DependencyManager.isWorldEditEnabled()) {
+            return DependencyManager.hasSelection(this.player);
+        } else {
+            return this.selection1 != null && this.selection2 != null;
+        }
     }
 
-    public Location[] getSelectionLocations() {
+    public @Nullable Location @NotNull [] getSelectionLocations() {
         final Location[] loc = new Location[2];
-        loc[0] = this.selection1;
-        loc[1] = this.selection2;
+
+        if (DependencyManager.isWorldEditEnabled()) {
+            DependencyManager.SelectedRegionStatusWrapper statusWrapper = DependencyManager.getSelectedRegion(this.player);
+
+            loc[0] = statusWrapper.pos1();
+            loc[1] = statusWrapper.pos2();
+        } else {
+            loc[0] = this.selection1;
+            loc[1] = this.selection2;
+        }
         return loc;
     }
 
     public void clearSelection() {
-        this.showSelection(false);
-        this.selection1 = null;
-        this.selection2 = null;
+        if (DependencyManager.isWorldEditEnabled()) {
+            DependencyManager.clearSelection(this.player);
+        } else {
+            this.showSelection(false);
+            this.selection1 = null;
+            this.selection2 = null;
+        }
     }
 
-    public void setSelection(final Location point1, final Location point2) {
-        this.selection1 = point1;
-        this.selection2 = point2;
+    public void setSelection1(final Location point1) {
+        if (DependencyManager.isWorldEditEnabled()) {
+            DependencyManager.setPos1(this.player, point1);
+        } else {
+            this.selection1 = point1;
+            this.showSelection(true);
+        }
+    }
 
-        this.showSelection(true);
+    public void setSelection2(final Location point2) {
+        if (DependencyManager.isWorldEditEnabled()) {
+            DependencyManager.setPos2(this.player, point2);
+        } else {
+            this.selection2 = point2;
+            this.showSelection(true);
+        }
     }
 
     public void setSelection(final MgRegion region) {
-        this.selection1 = region.getLocation1();
-        this.selection2 = region.getLocation2();
+        if (DependencyManager.isWorldEditEnabled()) {
+            DependencyManager.setPos2(this.player, region.getLocation1());
+            DependencyManager.setPos2(this.player, region.getLocation2());
+        } else {
+            this.selection1 = region.getLocation1();
+            this.selection2 = region.getLocation2();
 
-        this.showSelection(true);
+            this.showSelection(true);
+        }
     }
 
     public void showSelection(final boolean show) {
@@ -753,7 +803,7 @@ public class MinigamePlayer implements ScriptObject {
 
     @Override
     public Set<String> getKeys() {
-        return ImmutableSet.of("name", "displayname", "score", "kills", "deaths", "health", "team", "pos", "minigame");
+        return Set.of("name", "displayname", "score", "kills", "deaths", "health", "team", "pos", "minigame");
     }
 
     @Override

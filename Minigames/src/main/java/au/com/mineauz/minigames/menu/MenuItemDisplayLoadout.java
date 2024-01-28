@@ -108,7 +108,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         List<MenuItem> potions = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
-            potions.add(new MenuItemPotion(WordUtils.capitalize(eff.getType().getName().replace("_", " ")), des, Material.POTION, eff, loadout));
+            potions.add(new MenuItemPotion(WordUtils.capitalizeFully(eff.getType().getName().replace("_", " ")), des, Material.POTION, eff, loadout));
         }
         potionMenu.addItems(potions);
 
@@ -126,7 +126,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
             a = 41;
         }
         for (int i = a; i < 42; i++) {
-            loadoutMenu.addItem(new MenuItem("", null), i);
+            loadoutMenu.addItem(new MenuItem("", (Material) null), i);
         }
         loadoutMenu.displayMenu(getContainer().getViewer());
 
@@ -161,7 +161,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
             return null;
         }
 
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

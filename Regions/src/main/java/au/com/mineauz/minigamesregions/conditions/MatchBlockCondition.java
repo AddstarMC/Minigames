@@ -16,14 +16,14 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 
 public class MatchBlockCondition extends ConditionInterface {
-
     private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
-    private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");
+    private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur"); //todo rename the name
 
     @Override
     public String getName() {
@@ -36,7 +36,7 @@ public class MatchBlockCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
         if (useBlockData.getFlag()) {
             out.put("Type", type.getFlag().getMaterial() + " with full data)");
         } else {
@@ -55,12 +55,12 @@ public class MatchBlockCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         return false;
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         return check(node.getLocation());
     }
 
@@ -72,14 +72,14 @@ public class MatchBlockCondition extends ConditionInterface {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         type.saveValue(path, config);
         useBlockData.saveValue(path, config);
         saveInvert(config, path);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         type.loadValue(path, config);
         useBlockData.loadValue(path, config);
         loadInvert(config, path);
@@ -93,7 +93,7 @@ public class MatchBlockCondition extends ConditionInterface {
                 List.of("Click here with a", "block you wish to", "match to."), Material.ITEM_FRAME);
         m.addItem(autoSetBlockMenuItem, m.getSize() - 1);
 
-        final MenuItemBlockData btype = new MenuItemBlockData("Block Type", Material.STONE, new Callback<>() {
+        final MenuItemBlockData btype = new MenuItemBlockData("Block Type", type.getFlag().getMaterial(), new Callback<>() {
 
             @Override
             public BlockData getValue() {
@@ -129,7 +129,7 @@ public class MatchBlockCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
-        return true;
+    public boolean PlayerNeeded() {
+        return false;
     }
 }

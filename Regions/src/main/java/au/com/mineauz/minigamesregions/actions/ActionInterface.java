@@ -12,11 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public interface ActionInterface {
-    String getName();
+    @NotNull String getName();
 
-    String getCategory();
+    @NotNull String getCategory();
 
-    void describe(Map<String, Object> out);
+    void describe(@NotNull Map<@NotNull String, @NotNull Object> out);
 
     boolean useInRegions();
 
@@ -26,9 +26,9 @@ public interface ActionInterface {
 
     void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node);
 
-    void saveArguments(FileConfiguration config, String path);
+    void saveArguments(@NotNull FileConfiguration config, @NotNull String path);
 
-    void loadArguments(FileConfiguration config, String path);
+    void loadArguments(@NotNull FileConfiguration config, @NotNull String path);
 
     boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @Nullable Menu previous);
 

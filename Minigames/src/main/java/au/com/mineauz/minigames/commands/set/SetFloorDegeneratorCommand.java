@@ -13,7 +13,6 @@ import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +45,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
     }
 
     @Override
-    public Component getUsage() {
+    public Component getUsage() { // todo create", "remove", "type", "time
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_FLOORDEGEN_USAGE);
     }
 
@@ -63,25 +62,8 @@ public class SetFloorDegeneratorCommand implements ICommand {
         if (args != null) {
             if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
-                Location placerLoc = mgPlayer.getLocation();
 
                 switch (args[0].toLowerCase()) {
-                    case "1" -> {
-                        Location firstLoc = mgPlayer.getSelectionLocations()[1];
-                        mgPlayer.clearSelection();
-                        mgPlayer.setSelection(placerLoc, firstLoc);
-
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_SELECT_POINT,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), "1"));
-                    }
-                    case "2" -> {
-                        Location secondLoc = mgPlayer.getSelectionLocations()[0];
-                        mgPlayer.clearSelection();
-                        mgPlayer.setSelection(secondLoc, placerLoc);
-
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_SELECT_POINT,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), "2"));
-                    }
                     case "create" -> {
                         if (mgPlayer.hasSelection()) {
                             minigame.setFloorDegen(new MgRegion("degen", mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
@@ -94,7 +76,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
                         }
                     }
-                    case "clear" -> {
+                    case "remove" -> {
                         minigame.removeFloorDegen();
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_CLEAR,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
@@ -146,7 +128,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("1", "2", "create", "clear", "type", "time"), args[0]);
+            return MinigameUtils.tabCompleteMatch(List.of("create", "remove", "type", "time"), args[0]);
         } else if (args[0].equalsIgnoreCase("type")) {
             return MinigameUtils.tabCompleteMatch(List.of("random", "inward", "circle"), args[1]);
         } else if (args[0].equalsIgnoreCase("time")) {

@@ -186,7 +186,7 @@ public class SetStartCommand implements ICommand {
         if (teamsModule != null) {
             List<String> teams = new ArrayList<>(teamsModule.getTeamsNameMap().size() + 1);
             for (String t : teamsModule.getTeamsNameMap().keySet()) {
-                teams.add(WordUtils.capitalize(t.replace("_", " ")));
+                teams.add(WordUtils.capitalizeFully(t.replace("_", " ")));
             }
             if (args.length == 1) {
                 teams.add("Clear");

@@ -13,17 +13,17 @@ import java.util.Map;
 public class ReequipLoadoutAction extends AbstractAction {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "REEQUIP_LOADOUT";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Minigame Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
     }
 
     @Override
@@ -52,14 +52,14 @@ public class ReequipLoadoutAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         // None
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         // None
     }
 

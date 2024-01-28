@@ -47,13 +47,13 @@ public class MenuItemDecimal extends MenuItem {
 
     public void updateDescription() {
         List<String> description;
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = ChatColor.stripColor(getDescription().get(0));
+        if (getDescriptionStr() != null) {
+            description = getDescriptionStr();
+            String desc = ChatColor.stripColor(getDescriptionStr().get(0));
 
-            if (desc.matches("-?[0-9]+(.[0-9]+)?"))
+            if (desc.matches("-?[0-9]+(?:.[0-9]+)?")) {
                 description.set(0, ChatColor.GREEN + form.format(value.getValue()));
-            else if (value.getValue().isInfinite()) {
+            } else if (value.getValue().isInfinite()) {
                 description.add(0, ChatColor.GREEN + "INFINITE");
             } else {
                 description.add(0, ChatColor.GREEN + form.format(value.getValue()));
@@ -67,47 +67,47 @@ public class MenuItemDecimal extends MenuItem {
             }
         }
 
-        setDescription(description);
+        setDescriptionStr(description);
     }
 
     @Override
     public ItemStack onClick() {
         if (max == null || value.getValue() < max)
-            value.setValue(Double.valueOf(form.format(value.getValue() + lowerInc)));
+            value.setValue(value.getValue() + lowerInc);
         if (max != null && value.getValue() > max)
             value.setValue(max);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
     public ItemStack onRightClick() {
         if (min == null || value.getValue() > min)
-            value.setValue(Double.valueOf(form.format(value.getValue() - lowerInc)));
+            value.setValue(value.getValue() - lowerInc);
         if (min != null && value.getValue() < min)
             value.setValue(min);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
     public ItemStack onShiftClick() {
         if (max == null || value.getValue() < max)
-            value.setValue(Double.valueOf(form.format(value.getValue() + upperInc)));
+            value.setValue(value.getValue() + upperInc);
         if (max != null && value.getValue() > max)
             value.setValue(max);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
     public ItemStack onShiftRightClick() {
         if (min == null || value.getValue() > min)
-            value.setValue(Double.valueOf(form.format(value.getValue() - upperInc)));
+            value.setValue(value.getValue() - upperInc);
         if (min != null && value.getValue() < min)
             value.setValue(min);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

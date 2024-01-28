@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.script;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -12,7 +11,7 @@ public class ScriptWrapper {
         return new ScriptObject() {
             @Override
             public Set<String> getKeys() {
-                return ImmutableSet.of("x", "y", "z", "bx", "by", "bz", "world", "yaw", "pitch", "block");
+                return Set.of("x", "y", "z", "bx", "by", "bz", "world", "yaw", "pitch", "block");
             }
 
             @Override
@@ -52,7 +51,7 @@ public class ScriptWrapper {
         return new ScriptObject() {
             @Override
             public Set<String> getKeys() {
-                return ImmutableSet.of("pos", "type", "data", "temperature", "light", "blocklight", "skylight", "redstone");
+                return Set.of("pos", "type", "data", "temperature", "light", "blocklight", "skylight", "redstone");
             }
 
             @Override
@@ -89,7 +88,7 @@ public class ScriptWrapper {
         return new ScriptObject() {
             @Override
             public Set<String> getKeys() {
-                return ImmutableSet.of("name", "time");
+                return Set.of("name", "time");
             }
 
             @Override

@@ -10,6 +10,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class TeamPlayerCountCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
         out.put("Count", min.getFlag() + " - " + max.getFlag());
     }
 
@@ -44,7 +45,7 @@ public class TeamPlayerCountCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         if (player.getTeam() != null) {
             int count = 0;
             Team t = player.getTeam();
@@ -60,19 +61,19 @@ public class TeamPlayerCountCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         return false;
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         min.saveValue(path, config);
         max.saveValue(path, config);
         saveInvert(config, path);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         min.loadValue(path, config);
         max.saveValue(path, config);
         loadInvert(config, path);
@@ -90,7 +91,7 @@ public class TeamPlayerCountCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
+    public boolean PlayerNeeded() {
         return true;
     }
 }

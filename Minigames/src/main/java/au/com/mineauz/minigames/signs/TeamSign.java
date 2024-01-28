@@ -42,15 +42,13 @@ public class TeamSign implements MinigameSign {
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Team");
-
-
         if (event.getLine(2).equalsIgnoreCase("neutral")) {
             event.setLine(2, ChatColor.GRAY + "Neutral");
             return true;
         } else {
             TeamColor color = TeamColor.matchColor(event.getLine(2));
             if (color != null) {
-                event.line(2, Component.text(WordUtils.capitalize(color.toString().replace("_", " ")), color.getColor()));
+                event.line(2, Component.text(WordUtils.capitalizeFully(color.toString().replace("_", " ")), color.getColor()));
                 return true;
             }
         }

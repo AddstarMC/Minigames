@@ -23,17 +23,17 @@ public class VelocityAction extends AbstractAction {
     private final FloatFlag z = new FloatFlag(0f, "zv");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "VELOCITY";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Player Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Velocity", x.getFlag() + "," + y.getFlag() + "," + z.getFlag());
     }
 
@@ -65,14 +65,14 @@ public class VelocityAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         x.saveValue(path, config);
         y.saveValue(path, config);
         z.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         x.loadValue(path, config);
         y.loadValue(path, config);
         z.loadValue(path, config);

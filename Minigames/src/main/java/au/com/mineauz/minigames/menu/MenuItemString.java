@@ -38,9 +38,9 @@ public class MenuItemString extends MenuItem {
             setting = setting.substring(0, 17) + "...";
         }
 
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = getDescription().get(0);
+        if (getDescriptionStr() != null) {
+            description = getDescriptionStr();
+            String desc = getDescriptionStr().get(0);
 
             if (desc.startsWith(ChatColor.GREEN.toString()))
                 description.set(0, ChatColor.GREEN + setting);
@@ -51,7 +51,7 @@ public class MenuItemString extends MenuItem {
             description.add(ChatColor.GREEN + setting);
         }
 
-        setDescription(description);
+        setDescriptionStr(description);
     }
 
     @Override

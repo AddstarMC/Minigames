@@ -8,11 +8,11 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import com.google.common.base.Strings;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -47,17 +47,16 @@ public class ContainsEntityCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-        Collection<? extends Entity> entities = region.getFirstPoint().getWorld().getEntitiesByClass(entityType.getFlag().getEntityClass());
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
+        Collection<Entity> entities = region.getFirstPoint().getWorld().getNearbyEntities(region.getBoundingBox());
 
         Pattern namePattern = null;
         if (matchName.getFlag()) {
             namePattern = createNamePattern();
         }
 
-        Location temp = new Location(null, 0, 0, 0);
         for (Entity entity : entities) {
-            if (entity.getType() == entityType.getFlag() && region.locationInRegion(entity.getLocation(temp))) {
+            if (entity.getType() == entityType.getFlag()) {
                 if (matchName.getFlag()) {
                     Matcher m = namePattern.matcher(Strings.nullToEmpty(entity.getCustomName()));
                     if (!m.matches()) {
@@ -79,20 +78,19 @@ public class ContainsEntityCondition extends ConditionInterface {
         }
 
         StringBuffer buffer = new StringBuffer();
-        int start = 0;
 
-        PlayerHasItemCondition.createPattern(name, buffer, start);
+        PlayerHasItemCondition.createPattern(name, buffer); // todo don't do that. PlayerHasItem should provide this methode here!
 
         return Pattern.compile(buffer.toString());
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         return false;
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         entityType.saveValue(path, config);
         matchName.saveValue(path, config);
         customName.saveValue(path, config);
@@ -100,7 +98,7 @@ public class ContainsEntityCondition extends ConditionInterface {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         entityType.loadValue(path, config);
         matchName.loadValue(path, config);
         customName.loadValue(path, config);
@@ -127,7 +125,7 @@ public class ContainsEntityCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
         out.put("Type", entityType.getFlag());
         if (matchName.getFlag()) {
             out.put("Match Name", customName.getFlag());
@@ -135,7 +133,7 @@ public class ContainsEntityCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
-        return true;
+    public boolean PlayerNeeded() {
+        return false;
     }
 }

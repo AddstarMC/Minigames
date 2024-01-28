@@ -99,7 +99,7 @@ public class WeatherTimeModule extends MinigameModule {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(weather.getFlag().toString());
+                return WordUtils.capitalizeFully(weather.getFlag().toString());
             }
 
             @Override
