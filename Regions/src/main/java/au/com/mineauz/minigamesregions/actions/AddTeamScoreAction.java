@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 public class AddTeamScoreAction extends ScoreAction {
-
     private final IntegerFlag score = new IntegerFlag(1, "amount");
     private final StringFlag team = new StringFlag("NONE", "team");
 
@@ -57,7 +56,7 @@ public class AddTeamScoreAction extends ScoreAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
         executeAction(mgPlayer);

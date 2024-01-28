@@ -6,10 +6,11 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Lists;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class RewardSchemes {
@@ -57,12 +58,12 @@ public final class RewardSchemes {
         return definedSchemes.inverse().get(schemeClass);
     }
 
-    public static MenuItem newMenuItem(String name, Material displayItem, Callback<Class<? extends RewardScheme>> callback) {
+    public static MenuItem newMenuItem(Component name, Material displayItem, Callback<Class<? extends RewardScheme>> callback) {
         return new MenuItemRewardScheme(name, displayItem, callback);
     }
 
     private static List<String> getSchemesAsNameList() {
-        return Lists.newArrayList(definedSchemes.keySet());
+        return new ArrayList<>(definedSchemes.keySet());
     }
 
     private static Callback<String> transformCallback(final Callback<Class<? extends RewardScheme>> callback) {
@@ -80,7 +81,7 @@ public final class RewardSchemes {
     }
 
     private static class MenuItemRewardScheme extends MenuItemList {
-        public MenuItemRewardScheme(String name, Material displayItem, Callback<Class<? extends RewardScheme>> callback) {
+        public MenuItemRewardScheme(Component name, Material displayItem, Callback<Class<? extends RewardScheme>> callback) {
             super(name, displayItem, transformCallback(callback), getSchemesAsNameList());
         }
     }

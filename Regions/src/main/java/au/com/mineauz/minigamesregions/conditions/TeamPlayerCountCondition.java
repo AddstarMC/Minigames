@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class TeamPlayerCountCondition extends ConditionInterface {
-
     private final IntegerFlag min = new IntegerFlag(1, "min");
     private final IntegerFlag max = new IntegerFlag(5, "max");
 

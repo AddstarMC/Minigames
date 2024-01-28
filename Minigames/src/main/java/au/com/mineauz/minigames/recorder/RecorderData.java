@@ -5,7 +5,6 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import io.papermc.paper.math.Position;
@@ -247,9 +246,9 @@ public class RecorderData implements Listener {
         }
         Iterator<MgBlockData> it = blockdata.values().iterator();
 
-        final List<MgBlockData> baseBlocks = Lists.newArrayList();
-        final List<MgBlockData> gravityBlocks = Lists.newArrayList();
-        final List<MgBlockData> attachableBlocks = Lists.newArrayList();
+        final List<MgBlockData> baseBlocks = new ArrayList<>();
+        final List<MgBlockData> gravityBlocks = new ArrayList<>();
+        final List<MgBlockData> attachableBlocks = new ArrayList<>();
 
         //sort the blocks into the three lists above
         while (it.hasNext()) {

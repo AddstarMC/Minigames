@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -16,16 +17,16 @@ import java.util.List;
 public class MenuItemMaterial extends MenuItem {
     private Callback<Material> materialCallback;
 
-    public MenuItemMaterial(String name, Material displayItem) {
+    public MenuItemMaterial(Component name, Material displayItem) {
         super(name, displayItem);
     }
 
-    public MenuItemMaterial(String name, Material displayItem, Callback<Material> c) {
+    public MenuItemMaterial(Component name, Material displayItem, Callback<Material> c) {
         super(name, displayItem);
         materialCallback = c;
     }
 
-    public MenuItemMaterial(String name, List<String> description, Material displayItem, Callback<Material> c) {
+    public MenuItemMaterial(Component name, List<Component> description, Material displayItem, Callback<Material> c) {
         super(name, description, displayItem);
         materialCallback = c;
     }
@@ -50,12 +51,12 @@ public class MenuItemMaterial extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description;
+        List<Component> description;
         Material setting = materialCallback.getValue();
 
-        if (getDescriptionStr() != null) {
-            description = getDescriptionStr();
-            String desc = getDescriptionStr().get(0);
+        if (getDescription() != null) {
+            description = getDescription();
+            String desc = getDescription().get(0);
 
             if (desc.startsWith(ChatColor.GREEN.toString()))
                 description.set(0, ChatColor.GREEN.toString() + createDescription(setting));
@@ -65,7 +66,7 @@ public class MenuItemMaterial extends MenuItem {
             description = new ArrayList<>();
             description.add(ChatColor.GREEN.toString() + createDescription(setting));
         }
-        setDescriptionStr(description);
+        setDescription(description);
         setDisplayItem(new ItemStack(materialCallback.getValue(), 1));
     }
 }

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 public class GiveItemAction extends AbstractAction {
-
     private final StringFlag type = new StringFlag("STONE", "type");
     private final IntegerFlag count = new IntegerFlag(1, "count");
     private final StringFlag name = new StringFlag(null, "name");
@@ -65,7 +64,7 @@ public class GiveItemAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
         execute(mgPlayer);
     }

@@ -11,7 +11,6 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import com.google.common.collect.Maps;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -29,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class LoadoutModule extends MinigameModule {
-    private static final Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
+    private static final Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = new HashMap<>();
     private final Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
     private final LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
 

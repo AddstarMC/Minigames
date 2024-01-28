@@ -4,11 +4,11 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
-import com.google.common.collect.Maps;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public final class MinigameStats {
     public static final MinigameStat Score = new BasicMinigameStat("score", "Score", StatFormat.MaxAndTotal);
     public static final MinigameStat Reverts = new BasicMinigameStat("reverts", "Reverts", StatFormat.MinAndTotal);
 
-    private static final Map<String, MinigameStat> stats = Maps.newHashMap();
+    private static final Map<String, MinigameStat> stats = new HashMap<>();
 
     static {
         registerStat0(Wins);

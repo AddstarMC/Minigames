@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,14 +13,14 @@ public class MenuItemDisplayWhitelist extends MenuItem {
     private final Callback<Boolean> whitelistMode;
     private final List<String> modeDescription;
 
-    public MenuItemDisplayWhitelist(String name, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode, List<String> modeDescription) {
+    public MenuItemDisplayWhitelist(Component name, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode, List<String> modeDescription) {
         super(name, displayItem);
         this.whitelist = whitelist;
         this.whitelistMode = whitelistMode;
         this.modeDescription = modeDescription;
     }
 
-    public MenuItemDisplayWhitelist(String name, List<String> mainDescription, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode, List<String> modeDescription) {
+    public MenuItemDisplayWhitelist(Component name, List<Component> mainDescription, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode, List<String> modeDescription) {
         super(name, mainDescription, displayItem);
         this.whitelist = whitelist;
         this.whitelistMode = whitelistMode;

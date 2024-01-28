@@ -14,13 +14,13 @@ public class MenuItemComponent extends MenuItem {
     protected Callback<String> stringCallback; // todo I'm not happy having String as callback here. I need it since the SerializeableBridge can't use Components, but this doesn't feel right.
     private boolean allowNull = false;
 
-    public MenuItemComponent(String name, Material displayItem, Callback<String> stringCallback) {
+    public MenuItemComponent(Component name, Material displayItem, Callback<String> stringCallback) {
         super(name, displayItem);
         this.stringCallback = stringCallback;
         updateDescription();
     }
 
-    public MenuItemComponent(String name, List<String> description, Material displayItem, Callback<String> stringCallback) {
+    public MenuItemComponent(Component name, List<Component> description, Material displayItem, Callback<String> stringCallback) {
         super(name, description, displayItem);
         this.stringCallback = stringCallback;
         updateDescription();
@@ -44,7 +44,7 @@ public class MenuItemComponent extends MenuItem {
         //    setting = setting.substring(0, 17) + "...";
         //}
 
-        description = getDescriptionComp();
+        description = getDescription();
         if (description != null) {
             //todo find a way to not overwrite other descriptions
             //Component desc = description.get(0);
@@ -59,7 +59,7 @@ public class MenuItemComponent extends MenuItem {
             description.add(settingComp);
         }
 
-        setDescriptionComp(description);
+        setDescription(description);
     }
 
     @Override

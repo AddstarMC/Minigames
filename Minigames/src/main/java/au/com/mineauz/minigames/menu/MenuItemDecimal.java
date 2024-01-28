@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemDecimal extends MenuItem {
-
     protected final Callback<Double> value;
     private final double lowerInc;
     private final double upperInc;
@@ -19,7 +19,7 @@ public class MenuItemDecimal extends MenuItem {
     private final Double max;
     protected DecimalFormat form = new DecimalFormat("#.##");
 
-    public MenuItemDecimal(String name, Material displayItem, Callback<Double> value,
+    public MenuItemDecimal(Component name, Material displayItem, Callback<Double> value,
                            double lowerInc, double upperInc, Double min, Double max) {
         super(name, displayItem);
         this.value = value;
@@ -30,7 +30,7 @@ public class MenuItemDecimal extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemDecimal(String name, List<String> description, Material displayItem, Callback<Double> value,
+    public MenuItemDecimal(Component name, List<Component> description, Material displayItem, Callback<Double> value,
                            double lowerInc, double upperInc, Double min, Double max) {
         super(name, description, displayItem);
         this.value = value;
@@ -46,10 +46,10 @@ public class MenuItemDecimal extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description;
-        if (getDescriptionStr() != null) {
-            description = getDescriptionStr();
-            String desc = ChatColor.stripColor(getDescriptionStr().get(0));
+        List<Component> description;
+        if (getDescription() != null) {
+            description = getDescription();
+            String desc = ChatColor.stripColor(getDescription().get(0));
 
             if (desc.matches("-?[0-9]+(?:.[0-9]+)?")) {
                 description.set(0, ChatColor.GREEN + form.format(value.getValue()));
@@ -67,7 +67,7 @@ public class MenuItemDecimal extends MenuItem {
             }
         }
 
-        setDescriptionStr(description);
+        setDescription(description);
     }
 
     @Override

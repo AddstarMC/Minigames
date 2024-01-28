@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -14,14 +15,14 @@ public class MenuItemList extends MenuItem {
     private final Callback<String> value;
     private final List<String> options;
 
-    public MenuItemList(String name, Material displayItem, Callback<String> value, List<String> options) {
+    public MenuItemList(Component name, Material displayItem, Callback<String> value, List<String> options) {
         super(name, displayItem);
         this.value = value;
         this.options = options;
         updateDescription();
     }
 
-    public MenuItemList(String name, List<String> description, Material displayItem, Callback<String> value, List<String> options) {
+    public MenuItemList(Component name, List<Component> description, Material displayItem, Callback<String> value, List<String> options) {
         super(name, description, displayItem);
         this.value = value;
         this.options = options;
@@ -29,7 +30,7 @@ public class MenuItemList extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description;
+        List<Component> description;
         int pos = options.indexOf(value.getValue());
         int before = pos - 1;
         int after = pos + 1;
@@ -38,10 +39,10 @@ public class MenuItemList extends MenuItem {
         if (after == options.size())
             after = 0;
 
-        if (getDescriptionStr() != null) {
-            description = getDescriptionStr();
-            if (getDescriptionStr().size() >= 3) {
-                String desc = ChatColor.stripColor(getDescriptionStr().get(1));
+        if (getDescription() != null) {
+            description = getDescription();
+            if (getDescription().size() >= 3) {
+                String desc = ChatColor.stripColor(getDescription().get(1));
 
                 if (options.contains(desc)) {
                     description.set(0, ChatColor.GRAY + options.get(before));
@@ -64,7 +65,7 @@ public class MenuItemList extends MenuItem {
             description.add(ChatColor.GRAY + options.get(after));
         }
 
-        setDescriptionStr(description);
+        setDescription(description);
     }
 
     @Override

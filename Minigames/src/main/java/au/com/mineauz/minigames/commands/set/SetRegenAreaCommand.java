@@ -40,7 +40,7 @@ public class SetRegenAreaCommand implements ICommand {
     }
 
     @Override
-    public @NotNull Component getDescription() { //todo delete to remove
+    public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_DESCRIPTION);
     }
 

@@ -4,7 +4,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatFormat;
-import com.google.common.base.Functions;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,7 +52,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
                 }
 
 
-            }, Arrays.stream(StatFormat.values()).map(Functions.toStringFunction()).collect(Collectors.toList())));
+            }, Arrays.stream(StatFormat.values()).map(StatFormat::toString).collect(Collectors.toList())));
         }
 
         subMenu.addItem(new MenuItemBack(getContainer()), subMenu.getSize() - 9);

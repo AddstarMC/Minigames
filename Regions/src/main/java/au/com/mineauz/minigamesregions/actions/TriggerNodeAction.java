@@ -60,7 +60,7 @@ public class TriggerNodeAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
         Minigame mg = mgPlayer.getMinigame();

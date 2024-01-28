@@ -17,12 +17,13 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+;
 
 /**
  * This class provides the methods necessary to fill a gameboard with pairs of randomly placed
@@ -324,7 +325,7 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
     }

@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -14,12 +15,12 @@ import java.util.List;
 public class MenuItemPotionAdd extends MenuItem {
     private final PlayerLoadout loadout;
 
-    public MenuItemPotionAdd(String name, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemPotionAdd(Component name, Material displayItem, PlayerLoadout loadout) {
         super(name, displayItem);
         this.loadout = loadout;
     }
 
-    public MenuItemPotionAdd(String name, List<String> description, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemPotionAdd(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout) {
         super(name, description, displayItem);
         this.loadout = loadout;
     }

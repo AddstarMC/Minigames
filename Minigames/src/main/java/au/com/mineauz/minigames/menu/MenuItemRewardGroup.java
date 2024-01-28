@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemRewardGroup extends MenuItem {
-
     private final RewardGroup group;
     private final Rewards rewards;
 
@@ -53,10 +52,10 @@ public class MenuItemRewardGroup extends MenuItem {
         if (after == options.size())
             after = 0;
 
-        if (getDescriptionStr() != null) {
-            description = getDescriptionStr();
-            if (getDescriptionStr().size() >= 3) {
-                String desc = ChatColor.stripColor(getDescriptionStr().get(1));
+        if (getDescription() != null) {
+            description = getDescription();
+            if (getDescription().size() >= 3) {
+                String desc = ChatColor.stripColor(getDescription().get(1));
 
                 if (options.contains(desc)) {
                     description.set(0, ChatColor.GRAY + options.get(before));
@@ -79,7 +78,7 @@ public class MenuItemRewardGroup extends MenuItem {
             description.add(ChatColor.GRAY + options.get(after));
         }
 
-        setDescriptionStr(description);
+        setDescription(description);
     }
 
 

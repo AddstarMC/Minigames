@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class MenuItemToolMode extends MenuItem {
-
     private final ToolMode mode;
 
     public MenuItemToolMode(Component name, Material displayItem, ToolMode mode) {

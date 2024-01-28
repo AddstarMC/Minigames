@@ -46,7 +46,7 @@ public class ResetTriggerCountAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
         for (NodeExecutor ex : node.getExecutors())
             ex.setTriggerCount(0);

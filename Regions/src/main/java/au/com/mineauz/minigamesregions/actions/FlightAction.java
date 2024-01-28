@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 public class FlightAction extends AbstractAction {
-
     private final BooleanFlag setFly = new BooleanFlag(true, "setFlying");
     private final BooleanFlag startFly = new BooleanFlag(false, "startFly");
 
@@ -53,7 +52,7 @@ public class FlightAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
         execute(mgPlayer);
     }

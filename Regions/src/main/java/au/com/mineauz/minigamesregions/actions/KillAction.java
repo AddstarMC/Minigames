@@ -37,10 +37,10 @@ public class KillAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
-        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        if (!mgPlayer.isInMinigame()) return;
         if (!mgPlayer.isLiving())
             mgPlayer.getPlayer().setHealth(0.0);
     }

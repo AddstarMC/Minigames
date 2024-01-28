@@ -1,43 +1,45 @@
 package au.com.mineauz.minigames.menu;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
 public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
-    private final List<String> baseDescription;
+    private final List<Component> baseDescription;
     private final List<T> enumList;
     private final Callback<T> callback;
 
-    public MenuItemEnum(String name, List<String> description, Material displayItem, Callback<T> callback, Class<T> enumClass) {
+    public MenuItemEnum(Component name, List<Component> description, Material displayItem, Callback<T> callback, Class<T> enumClass) {
         super(name, description, displayItem);
         this.callback = callback;
-        enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
+        enumList = new ArrayList<>(EnumSet.allOf(enumClass));
         baseDescription = description;
         updateDescription();
     }
 
-    public MenuItemEnum(String name, Material displayItem, Callback<T> callback, Class<T> enumClass) {
+    public MenuItemEnum(Component name, Material displayItem, Callback<T> callback, Class<T> enumClass) {
         super(name, displayItem);
         this.callback = callback;
-        enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
+        enumList = new ArrayList<>(EnumSet.allOf(enumClass));
         baseDescription = Collections.emptyList();
         updateDescription();
     }
 
     protected final void updateDescription() {
-        List<String> valueDesc = getValueDescription(callback.getValue());
-        super.setDescriptionStr(Lists.newArrayList(Iterators.concat(valueDesc.iterator(), baseDescription.iterator())));
+        List<Component> valueDesc = getValueDescription(callback.getValue());
+        valueDesc.addAll(baseDescription);
+
+        super.setDescription(valueDesc);
     }
 
-    protected List<String> getValueDescription(T value) {
+    protected List<Component> getValueDescription(T value) {
         // For the initial update
         if (enumList == null) {
             return Collections.emptyList();
@@ -49,7 +51,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 
         int position = enumList.indexOf(value);
         if (position == -1) {
-            return Collections.singletonList(ChatColor.RED + "*ERROR*");
+            return List.of(ChatColor.RED + "*ERROR*");
         }
 
         int last = position - 1;
@@ -61,7 +63,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
             next = 0;
         }
 
-        List<String> options = Lists.newArrayListWithCapacity(3);
+        List<Component> options = new ArrayList<>(3);
         options.add(ChatColor.GRAY + getEnumName(enumList.get(last)));
         options.add(ChatColor.GREEN + getEnumName(enumList.get(position)));
         options.add(ChatColor.GRAY + getEnumName(enumList.get(next)));

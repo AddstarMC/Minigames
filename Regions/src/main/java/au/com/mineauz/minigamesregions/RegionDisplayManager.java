@@ -5,16 +5,13 @@ import au.com.mineauz.minigames.display.IDisplayObject;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RegionDisplayManager {
     private final Map<Player, Map<Region, IDisplayObject>> regionDisplays;
@@ -24,11 +21,11 @@ public class RegionDisplayManager {
     private final Map<Object, ArmorStand> nameDisplay;
 
     public RegionDisplayManager() {
-        regionDisplays = Maps.newHashMap();
-        nodeDisplays = Maps.newHashMap();
+        regionDisplays = new HashMap<>();
+        nodeDisplays = new HashMap<>();
 
         activeWatchers = HashMultimap.create();
-        nameDisplay = Maps.newIdentityHashMap();
+        nameDisplay = new HashMap<>();
     }
 
     private void showInfo(Region region, MinigamePlayer player) {
@@ -85,7 +82,7 @@ public class RegionDisplayManager {
     }
 
     public void show(Region region, MinigamePlayer player) {
-        Map<Region, IDisplayObject> regions = regionDisplays.computeIfAbsent(player.getPlayer(), k -> Maps.newIdentityHashMap());
+        Map<Region, IDisplayObject> regions = regionDisplays.computeIfAbsent(player.getPlayer(), k -> new IdentityHashMap<>());
 
         IDisplayObject display = Minigames.getPlugin().display.displayCuboid(player.getPlayer(), region.getFirstPoint(), region.getSecondPoint().clone().add(1, 1, 1));
         display.show();
@@ -95,7 +92,7 @@ public class RegionDisplayManager {
     }
 
     public void show(Node node, MinigamePlayer player) {
-        Map<Node, IDisplayObject> nodes = nodeDisplays.computeIfAbsent(player.getPlayer(), k -> Maps.newIdentityHashMap());
+        Map<Node, IDisplayObject> nodes = nodeDisplays.computeIfAbsent(player.getPlayer(), k -> new IdentityHashMap<>());
 
         IDisplayObject display = Minigames.getPlugin().display.displayPoint(player.getPlayer(), node.getLocation(), true);
         display.show();
@@ -186,7 +183,7 @@ public class RegionDisplayManager {
     }
 
     public void update(Node node) {
-        Set<MinigamePlayer> watchers = Sets.newHashSet(activeWatchers.get(node));
+        Set<MinigamePlayer> watchers = new HashSet<>(activeWatchers.get(node));
 
         ArmorStand stand = nameDisplay.remove(node);
         if (stand != null)
@@ -199,7 +196,7 @@ public class RegionDisplayManager {
     }
 
     public void update(Region region) {
-        Set<MinigamePlayer> watchers = Sets.newHashSet(activeWatchers.get(region));
+        Set<MinigamePlayer> watchers = new HashSet<>(activeWatchers.get(region));
 
         ArmorStand stand = nameDisplay.remove(region);
         if (stand != null)

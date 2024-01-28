@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class VelocityAction extends AbstractAction {
-
     private final FloatFlag x = new FloatFlag(0f, "xv");
     private final FloatFlag y = new FloatFlag(5f, "yv");
     private final FloatFlag z = new FloatFlag(0f, "zv");
@@ -54,7 +53,7 @@ public class VelocityAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
         execute(mgPlayer);
     }

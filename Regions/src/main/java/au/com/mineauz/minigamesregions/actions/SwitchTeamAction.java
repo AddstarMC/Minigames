@@ -23,7 +23,6 @@ public class SwitchTeamAction extends AbstractAction {
     private final StringFlag teamto = new StringFlag("ALL", "To");
     private final StringFlag teamfrom = new StringFlag("ALL", "From");
 
-
     @Override
     public @NotNull String getName() {
         return "SWITCH_TEAM";
@@ -56,7 +55,7 @@ public class SwitchTeamAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         executeAction(mgPlayer);
     }
 

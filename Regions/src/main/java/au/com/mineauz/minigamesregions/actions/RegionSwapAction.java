@@ -80,7 +80,7 @@ public class RegionSwapAction extends AbstractAction {
      * block with the From (start) regions block.
      */
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
 
         Region startRegion = null;
@@ -88,7 +88,7 @@ public class RegionSwapAction extends AbstractAction {
         ArrayList<BlockState> startRegionBlocks = new ArrayList<>();
         ArrayList<BlockState> targetRegionBlocks = new ArrayList<>();
 
-        if (mgPlayer == null || !mgPlayer.isInMinigame()) {
+        if (!mgPlayer.isInMinigame()) {
             return;
         }
         Minigame mgm = mgPlayer.getMinigame();

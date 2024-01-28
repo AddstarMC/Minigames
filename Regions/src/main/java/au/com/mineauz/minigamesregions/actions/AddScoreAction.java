@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class AddScoreAction extends ScoreAction {
-
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
     @Override
@@ -43,7 +42,7 @@ public class AddScoreAction extends ScoreAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node base) {
         executeAction(mgPlayer, base);
     }

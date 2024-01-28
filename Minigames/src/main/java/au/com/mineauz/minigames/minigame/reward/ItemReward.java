@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
@@ -110,7 +111,7 @@ public class ItemReward extends RewardType {
         }
 
         public void updateDescription() {
-            List<String> description;
+            List<Component> description;
             if (options == null) {
                 options = new ArrayList<>();
                 for (RewardRarity rarity : RewardRarity.values()) {
@@ -125,10 +126,10 @@ public class ItemReward extends RewardType {
             if (after == options.size())
                 after = 0;
 
-            if (getDescriptionStr() != null) {
-                description = getDescriptionStr();
-                if (getDescriptionStr().size() >= 3) {
-                    String desc = ChatColor.stripColor(getDescriptionStr().get(1));
+            if (getDescription() != null) {
+                description = getDescription();
+                if (getDescription().size() >= 3) {
+                    String desc = ChatColor.stripColor(getDescription().get(1));
 
                     if (options.contains(desc)) {
                         description.set(0, ChatColor.GRAY + options.get(before));
@@ -154,7 +155,7 @@ public class ItemReward extends RewardType {
                 description.add(3, ChatColor.DARK_PURPLE + "Shift + Right Click to remove");
             }
 
-            setDescriptionStr(description);
+            setDescription(description);
         }
 
         @Override

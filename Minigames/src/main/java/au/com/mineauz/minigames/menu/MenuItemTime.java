@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemTime extends MenuItemInteger {
-
     public MenuItemTime(Component name, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
         super(name, displayItem, value, min, max);
     }

@@ -3,13 +3,14 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class MenuItemStatisticsSettings extends MenuItem {
     private final Minigame minigame;
 
-    public MenuItemStatisticsSettings(Minigame minigame, String name, Material displayItem) {
+    public MenuItemStatisticsSettings(Minigame minigame, Component name, Material displayItem) {
         super(name, displayItem);
         this.minigame = minigame;
     }

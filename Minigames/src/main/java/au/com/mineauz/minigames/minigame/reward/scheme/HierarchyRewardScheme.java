@@ -14,8 +14,6 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
@@ -51,11 +49,10 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
     @Override
     public Map<String, Flag<?>> getFlags() {
-        return ImmutableMap.<String, Flag<?>>builder()
-                .put("comparison", comparisonType)
-                .put("loss-rewards", enableRewardsOnLoss)
-                .put("loss-use-secondary", lossUsesSecondary)
-                .build();
+        return Map.of(
+                "comparison", comparisonType,
+                "loss-rewards", enableRewardsOnLoss,
+                "loss-use-secondary", lossUsesSecondary);
     }
 
     @Override
@@ -229,13 +226,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         }
 
         private void updateDescription() {
-            List<Component> description = Arrays.asList(
+            List<Component> description = List.of(
                     ChatColor.GREEN + getMenuItemDescName(value),
                     "Shift + Left click to edit rewards",
                     "Shift + Right click to remove"
             );
 
-            setDescriptionStr(description);
+            setDescription(description);
 
             // Update name
             ItemStack item = getDisplayItem();

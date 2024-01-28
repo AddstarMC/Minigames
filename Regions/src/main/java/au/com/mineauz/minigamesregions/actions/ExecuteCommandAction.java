@@ -112,7 +112,7 @@ public class ExecuteCommandAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         String command = replacePlayerTags(mgPlayer, comd.getFlag());
         command = command

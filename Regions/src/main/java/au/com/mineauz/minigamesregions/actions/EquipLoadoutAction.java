@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class EquipLoadoutAction extends AbstractAction {
-
     private final StringFlag loadout = new StringFlag("default", "loadout");
     private final BooleanFlag equipOnTrigger = new BooleanFlag(false, "equipOnTrigger");
 
@@ -48,7 +47,7 @@ public class EquipLoadoutAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;

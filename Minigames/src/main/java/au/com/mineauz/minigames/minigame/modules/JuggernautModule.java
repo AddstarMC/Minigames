@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class JuggernautModule extends MinigameModule {
-
     private MinigamePlayer juggernaut = null;
 
     public JuggernautModule(@NotNull Minigame mgm, @NotNull String name) {

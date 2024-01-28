@@ -43,9 +43,9 @@ public class SetScoreAction extends ScoreAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
-        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        if (!mgPlayer.isInMinigame()) return;
         mgPlayer.setScore(amount.getFlag());
         mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
         checkScore(mgPlayer);

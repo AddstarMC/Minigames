@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ public class MenuItemAddTeam extends MenuItem {
 
     private final TeamsModule tm;
 
-    public MenuItemAddTeam(String name, Minigame minigame) {
+    public MenuItemAddTeam(Component name, Minigame minigame) {
         super(name, MenuUtility.getCreateMaterial());
         tm = TeamsModule.getMinigameModule(minigame);
     }

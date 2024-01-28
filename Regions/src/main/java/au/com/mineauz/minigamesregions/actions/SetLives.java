@@ -49,7 +49,7 @@ public class SetLives extends AbstractAction { //todo unused!
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
 
     }
 

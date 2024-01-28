@@ -24,7 +24,7 @@ public interface ActionInterface {
 
     void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region);
 
-    void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node);
+    void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node);
 
     void saveArguments(@NotNull FileConfiguration config, @NotNull String path);
 

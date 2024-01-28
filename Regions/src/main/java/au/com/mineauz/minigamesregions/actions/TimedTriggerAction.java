@@ -64,11 +64,11 @@ public class TimedTriggerAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         execute(mgPlayer, node);
     }
 
-    private void execute(MinigamePlayer player, ScriptObject obj) {
+    private void execute(@Nullable MinigamePlayer player, @NotNull ScriptObject obj) {
         debug(player, obj);
         if (player == null || !player.isInMinigame()) {
             return;

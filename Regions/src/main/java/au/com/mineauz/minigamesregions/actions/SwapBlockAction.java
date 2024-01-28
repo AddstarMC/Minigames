@@ -20,11 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 public class SwapBlockAction extends AbstractAction {
-
     private final BlockDataFlag matchType = new BlockDataFlag(Material.STONE.createBlockData(), "matchtype");
     private final BlockDataFlag toType = new BlockDataFlag(Material.COBBLESTONE.createBlockData(), "totype");
     private final BooleanFlag keepAttachment = new BooleanFlag(false, "keepattachment");
-
 
     @Override
     public @NotNull String getName() {
@@ -93,7 +91,7 @@ public class SwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
     }

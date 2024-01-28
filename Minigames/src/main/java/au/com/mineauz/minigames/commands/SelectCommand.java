@@ -20,41 +20,22 @@ public class SelectCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String[] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return false;
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "select and clear region selections";
     }
 
     @Override
-    public @NotNull String[] getParameters() {
-        return new String[]{
-                "1",
-                "2",
-                "clear"
-        };
-    }
-
-    @Override
-    public @NotNull String[] getUsage() {
+    public @NotNull Component getUsage() {
         return new String[]{
                 "/minigame select 1",
                 "/minigame select 2",
                 "/minigame select clear"
         };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You don't have permission to modify regions";
     }
 
     @Override
@@ -64,7 +45,7 @@ public class SelectCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (sender instanceof Player player) {
             MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 
@@ -94,7 +75,7 @@ public class SelectCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String[] args) {
         if (args != null && args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("1", "2", "clear"), args[0]);
         }

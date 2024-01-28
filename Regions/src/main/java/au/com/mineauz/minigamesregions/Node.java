@@ -9,7 +9,6 @@ import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -75,19 +74,19 @@ public class Node implements ExecutableScriptObject {
         this.enabled = enabled;
     }
 
-    public void execute(@NotNull Trigger trigger, @Nullable MinigamePlayer player) {
-        if (player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
-        if (player == null || player.getMinigame() == null) return;
+    public void execute(@NotNull Trigger trigger, @Nullable MinigamePlayer mgPlayer) {
+        if (mgPlayer == null || mgPlayer.getMinigame() == null) return;
+        if (mgPlayer.getMinigame() != null && mgPlayer.getMinigame().isSpectator(mgPlayer)) return;
         List<NodeExecutor> toExecute = new ArrayList<>();
         for (NodeExecutor exec : executors) {
             if (exec.getTrigger() == trigger) {
-                if (checkConditions(exec, player) && exec.canBeTriggered(player)) {
+                if (checkConditions(exec, mgPlayer) && exec.canBeTriggered(mgPlayer)) {
                     toExecute.add(exec);
                 }
             }
         }
         for (NodeExecutor exec : toExecute) {
-            execute(exec, player);
+            execute(exec, mgPlayer);
         }
     }
 
@@ -104,14 +103,15 @@ public class Node implements ExecutableScriptObject {
         return true;
     }
 
-    public void execute(NodeExecutor exec, MinigamePlayer player) {
+    public void execute(@NotNull NodeExecutor exec, @NotNull MinigamePlayer mgPlayer) {
         for (ActionInterface act : exec.getActions()) {
             if (!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
-            act.executeNodeAction(player, this);
-            if (!exec.isTriggerPerPlayer())
+            act.executeNodeAction(mgPlayer, this);
+            if (!exec.isTriggerPerPlayer()) {
                 exec.addPublicTrigger();
-            else
-                exec.addPlayerTrigger(player);
+            } else {
+                exec.addPlayerTrigger(mgPlayer);
+            }
         }
     }
 
@@ -130,7 +130,7 @@ public class Node implements ExecutableScriptObject {
 
     @Override
     public Set<String> getKeys() {
-        return ImmutableSet.of("name", "pos", "block");
+        return Set.of("name", "pos", "block");
     }
 
     @Override

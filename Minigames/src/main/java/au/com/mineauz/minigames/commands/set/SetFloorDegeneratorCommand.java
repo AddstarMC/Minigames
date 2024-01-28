@@ -45,7 +45,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
     }
 
     @Override
-    public Component getUsage() { // todo create", "remove", "type", "time
+    public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_FLOORDEGEN_USAGE);
     }
 

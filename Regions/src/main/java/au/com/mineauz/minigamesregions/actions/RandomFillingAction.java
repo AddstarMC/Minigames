@@ -30,7 +30,6 @@ import java.util.Random;
  * or "replace selective" where blocks in the region are only replaced by the chosen block. 
  *
  */
-
 public class RandomFillingAction extends AbstractAction {
     private final StringFlag toType = new StringFlag("WOOL", "totype");
     private final IntegerFlag percentageChance = new IntegerFlag(50, "percentagechance");
@@ -92,7 +91,7 @@ public class RandomFillingAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
     }

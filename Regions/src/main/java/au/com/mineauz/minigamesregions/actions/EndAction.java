@@ -37,7 +37,7 @@ public class EndAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         execute(mgPlayer);
         debug(mgPlayer, node);

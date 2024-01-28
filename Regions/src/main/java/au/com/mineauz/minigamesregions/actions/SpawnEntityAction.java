@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /*
  * todo
@@ -188,7 +187,7 @@ public class SpawnEntityAction extends AbstractAction {
                 if (serializableBridge != null) {
                     settings.put(key, serializableBridge);
                 } else {
-                    Minigames.log().log(Level.WARNING, "Key \"" + key + "\" of ConfigSerializableBridge in SpawnEntityAction of path \"" + path + ".settings." + key + "\" failed to load!");
+                    Minigames.getCmpnntLogger().warn("Key \"" + key + "\" of ConfigSerializableBridge in SpawnEntityAction of path \"" + path + ".settings." + key + "\" failed to load!");
                 }
             }
         }

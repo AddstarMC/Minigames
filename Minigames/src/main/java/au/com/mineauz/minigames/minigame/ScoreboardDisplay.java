@@ -6,7 +6,6 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.text.WordUtils;
@@ -57,7 +56,7 @@ public class ScoreboardDisplay {
         field = StatValueField.Total;
         order = ScoreboardOrder.DESCENDING;
 
-        stats = Lists.newArrayListWithCapacity(width * height * 2);
+        stats = new ArrayList<>(width * height * 2);
         needsLoad = true;
     }
 
@@ -141,7 +140,7 @@ public class ScoreboardDisplay {
             default -> throw new AssertionError("Invalid facing " + facing);
         };
 
-        List<Block> blocks = Lists.newArrayListWithCapacity(width * height);
+        List<Block> blocks = new ArrayList<>(width * height);
 
         // Find the corner that is the top left part of the scoreboard
         Location min = rootBlock.clone();
@@ -212,10 +211,10 @@ public class ScoreboardDisplay {
 
         StatSettings settings = minigame.getSettings(stat);
         final MenuItemCustom statisticChoice = new MenuItemCustom("Statistic", Material.WRITABLE_BOOK);
-        statisticChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + settings.getDisplayName()));
+        statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings.getDisplayName()));
 
         final MenuItemCustom fieldChoice = new MenuItemCustom("Statistic Field", Material.PAPER);
-        fieldChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
+        fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
 
         statisticChoice.setClick(object -> {
             Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<>() {
@@ -228,7 +227,7 @@ public class ScoreboardDisplay {
                 public void setValue(MinigameStat value) {
                     stat = value;
                     StatSettings settings12 = minigame.getSettings(stat);
-                    statisticChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + settings12.getDisplayName()));
+                    statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings12.getDisplayName()));
 
                     // Check that the field is valid
                     StatValueField first = null;
@@ -247,7 +246,7 @@ public class ScoreboardDisplay {
                     // Update the field
                     if (!valid) {
                         field = first;
-                        fieldChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + value.toString()));
+                        fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.toString()));
                     }
                 }
             });
@@ -267,7 +266,7 @@ public class ScoreboardDisplay {
                 @Override
                 public void setValue(StatValueField value) {
                     field = value;
-                    fieldChoice.setDescriptionStr(Collections.singletonList(ChatColor.GREEN + value.getTitle()));
+                    fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.getTitle()));
                 }
             });
 

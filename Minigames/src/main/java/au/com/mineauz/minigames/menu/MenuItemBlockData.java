@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,13 +17,13 @@ import java.util.List;
 public class MenuItemBlockData extends MenuItem {
     private Callback<BlockData> dataCallback;
 
-    public MenuItemBlockData(String name, Material displayItem) {
+    public MenuItemBlockData(Component name, Material displayItem) {
         super(name, displayItem);
         dataCallback.setValue(displayItem.createBlockData());
         setDescription(createDescription(dataCallback.getValue()));
     }
 
-    public MenuItemBlockData(String name, Material displayItem, Callback<BlockData> callback) {
+    public MenuItemBlockData(Component name, Material displayItem, Callback<BlockData> callback) {
         super(name, displayItem);
         this.dataCallback = callback;
         setDescription(createDescription(dataCallback.getValue()));
@@ -36,7 +37,7 @@ public class MenuItemBlockData extends MenuItem {
     /**
      * minecraft:chest[facing=north,type=single,waterlogged=false]{Items:[{Slot:0b,id:"minecraft:grass_block",Count:1b}],Lock:""}
      */
-    private List<String> createDescription(BlockData data) {
+    private List<Component> createDescription(BlockData data) {
         List<String> result = new ArrayList<>();
         result.add("Material: " + data.getMaterial().name());
         String dataString = data.getAsString();

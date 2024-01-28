@@ -52,7 +52,7 @@ public class MessageAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) {
             return;

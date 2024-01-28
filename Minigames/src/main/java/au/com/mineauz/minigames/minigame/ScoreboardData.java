@@ -2,15 +2,15 @@ package au.com.mineauz.minigames.minigame;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.MinigameSave;
-import com.google.common.collect.Maps;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ScoreboardData {
-    private final Map<Block, ScoreboardDisplay> displays = Maps.newHashMap();
+    private final Map<Block, ScoreboardDisplay> displays = new HashMap<>();
 
     public ScoreboardData() {
     }

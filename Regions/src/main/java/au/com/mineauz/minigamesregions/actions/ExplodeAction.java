@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Random;
 
 public class ExplodeAction extends AbstractAction {
-
     private final FloatFlag power = new FloatFlag(4f, "power");
     private final BooleanFlag fire = new BooleanFlag(false, "fire");
 
@@ -71,7 +70,7 @@ public class ExplodeAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
         node.getLocation().getWorld().createExplosion(node.getLocation(), power.getFlag(), fire.getFlag());

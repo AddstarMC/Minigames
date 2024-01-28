@@ -1,9 +1,9 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptCollection;
@@ -16,7 +16,6 @@ import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
-import com.google.common.collect.ImmutableSet;
 import io.papermc.paper.math.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -245,7 +244,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
 
     @Override
     public Set<String> getKeys() {
-        return ImmutableSet.of("name", "players", "min", "max");
+        return Set.of("name", "players", "min", "max");
     }
 
     public Minigame getMinigame() {

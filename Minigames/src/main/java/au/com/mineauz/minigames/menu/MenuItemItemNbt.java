@@ -23,17 +23,17 @@ public class MenuItemItemNbt extends MenuItem {
      **/
     private final @NotNull Callback<ItemStack> itemCallback;
 
-    public MenuItemItemNbt(String name, Material displayMat, @NotNull Callback<ItemStack> c) {
+    public MenuItemItemNbt(Component name, Material displayMat, @NotNull Callback<ItemStack> c) {
         super(name, displayMat);
         itemCallback = c;
     }
 
-    public MenuItemItemNbt(String name, List<String> description, Material displayMat, @NotNull Callback<ItemStack> c) {
+    public MenuItemItemNbt(Component name, List<Component> description, Material displayMat, @NotNull Callback<ItemStack> c) {
         super(name, description, displayMat);
         itemCallback = c;
     }
 
-    public MenuItemItemNbt(String name, @NotNull ItemStack itemStack, @NotNull Callback<ItemStack> c) {
+    public MenuItemItemNbt(Component name, @NotNull ItemStack itemStack, @NotNull Callback<ItemStack> c) {
         super(name, itemStack.clone()); // clone to not overwrite lore / name
 
         setDescriptionPartAtEnd("MenuItemItemNbt", createDescription(itemStack));

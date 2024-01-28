@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ApplyPotionAction extends AbstractAction {
-
     private final StringFlag type = new StringFlag("SPEED", "type");
     private final IntegerFlag dur = new IntegerFlag(60, "duration");
     private final IntegerFlag amp = new IntegerFlag(1, "amplifier");
@@ -59,7 +58,7 @@ public class ApplyPotionAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
         execute(mgPlayer);

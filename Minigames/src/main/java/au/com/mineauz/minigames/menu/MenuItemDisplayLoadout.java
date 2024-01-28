@@ -7,22 +7,23 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemDisplayLoadout extends MenuItem {
-
-    private PlayerLoadout loadout = null;
+    private final @NotNull PlayerLoadout loadout;
     private Minigame mgm = null;
     private boolean allowDelete = true;
     private Menu altMenu = null;
 
-    public MenuItemDisplayLoadout(String name, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
+    public MenuItemDisplayLoadout(Component name, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
         super(name, displayItem);
         this.loadout = loadout;
         mgm = minigame;
@@ -30,14 +31,14 @@ public class MenuItemDisplayLoadout extends MenuItem {
             allowDelete = false;
     }
 
-    public MenuItemDisplayLoadout(String name, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemDisplayLoadout(Component name, Material displayItem, PlayerLoadout loadout) {
         super(name, displayItem);
         this.loadout = loadout;
         if (!loadout.isDeleteable())
             allowDelete = false;
     }
 
-    public MenuItemDisplayLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
+    public MenuItemDisplayLoadout(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
         super(name, description, displayItem);
         this.loadout = loadout;
         mgm = minigame;
@@ -45,7 +46,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
             allowDelete = false;
     }
 
-    public MenuItemDisplayLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemDisplayLoadout(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout) {
         super(name, description, displayItem);
         this.loadout = loadout;
         if (!loadout.isDeleteable())
@@ -126,7 +127,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
             a = 41;
         }
         for (int i = a; i < 42; i++) {
-            loadoutMenu.addItem(new MenuItem("", (Material) null), i);
+            loadoutMenu.addItem(new MenuItem(Component.empty(), (Material) null), i);
         }
         loadoutMenu.displayMenu(getContainer().getViewer());
 

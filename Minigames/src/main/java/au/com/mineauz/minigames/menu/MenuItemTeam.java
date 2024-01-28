@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -17,18 +18,18 @@ public class MenuItemTeam extends MenuItem {
 
     private final Team team;
 
-    public MenuItemTeam(String name, Team team) {
+    public MenuItemTeam(Component name, Team team) {
         super(name, Material.LEATHER_CHESTPLATE);
 
-        setDescriptionStr(List.of(ChatColor.DARK_PURPLE + "(Right Click to delete)"));
+        setDescription(List.of(ChatColor.DARK_PURPLE + "(Right Click to delete)"));
         this.team = team;
         setTeamIcon();
     }
 
-    public MenuItemTeam(String name, List<String> description, Team team) {
+    public MenuItemTeam(Component name, List<Component> description, Team team) {
         super(name, description, Material.LEATHER_CHESTPLATE);
 
-        getDescriptionStr().add(0, ChatColor.DARK_PURPLE + "(Right Click to delete)");
+        getDescription().add(0, ChatColor.DARK_PURPLE + "(Right Click to delete)");
         this.team = team;
         setTeamIcon();
     }

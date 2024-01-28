@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.menu;
 import org.bukkit.inventory.ItemStack;
 
 public class MenuItemBack extends MenuItem {
-
     private final Menu prev;
 
     public MenuItemBack(Menu prev) {

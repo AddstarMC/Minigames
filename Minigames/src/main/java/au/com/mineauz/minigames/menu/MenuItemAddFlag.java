@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,12 +13,12 @@ public class MenuItemAddFlag extends MenuItem {
 
     private final Minigame mgm;
 
-    public MenuItemAddFlag(String name, Material displayItem, Minigame mgm) {
+    public MenuItemAddFlag(Component name, Material displayItem, Minigame mgm) {
         super(name, displayItem);
         this.mgm = mgm;
     }
 
-    public MenuItemAddFlag(String name, List<String> description, Material displayItem, Minigame mgm) {
+    public MenuItemAddFlag(Component name, List<Component> description, Material displayItem, Minigame mgm) {
         super(name, description, displayItem);
         this.mgm = mgm;
     }
