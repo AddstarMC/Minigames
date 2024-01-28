@@ -62,9 +62,9 @@ public class SetInfectedTeamCommand implements ICommand {
                 InfectionModule.getMinigameModule(minigame).setInfectedTeam(null);
                 sender.sendMessage(ChatColor.GRAY + "The infected team of " + minigame + " has been set to none.");
             } else if (args[0].equalsIgnoreCase("Default")) {
-                InfectionModule.getMinigameModule(minigame).setInfectedTeam(WordUtils.capitalize(InfectionModule.getMinigameModule(minigame).getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
+                InfectionModule.getMinigameModule(minigame).setInfectedTeam(WordUtils.capitalizeFully(InfectionModule.getMinigameModule(minigame).getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
                 sender.sendMessage(ChatColor.GRAY + "The infected team of " + minigame + " has been set to " +
-                        WordUtils.capitalize(InfectionModule.getMinigameModule(minigame).getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
+                        WordUtils.capitalizeFully(InfectionModule.getMinigameModule(minigame).getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
             } else {
                 if (TeamColor.matchColor(args[0]) == InfectionModule.getMinigameModule(minigame).getDefaultInfectedTeam() ||
                         TeamColor.matchColor(args[0]) == InfectionModule.getMinigameModule(minigame).getDefaultSurvivorTeam() ||
@@ -88,8 +88,8 @@ public class SetInfectedTeamCommand implements ICommand {
             }
             teams.add("none");
             teams.add("default");
-            teams.add(WordUtils.capitalize(InfectionModule.getMinigameModule(minigame).getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
-            teams.add(WordUtils.capitalize(InfectionModule.getMinigameModule(minigame).getDefaultSurvivorTeam().toString().toLowerCase().replace("_", " ")));
+            teams.add(WordUtils.capitalizeFully(InfectionModule.getMinigameModule(minigame).getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
+            teams.add(WordUtils.capitalizeFully(InfectionModule.getMinigameModule(minigame).getDefaultSurvivorTeam().toString().toLowerCase().replace("_", " ")));
             return MinigameUtils.tabCompleteMatch(teams, args[0]);
         }
         return null;

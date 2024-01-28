@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class PlayerHealthRangeCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
         out.put("Health", minHealth.getFlag() + " - " + maxHealth.getFlag());
     }
 
@@ -43,29 +44,29 @@ public class PlayerHealthRangeCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         if (player == null || !player.isInMinigame()) return false;
         return player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
                 player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         if (player == null || !player.isInMinigame()) return false;
         return player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
                 player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         minHealth.saveValue(path, config);
         maxHealth.saveValue(path, config);
         saveInvert(config, path);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         minHealth.loadValue(path, config);
         maxHealth.loadValue(path, config);
         loadInvert(config, path);

@@ -107,7 +107,7 @@ public class PlaySoundAction extends AbstractAction {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         List<String> sounds = new ArrayList<>();
         for (Sound s : Sound.values())
-            sounds.add(WordUtils.capitalize(s.toString().replace("_", " ")));
+            sounds.add(WordUtils.capitalizeFully(s.toString().replace("_", " ")));
         m.addItem(new MenuItemList("Sound", Material.NOTE_BLOCK, new Callback<>() {
 
             @Override
@@ -116,7 +116,7 @@ public class PlaySoundAction extends AbstractAction {
                 if (!s.toString().equals(sound.getFlag())) {
                     sound.setFlag(s.toString());
                 }
-                return WordUtils.capitalize(sound.getFlag().replace("_", " "));
+                return WordUtils.capitalizeFully(sound.getFlag().replace("_", " "));
             }
 
             @Override

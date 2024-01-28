@@ -119,7 +119,7 @@ public class SetStartCommand implements ICommand {
                                       String alias, String[] args) {
         List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(minigame).getTeamsNameMap().size() + 1);
         for (String t : TeamsModule.getMinigameModule(minigame).getTeamsNameMap().keySet()) {
-            teams.add(WordUtils.capitalize(t.replace("_", " ")));
+            teams.add(WordUtils.capitalizeFully(t.replace("_", " ")));
         }
         if (args.length == 1) {
             teams.add("Clear");

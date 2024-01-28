@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -19,11 +20,11 @@ public abstract class ConditionInterface {
         m.addItem(invert.getMenuItem("Invert", Material.ENDER_PEARL), m.getSize() - 1);
     }
 
-    protected void saveInvert(FileConfiguration config, String path) {
+    protected void saveInvert(@NotNull FileConfiguration config, @NotNull String path) {
         invert.saveValue(path, config);
     }
 
-    protected void loadInvert(FileConfiguration config, String path) {
+    protected void loadInvert(@NotNull FileConfiguration config, @NotNull String path) {
         invert.loadValue(path, config);
     }
 
@@ -39,13 +40,13 @@ public abstract class ConditionInterface {
 
     public abstract boolean useInNodes();
 
-    public abstract boolean checkRegionCondition(MinigamePlayer player, Region region);
+    public abstract boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region);
 
-    public abstract boolean checkNodeCondition(MinigamePlayer player, Node node);
+    public abstract boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node);
 
-    public abstract void saveArguments(FileConfiguration config, String path);
+    public abstract void saveArguments(@NotNull FileConfiguration config, @NotNull String path);
 
-    public abstract void loadArguments(FileConfiguration config, String path);
+    public abstract void loadArguments(@NotNull FileConfiguration config, @NotNull String path);
 
     public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
 
@@ -54,9 +55,9 @@ public abstract class ConditionInterface {
      */
     public abstract boolean PlayerNeeded();
 
-    public abstract void describe(Map<String, Object> out);
+    public abstract void describe(@NotNull Map<@NotNull String, @NotNull Object> out);
 
-    public void debug(Minigame mg) {
+    public void debug(@NotNull Minigame mg) {
         if (Minigames.getPlugin().isDebugging()) {
             Minigames.getPlugin().getLogger().info("Cat " + this.getCategory() + " : " + this.getName() +
                     " Check:" + mg.getName(false) + " mech: " + mg.getMechanicName() + "Condition:                     " + this);

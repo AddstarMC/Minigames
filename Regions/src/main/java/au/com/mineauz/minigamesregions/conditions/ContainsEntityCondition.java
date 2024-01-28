@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ContainsEntityCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         Collection<Entity> entities = region.getFirstPoint().getWorld().getNearbyEntities(region.getBoundingBox());
 
         Pattern namePattern = null;
@@ -77,20 +78,19 @@ public class ContainsEntityCondition extends ConditionInterface {
         }
 
         StringBuffer buffer = new StringBuffer();
-        int start = 0;
 
-        PlayerHasItemCondition.createPattern(name, buffer, start);
+        PlayerHasItemCondition.createPattern(name, buffer); // todo don't do that. PlayerHasItem should provide this methode here!
 
         return Pattern.compile(buffer.toString());
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         return false;
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         entityType.saveValue(path, config);
         matchName.saveValue(path, config);
         customName.saveValue(path, config);
@@ -98,7 +98,7 @@ public class ContainsEntityCondition extends ConditionInterface {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         entityType.loadValue(path, config);
         matchName.loadValue(path, config);
         customName.loadValue(path, config);
@@ -125,7 +125,7 @@ public class ContainsEntityCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
         out.put("Type", entityType.getFlag());
         if (matchName.getFlag()) {
             out.put("Match Name", customName.getFlag());

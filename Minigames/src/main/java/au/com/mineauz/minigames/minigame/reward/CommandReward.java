@@ -82,13 +82,13 @@ public class CommandReward extends RewardType {
         }
 
         public void updateName(String newName) {
-            ItemMeta meta = getItem().getItemMeta();
+            ItemMeta meta = getDisplayItem().getItemMeta();
             if (newName.length() > 16) {
                 newName = newName.substring(0, 15);
                 newName += "...";
             }
             meta.setDisplayName(ChatColor.RESET + newName);
-            getItem().setItemMeta(meta);
+            getDisplayItem().setItemMeta(meta);
             getContainer().removeItem(getSlot());
             getContainer().addItem(this, getSlot());
         }
@@ -147,7 +147,7 @@ public class CommandReward extends RewardType {
 
         @Override
         public ItemStack onDoubleClick() {
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override
@@ -160,7 +160,7 @@ public class CommandReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override
@@ -173,7 +173,7 @@ public class CommandReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override

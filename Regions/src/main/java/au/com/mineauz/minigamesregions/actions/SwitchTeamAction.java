@@ -104,14 +104,14 @@ public class SwitchTeamAction extends AbstractAction {
         List<String> teams = new ArrayList<>();
         teams.add("All");
         for (TeamColor team : TeamColor.values()) {
-            teams.add(WordUtils.capitalize(team.toString()));
+            teams.add(WordUtils.capitalizeFully(team.toString()));
         }
         teams.add("None");
         m.addItem(new MenuItemList("Switch From:", List.of("If 'ALL' will switch on everyone, otherwise specific team."), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(teamfrom.getFlag());
+                return WordUtils.capitalizeFully(teamfrom.getFlag());
             }
 
             @Override
@@ -125,7 +125,7 @@ public class SwitchTeamAction extends AbstractAction {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(teamto.getFlag());
+                return WordUtils.capitalizeFully(teamto.getFlag());
             }
 
             @Override

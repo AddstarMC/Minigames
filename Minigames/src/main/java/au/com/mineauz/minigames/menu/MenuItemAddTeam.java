@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
@@ -33,7 +33,7 @@ public class MenuItemAddTeam extends MenuItem {
         ply.sendInfoMessage(MessageManager.getUnformattedMessage(null, "team.add"));
         List<String> teams = new ArrayList<>();
         for (TeamColor col : TeamColor.values())
-            teams.add(col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
+            teams.add(col.getColor() + WordUtils.capitalizeFully(col.toString().replace("_", " ")));
         ply.sendInfoMessage(MinigameUtils.listToString(teams));
         ply.setManualEntry(this);
 
@@ -58,7 +58,7 @@ public class MenuItemAddTeam extends MenuItem {
 
             List<String> teams = new ArrayList<>(tm.getTeams().size() + 1);
             for (Team t : tm.getTeams()) {
-                teams.add(WordUtils.capitalize(t.getColor().toString().replace("_", " ")));
+                teams.add(WordUtils.capitalizeFully(t.getColor().toString().replace("_", " ")));
             }
             teams.add("None");
             getContainer().removeItem(0);

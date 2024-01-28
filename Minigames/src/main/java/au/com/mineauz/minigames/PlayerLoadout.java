@@ -367,7 +367,7 @@ public class PlayerLoadout {
             public String getValue() {
                 if (getTeamColor() == null)
                     return "None";
-                return WordUtils.capitalize(getTeamColor().toString());
+                return WordUtils.capitalizeFully(getTeamColor().toString());
             }
 
             @Override

@@ -92,13 +92,13 @@ public class ApplyPotionAction extends AbstractAction {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         List<String> pots = new ArrayList<>(PotionEffectType.values().length);
         for (PotionEffectType type : PotionEffectType.values()) {
-            pots.add(WordUtils.capitalize(type.getName().replace("_", " ")));
+            pots.add(WordUtils.capitalizeFully(type.getName().replace("_", " ")));
         }
         m.addItem(new MenuItemList("Potion Type", Material.POTION, new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(type.getFlag().replace("_", " "));
+                return WordUtils.capitalizeFully(type.getFlag().replace("_", " "));
             }
 
             @Override

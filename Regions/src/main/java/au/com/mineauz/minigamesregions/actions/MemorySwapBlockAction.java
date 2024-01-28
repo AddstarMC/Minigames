@@ -13,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -346,27 +345,7 @@ public class MemorySwapBlockAction extends AbstractAction {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced
-        m.addItem(new MenuItemMaterial("Match Block", matchType.getFlag(), new Callback<>() {
-
-            @Override
-            public Material getValue() {
-                return matchType.getFlag();
-            }
-
-            @Override
-            public void setValue(Material value) {
-                matchType.setFlag(value);
-            }
-
-
-        }) {
-            @Override
-            public ItemStack getItem() {
-                ItemStack stack = super.getItem();
-                stack.setType(Objects.requireNonNullElse(matchType.getFlag(), Material.COBBLESTONE));
-                return stack;
-            }
-        });
+        m.addItem(matchType.getMenuItem("Match Block"));
 
         //Menu entry for the white/blacklist entry, aka the blocks that will be only accounted for / removed from the block pool
         m.addItem(new MenuItemNewLine());

@@ -69,12 +69,14 @@ public class MenuItemString extends MenuItem {
         return null;
     }
 
+
     @Override
     public void checkValidEntry(String entry) {
-        if (entry.equals("null") && allowNull)
+        if (entry.equals("null") && allowNull) {
             str.setValue(null);
-        else
+        } else {
             str.setValue(entry);
+        }
 
         updateDescription();
         getContainer().cancelReopenTimer();

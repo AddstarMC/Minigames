@@ -52,7 +52,7 @@ public class TeamSign implements MinigameSign {
                 event.setLine(2, ChatColor.GRAY + "Neutral");
             } else {
                 TeamColor col = TeamColor.matchColor(event.getLine(2));
-                event.setLine(2, col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
+                event.setLine(2, col.getColor() + WordUtils.capitalizeFully(col.toString().replace("_", " ")));
             }
             return true;
         }

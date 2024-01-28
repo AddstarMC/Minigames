@@ -1,11 +1,12 @@
 package au.com.mineauz.minigames.menu;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class MenuItemNewLine extends MenuItem {
 
     public MenuItemNewLine() {
-        super("NL", null);
+        super("NL", (Material) null);
     }
 
     @Override

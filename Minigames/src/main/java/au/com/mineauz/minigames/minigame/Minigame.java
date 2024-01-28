@@ -513,7 +513,7 @@ public class Minigame implements ScriptObject {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(type.getFlag().toString().replace("_", " "));
+                return WordUtils.capitalizeFully(type.getFlag().toString().replace("_", " "));
             }
 
             @Override
@@ -740,7 +740,7 @@ public class Minigame implements ScriptObject {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(defaultGamemode.getFlag().toString());
+                return WordUtils.capitalizeFully(defaultGamemode.getFlag().toString());
             }
 
             @Override
@@ -1079,18 +1079,18 @@ public class Minigame implements ScriptObject {
         itemsMain.add(usePermissions.getMenuItem("Use Permissions", Material.PAPER));
         List<String> mgTypes = new ArrayList<>();
         for (MinigameType val : MinigameType.values()) {
-            mgTypes.add(WordUtils.capitalize(val.toString().replace("_", " ")));
+            mgTypes.add(WordUtils.capitalizeFully(val.toString().replace("_", " ")));
         }
         itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
         List<String> scoreTypes = new ArrayList<>();
         for (GameMechanicBase val : GameMechanics.getGameMechanics()) {
-            scoreTypes.add(WordUtils.capitalize(val.getMechanic()));
+            scoreTypes.add(WordUtils.capitalizeFully(val.getMechanic()));
         }
         itemsMain.add(new MenuItemList("Game Mechanic", List.of("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(mechanic.getFlag());
+                return WordUtils.capitalizeFully(mechanic.getFlag());
             }
 
             @Override
@@ -1177,7 +1177,7 @@ public class Minigame implements ScriptObject {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(degenType.getFlag());
+                return WordUtils.capitalizeFully(degenType.getFlag());
             }
 
             @Override
@@ -1261,7 +1261,7 @@ public class Minigame implements ScriptObject {
         List<MenuItem> itemsPlayer = new ArrayList<>(20);
         List<String> gmopts = new ArrayList<>();
         for (GameMode gm : GameMode.values()) {
-            gmopts.add(WordUtils.capitalize(gm.toString()));
+            gmopts.add(WordUtils.capitalizeFully(gm.toString()));
         }
         itemsPlayer.add(new MenuItemList("Players Gamemode", Material.CRAFTING_TABLE, getDefaultGamemodeCallback(), gmopts));
         itemsPlayer.add(allowEnderPearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
@@ -1409,8 +1409,9 @@ public class Minigame implements ScriptObject {
 
                 if (module.getFlags() != null) {
                     for (String flag : module.getFlags().keySet()) {
-                        if (modsave.getConfig().contains(name + "." + flag))
+                        if (modsave.getConfig().contains(name + "." + flag)) {
                             module.getFlags().get(flag).loadValue(name, modsave.getConfig());
+                        }
                     }
                 }
             }

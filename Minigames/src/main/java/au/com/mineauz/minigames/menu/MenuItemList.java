@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemList extends MenuItem {
-
     private final Callback<String> value;
     private final List<String> options;
 

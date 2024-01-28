@@ -99,13 +99,13 @@ public class SetTeamScoreAction extends ScoreAction {
         List<String> teams = new ArrayList<>();
         teams.add("None");
         for (TeamColor team : TeamColor.values()) {
-            teams.add(WordUtils.capitalize(team.toString()));
+            teams.add(WordUtils.capitalizeFully(team.toString()));
         }
         m.addItem(new MenuItemList("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(team.getFlag());
+                return WordUtils.capitalizeFully(team.getFlag());
             }
 
             @Override

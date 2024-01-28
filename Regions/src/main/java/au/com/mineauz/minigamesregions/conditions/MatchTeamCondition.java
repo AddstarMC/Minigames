@@ -31,7 +31,7 @@ public class MatchTeamCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
         out.put("Team", team.getFlag());
     }
 
@@ -46,25 +46,25 @@ public class MatchTeamCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         if (player == null || !player.isInMinigame()) return false;
         return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         team.saveValue(path, config);
         saveInvert(config, path);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         team.loadValue(path, config);
         loadInvert(config, path);
     }

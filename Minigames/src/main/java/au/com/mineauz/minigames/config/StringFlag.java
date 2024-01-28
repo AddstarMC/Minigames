@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -61,5 +60,4 @@ public class StringFlag extends Flag<String> {
             }
         });
     }
-
 }

@@ -69,7 +69,7 @@ public class Conditions {
         Menu m = new Menu(3, "Conditions", player);
         m.setPreviousPage(prev);
         for (ConditionInterface con : exec.getConditions()) {
-            m.addItem(new MenuItemCondition(WordUtils.capitalize(con.getName()), Material.PAPER, exec, con));
+            m.addItem(new MenuItemCondition(WordUtils.capitalizeFully(con.getName()), Material.PAPER, exec, con));
         }
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         m.addItem(new MenuItemConditionAdd("Add Condition", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);
@@ -80,7 +80,7 @@ public class Conditions {
         Menu m = new Menu(3, "Conditions", player);
         m.setPreviousPage(prev);
         for (ConditionInterface con : exec.getConditions()) {
-            m.addItem(new MenuItemCondition(WordUtils.capitalize(con.getName()), Material.PAPER, exec, con));
+            m.addItem(new MenuItemCondition(WordUtils.capitalizeFully(con.getName()), Material.PAPER, exec, con));
         }
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         m.addItem(new MenuItemConditionAdd("Add Condition", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);

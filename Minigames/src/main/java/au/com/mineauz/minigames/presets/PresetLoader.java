@@ -27,7 +27,7 @@ public class PresetLoader {
             }
 
             return ChatColor.GRAY + "Loaded the " +
-                    WordUtils.capitalize(preset) + " preset to " + minigame.getName(false);
+                    WordUtils.capitalizeFully(preset) + " preset to " + minigame.getName(false);
         } else {
             return ChatColor.RED + "Failed to load preset: " +
                     ChatColor.GRAY + preset + ".yml was not found in the presets folder!";

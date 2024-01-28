@@ -44,14 +44,14 @@ public class FlagSign implements MinigameSign {
         event.setLine(1, ChatColor.GREEN + "Flag");
         if (TeamColor.matchColor(event.getLine(2)) != null) {
             TeamColor col = TeamColor.matchColor(event.getLine(2));
-            event.setLine(2, col.getColor() + WordUtils.capitalize(col.toString()));
+            event.setLine(2, col.getColor() + WordUtils.capitalizeFully(col.toString()));
         } else if (event.getLine(2).equalsIgnoreCase("neutral")) {
             event.setLine(2, ChatColor.GRAY + "Neutral");
         } else if (event.getLine(2).equalsIgnoreCase("capture") && !event.getLine(3).isEmpty()) {
             event.setLine(2, ChatColor.GREEN + "Capture");
             if (TeamColor.matchColor(event.getLine(3)) != null) {
                 TeamColor col = TeamColor.matchColor(event.getLine(3));
-                event.setLine(3, col.getColor() + WordUtils.capitalize(col.toString()));
+                event.setLine(3, col.getColor() + WordUtils.capitalizeFully(col.toString()));
             } else if (event.getLine(3).equalsIgnoreCase("neutral")) {
                 event.setLine(3, ChatColor.GRAY + "Neutral");
             } else {

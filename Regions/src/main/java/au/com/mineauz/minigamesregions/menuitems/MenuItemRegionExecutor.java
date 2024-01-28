@@ -22,7 +22,7 @@ public class MenuItemRegionExecutor extends MenuItem {
         this.region = region;
         this.ex = ex;
         setDescriptionStr(List.of(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY +
-                        WordUtils.capitalize(ex.getTrigger().getName()),
+                        WordUtils.capitalizeFully(ex.getTrigger().getName()),
                 ChatColor.GREEN + "Actions: " + ChatColor.GRAY +
                         ex.getActions().size(),
                 ChatColor.DARK_PURPLE + "(Right click to delete)",

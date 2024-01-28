@@ -70,11 +70,11 @@ public class InfectionModule extends MinigameModule {
                     } else if (TeamColor.matchColor(infectedTeam.getFlag()) == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
                             TeamColor.matchColor(infectedTeam.getFlag()) == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
                             TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(infectedTeam.getFlag().toLowerCase())) {
-                        return WordUtils.capitalize(infectedTeam.getFlag().toLowerCase().replace("_", " "));
+                        return WordUtils.capitalizeFully(infectedTeam.getFlag().toLowerCase().replace("_", " "));
                     } else
-                        return WordUtils.capitalize(infectedTeam.getDefaultFlag().toLowerCase().replace("_", " "));
+                        return WordUtils.capitalizeFully(infectedTeam.getDefaultFlag().toLowerCase().replace("_", " "));
                 } else
-                    return WordUtils.capitalize(infectedTeam.getDefaultFlag().toLowerCase().replace("_", " "));
+                    return WordUtils.capitalizeFully(infectedTeam.getDefaultFlag().toLowerCase().replace("_", " "));
             }
 
             @Override
@@ -101,11 +101,11 @@ public class InfectionModule extends MinigameModule {
                     } else if (TeamColor.matchColor(survivorTeam.getFlag()) == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
                             TeamColor.matchColor(survivorTeam.getFlag()) == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
                             TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(survivorTeam.getFlag().toLowerCase())) {
-                        return WordUtils.capitalize(survivorTeam.getFlag().toLowerCase().replace("_", " "));
+                        return WordUtils.capitalizeFully(survivorTeam.getFlag().toLowerCase().replace("_", " "));
                     } else
-                        return WordUtils.capitalize(survivorTeam.getDefaultFlag().toLowerCase().replace("_", " "));
+                        return WordUtils.capitalizeFully(survivorTeam.getDefaultFlag().toLowerCase().replace("_", " "));
                 } else
-                    return WordUtils.capitalize(survivorTeam.getDefaultFlag().toLowerCase().replace("_", " "));
+                    return WordUtils.capitalizeFully(survivorTeam.getDefaultFlag().toLowerCase().replace("_", " "));
             }
 
             @Override
@@ -137,12 +137,12 @@ public class InfectionModule extends MinigameModule {
         List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().size() + 3);
         for (String t : TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().keySet()) {
             if (!t.equalsIgnoreCase(infectedTeam.getDefaultFlag()) || t.equalsIgnoreCase(survivorTeam.getDefaultFlag())) {
-                teams.add(WordUtils.capitalize(t.replace("_", " ")));
+                teams.add(WordUtils.capitalizeFully(t.replace("_", " ")));
             } // avoid adding defaults twice
         }
         // add defaults
-        teams.add(WordUtils.capitalize(infectedTeam.getDefaultFlag().toLowerCase().replace("_", " ")));
-        teams.add(WordUtils.capitalize(survivorTeam.getDefaultFlag().toLowerCase().replace("_", " ")));
+        teams.add(WordUtils.capitalizeFully(infectedTeam.getDefaultFlag().toLowerCase().replace("_", " ")));
+        teams.add(WordUtils.capitalizeFully(survivorTeam.getDefaultFlag().toLowerCase().replace("_", " ")));
         teams.add("None");
         m.addItem(new MenuItemList("Infected Team", Material.PAPER, getInfectedTeamCallback(), teams));
         m.addItem(new MenuItemList("Survivor Team", Material.PAPER, getSurvivorTeamCallback(), teams));

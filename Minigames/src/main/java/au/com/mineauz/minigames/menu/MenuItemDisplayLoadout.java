@@ -79,7 +79,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         List<String> teams = new ArrayList<>();
         teams.add("None");
         for (TeamColor col : TeamColor.values())
-            teams.add(WordUtils.capitalize(col.toString()));
+            teams.add(WordUtils.capitalizeFully(col.toString()));
         mItems.add(new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams));
         loadoutSettings.addItems(mItems);
         if (mgm == null) {
@@ -113,7 +113,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         List<MenuItem> potions = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
-            potions.add(new MenuItemPotion(WordUtils.capitalize(eff.getType().getName().replace("_", " ")), des, Material.POTION, eff, loadout));
+            potions.add(new MenuItemPotion(WordUtils.capitalizeFully(eff.getType().getName().replace("_", " ")), des, Material.POTION, eff, loadout));
         }
         potionMenu.addItems(potions);
 
@@ -131,7 +131,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
             a = 41;
         }
         for (int i = a; i < 42; i++) {
-            loadoutMenu.addItem(new MenuItem("", null), i);
+            loadoutMenu.addItem(new MenuItem("", (Material) null), i);
         }
         loadoutMenu.displayMenu(getContainer().getViewer());
 

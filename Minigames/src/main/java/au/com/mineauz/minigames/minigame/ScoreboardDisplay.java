@@ -352,7 +352,7 @@ public class ScoreboardDisplay {
                 sign.getSide(Side.FRONT).setLine(0, ChatColor.BLUE + minigame.getName(true));
                 sign.getSide(Side.FRONT).setLine(1, ChatColor.GREEN + settings.getDisplayName());
                 sign.getSide(Side.FRONT).setLine(2, ChatColor.GREEN + field.getTitle());
-                sign.getSide(Side.FRONT).setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
+                sign.getSide(Side.FRONT).setLine(3, "(" + WordUtils.capitalizeFully(order.toString()) + ")");
                 sign.update();
 
                 sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));

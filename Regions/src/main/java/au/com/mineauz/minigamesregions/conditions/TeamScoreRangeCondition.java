@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.Region;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
         out.put("Score", min.getFlag() + " - " + max.getFlag());
         out.put("Team", team.getFlag());
     }
@@ -50,12 +51,12 @@ public class TeamScoreRangeCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         return checkCondition(player);
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         return checkCondition(player);
     }
 
@@ -82,7 +83,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         min.saveValue(path, config);
         max.saveValue(path, config);
         team.saveValue(path, config);
@@ -90,7 +91,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         min.loadValue(path, config);
         max.loadValue(path, config);
         team.loadValue(path, config);
@@ -104,12 +105,12 @@ public class TeamScoreRangeCondition extends ConditionInterface {
         m.addItem(max.getMenuItem("Maximum Score", Material.STONE, 0, null));
         List<String> teams = new ArrayList<>();
         for (TeamColor t : TeamColor.values())
-            teams.add(WordUtils.capitalize(t.toString().replace("_", " ")));
+            teams.add(WordUtils.capitalizeFully(t.toString().replace("_", " ")));
         m.addItem(new MenuItemList("Team Color", Material.WHITE_WOOL, new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(team.getFlag().replace("_", " "));
+                return WordUtils.capitalizeFully(team.getFlag().replace("_", " "));
             }
 
             @Override
