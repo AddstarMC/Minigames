@@ -115,7 +115,7 @@ public class MatchBlockCondition extends ConditionInterface {
             useBlockData.setFlag(true);
             busedur.updateDescription();
             btype.update();
-            return c.getItem();
+            return c.getDisplayItem();
         });
         addInvertMenuItem(m);
         m.displayMenu(player);

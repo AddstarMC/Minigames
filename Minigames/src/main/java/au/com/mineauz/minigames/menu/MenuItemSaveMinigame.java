@@ -24,7 +24,7 @@ public class MenuItemSaveMinigame extends MenuItem {
     public ItemStack onClick() {
         mgm.saveMinigame();
         getContainer().getViewer().sendMessage("Saved the '" + mgm.getName(false) + "' Minigame.", MinigameMessageType.INFO);
-        return getItem();
+        return getDisplayItem();
     }
 
 }

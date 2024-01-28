@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class ItemReward extends RewardType {
         else
             player.getPlayer().getInventory().addItem(item);
         player.sendMessage(MessageManager.getMinigamesMessage("reward.item", item.getAmount(),
-                WordUtils.capitalize(item.getType().toString())), MinigameMessageType.WIN);
+                WordUtils.capitalizeFully(item.getType().toString())), MinigameMessageType.WIN);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class ItemReward extends RewardType {
 
         public MenuItemReward(ItemReward reward) {
             super("PLACEHOLDER", List.of("Click with item", "to change."), Material.DIAMOND);
-            setItem(reward.getRewardItem());
+            setDisplayItem(reward.getRewardItem());
             for (RewardRarity rarity : RewardRarity.values()) {
                 options.add(rarity.toString());
             }
@@ -80,19 +81,19 @@ public class ItemReward extends RewardType {
         }
 
         @Override
-        public void setItem(ItemStack item) {
-            super.setItem(item);
-            ItemMeta meta = getItem().getItemMeta();
-            meta.setDisplayName(ChatColor.RESET + WordUtils.capitalize(item.getType().toString().replace("_", " ")));
-            getItem().setItemMeta(meta);
+        public void setDisplayItem(@NotNull ItemStack item) {
+            super.setDisplayItem(item);
+            ItemMeta meta = getDisplayItem().getItemMeta();
+            meta.setDisplayName(ChatColor.RESET + WordUtils.capitalizeFully(item.getType().toString().replace("_", " ")));
+            getDisplayItem().setItemMeta(meta);
         }
 
         @Override
         public ItemStack onClickWithItem(ItemStack item) {
-            setItem(item);
+            setDisplayItem(item);
             setRewardItem(item.clone());
             updateDescription();
-            return getItem();
+            return getDisplayItem();
         }
 
         public void updateDescription() {
@@ -153,7 +154,7 @@ public class ItemReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override
@@ -166,7 +167,7 @@ public class ItemReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override

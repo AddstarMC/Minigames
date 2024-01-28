@@ -136,8 +136,8 @@ public class RandomFillingAction extends AbstractAction {
 
         }) {
             @Override
-            public ItemStack getItem() {
-                ItemStack stack = super.getItem();
+            public @NotNull ItemStack getDisplayItem() {
+                ItemStack stack = super.getDisplayItem();
                 Material m = Material.getMaterial(toType.getFlag());
                 stack.setType(Objects.requireNonNullElse(m, Material.COBBLESTONE));
                 return stack;

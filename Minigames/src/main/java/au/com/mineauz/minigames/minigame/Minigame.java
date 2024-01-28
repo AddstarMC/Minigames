@@ -1107,7 +1107,7 @@ public class Minigame implements ScriptObject {
             if (getMechanic().displaySettings(mgm) != null &&
                     getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
                 return null;
-            return mechSettings.getItem();
+            return mechSettings.getDisplayItem();
         });
         itemsMain.add(mechSettings);
         MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);

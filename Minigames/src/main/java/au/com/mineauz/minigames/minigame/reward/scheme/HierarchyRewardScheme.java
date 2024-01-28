@@ -232,14 +232,14 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             setDescriptionStr(description);
 
             // Update name
-            ItemStack item = getItem();
+            ItemStack item = getDisplayItem();
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(getMenuItemName(value));
                 item.setItemMeta(meta);
             }
 
-            setItem(item);
+            setDisplayItem(item);
         }
 
         private void updateValue(T newValue) {
@@ -259,7 +259,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             updateValue(nextValue);
 
             updateDescription();
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override
@@ -273,7 +273,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             updateValue(nextValue);
 
             updateDescription();
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override
@@ -323,7 +323,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             getContainer().removeItem(getSlot());
             map.remove(value);
 
-            return getItem();
+            return getDisplayItem();
         }
     }
 

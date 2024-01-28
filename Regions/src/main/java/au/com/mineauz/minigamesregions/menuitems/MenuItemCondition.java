@@ -93,7 +93,7 @@ public class MenuItemCondition extends MenuItem {
     public ItemStack onClick() {
         if (con.displayMenu(getContainer().getViewer(), getContainer()))
             return null;
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

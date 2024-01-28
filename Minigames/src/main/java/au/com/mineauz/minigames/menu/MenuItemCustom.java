@@ -26,7 +26,7 @@ public class MenuItemCustom extends MenuItem {
     public ItemStack onClick() {
         if (click != null)
             return (ItemStack) click.interact(null);
-        return getItem();
+        return getDisplayItem();
     }
 
     public void setClick(InteractionInterface ii) {
@@ -37,7 +37,7 @@ public class MenuItemCustom extends MenuItem {
     public ItemStack onClickWithItem(ItemStack item) {
         if (clickItem != null)
             return (ItemStack) clickItem.interact(item);
-        return getItem();
+        return getDisplayItem();
     }
 
     public void setClickItem(InteractionInterface ii) {
@@ -48,7 +48,7 @@ public class MenuItemCustom extends MenuItem {
     public ItemStack onRightClick() {
         if (rightClick != null)
             return (ItemStack) rightClick.interact(null);
-        return getItem();
+        return getDisplayItem();
     }
 
     public void setRightClick(InteractionInterface ii) {
@@ -59,7 +59,7 @@ public class MenuItemCustom extends MenuItem {
     public ItemStack onShiftClick() {
         if (shiftClick != null)
             return (ItemStack) shiftClick.interact(null);
-        return getItem();
+        return getDisplayItem();
     }
 
     public void setShiftClick(InteractionInterface ii) {
@@ -70,7 +70,7 @@ public class MenuItemCustom extends MenuItem {
     public ItemStack onShiftRightClick() {
         if (shiftRightClick != null)
             return (ItemStack) shiftRightClick.interact(null);
-        return getItem();
+        return getDisplayItem();
     }
 
     public void setShiftRightClick(InteractionInterface ii) {
@@ -81,7 +81,7 @@ public class MenuItemCustom extends MenuItem {
     public ItemStack onDoubleClick() {
         if (doubleClick != null)
             return (ItemStack) doubleClick.interact(null);
-        return getItem();
+        return getDisplayItem();
     }
 
     public void setDoubleClick(InteractionInterface ii) {

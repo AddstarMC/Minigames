@@ -77,7 +77,7 @@ public class MenuItemDecimal extends MenuItem {
         if (max != null && value.getValue() > max)
             value.setValue(max);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MenuItemDecimal extends MenuItem {
         if (min != null && value.getValue() < min)
             value.setValue(min);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class MenuItemDecimal extends MenuItem {
         if (max != null && value.getValue() > max)
             value.setValue(max);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -107,7 +107,7 @@ public class MenuItemDecimal extends MenuItem {
         if (min != null && value.getValue() < min)
             value.setValue(min);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

@@ -64,9 +64,9 @@ public class MenuItemBlockData extends MenuItem {
             this.dataCallback.setValue(data);
 
             // update the display item
-            ItemStack stackUpdate = getItem();
+            ItemStack stackUpdate = getDisplayItem();
             stackUpdate.setType(item.getType());
-            setItem(stackUpdate);
+            setDisplayItem(stackUpdate);
         } catch (IllegalArgumentException | NullPointerException e) {
             String name = "unknown";
             if (item != null) {
@@ -74,7 +74,7 @@ public class MenuItemBlockData extends MenuItem {
             }
             getContainer().getViewer().sendMessage(name + " cannot be made into a block!", MinigameMessageType.ERROR);
         }
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -87,9 +87,9 @@ public class MenuItemBlockData extends MenuItem {
             // update the display item
             setDescriptionStr(createDescription(dataCallback.getValue()));
             if (d.getMaterial().isItem()) {
-                ItemStack stackUpdate = getItem();
+                ItemStack stackUpdate = getDisplayItem();
                 stackUpdate.setType(d.getMaterial());
-                setItem(stackUpdate);
+                setDisplayItem(stackUpdate);
             }
 
             getContainer().cancelReopenTimer();

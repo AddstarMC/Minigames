@@ -14,7 +14,6 @@ import java.util.List;
  * Created by benjamincharlton on 15/11/2018.
  */
 public class MenuItemMaterial extends MenuItem {
-
     private Callback<Material> materialCallback;
 
     public MenuItemMaterial(String name, Material displayItem) {
@@ -67,8 +66,6 @@ public class MenuItemMaterial extends MenuItem {
             description.add(ChatColor.GREEN.toString() + createDescription(setting));
         }
         setDescriptionStr(description);
-        setItem(new ItemStack(materialCallback.getValue(), 1));
+        setDisplayItem(new ItemStack(materialCallback.getValue(), 1));
     }
-
-
 }

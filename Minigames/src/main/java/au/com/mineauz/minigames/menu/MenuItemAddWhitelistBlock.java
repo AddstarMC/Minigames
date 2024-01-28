@@ -25,7 +25,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
         } else {
             getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", MinigameMessageType.ERROR);
         }
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

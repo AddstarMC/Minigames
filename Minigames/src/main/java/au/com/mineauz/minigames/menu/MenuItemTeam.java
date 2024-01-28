@@ -34,7 +34,7 @@ public class MenuItemTeam extends MenuItem {
     }
 
     private void setTeamIcon() {
-        LeatherArmorMeta m = (LeatherArmorMeta) getItem().getItemMeta();
+        LeatherArmorMeta m = (LeatherArmorMeta) getDisplayItem().getItemMeta();
         switch (team.getColor()) {
             case RED -> m.setColor(Color.RED);
             case DARK_RED -> m.setColor(Color.MAROON);
@@ -53,7 +53,7 @@ public class MenuItemTeam extends MenuItem {
             case DARK_GRAY -> m.setColor(Color.GRAY);
             case BLACK -> m.setColor(Color.BLACK);
         }
-        getItem().setItemMeta(m);
+        getDisplayItem().setItemMeta(m);
     }
 
     @Override

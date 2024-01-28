@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,7 +30,7 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
+    public MenuItemBoolean getMenuItem(String name, Material displayItem) {
         return new MenuItemBoolean(name, displayItem, new Callback<>() {
 
             @Override
@@ -49,7 +48,7 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem, List<String> description) {
+    public MenuItemBoolean getMenuItem(String name, Material displayItem, List<String> description) {
         return new MenuItemBoolean(name, description, displayItem, new Callback<>() {
 
             @Override

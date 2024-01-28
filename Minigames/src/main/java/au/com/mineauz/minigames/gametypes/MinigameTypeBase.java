@@ -58,12 +58,12 @@ public abstract class MinigameTypeBase implements Listener {
 //    private static void giveRewardItem(MinigamePlayer player, RewardType reward){
 //        if(!player.isInMinigame()){
 //            if(!player.getPlayer().isDead())
-//                player.getPlayer().getInventory().addItem(reward.getItem());
+//                player.getPlayer().getInventory().addItem(reward.getDisplayItem());
 //            else{
 //                int c = 0;
 //                for(ItemStack i : player.getOfflineMinigamePlayer().getStoredItems()){
 //                    if(i == null){
-//                        player.getOfflineMinigamePlayer().getStoredItems()[c] = reward.getItem();
+//                        player.getOfflineMinigamePlayer().getStoredItems()[c] = reward.getDisplayItem();
 //                        break;
 //                    }
 //                    c++; //TODO: Add temp reward item to player instead and give it to them on respawn
@@ -72,8 +72,8 @@ public abstract class MinigameTypeBase implements Listener {
 //            }
 //        }
 //        else{
-//            player.addTempRewardItem(reward.getItem());
+//            player.addTempRewardItem(reward.getDisplayItem());
 //        }
-//        player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), MinigameMessageType.WIN);
+//        player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getDisplayItem().getAmount(), MinigameUtils.getItemStackName(reward.getDisplayItem())), MinigameMessageType.WIN);
 //    }
 }

@@ -18,7 +18,7 @@ public class MenuItemWhitelistBlock extends MenuItem {
 
     @Override
     public ItemStack onRightClick() {
-        whitelist.remove(getItem().getType());
+        whitelist.remove(getDisplayItem().getType());
         getContainer().removeItem(getSlot());
         return null;
     }

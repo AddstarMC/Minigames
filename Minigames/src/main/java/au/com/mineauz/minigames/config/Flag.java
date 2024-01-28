@@ -37,6 +37,14 @@ public abstract class Flag<T> {
         defaultVal = value;
     }
 
+    public T getFlagOrDefault() {
+        if (value == null) {
+            return getDefaultFlag();
+        } else {
+            return getFlag();
+        }
+    }
+
     public Callback<T> getCallback() {
         return new Callback<>() {
 

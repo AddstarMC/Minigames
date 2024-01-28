@@ -12,6 +12,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -176,15 +177,18 @@ public class SpawnEntityAction extends AbstractAction {
         type.loadValue(path, config);
 
         settings.clear();
-        Set<String> keys = config.getConfigurationSection(path + ".settings").getKeys(false);
+        ConfigurationSection section = config.getConfigurationSection(path + ".settings");
+        if (section != null) { // may was empty
+            Set<String> keys = section.getKeys(false);
 
-        for (String key : keys) {
-            ConfigSerializableBridge<?> serializableBridge = ConfigSerializableBridge.deserialize(config.get(path + ".settings." + key));
+            for (String key : keys) {
+                ConfigSerializableBridge<?> serializableBridge = ConfigSerializableBridge.deserialize(config.get(path + ".settings." + key));
 
-            if (serializableBridge != null) {
-                settings.put(key, serializableBridge);
-            } else {
-                Minigames.log().log(Level.WARNING, "Key \"" + key + "\" of ConfigSerializableBridge in SpawnEntityAction of path \"" + path + ".settings." + key + "\" failed to load!");
+                if (serializableBridge != null) {
+                    settings.put(key, serializableBridge);
+                } else {
+                    Minigames.log().log(Level.WARNING, "Key \"" + key + "\" of ConfigSerializableBridge in SpawnEntityAction of path \"" + path + ".settings." + key + "\" failed to load!");
+                }
             }
         }
     }
@@ -196,14 +200,14 @@ public class SpawnEntityAction extends AbstractAction {
         List<String> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
             if (!NOT_SPAWNABLE.contains(type)) {
-                options.add(WordUtils.capitalize(type.toString().toLowerCase().replace("_", " ")));
+                options.add(WordUtils.capitalizeFully(type.toString().toLowerCase().replace("_", " ")));
             }
         }
         menu.addItem(new MenuItemList("Entity Type", Material.SKELETON_SKULL, new Callback<>() { //todo spawn egg?
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(type.getFlag().toString().toLowerCase(Locale.ENGLISH).replace("_", " "));
+                return WordUtils.capitalizeFully(type.getFlag().toString().toLowerCase(Locale.ENGLISH).replace("_", " "));
             }
 
             @Override
@@ -228,7 +232,7 @@ public class SpawnEntityAction extends AbstractAction {
                 entitySettingsMenu.displayMenu(fply);
                 return null;
             }
-            return customMenuItem.getItem();
+            return customMenuItem.getDisplayItem();
         });
         menu.addItem(customMenuItem);
 

@@ -44,10 +44,10 @@ public class MenuItemRewardAdd extends MenuItem {
             final MenuItemCustom custom = new MenuItemCustom("TYPE", Material.STONE);
             final RewardType rewType = RewardTypes.getRewardType(type, rewards);
             if (rewType.isUsable()) {
-                ItemMeta meta = custom.getItem().getItemMeta();
+                ItemMeta meta = custom.getDisplayItem().getItemMeta();
                 meta.setDisplayName(ChatColor.RESET + type);
-                custom.getItem().setItemMeta(meta);
-                custom.setItem(rewType.getMenuItem().getItem());
+                custom.getDisplayItem().setItemMeta(meta);
+                custom.setDisplayItem(rewType.getMenuItem().getDisplayItem());
                 custom.setClick(object -> {
                     if (rewards != null)
                         rewards.addReward(rewType);

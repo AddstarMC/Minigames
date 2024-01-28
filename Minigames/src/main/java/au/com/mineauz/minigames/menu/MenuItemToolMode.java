@@ -32,6 +32,6 @@ public class MenuItemToolMode extends MenuItem {
             tool.setMode(mode);
             tool.getMode().onSetMode(ply, tool);
         }
-        return getItem();
+        return getDisplayItem();
     }
 }

@@ -80,7 +80,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 
         updateDescription();
 
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 
         updateDescription();
 
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 
         updateDescription();
 
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 
         updateDescription();
 
-        return getItem();
+        return getDisplayItem();
     }
 
     protected T increaseValue(T current, boolean shift) {
