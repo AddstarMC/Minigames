@@ -3,12 +3,12 @@ package au.com.mineauz.minigamesregions.menuitems;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,7 +31,7 @@ public class MenuItemAction extends MenuItem {
     }
 
     private void updateDescription() {
-        Map<String, Object> out = Maps.newHashMap();
+        Map<String, Object> out = new HashMap<>();
         act.describe(out);
 
         if (out.isEmpty()) {
@@ -41,7 +41,7 @@ public class MenuItemAction extends MenuItem {
         int lineLimit = 35;
 
         // Convert the description
-        List<String> description = Lists.newArrayList();
+        List<String> description = new ArrayList<>();
         for (Entry<String, Object> entry : out.entrySet()) {
             Object value = entry.getValue();
             String line = ChatColor.GRAY + entry.getKey() + ": ";

@@ -14,7 +14,6 @@ import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
-import com.google.common.collect.ImmutableSet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -242,7 +241,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
 
     @Override
     public Set<String> getKeys() {
-        return ImmutableSet.of("name", "players", "min", "max");
+        return Set.of("name", "players", "min", "max");
     }
 
     public Minigame getMinigame() {

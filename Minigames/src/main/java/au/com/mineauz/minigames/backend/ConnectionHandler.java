@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.backend;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class ConnectionHandler {
@@ -18,7 +18,7 @@ public class ConnectionHandler {
     public ConnectionHandler(Connection connection) {
         this.connection = connection;
 
-        preparedStatements = Maps.newIdentityHashMap();
+        preparedStatements = new IdentityHashMap<>();
     }
 
     public boolean lease() {

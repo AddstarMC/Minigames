@@ -2,9 +2,9 @@ package au.com.mineauz.minigames.stats;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import com.google.common.collect.Maps;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,8 +18,8 @@ public class StoredGameStats {
         this.minigame = minigame;
         this.player = player;
 
-        stats = Maps.newHashMap();
-        settings = Maps.newHashMap();
+        stats = new HashMap<>();
+        settings = new HashMap<>();
     }
 
     public MinigamePlayer getPlayer() {
@@ -35,8 +35,7 @@ public class StoredGameStats {
     }
 
     public Map<MinigameStat, Long> getStats() {
-        Map<MinigameStat, Long> newStats = Maps.newHashMapWithExpectedSize(stats.size());
-        newStats.putAll(stats);
+        Map<MinigameStat, Long> newStats = new HashMap<>(stats);
 
         return Collections.unmodifiableMap(newStats);
     }

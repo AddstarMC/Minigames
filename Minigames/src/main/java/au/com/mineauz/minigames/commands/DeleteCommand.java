@@ -3,12 +3,15 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class DeleteCommand implements ICommand {
 
@@ -60,16 +63,14 @@ public class DeleteCommand implements ICommand {
 
             if (mgm != null) {
                 File save = new File(plugin.getDataFolder() + "/minigames/" + mgm.getName(false));
+
                 if (save.exists() && save.isDirectory()) {
-                    if (save.list().length == 0) {
-                        save.delete();
-                    } else {
-                        for (String file : save.list()) {
-                            File nfile = new File(save, file);
-                            nfile.delete();
-                        }
-                        save.delete();
+                    try {
+                        FileUtils.deleteDirectory(save);
+                    } catch (IOException e) {
+                        Minigames.log().log(Level.WARNING, "Couldn't delete minigame in " + save.getPath(), e);
                     }
+
                     List<String> ls = plugin.getConfig().getStringList("minigames");
                     ls.remove(mgm.getName(false));
                     plugin.getConfig().set("minigames", ls);

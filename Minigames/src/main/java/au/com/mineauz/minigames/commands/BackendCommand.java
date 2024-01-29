@@ -2,20 +2,14 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.BackendManager;
-import au.com.mineauz.minigames.backend.ExportNotifier;
 import au.com.mineauz.minigames.minigame.Minigame;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
-
-import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 
 public class BackendCommand implements ICommand {
     @Override
@@ -67,40 +61,30 @@ public class BackendCommand implements ICommand {
         BackendManager manager = Minigames.getPlugin().getBackend();
 
         if (args[0].equalsIgnoreCase("export")) {
+            sender.sendMessage(ChatColor.GOLD + "Exporting backend to " + args[1] + "...");
+
             try {
-                ListenableFuture<Void> future = manager.exportTo(args[1], Minigames.getPlugin().getConfig(), new Notifier(sender));
-                sender.sendMessage(ChatColor.GOLD + "Exporting backend to " + args[1] + "...");
-
-                Futures.addCallback(future, new FutureCallback<>() {
-                    @Override
-                    public void onFailure(@NotNull Throwable t) {
-                        sender.sendMessage(ChatColor.RED + "An internal error occurred while exporting.");
-                    }
-
-                    @Override
-                    public void onSuccess(Void result) {
-                    }
-                }, directExecutor());
+                CompletableFuture<Void> future = manager.exportTo(args[1], Minigames.getPlugin().getConfig(), new ExportNotifier(sender));
+                future.exceptionally(throwable -> {
+                    sender.sendMessage(ChatColor.RED + "An internal error occurred while exporting." + throwable.getMessage());
+                    return null;
+                });
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
             }
         } else if (args[0].equalsIgnoreCase("switch")) {
             try {
-                ListenableFuture<Void> future = manager.switchBackend(args[1], Minigames.getPlugin().getConfig());
+
                 sender.sendMessage(ChatColor.GOLD + "Switching minigames backend to " + args[1] + "...");
-
-                Futures.addCallback(future, new FutureCallback<>() {
-                    @Override
-                    public void onFailure(@NotNull Throwable t) {
-                        sender.sendMessage(ChatColor.RED + "An internal error occurred while switching backend.");
-                    }
-
-                    @Override
-                    public void onSuccess(Void result) {
+                CompletableFuture<Void> future = manager.switchBackend(args[1], Minigames.getPlugin().getConfig());
+                future.whenComplete((result, throwable) -> {
+                    if (throwable == null) {
                         sender.sendMessage(ChatColor.GOLD + "The backend has been successfully switched");
                         sender.sendMessage(ChatColor.GOLD + "!!! This change is " + ChatColor.BOLD + "temporary" + ChatColor.GOLD + ". Please update the config !!!");
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "An internal error occurred while switching backend. " + throwable.getMessage());
                     }
-                }, directExecutor());
+                });
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
             }
@@ -117,11 +101,11 @@ public class BackendCommand implements ICommand {
         return null;
     }
 
-    private static class Notifier implements ExportNotifier {
+    private static class ExportNotifier implements au.com.mineauz.minigames.backend.ExportNotifier {
         private final CommandSender sender;
         private boolean begun;
 
-        public Notifier(CommandSender sender) {
+        public ExportNotifier(CommandSender sender) {
             this.sender = sender;
             begun = false;
         }

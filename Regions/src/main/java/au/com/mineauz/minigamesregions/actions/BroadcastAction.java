@@ -12,7 +12,6 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +57,7 @@ public class BroadcastAction extends AbstractAction {
         ScriptObject base = new ScriptObject() {
             @Override
             public Set<String> getKeys() {
-                return ImmutableSet.of("player", "area", "minigame", "team");
+                return Set.of("player", "area", "minigame", "team");
             }
 
             @Override
@@ -90,7 +89,7 @@ public class BroadcastAction extends AbstractAction {
         ScriptObject base = new ScriptObject() {
             @Override
             public Set<String> getKeys() {
-                return ImmutableSet.of("player", "area", "minigame", "team");
+                return Set.of("player", "area", "minigame", "team");
             }
 
             @Override

@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
-import com.google.common.collect.ImmutableSet;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -404,7 +403,7 @@ public class Team implements ScriptObject {
 
     @Override
     public Set<String> getKeys() {
-        return ImmutableSet.of("colorname", "color", "name", "score", "players", "minigame");
+        return Set.of("colorname", "color", "name", "score", "players", "minigame");
     }
 
     @Override

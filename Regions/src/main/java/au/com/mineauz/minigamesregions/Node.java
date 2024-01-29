@@ -9,7 +9,6 @@ import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
@@ -129,7 +128,7 @@ public class Node implements ExecutableScriptObject {
 
     @Override
     public Set<String> getKeys() {
-        return ImmutableSet.of("name", "pos", "block");
+        return Set.of("name", "pos", "block");
     }
 
     @Override

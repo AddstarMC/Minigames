@@ -6,14 +6,8 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -22,11 +16,12 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.sign.Side;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 public class ScoreboardDisplay {
     public static final int defaultWidth = 3;
@@ -57,7 +52,7 @@ public class ScoreboardDisplay {
         field = StatValueField.Total;
         order = ScoreboardOrder.DESCENDING;
 
-        stats = Lists.newArrayListWithCapacity(width * height * 2);
+        stats = new ArrayList<>(width * height * 2);
         needsLoad = true;
     }
 
@@ -141,7 +136,7 @@ public class ScoreboardDisplay {
             default -> throw new AssertionError("Invalid facing " + facing);
         };
 
-        List<Block> blocks = Lists.newArrayListWithCapacity(width * height);
+        List<Block> blocks = new ArrayList<>(width * height);
 
         // Find the corner that is the top left part of the scoreboard
         Location min = rootBlock.clone();
@@ -367,26 +362,19 @@ public class ScoreboardDisplay {
 
     public void reload() {
         needsLoad = false;
-        ListenableFuture<List<StoredStat>> future = Minigames.getPlugin().getBackend().loadStats(minigame, stat, field, order, 0, width * height * 2);
-        Minigames.getPlugin().getBackend().addServerThreadCallback(future, getUpdateCallback());
-    }
+        CompletableFuture<List<StoredStat>> future = Minigames.getPlugin().getBackend().loadStats(minigame, stat, field, order, 0, width * height * 2);
 
-    // The update callback to be provided to the future. MUST be executed on the bukkit server thread
-    private FutureCallback<List<StoredStat>> getUpdateCallback() {
-        return new FutureCallback<>() {
-            @Override
-            public void onSuccess(List<StoredStat> result) {
+        // The update callback to be provided to the future. MUST be executed on the bukkit server thread
+        future.handle((result, exp) -> Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> {
+            if (exp == null) {
                 stats = result;
                 needsLoad = false;
                 updateSigns();
-            }
-
-            @Override
-            public void onFailure(@NotNull Throwable t) {
-                t.printStackTrace();
+            } else {
+                Minigames.log().log(Level.SEVERE, "Error when loading scoreboard " + stat.getDisplayName() + " for minigame " + minigame.getName(false), exp);
                 stats = Collections.emptyList();
                 needsLoad = true;
             }
-        };
+        }));
     }
 }

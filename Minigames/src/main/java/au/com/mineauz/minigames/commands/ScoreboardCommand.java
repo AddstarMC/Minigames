@@ -5,19 +5,14 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 public class ScoreboardCommand implements ICommand {
     private final Minigames plugin = Minigames.getPlugin();
@@ -144,23 +139,18 @@ public class ScoreboardCommand implements ICommand {
 
         sender.sendMessage(ChatColor.GRAY + "Loading scoreboard...");
         // Now load the values
-        ListenableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start, length);
-
-        Futures.addCallback(future, new FutureCallback<>() {
-            @Override
-            public void onSuccess(List<StoredStat> result) {
+        CompletableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start, length);
+        future.whenComplete((result, throwable) -> {
+            if (throwable == null) {
                 sender.sendMessage(ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase());
                 for (StoredStat playerStat : result) {
                     sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue(), settings));
                 }
+            } else {
+                sender.sendMessage(ChatColor.RED + "An internal error occurred while loading the statistics. " + throwable.getMessage());
+                Minigames.log().log(Level.SEVERE, "An internal error occurred while loading statistics.", throwable);
             }
-
-            @Override
-            public void onFailure(@NotNull Throwable t) {
-                sender.sendMessage(ChatColor.RED + "An internal error occurred while loading the statistics");
-                t.printStackTrace();
-            }
-        }, directExecutor());
+        });
 
         return true;
     }
@@ -171,7 +161,7 @@ public class ScoreboardCommand implements ICommand {
             List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);
         } else if (args.length == 2) { // Stat
-            return MinigameUtils.tabCompleteMatch(Lists.newArrayList(MinigameStats.getAllStats().keySet()), args[1]);
+            return MinigameUtils.tabCompleteMatch(new ArrayList<>(MinigameStats.getAllStats().keySet()), args[1]);
         } else if (args.length == 3) { // Field
             MinigameStat stat = MinigameStats.getStat(args[1]);
             if (stat == null) {
@@ -188,7 +178,7 @@ public class ScoreboardCommand implements ICommand {
             }
 
             String toMatch = args[2].toLowerCase();
-            List<String> matches = Lists.newArrayList();
+            List<String> matches = new ArrayList<>();
             for (StatValueField field : format.getFields()) {
                 if (field.name().toLowerCase().startsWith(toMatch)) {
                     matches.add(field.name());

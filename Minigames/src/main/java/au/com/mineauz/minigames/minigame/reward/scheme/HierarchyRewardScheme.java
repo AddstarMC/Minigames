@@ -10,8 +10,6 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableMap;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -45,16 +43,15 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
     @Override
     public Map<String, Flag<?>> getFlags() {
-        return ImmutableMap.<String, Flag<?>>builder()
-                .put("comparison", comparisonType)
-                .put("loss-rewards", enableRewardsOnLoss)
-                .put("loss-use-secondary", lossUsesSecondary)
-                .build();
+        return Map.of(
+                "comparison", comparisonType,
+                "loss-rewards", enableRewardsOnLoss,
+                "loss-use-secondary", lossUsesSecondary);
     }
 
     @Override
     public void addMenuItems(final Menu menu) {
-        menu.addItem(new MenuItemList("Comparison Type", Material.COMPARATOR, getConfigurationTypeCallback(), Arrays.stream(Comparison.values()).map(Functions.toStringFunction()).collect(Collectors.toList())));
+        menu.addItem(new MenuItemList("Comparison Type", Material.COMPARATOR, getConfigurationTypeCallback(), Arrays.stream(Comparison.values()).map(Comparison::toString).collect(Collectors.toList())));
         menu.addItem(enableRewardsOnLoss.getMenuItem("Award On Loss", Material.LEVER, List.of("When on, awards will still", "be given to losing", "players")));
         menu.addItem(lossUsesSecondary.getMenuItem("Losers Get Secondary", Material.LEVER, List.of("When on, the losers", "will only get the", "secondary reward")));
         menu.addItem(new MenuItemNewLine());

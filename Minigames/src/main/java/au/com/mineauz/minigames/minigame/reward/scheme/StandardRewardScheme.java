@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.collect.ImmutableMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -41,10 +40,9 @@ public class StandardRewardScheme implements RewardScheme {
 
     @Override
     public Map<String, Flag<?>> getFlags() {
-        return ImmutableMap.<String, Flag<?>>builder()
-                .put("reward", primaryRewardFlag)
-                .put("reward2", secondaryRewardFlag)
-                .build();
+        return Map.of(
+                "reward", primaryRewardFlag,
+                "reward2", secondaryRewardFlag);
     }
 
     public Rewards getPrimaryReward() {

@@ -22,8 +22,6 @@ import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -38,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -1453,20 +1452,17 @@ public class Minigame implements ScriptObject {
 
         getScoreboardData().loadDisplays(minigame, this);
 
-        ListenableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.getPlugin().getBackend().loadStatSettings(this);
-        Minigames.getPlugin().getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<>() {
-            @Override
-            public void onSuccess(Map<MinigameStat, StatSettings> result) {
-                statSettings.clear();
-                statSettings.putAll(result);
+        CompletableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.getPlugin().getBackend().loadStatSettings(this);
+        // as far as I know it isn't defined what thread will run thenApply,
+        // so we pull it back on the main thread with the BukkitScheduler
+        settingsFuture.thenApply(result -> Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> {
+            statSettings.clear();
+            statSettings.putAll(result);
 
-                getScoreboardData().reload();
-            }
-
-            @Override
-            public void onFailure(@NotNull Throwable t) {
-                t.printStackTrace();
-            }
+            getScoreboardData().reload();
+        })).exceptionally(t -> {
+            t.printStackTrace();
+            return null;
         });
 
         saveMinigame();

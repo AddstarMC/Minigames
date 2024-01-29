@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
-import com.google.common.collect.Maps;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -244,7 +243,7 @@ public class SQLiteBackend extends Backend {
 
             int minigameId = getMinigameId(handler, minigame);
 
-            Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
+            Map<MinigameStat, StatSettings> settings = new HashMap<>();
 
             try (ResultSet rs = handler.executeQuery(loadStatSettings, minigameId)) {
                 while (rs.next()) {

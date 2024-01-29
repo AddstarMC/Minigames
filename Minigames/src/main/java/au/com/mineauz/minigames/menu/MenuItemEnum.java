@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -19,7 +18,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
     public MenuItemEnum(String name, List<String> description, Material displayItem, Callback<T> callback, Class<T> enumClass) {
         super(name, description, displayItem);
         this.callback = callback;
-        enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
+        enumList = new ArrayList<>(EnumSet.allOf(enumClass));
         baseDescription = description;
         updateDescription();
     }
@@ -27,14 +26,15 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
     public MenuItemEnum(String name, Material displayItem, Callback<T> callback, Class<T> enumClass) {
         super(name, displayItem);
         this.callback = callback;
-        enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
+        enumList = new ArrayList<>(EnumSet.allOf(enumClass));
         baseDescription = Collections.emptyList();
         updateDescription();
     }
 
     protected final void updateDescription() {
         List<String> valueDesc = getValueDescription(callback.getValue());
-        super.setDescriptionStr(Lists.newArrayList(Iterators.concat(valueDesc.iterator(), baseDescription.iterator())));
+        valueDesc.addAll(baseDescription);
+        super.setDescriptionStr(new ArrayList<>(valueDesc));
     }
 
     protected List<String> getValueDescription(T value) {
@@ -61,7 +61,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
             next = 0;
         }
 
-        List<String> options = Lists.newArrayListWithCapacity(3);
+        List<String> options = new ArrayList(3);
         options.add(ChatColor.GRAY + getEnumName(enumList.get(last)));
         options.add(ChatColor.GREEN + getEnumName(enumList.get(position)));
         options.add(ChatColor.GRAY + getEnumName(enumList.get(next)));
