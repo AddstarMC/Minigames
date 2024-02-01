@@ -35,8 +35,7 @@ public class StoredGameStats {
     }
 
     public Map<MinigameStat, Long> getStats() {
-        Map<MinigameStat, Long> newStats = new HashMap<>(stats.size());
-        newStats.putAll(stats);
+        Map<MinigameStat, Long> newStats = new HashMap<>(stats);
 
         return Collections.unmodifiableMap(newStats);
     }

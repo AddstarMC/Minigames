@@ -19,9 +19,6 @@ import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.io.Closeables;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.ListenableFuture;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
@@ -39,13 +36,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 public class Minigames extends JavaPlugin {
@@ -387,15 +384,11 @@ public class Minigames extends JavaPlugin {
     }
 
     private int checkVersion() {
-        final InputStream stream = this.getResource("minigame.properties");
         final Properties p = new Properties();
-        try {
+        try (final InputStream stream = this.getResource("minigame.properties")) {
             p.load(stream);
         } catch (final NullPointerException | IOException e) {
             this.getLogger().warning(e.getMessage());
-        } finally {
-            //noinspection UnstableApiUsage
-            Closeables.closeQuietly(stream);
         }
 
         if (p.containsKey("version")) {
@@ -481,27 +474,20 @@ public class Minigames extends JavaPlugin {
     public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
         MinigameMessageManager.debugMessage("Scheduling SQL data save for " + saveData);
 
-        final ListenableFuture<Long> winCountFuture = this.backend.loadSingleStat(saveData.getMinigame(), MinigameStats.Wins, StatValueField.Total, saveData.getPlayer().getUUID());
+        final CompletableFuture<Long> winCountFuture = this.backend.loadSingleStat(saveData.getMinigame(), MinigameStats.Wins, StatValueField.Total, saveData.getPlayer().getUUID());
         this.backend.saveStats(saveData);
 
-        this.backend.addServerThreadCallback(winCountFuture, new FutureCallback<>() {
-            @Override
-            public void onFailure(final @NotNull Throwable t) {
-            }
+        winCountFuture.thenApply(winCount -> Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> {
+            final Minigame minigame = saveData.getMinigame();
+            final MinigamePlayer player = saveData.getPlayer();
 
-            @Override
-            public void onSuccess(final Long winCount) {
-                final Minigame minigame = saveData.getMinigame();
-                final MinigamePlayer player = saveData.getPlayer();
-
-                // Do rewards
-                if (winner) {
-                    RewardsModule.getModule(minigame).awardPlayer(player, saveData, minigame, winCount == 0);
-                } else {
-                    RewardsModule.getModule(minigame).awardPlayerOnLoss(player, saveData, minigame);
-                }
+            // Do rewards
+            if (winner) {
+                RewardsModule.getModule(minigame).awardPlayer(player, saveData, minigame, winCount == 0);
+            } else {
+                RewardsModule.getModule(minigame).awardPlayerOnLoss(player, saveData, minigame);
             }
-        });
+        }));
     }
 
     public void toggleDebug() {

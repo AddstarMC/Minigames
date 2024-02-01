@@ -9,7 +9,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
-import com.google.common.collect.Maps;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -199,7 +198,7 @@ public class MySQLBackend extends Backend {
 
             int minigameId = getMinigameId(handler, minigame);
 
-            Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
+            Map<MinigameStat, StatSettings> settings = new HashMap<>();
 
             try (ResultSet rs = handler.executeQuery(loadStatSettings, minigameId)) {
                 while (rs.next()) {

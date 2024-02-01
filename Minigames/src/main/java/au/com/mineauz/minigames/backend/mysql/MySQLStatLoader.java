@@ -8,11 +8,11 @@ import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
-import com.google.common.collect.Lists;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -90,7 +90,7 @@ class MySQLStatLoader {
                 case DESCENDING -> getSingleDesc;
             };
 
-            List<StoredStat> stats = Lists.newArrayList();
+            List<StoredStat> stats = new ArrayList<>();
             try (ResultSet rs = handler.executeQuery(statement, minigameId, statName, offset, length)) {
                 while (rs.next()) {
                     stats.add(loadStat(rs));

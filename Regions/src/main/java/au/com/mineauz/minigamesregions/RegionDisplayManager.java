@@ -25,7 +25,7 @@ public class RegionDisplayManager {
         nodeDisplays = new HashMap<>();
 
         activeWatchers = HashMultimap.create();
-        nameDisplay = new HashMap<>();
+        nameDisplay = new IdentityHashMap<>();
     }
 
     private void showInfo(Region region, MinigamePlayer player) {

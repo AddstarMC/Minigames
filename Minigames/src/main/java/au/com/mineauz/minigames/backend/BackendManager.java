@@ -7,32 +7,25 @@ import au.com.mineauz.minigames.backend.test.TestBackEnd;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
-import com.google.common.util.concurrent.*;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 
 public class BackendManager {
     private final ComponentLogger logger;
-    private final ListeningExecutorService executorService;
-    private final Executor bukkitThreadExecutor;
     private boolean debug;
     private Backend backend;
 
     public BackendManager(ComponentLogger logger) {
         this.logger = logger;
         this.debug = false;
-
-        bukkitThreadExecutor = command -> Bukkit.getScheduler().runTask(Minigames.getPlugin(), command);
-
-        executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
     }
 
     private Backend makeBackend(String type) {
@@ -143,10 +136,10 @@ public class BackendManager {
      * @param order    The order to retrieve in
      * @param offset   The offset to retrieve from
      * @param length   The number of stats to retrieve
-     * @return A ListenableFuture that returns the list of StoredStats loaded
+     * @return A CompletableFuture that returns the list of StoredStats loaded
      */
-    public ListenableFuture<List<StoredStat>> loadStats(final Minigame minigame, final MinigameStat stat, final StatValueField field, final ScoreboardOrder order, final int offset, final int length) {
-        return executorService.submit(() -> backend.loadStats(minigame, stat, field, order, offset, length));
+    public CompletableFuture<List<StoredStat>> loadStats(final Minigame minigame, final MinigameStat stat, final StatValueField field, final ScoreboardOrder order, final int offset, final int length) {
+        return CompletableFuture.supplyAsync(() -> backend.loadStats(minigame, stat, field, order, offset, length));
     }
 
     /**
@@ -158,18 +151,18 @@ public class BackendManager {
      * @param playerId The player that owns the stat
      * @return The value of the stat. If it is not set, 0 will be returned
      */
-    public ListenableFuture<Long> loadSingleStat(final Minigame minigame, final MinigameStat stat, final StatValueField field, final UUID playerId) {
-        return executorService.submit(() -> backend.getStat(minigame, playerId, stat, field));
+    public CompletableFuture<Long> loadSingleStat(final Minigame minigame, final MinigameStat stat, final StatValueField field, final UUID playerId) {
+        return CompletableFuture.supplyAsync(() -> backend.getStat(minigame, playerId, stat, field));
     }
 
     /**
      * Queues a task to save the stats to the backend. The stats will be saved asynchronously
      *
      * @param stats The stats to be saved
-     * @return A ListenableFuture that returns the inputted stats for chaining.
+     * @return A CompletableFuture that returns the inputted stats for chaining.
      */
-    public ListenableFuture<StoredGameStats> saveStats(final StoredGameStats stats) {
-        return executorService.submit(() -> {
+    public CompletableFuture<StoredGameStats> saveStats(final StoredGameStats stats) {
+        return CompletableFuture.supplyAsync(() -> {
             backend.saveGameStatus(stats);
             return stats;
         });
@@ -179,11 +172,10 @@ public class BackendManager {
      * Retrieves the settings for all stats in a minigame. This is loaded asynchronously
      *
      * @param minigame The minigame to load settings for
-     * @return A ListenableFuture that returns a map of minigame stats and their settings
+     * @return A CompletableFuture that returns a map of minigame stats and their settings
      */
-    public ListenableFuture<Map<MinigameStat, StatSettings>> loadStatSettings(final Minigame minigame) {
-
-        return executorService.submit(() -> backend.loadStatSettings(minigame));
+    public CompletableFuture<Map<MinigameStat, StatSettings>> loadStatSettings(final Minigame minigame) {
+        return CompletableFuture.supplyAsync(() -> backend.loadStatSettings(minigame));
     }
 
     /**
@@ -193,25 +185,15 @@ public class BackendManager {
      * @param settings The collection of settings to save
      * @return A ListenableFuture to get the status of the save
      */
-    public ListenableFuture<Void> saveStatSettings(final Minigame minigame, final Collection<StatSettings> settings) {
+    public @Nullable CompletableFuture<Void> saveStatSettings(final Minigame minigame, final Collection<StatSettings> settings) {
         if (backend instanceof TestBackEnd) {
             backend.saveStatSettings(minigame, settings);
             return null;
         }
-        return executorService.submit(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             backend.saveStatSettings(minigame, settings);
             return null;
         });
-    }
-
-    /**
-     * Adds a callback to the ListenableFuture that will be executed on the Minecraft server thread
-     *
-     * @param future   The future to add the callback to
-     * @param callback The callback to be added
-     */
-    public <T> void addServerThreadCallback(ListenableFuture<T> future, FutureCallback<T> callback) {
-        Futures.addCallback(future, callback, bukkitThreadExecutor);
     }
 
     /**
@@ -224,7 +206,7 @@ public class BackendManager {
      * @return A future to let you know when the process is finished
      * @throws IllegalArgumentException Thrown if the backend chosen cannot be used. Reason given in message
      */
-    public ListenableFuture<Void> exportTo(String type, ConfigurationSection config, final Notifier notifier) throws IllegalArgumentException {
+    public CompletableFuture<Void> exportTo(String type, ConfigurationSection config, final Notifier notifier) throws IllegalArgumentException {
         final Backend destination = makeBackend(type);
         if (destination == null) {
             throw new IllegalArgumentException("Invalid backend type");
@@ -238,7 +220,7 @@ public class BackendManager {
             throw new IllegalArgumentException("Failed to initialize destination backend");
         }
 
-        return executorService.submit(() -> backend.exportTo(destination, notifier), null);
+        return CompletableFuture.runAsync(() -> backend.exportTo(destination, notifier), null);
     }
 
     /**
@@ -250,7 +232,7 @@ public class BackendManager {
      * @param config The config to load settings from
      * @throws IllegalArgumentException Thrown if the backend chosen cannot be used. Reason given in message
      */
-    public ListenableFuture<Void> switchBackend(final String type, ConfigurationSection config) throws IllegalArgumentException {
+    public CompletableFuture<Void> switchBackend(final String type, ConfigurationSection config) throws IllegalArgumentException {
         final Backend newBackend = makeBackend(type);
         if (newBackend == null) {
             throw new IllegalArgumentException("Invalid backend type");
@@ -264,7 +246,7 @@ public class BackendManager {
             throw new IllegalArgumentException("Failed to initialize target backend");
         }
 
-        return executorService.submit(() -> {
+        return CompletableFuture.runAsync(() -> {
             backend.shutdown();
             backend = newBackend;
             logger.warn("Backend has been switched to " + type);

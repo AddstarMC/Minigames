@@ -10,6 +10,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ public class MinigameTimer {
     private long timeLeft = 0;
     private int taskID = -1;
     private boolean broadcastTime = true;
+    private BossBar bossBar = null;
 
     public MinigameTimer(Minigame minigame, long timeLength) {
         this.timeLength = timeLength;
@@ -51,25 +55,43 @@ public class MinigameTimer {
 
     private void runTimer() {
         timeLeft--;
-        if (minigame.isUsingXPBarTimer()) {
-            float timeLeftpercent = ((float) timeLeft) / ((float) timeLength);
-            int level;
-            if (timeLeft / 60 > 0) {
-                level = timeLeft / 60;
-            } else {
-                level = timeLeft;
-            }
 
-            for (MinigamePlayer ply : minigame.getPlayers()) {
-                if (timeLeftpercent < 0) {
-                    ply.getPlayer().setExp(0);
-                    ply.getPlayer().setLevel(0);
+        switch (minigame.getTimerDisplayType()) {
+            case XP_BAR -> {
+                float timeLeftpercent = ((float) timeLeft) / ((float) timeLength);
+                int level;
+                if (timeLeft / 60 > 0) {
+                    level = timeLeft / 60;
                 } else {
-                    ply.getPlayer().setExp(timeLeftpercent);
-                    ply.getPlayer().setLevel(level);
+                    level = timeLeft;
+                }
+
+                for (MinigamePlayer ply : minigame.getPlayers()) {
+                    if (timeLeftpercent < 0) {
+                        ply.getPlayer().setExp(0);
+                        ply.getPlayer().setLevel(0);
+                    } else {
+                        ply.getPlayer().setExp(timeLeftpercent);
+                        ply.getPlayer().setLevel(level);
+                    }
+                }
+            }
+            case BOSS_BAR -> {
+                Component bossBarName = Component.text(MinigameUtils.convertTime(timeLeft), NamedTextColor.DARK_GREEN);
+
+                if (bossBar == null) {
+                    bossBar = BossBar.bossBar(bossBarName, BossBar.MAX_PROGRESS, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
+                } else {
+                    bossBar.name(bossBarName);
+                    bossBar.progress(Math.max(BossBar.MIN_PROGRESS, (float) timeLeft / timeLength));
+                }
+
+                for (MinigamePlayer ply : minigame.getPlayers()) {
+                    bossBar.addViewer(ply.getPlayer());
                 }
             }
         }
+
         if (timeMsg.contains(timeLeft) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_TIMELEFT,
@@ -98,5 +120,11 @@ public class MinigameTimer {
 
     public void setTimeLeft(int time) {
         this.timeLeft = time;
+    }
+
+    public enum DisplayType{
+        XP_BAR,
+        BOSS_BAR,
+        NONE
     }
 }

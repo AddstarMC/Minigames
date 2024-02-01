@@ -3,7 +3,6 @@ package au.com.mineauz.minigamesregions.menuitems;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
-import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,7 +32,7 @@ public class MenuItemAction extends MenuItem {
     }
 
     private void updateDescription() {
-        Map<String, Object> out = Maps.newHashMap();
+        Map<String, Object> out = new HashMap<>();
         act.describe(out);
 
         if (out.isEmpty()) {

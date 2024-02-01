@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -68,13 +67,13 @@ public class TeamsModule extends MinigameModule {
     }
 
     public Map<String, Team> getTeamsNameMap() {
-        ImmutableMap.Builder<String, Team> builder = ImmutableMap.builder();
+        Map<String, Team> result = new HashMap<>(teams.size());
 
         for (Team team : teams.values()) {
-            builder.put(team.getColor().toString().toLowerCase(), team);
+            result.put(team.getColor().name().toLowerCase(), team);
         }
 
-        return builder.build();
+        return result;
     }
 
     /**

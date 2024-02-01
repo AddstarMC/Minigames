@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
+import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -39,7 +40,6 @@ public class SetTimerCommand extends ASetCommand {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_TIMER_USAGE);
     }
 
-    @Override
     public @Nullable String getPermission() {
         return "minigame.set.timer";
     }
@@ -61,22 +61,20 @@ public class SetTimerCommand extends ASetCommand {
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 }
                 return true;
-            } else if (args[0].equalsIgnoreCase("usexpbar") && args.length >= 2) {
-                Boolean bool = BooleanUtils.toBooleanObject(args[1]);
-                if (bool != null) {
-                    minigame.setUseXPBarTimer(bool);
-                    if (bool) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TIMER_XPBAR_SUCCESS,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
-                    } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TIMER_XPBAR_REMOVE,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
-                    }
-                } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
-                }
-                return true;
+            } else if (args[0].equalsIgnoreCase("display") && args.length >= 2){ //todo
+                if (args[1].equalsIgnoreCase("xpBar")) {
+                    minigame.setTimerDisplayType(MinigameTimer.DisplayType.XP_BAR);
+                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the XP bar.");
+                    return true;
+                } else if (args[1].equalsIgnoreCase("bossBar")) {
+                    minigame.setTimerDisplayType(MinigameTimer.DisplayType.BOSS_BAR);
+                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the boss bar.");
+                    return true;
+                } else if (args[1].equalsIgnoreCase("none")) {
+                    minigame.setTimerDisplayType(MinigameTimer.DisplayType.NONE);
+                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will no longer show the timer.");
+                    return true;
+                } // else here will default to false
             }
         }
         return false;

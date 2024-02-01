@@ -60,6 +60,7 @@ public class DeleteCommand extends ACommand {
                     } catch (IOException e) {
                         PLUGIN.getComponentLogger().warn("couldn't delete files for minigame " + save.getPath() + ". Still going to try to delete from config.");
                     }
+
                     List<String> ls = PLUGIN.getConfig().getStringList("minigames");
                     ls.remove(mgm.getName(false));
                     PLUGIN.getConfig().set("minigames", ls);

@@ -9,6 +9,7 @@ description: ${project.description}
 
 libraries:
   - org.apache.commons:commons-text:1.10.0
+    - commons-io:commons-io:2.15.1
 
 commands:
   minigame:

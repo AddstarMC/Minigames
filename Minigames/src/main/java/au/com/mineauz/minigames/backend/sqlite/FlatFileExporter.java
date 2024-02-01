@@ -3,9 +3,7 @@ package au.com.mineauz.minigames.backend.sqlite;
 import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.Notifier;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -14,10 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class FlatFileExporter {
     private final File file;
@@ -38,7 +33,7 @@ public class FlatFileExporter {
         this.notifier = notifier;
 
         config = new YamlConfiguration();
-        minigameIds = Maps.newHashMap();
+        minigameIds = new HashMap<>();
     }
 
     public boolean doExport() {
@@ -80,7 +75,7 @@ public class FlatFileExporter {
 
     private void exportPlayers() {
         notifyNext("Exporting players...");
-        Set<UUID> uniquePlayers = Sets.newHashSet(completions.values());
+        Set<UUID> uniquePlayers = new HashSet<>(completions.values());
 
         for (UUID playerId : uniquePlayers) {
             // Attempt to get information about this player

@@ -7,7 +7,6 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import com.google.common.base.Strings;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -58,7 +57,7 @@ public class ContainsEntityCondition extends ConditionInterface {
         for (Entity entity : entities) {
             if (entity.getType() == entityType.getFlag()) {
                 if (matchName.getFlag()) {
-                    Matcher m = namePattern.matcher(Strings.nullToEmpty(entity.getCustomName()));
+                    Matcher m = namePattern.matcher((entity.getCustomName() == null) ? "" : entity.getCustomName());
                     if (!m.matches()) {
                         continue;
                     }
