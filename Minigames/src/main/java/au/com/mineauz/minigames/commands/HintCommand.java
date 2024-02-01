@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HintCommand extends ACommand {
+public class HintCommand extends ACommand { //todo make subcommands for all treasure hunt ones
 
     @Override
     public @NotNull String getName() {
@@ -47,7 +47,7 @@ public class HintCommand extends ACommand {
     public boolean onCommand(@NotNull CommandSender sender,
                              @NotNull String @NotNull [] args) {
         MinigamePlayer player = PLUGIN.getPlayerManager().getMinigamePlayer((Player) sender);
-        if (args != null) {
+        if (args.length > 0) {
             Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL &&

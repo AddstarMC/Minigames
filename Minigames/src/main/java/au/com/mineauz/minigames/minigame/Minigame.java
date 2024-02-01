@@ -1135,8 +1135,7 @@ public class Minigame implements ScriptObject {
         itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.OAK_SIGN));
         itemsMain.add(new MenuItemPage("Lobby Settings", List.of("Multiplayer Only"), Material.OAK_DOOR, lobby));
         itemsMain.add(new MenuItemNewLine());
-        itemsMain.add(new MenuItemTime("Time Length", List.of("Multiplayer Only"), Material.CLOCK, new
-                Callback<>() {
+        itemsMain.add(new MenuItemTime("Time Length", List.of("Multiplayer Only"), Material.CLOCK, new Callback<>() {
 
                     @Override
                     public Integer getValue() {

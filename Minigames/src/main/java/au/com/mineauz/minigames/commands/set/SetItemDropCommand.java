@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetItemDropCommand implements ASetCommand {
+public class SetItemDropCommand extends ASetCommand {
 
     @Override
     public @NotNull String getName() {

@@ -31,7 +31,7 @@ public class ListPlaceholder extends ACommand { //todo needs pages
 
     @Override
     public String[] getUsage() {
-        return new String[]{"/minigame placeholders"};
+        return new String[]{"/minigame placeholders [page number]"};
     }
 
     @Override

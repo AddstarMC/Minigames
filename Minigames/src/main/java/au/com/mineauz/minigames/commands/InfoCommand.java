@@ -33,11 +33,6 @@ public class InfoCommand extends ACommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return false;
     }

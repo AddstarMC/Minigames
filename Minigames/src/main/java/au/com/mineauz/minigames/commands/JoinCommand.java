@@ -2,15 +2,18 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class JoinCommand extends ACommand {
@@ -27,12 +30,12 @@ public class JoinCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameUtils.getLang("command.join.description");
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_JOIN_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame join <Minigame>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_JOIN_USAGE);
     }
 
     @Override
@@ -41,21 +44,24 @@ public class JoinCommand extends ACommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) { //todo force other players to join
         Player player = (Player) sender;
-        if (args != null) {
+        if (args.length > 0) {
             Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
             if (mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
                 if (!PLUGIN.getPlayerManager().getMinigamePlayer(player).isInMinigame()) {
-                    sender.sendMessage(ChatColor.GREEN + MinigameMessageManager.getMinigamesMessage("command.join.joining", mgm.getName(false)));
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MinigameLangKey.PLAYER_JOIN_JOINING,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(true)));
                     PLUGIN.getPlayerManager().joinMinigame(PLUGIN.getPlayerManager().getMinigamePlayer(player), mgm, false, 0.0);
                 } else {
-                    player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.join.alreadyPlaying"));
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_JOIN_ERROR_ALREADYPLAYING);
                 }
             } else if (mgm != null && mgm.getUsePermissions()) {
-                player.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("command.join.noMinigamePermission", "minigame.join." + mgm.getName(false).toLowerCase()));
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
             } else {
-                player.sendMessage(ChatColor.RED + MinigameUtils.getLang("minigame.error.noMinigame"));
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;
         }
@@ -65,8 +71,13 @@ public class JoinCommand extends ACommand {
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        if (args.length == 1) {
-            List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
+        if (args.length == 1 && sender instanceof Player) {
+            // filter all minigames by permission
+            List<String> mgs = PLUGIN.getMinigameManager().getAllMinigames().values().stream().
+                    filter(mgm -> (!mgm.getUsePermissions() ||
+                            sender.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))).
+                    map(mgm -> mgm.getName(false)).toList();
+
             return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
         }
         return null;

@@ -60,6 +60,10 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_ERROR_NOTTYPE("command.error.noType"),
     COMMAND_ERROR_RANGE("command.error.range"),
     COMMAND_ERROR_UNKNOWN_PARAM("command.error.unknown.parameter"),
+    COMMAND_HELP_DESCRIPTION("command.help.description"),
+    COMMAND_HELP_INFO_HEADER("command.help.info.header"),
+    COMMAND_HELP_LIST_HEADER("command.help.list.header"),
+    COMMAND_HELP_USAGE("command.help.usage"),
     COMMAND_INFO_DESCRIPTION("command.info.description"),
     COMMAND_INFO_OUTPUT_DESCRIPTION("command.info.output.description"),
     COMMAND_INFO_OUTPUT_GAMETYPE("command.info.output.gameType"),
@@ -70,6 +74,8 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_INFO_OUTPUT_PLAYERHEADER("command.info.output.playerHeader"),
     COMMAND_INFO_OUTPUT_TEAMDATA("command.info.output.teamData"),
     COMMAND_INFO_OUTPUT_TIMER("command.info.output.timer"),
+    COMMAND_JOIN_DESCRIPTION("command.join.description"),
+    COMMAND_JOIN_USAGE("command.join.usage"),
     COMMAND_MINIGAMES_AUTHORS("command.minigames.authors"),
     COMMAND_MINIGAMES_HELP("command.minigames.help"),
     COMMAND_MINIGAMES_VERSION("command.minigames.version"),
@@ -303,7 +309,10 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_SET_WHITELIST_USAGE("command.set.whitelist.usage"),
     COMMAND_SEt_OBJECTIVE_USAGE("command.set.objective.usage"),
     COMMAND_STATE_DISABLED("command.state.disabled"),
-    COMMAND_STATE_ENABLED("command.state.enabled");
+    COMMAND_STATE_ENABLED("command.state.enabled"),
+    COMMAND_LIST_DESCRIPTION("command.list.description"),
+    COMMAND_LIST_USAGE("command.list.usage"),
+    COMMAND_LIST_LIST("command.list.list");
 
     private final @NotNull String path;
 

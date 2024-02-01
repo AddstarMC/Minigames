@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class SetCommand extends ACommand {
-    private static final Map<String, ASetCommand> parameterList = new HashMap<>();
+    private static final @NotNull Map<@NotNull String, @NotNull ASetCommand> parameterList = new TreeMap<>(); // sort by name for display in help
     private static BufferedWriter cmdFile;
 
     static {
@@ -164,6 +164,10 @@ public class SetCommand extends ACommand {
         }
     }
 
+    public static @NotNull Collection<@NotNull ASetCommand> getSetCommands(){
+        return parameterList.values();
+    }
+
     @Override
     public @NotNull String getName() {
         return "set";
@@ -190,73 +194,75 @@ public class SetCommand extends ACommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        ASetCommand comd = null;
+        Minigame minigame = null;
+        String[] shortArgs = null;
 
-        if (args != null) {
-            ASetCommand comd = null;
-            Minigame minigame = null;
-            String[] shortArgs = null;
-
-            if (args.length >= 1) {
-                if (PLUGIN.getMinigameManager().hasMinigame(args[0])) {
-                    minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
-                }
-                if (args.length >= 2) {
-                    if (parameterList.containsKey(args[1].toLowerCase())) {
-                        comd = parameterList.get(args[1].toLowerCase());
-                    } else {
-                        AliasCheck:
-                        for (ASetCommand com : parameterList.values()) {
-                            if (com.getAliases() != null) {
-                                for (String alias : com.getAliases()) {
-                                    if (args[1].equalsIgnoreCase(alias)) {
-                                        comd = com;
-                                        break AliasCheck;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (args.length > 2) {
-                    shortArgs = new String[args.length - 2];
-                    System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
-                }
+        if (args.length >= 1) {
+            if (PLUGIN.getMinigameManager().hasMinigame(args[0])) {
+                minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
+            }
+            if (args.length >= 2) {
+                comd = getSetCommand(args[1]);
             }
 
-            if (comd != null && minigame != null) {
-                if (sender instanceof Player || comd.canBeConsole()) {
-                    if (comd.getPermission() == null || sender.hasPermission(comd.getPermission())) {
-                        boolean returnValue = comd.onCommand(sender, minigame, shortArgs);
-                        if (!returnValue) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_HEADER);
-
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_DESCRIPTION,
-                                    Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getDescription()));
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_USAGE,
-                                    Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getUsage()));
-                            if (comd.getAliases() != null) {
-                                String aliases = String.join("<gray>, </gray>", comd.getAliases());
-
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_ALIASES,
-                                        Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), aliases));
-                            }
-                        }
-                    } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
-                    }
-                } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
-                }
-                return true;
-            } else if (minigame == null) {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
+            if (args.length > 2) {
+                shortArgs = new String[args.length - 2];
+                System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
             }
         }
+
+        if (comd != null && minigame != null) {
+            if (sender instanceof Player || comd.canBeConsole()) {
+                if (comd.getPermission() == null || sender.hasPermission(comd.getPermission())) {
+                    boolean returnValue = comd.onCommand(sender, minigame, shortArgs);
+                    if (!returnValue) {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_HEADER);
+
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_DESCRIPTION,
+                                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getDescription()));
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_USAGE,
+                                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getUsage()));
+                        if (comd.getAliases() != null) {
+                            String aliases = String.join("<gray>, </gray>", comd.getAliases());
+
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_ALIASES,
+                                    Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), aliases));
+                        }
+                    }
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
+                }
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
+            }
+            return true;
+        } else if (minigame == null) {
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
+        }
         return false;
+    }
+
+    public static @Nullable ASetCommand getSetCommand(@NotNull String name) {
+        ASetCommand comd = null;
+        if (parameterList.containsKey(name.toLowerCase())) {
+            comd = parameterList.get(name.toLowerCase());
+        } else {
+            AliasCheck:
+            for (ASetCommand com : parameterList.values()) {
+                if (com.getAliases() != null) {
+                    for (String alias : com.getAliases()) {
+                        if (name.equalsIgnoreCase(alias)) {
+                            comd = com;
+                            break AliasCheck;
+                        }
+                    }
+                }
+            }
+        }
+        return comd;
     }
 
     @Override

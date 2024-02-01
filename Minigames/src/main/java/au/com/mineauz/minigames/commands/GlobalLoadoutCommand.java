@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlobalLoadoutCommand extends ACommand {
+public class GlobalLoadoutCommand extends ACommand { //todo merge with loadout command
     private final MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
 
     @Override

@@ -16,11 +16,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class CommandDispatcher implements CommandExecutor, TabCompleter {
-    private static final Map<String, ACommand> commands = new HashMap<>();
+    private static final Map<String, ACommand> commands = new TreeMap<>(); // sort by name for display in help
     private static final Minigames plugin = Minigames.getPlugin();
 
     static {
@@ -59,37 +60,25 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new ResourcePackCommand());
     }
 
+    public static @NotNull Collection<ACommand> getCommands(){
+        return commands.values();
+    }
+
     public static void registerCommand(ACommand command) {
         commands.put(command.getName(), command);
     }
 
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player ply = null;
         if (sender instanceof Player player) {
             ply = player;
         }
 
         if (args != null && args.length > 0) {
-            ACommand comd = null;
+            ACommand cmd = getCommand(args[0]);
 
-            if (commands.containsKey(args[0].toLowerCase())) {
-                comd = commands.get(args[0].toLowerCase());
-            } else {
-                AliasCheck:
-                for (ACommand com : commands.values()) {
-                    if (com.getAliases() != null) {
-                        for (String alias : com.getAliases()) {
-                            if (args[0].equalsIgnoreCase(alias)) {
-                                comd = com;
-                                break AliasCheck;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (comd != null) {
-                if (ply != null || comd.canBeConsole()) {
+            if (cmd != null) {
+                if (ply != null || cmd.canBeConsole()) {
                     String[] shortArgs;
                     if (args.length > 1) {
                         shortArgs = new String[args.length - 1];
@@ -98,15 +87,15 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                         shortArgs = new String[]{};
                     }
 
-                    if (ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))) {
-                        boolean returnValue = comd.onCommand(sender, shortArgs);
+                    if (ply == null || (cmd.getPermission() == null || ply.hasPermission(cmd.getPermission()))) {
+                        boolean returnValue = cmd.onCommand(sender, shortArgs);
                         if (!returnValue) {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_HEADER);
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_DESCRIPTION,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getDescription()));
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_USAGE,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getUsage()));
-                            if (comd.getAliases() != null) {
+                            if (cmd.getAliases() != null) {
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_ALIASES,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", command.getAliases())));
                             }
@@ -129,6 +118,26 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
             return true;
         }
         return false;
+    }
+
+    public static @Nullable  ACommand getCommand(@NotNull String name) {
+        ACommand comd = null;
+        if (commands.containsKey(name.toLowerCase())) {
+            comd = commands.get(name.toLowerCase());
+        } else {
+            AliasCheck:
+            for (ACommand com : commands.values()) {
+                if (com.getAliases() != null) {
+                    for (String alias : com.getAliases()) {
+                        if (name.equalsIgnoreCase(alias)) {
+                            comd = com;
+                            break AliasCheck;
+                        }
+                    }
+                }
+            }
+        }
+        return comd;
     }
 
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {

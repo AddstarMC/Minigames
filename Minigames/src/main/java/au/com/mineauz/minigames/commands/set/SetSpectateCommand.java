@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetSpectateCommand implements ASetCommand {
+public class SetSpectateCommand extends ASetCommand {
 
     @Override
     public @NotNull String getName() {

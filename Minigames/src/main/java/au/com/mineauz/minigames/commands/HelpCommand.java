@@ -1,15 +1,33 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.set.ASetCommand;
+import au.com.mineauz.minigames.commands.set.SetCommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class HelpCommand extends ACommand {
+    private final Pattern NUM_PATTERN = Pattern.compile("^\\d*$");
+    private final int COMMANDS_PER_SITE = 6; // just a random number. Change it if you know a better one!
 
     @Override
     public @NotNull String getName() {
@@ -23,12 +41,12 @@ public class HelpCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage("command.help.description");
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame help"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_USAGE);
     }
 
     @Override
@@ -36,61 +54,95 @@ public class HelpCommand extends ACommand {
         return "minigame.help";
     }
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
-        sender.sendMessage(ChatColor.GREEN + MinigameMessageManager.getUnformattedMgMessage("command.info.header"));
-        sender.sendMessage(ChatColor.BLUE + "/minigame");
-        sender.sendMessage(ChatColor.GRAY + MinigameMessageManager.getUnformattedMgMessage("command.info.mgm"));
-        if (sender.hasPermission("minigame.join")) {
-            sender.sendMessage(ChatColor.BLUE + "/minigame join <Minigame>");
-            sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.join"));
-        }
-        if (sender.hasPermission("minigame.quit")) {
-            sender.sendMessage(ChatColor.BLUE + "/minigame quit");
-            sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.quit"));
-            if (sender.hasPermission("minigame.quit.other")) {
-                sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.quitOther"));
-            }
-        }
-        if (sender.hasPermission("minigame.end")) {
-            sender.sendMessage(ChatColor.BLUE + "/minigame end [Player]");
-            sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.end"));
-        }
-        if (sender.hasPermission("minigame.revert")) {
-            sender.sendMessage(ChatColor.BLUE + "/minigame revert");
-            sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.revert"));
-        }
-        if (sender.hasPermission("minigame.delete")) {
-            sender.sendMessage(ChatColor.BLUE + "/minigame delete <Minigame>");
-            sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.delete"));
-        }
-        if (sender.hasPermission("minigame.hint")) {
-            sender.sendMessage(ChatColor.BLUE + "/minigame hint <minigame>");
-            sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.hint"));
-        }
-        if (sender.hasPermission("minigame.toggletimer")) {
-            sender.sendMessage(ChatColor.BLUE + "/minigame toggletimer <Minigame>");
-            sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.timer"));
-        }
-        if (sender.hasPermission("minigame.list")) {
-            sender.sendMessage(ChatColor.BLUE + "/minigame list");
-            sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.list"));
-        }
-        if (sender.hasPermission("minigame.reload")) {
-            sender.sendMessage(ChatColor.BLUE + "/minigame reload");
-            sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.reload"));
-        }
+    private Component makePage(@NotNull Permissible permissible, int pageNumber){
+        List<ICommandInfo> allCommands = new ArrayList<>(CommandDispatcher.getCommands());
+        allCommands.addAll(SetCommand.getSetCommands());
+        // filter per permission
+        allCommands = allCommands.stream().filter(cmd -> cmd.getPermission() == null || permissible.hasPermission(cmd.getPermission())).toList();
 
-        sender.sendMessage(ChatColor.BLUE + "/minigame set <Minigame> <parameter>...");
-        sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.set"));
+        final int numPages = (int)Math.ceil((float) allCommands.size() / COMMANDS_PER_SITE);
+        pageNumber = Math.max(1, Math.min(pageNumber, numPages)); // stay in range
+
+        final List<ICommandInfo> commandsOfPage = allCommands.subList(COMMANDS_PER_SITE*(pageNumber-1), Math.min(allCommands.size(), pageNumber*COMMANDS_PER_SITE));
+        // command name + description + click event for detailed info
+        final Component pageCore = Component.join(JoinConfiguration.newlines(), commandsOfPage.stream().
+                map(cmd -> Component.text(cmd.getName()).append(Component.text(" - ")).append(cmd.getDescription()).
+                        clickEvent(ClickEvent.suggestCommand("/minigame help " + cmd.getName()))).toList()); //todo needs formatting (not hardcoded)
+
+        final Component header = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_LIST_HEADER,
+                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pageNumber)),
+                Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(numPages)));
+        //todo clickable next/back buttons on footer
+
+        return header.appendNewline().append(pageCore);
+    }
+
+    private static boolean sendHelpInfo(@NotNull CommandSender sender, @NotNull ICommandInfo setCommand) {
+        if (setCommand.getPermission() != null || sender.hasPermission(setCommand.getPermission())){
+            Component info = Component.empty();
+            if (setCommand.getAliases() != null) {
+                info = info.append(Component.text("[").append(Component.text(String.join(", ", setCommand.getAliases()))).append(Component.text("]")));
+            }
+
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
+                    MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
+                            append(info.appendNewline().append(setCommand.getUsage()).appendNewline().append(setCommand.getDescription())));//todo needs formatting (not hardcoded)
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        if (args.length > 0) {
+            if (NUM_PATTERN.matcher(args[0]).matches()){
+                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(sender, Integer.parseInt(args[0])));
+            } else {
+                ACommand subCommand = CommandDispatcher.getCommand(args[0]);
+
+                if (subCommand != null) {
+                    return sendHelpInfo(sender, subCommand);
+                } else {
+                    ASetCommand setCommand = SetCommand.getSetCommand(args[0]);
+
+                    if (setCommand != null){
+                        return sendHelpInfo(sender, setCommand);
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(sender, 1));
+        }
         return true;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        if (args.length == 1) {
+            List<ICommandInfo> allCommands = new ArrayList<>(CommandDispatcher.getCommands());
+            allCommands.addAll(SetCommand.getSetCommands());
+            // filter per permission
+            allCommands = allCommands.stream().filter(cmd -> cmd.getPermission() == null || sender.hasPermission(cmd.getPermission())).toList();
+            // get number of filtered commands before the next step
+            final int numPages = (int)Math.ceil((float) allCommands.size() / COMMANDS_PER_SITE);
+
+            // can't reuse the stream from above, since using Stream#count() would terminate it.
+            // first map commands to name + aliases, then append all possible page numbers
+            List<String> result = Stream.concat(allCommands.stream().flatMap(c -> {
+                if (c.getAliases() != null) {
+                    return Stream.concat(Stream.of(c.getName()), Arrays.stream(c.getAliases()));
+                } else {
+                    return Stream.of(c.getName());
+                }
+            }), IntStream.range(1, numPages).boxed().map(String::valueOf)).toList();
+
+            return MinigameUtils.tabCompleteMatch(result, args[0]);
+        }
+
         return null;
     }
-
 }

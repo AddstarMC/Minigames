@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.commands;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ACommand;
+import au.com.mineauz.minigames.commands.set.ASetCommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetRegionCommand implements ACommand {
+public class SetRegionCommand implements ASetCommand {
 
     @Override
     public @NotNull String getName() {
