@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
+import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -38,7 +39,7 @@ public class SetTimerCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> timer <Number>[m|h]", "/minigame set <Minigame> timer useXPBar <true/false>"};
+        return new String[]{"/minigame set <Minigame> timer <Number>[m|h]", "/minigame set <Minigame> timer display <xpBar/bossBar/none>"};
     }
 
     @Override
@@ -77,14 +78,20 @@ public class SetTimerCommand implements ICommand {
                     sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been removed.");
                 }
                 return true;
-            } else if (args[0].equalsIgnoreCase("usexpbar") && args.length == 2) {
-                boolean bool = Boolean.parseBoolean(args[1]);
-                minigame.setUseXPBarTimer(bool);
-                if (bool)
+            } else if (args[0].equalsIgnoreCase("display") && args.length >= 2){
+                if (args[1].equalsIgnoreCase("xpBar")) {
+                    minigame.setTimerDisplayType(MinigameTimer.DisplayType.XP_BAR);
                     sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the XP bar.");
-                else
-                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will no longer show the timer in the XP bar.");
-                return true;
+                    return true;
+                } else if (args[1].equalsIgnoreCase("bossBar")) {
+                    minigame.setTimerDisplayType(MinigameTimer.DisplayType.BOSS_BAR);
+                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the boss bar.");
+                    return true;
+                } else if (args[1].equalsIgnoreCase("none")) {
+                    minigame.setTimerDisplayType(MinigameTimer.DisplayType.NONE);
+                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will no longer show the timer.");
+                    return true;
+                } // else here will default to false
             }
         }
         return false;
