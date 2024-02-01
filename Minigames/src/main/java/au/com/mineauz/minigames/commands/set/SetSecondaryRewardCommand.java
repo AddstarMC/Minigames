@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -13,10 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
-public class SetSecondaryRewardCommand implements ICommand {
-    private final Pattern MONEY_PATTERN = Pattern.compile("\\$-?(\\d+(\\.\\d+)?)");
+public class SetSecondaryRewardCommand extends ASetCommand {
 
     @Override
     public @NotNull String getName() {
@@ -56,7 +53,7 @@ public class SetSecondaryRewardCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull @Nullable [] args) {
         if (args.length == 3 || (args.length == 2 && args[0].startsWith("$"))) {
             List<String> ls = new ArrayList<>();
             for (RewardRarity r : RewardRarity.values()) {

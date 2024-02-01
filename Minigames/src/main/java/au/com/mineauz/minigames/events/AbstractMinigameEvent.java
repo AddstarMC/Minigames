@@ -7,19 +7,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class AbstractMinigameEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Minigame mgm;
+    private final @NotNull Minigame mgm;
 
     /**
      * Instantiates a new Abstract minigame event.
      *
      * @param game the mgm
      */
-    public AbstractMinigameEvent(final Minigame game) {
+    public AbstractMinigameEvent(@NotNull final Minigame game) {
         super();
         this.mgm = game;
     }
 
-    public static HandlerList getHandlerList() {
+    public static @NotNull HandlerList getHandlerList() {
         return HANDLERS;
     }
 

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetMaxPlayersCommand implements ICommand {
+public class SetMaxPlayersCommand extends ASetCommand {
 
     @Override
     public @NotNull String getName() {
@@ -61,7 +60,7 @@ public class SetMaxPlayersCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull @Nullable [] args) {
         return null;
     }
 

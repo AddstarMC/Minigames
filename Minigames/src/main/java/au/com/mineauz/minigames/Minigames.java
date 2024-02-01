@@ -216,7 +216,7 @@ public class Minigames extends JavaPlugin {
             final CommandDispatcher disp = new CommandDispatcher();
             PluginCommand command = this.getCommand("minigame");
             if (command == null) {
-                throw (new Throwable("Could not find command `minigame`"));
+                throw (new NoSuchElementException("Could not find command `minigame`"));
             }
             command.setExecutor(disp);
             command.setTabCompleter(disp);
@@ -234,7 +234,7 @@ public class Minigames extends JavaPlugin {
 
             logger.info(desc.getName() + " successfully enabled.");
             this.hookPlaceHolderApi();
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             plugin = null;
             logger.error("Failed to enable Minigames " + this.getDescription().getVersion() + ": ", e);
             Bukkit.getPluginManager().disablePlugin(this);

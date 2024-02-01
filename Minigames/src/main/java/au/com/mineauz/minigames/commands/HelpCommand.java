@@ -1,17 +1,15 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class HelpCommand implements ICommand {
+public class HelpCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -39,51 +37,47 @@ public class HelpCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        Player player = null;
-        if (sender instanceof Player) {
-            player = (Player) sender;
-        }
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         sender.sendMessage(ChatColor.GREEN + MinigameMessageManager.getUnformattedMgMessage("command.info.header"));
         sender.sendMessage(ChatColor.BLUE + "/minigame");
         sender.sendMessage(ChatColor.GRAY + MinigameMessageManager.getUnformattedMgMessage("command.info.mgm"));
-        if (player == null || player.hasPermission("minigame.join")) {
+        if (sender.hasPermission("minigame.join")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame join <Minigame>");
             sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.join"));
         }
-        if (player == null || player.hasPermission("minigame.quit")) {
+        if (sender.hasPermission("minigame.quit")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame quit");
             sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.quit"));
-            if (player == null || player.hasPermission("minigame.quit.other")) {
+            if (sender.hasPermission("minigame.quit.other")) {
                 sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.quitOther"));
             }
         }
-        if (player == null || player.hasPermission("minigame.end")) {
+        if (sender.hasPermission("minigame.end")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame end [Player]");
             sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.end"));
         }
-        if (player == null || player.hasPermission("minigame.revert")) {
+        if (sender.hasPermission("minigame.revert")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame revert");
             sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.revert"));
         }
-        if (player == null || player.hasPermission("minigame.delete")) {
+        if (sender.hasPermission("minigame.delete")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame delete <Minigame>");
             sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.delete"));
         }
-        if (player == null || player.hasPermission("minigame.hint")) {
+        if (sender.hasPermission("minigame.hint")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame hint <minigame>");
             sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.hint"));
         }
-        if (player == null || player.hasPermission("minigame.toggletimer")) {
+        if (sender.hasPermission("minigame.toggletimer")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame toggletimer <Minigame>");
             sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.timer"));
         }
-        if (player == null || player.hasPermission("minigame.list")) {
+        if (sender.hasPermission("minigame.list")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame list");
             sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.list"));
         }
-        if (player == null || player.hasPermission("minigame.reload")) {
+        if (sender.hasPermission("minigame.reload")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame reload");
             sender.sendMessage(MinigameMessageManager.getMessage(null, "command.info.reload"));
         }
@@ -94,7 +88,7 @@ public class HelpCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         return null;
     }

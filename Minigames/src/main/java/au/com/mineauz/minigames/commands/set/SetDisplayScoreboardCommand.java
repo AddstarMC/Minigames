@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetDisplayScoreboardCommand implements ICommand { //todo allow sidebar, below name all of the vanilla stuff
+public class SetDisplayScoreboardCommand extends ASetCommand { //todo allow sidebar, below name all of the vanilla stuff
 
     @Override
     public @NotNull String getName() {
@@ -82,7 +81,7 @@ public class SetDisplayScoreboardCommand implements ICommand { //todo allow side
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @Nullable [] args) {
+                                                         @NotNull String @NotNull @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
                 return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);

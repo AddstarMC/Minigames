@@ -1,8 +1,8 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -134,7 +134,7 @@ public class BroadcastAction extends AbstractAction {
         // New expression system
         message = ExpressionParser.stringResolve(message, base, true, true);
         if (mgPlayer != null) {
-            Minigames.getPlugin().getMinigameManager().sendMinigameMessage(mgPlayer.getMinigame(), message, type, exclude);
+            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), message, type, exclude);
         }
 
     }

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaveCommand implements ICommand {
+public class SaveCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -44,11 +44,11 @@ public class SaveCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         if (args != null) {
-            if (plugin.getMinigameManager().hasMinigame(args[0])) {
-                Minigame mg = plugin.getMinigameManager().getMinigame(args[0]);
+            if (PLUGIN.getMinigameManager().hasMinigame(args[0])) {
+                Minigame mg = PLUGIN.getMinigameManager().getMinigame(args[0]);
                 mg.saveMinigame();
                 sender.sendMessage(ChatColor.GRAY + mg.getName(false) + " has been saved.");
             } else {
@@ -60,9 +60,9 @@ public class SaveCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+        List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }
 

@@ -358,10 +358,10 @@ public class ScoreboardDisplay {
                 sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
                 sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));
             } else {
-                Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation());
+                Minigames.getCmpnntLogger().warn("No Root Sign Block at: " + root.getLocation());
             }
         } else {
-            Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation());
+            Minigames.getCmpnntLogger().warn("No Root Sign Block at: " + root.getLocation());
         }
     }
 

@@ -314,14 +314,14 @@ public class SQLiteBackend extends Backend {
     }
 
     @Override
-    public void exportTo(Backend other, ExportNotifier notifier) {
+    public void exportTo(Backend other, Notifier notifier) {
         BackendImportCallback callback = getImportCallback(other);
         SQLExport exporter = new SQLExport(pool, callback, notifier);
         exporter.beginExport();
     }
 
     @Override
-    public boolean doConversion(ExportNotifier notifier) {
+    public boolean doConversion(Notifier notifier) {
         BackendImportCallback callback = getImportCallback();
         FlatFileExporter exporter = new FlatFileExporter(new File(Minigames.getPlugin().getDataFolder(), "completion.yml"), callback, notifier);
         return exporter.doExport();

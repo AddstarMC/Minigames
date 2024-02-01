@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToggleTimerCommand implements ICommand {
+public class ToggleTimerCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -39,10 +39,10 @@ public class ToggleTimerCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         if (args != null) {
-            Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
+            Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
             if (mgm != null) {
                 if (mgm.getMpTimer() != null) {
                     if (mgm.getMpTimer().isPaused()) {
@@ -64,9 +64,9 @@ public class ToggleTimerCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+        List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }
 

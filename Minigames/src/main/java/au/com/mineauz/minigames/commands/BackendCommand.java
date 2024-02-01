@@ -2,17 +2,17 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.BackendManager;
-import au.com.mineauz.minigames.backend.ExportNotifier;
+import au.com.mineauz.minigames.backend.Notifier;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.minigame.Minigame;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +20,8 @@ import java.util.List;
 
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 
-public class BackendCommand implements ICommand {
+public class BackendCommand extends ACommand {
+
     @Override
     public @NotNull String getName() {
         return "backend";
@@ -38,10 +39,7 @@ public class BackendCommand implements ICommand {
 
     @Override
     public Component getUsage() {
-        return new String[]{
-                "/minigame backend export <type>",
-                "/minigame backend switch <type>"
-        };
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_BACKEND_USAGE);
     }
 
     @Override
@@ -50,9 +48,9 @@ public class BackendCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(final @NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        if (args == null || args.length != 2) {
+    public boolean onCommand(final @NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        if (args.length != 2) {
             return false;
         }
 
@@ -60,41 +58,52 @@ public class BackendCommand implements ICommand {
 
         if (args[0].equalsIgnoreCase("export")) {
             try {
-                ListenableFuture<Void> future = manager.exportTo(args[1], Minigames.getPlugin().getConfig(), new Notifier(sender));
-                sender.sendMessage(ChatColor.GOLD + "Exporting backend to " + args[1] + "...");
+                ListenableFuture<Void> future = manager.exportTo(args[1], Minigames.getPlugin().getConfig(), new ExportNotifier(sender));
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_BACKEND_EXPORT_START,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]));
+                Minigames.getCmpnntLogger().warn("Started exporting backend. Started by " + sender.getName());
 
                 Futures.addCallback(future, new FutureCallback<>() {
                     @Override
                     public void onFailure(@NotNull Throwable t) {
-                        sender.sendMessage(ChatColor.RED + "An internal error occurred while exporting." + t.getMessage());
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), t.getMessage()));
+                        Minigames.getCmpnntLogger().error("An internal error occurred while exporting.", t);
                     }
 
                     @Override
-                    public void onSuccess(Void result) {
+                    public void onSuccess(Void result) { // success gets handled by notifier
                     }
                 }, directExecutor());
             } catch (IllegalArgumentException e) {
-                sender.sendMessage(ChatColor.RED + e.getMessage());
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
+                Minigames.getCmpnntLogger().error("An internal error occurred while exporting.", e);
             }
         } else if (args[0].equalsIgnoreCase("switch")) {
-            try {
+            try { // todo why only temporary?
                 ListenableFuture<Void> future = manager.switchBackend(args[1], Minigames.getPlugin().getConfig());
-                sender.sendMessage(ChatColor.GOLD + "Switching minigames backend to " + args[1] + "...");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_BACKEND_SWITCH_START,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]));
 
                 Futures.addCallback(future, new FutureCallback<>() {
                     @Override
                     public void onFailure(@NotNull Throwable t) {
-                        sender.sendMessage(ChatColor.RED + "An internal error occurred while switching backend.");
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), t.getMessage()));
+                        Minigames.getCmpnntLogger().error("An internal error occurred while exporting.", t);
                     }
 
                     @Override
                     public void onSuccess(Void result) {
-                        sender.sendMessage(ChatColor.GOLD + "The backend has been successfully switched");
-                        sender.sendMessage(ChatColor.GOLD + "!!! This change is " + ChatColor.BOLD + "temporary" + ChatColor.GOLD + ". Please update the config !!!");
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_BACKEND_SWITCH_SUCCESS);
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.WARNING, MgCommandLangKey.COMMAND_BACKEND_SWITCH_WARNING_TEMP);
                     }
                 }, directExecutor());
             } catch (IllegalArgumentException e) {
-                sender.sendMessage(ChatColor.RED + e.getMessage());
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
+                Minigames.getCmpnntLogger().error("An internal error occurred while exporting.", e);
             }
         }
 
@@ -102,43 +111,33 @@ public class BackendCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         return null;
     }
 
-    private static class Notifier implements ExportNotifier {
+    private static class ExportNotifier implements Notifier {
         private final CommandSender sender;
-        private boolean begun;
 
-        public Notifier(CommandSender sender) {
+        public ExportNotifier(CommandSender sender) {
             this.sender = sender;
-            begun = false;
         }
 
         @Override
         public void onProgress(String state, int count) {
-            if (!begun) {
-                begun = true;
-                if (sender instanceof Player) {
-                    sender.sendMessage(ChatColor.GREEN + "[Minigames] Export started...");
-                }
-
-                Minigames.getPlugin().getLogger().warning("Started exporting backend. Started by " + sender.getName());
-            }
-
-            Minigames.getPlugin().getLogger().info("Exporting backend... " + state + ": " + count);
+            Minigames.getCmpnntLogger().info("Exporting backend... " + state + ": " + count);
         }
 
         @Override
         public void onComplete() {
-            sender.sendMessage(ChatColor.GREEN + "[Minigames] Export complete!");
-            Minigames.getPlugin().getLogger().info("Exporting complete");
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_BACKEND_EXPORT_SUCCES);
+            Minigames.getCmpnntLogger().info("Exporting complete");
         }
 
         @Override
-        public void onError(Throwable e, String state, int count) {
-            sender.sendMessage(ChatColor.RED + "[Minigames] Export error. See console for details.");
+        public void onError(Exception e, String state, int count) {
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
             Minigames.getCmpnntLogger().error("Exporting error at " + state + ": " + count, e);
         }
     }

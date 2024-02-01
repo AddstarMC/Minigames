@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +12,8 @@ import java.util.Set;
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 3/06/2020.
  */
-public class ListPlaceholder implements ICommand { //todo needs pages
+public class ListPlaceholder extends ACommand { //todo needs pages
+
     @Override
     public @NotNull String getName() {
         return "placeholders";
@@ -40,12 +40,12 @@ public class ListPlaceholder implements ICommand { //todo needs pages
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        Set<String> placeholders = plugin.getPlaceHolderManager().getRegisteredPlaceHolders();
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        Set<String> placeholders = PLUGIN.getPlaceHolderManager().getRegisteredPlaceHolders();
         StringBuilder result = new StringBuilder();
         for (String pHolder : placeholders) {
-            result.append("%").append(plugin.getName()).append("_").append(pHolder).append("%, ");
+            result.append("%").append(PLUGIN.getName()).append("_").append(pHolder).append("%, ");
         }
         result.delete(result.length() - 1, result.length());
         sender.sendMessage("PlaceHolder List");
@@ -54,7 +54,7 @@ public class ListPlaceholder implements ICommand { //todo needs pages
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         return null;
     }
 }

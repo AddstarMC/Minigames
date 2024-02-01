@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HintCommand implements ICommand {
+public class HintCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -44,11 +44,11 @@ public class HintCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        MinigamePlayer player = PLUGIN.getPlayerManager().getMinigamePlayer((Player) sender);
         if (args != null) {
-            Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
+            Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL &&
                     mgm.getMechanicName().equals("treasure_hunt")) {
@@ -63,7 +63,7 @@ public class HintCommand implements ICommand {
             }
         } else {
             List<Minigame> mgs = new ArrayList<>();
-            for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {
+            for (Minigame mg : PLUGIN.getMinigameManager().getAllMinigames().values()) {
                 if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt")) {
                     mgs.add(mg);
                 }
@@ -95,11 +95,11 @@ public class HintCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>();
-            for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {
+            for (Minigame mg : PLUGIN.getMinigameManager().getAllMinigames().values()) {
                 if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt"))
                     mgs.add(mg.getName(false));
             }

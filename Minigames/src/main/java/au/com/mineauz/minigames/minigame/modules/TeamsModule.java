@@ -187,7 +187,7 @@ public class TeamsModule extends MinigameModule {
         };
     }
 
-    public TeamColor getDefaultWinner() {
+    public @Nullable TeamColor getDefaultWinner() {
         if (defaultWinner.getFlag() != null) {
             TeamColor team = TeamColor.matchColor(defaultWinner.getFlag());
             if (!teams.containsKey(team)) {

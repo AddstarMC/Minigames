@@ -173,7 +173,7 @@ public class PlaySoundAction extends AbstractAction {
         try {
             result = Sound.valueOf(sound);
         } catch (IllegalArgumentException e) {
-            Minigames.getPlugin().getLogger().warning("Bad Sound Config in Minigame Config : " + sound);
+            Minigames.getPlugin().getComponentLogger().warn("Bad Sound Config in Minigame Config : " + sound);
             result = Sound.ENTITY_PLAYER_BURP;
         }
         return result;

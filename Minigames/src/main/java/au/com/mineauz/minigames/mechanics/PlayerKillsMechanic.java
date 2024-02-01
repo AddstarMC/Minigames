@@ -46,7 +46,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     }
 
     @Override
-    public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
+    public void stopMinigame(Minigame minigame) {
     }
 
     @Override
@@ -106,7 +106,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
                     ateam.addScore();
                     if (mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()) {
-                        mdata.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_KILLS_FINALKILL,
+                        MinigameMessageManager.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_KILLS_FINALKILL,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), attacker.getName()),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerWhoDied.getName())));
 

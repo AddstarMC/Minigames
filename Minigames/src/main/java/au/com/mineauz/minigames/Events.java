@@ -116,7 +116,7 @@ public class Events implements Listener {
             }
 
             if (msg != null && !PlainTextComponentSerializer.plainText().serialize(msg).isEmpty()) { //components really need a better way to check if they are empty
-                mdata.sendMinigameMessage(mgm, msg, MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMinigameMessage(mgm, msg, MinigameMessageType.ERROR);
             }
             if (mgm.getState() == MinigameState.STARTED) {
                 if (mgm.getLives() > 0 && mgm.getLives() <= mgPlayer.getDeaths()) {

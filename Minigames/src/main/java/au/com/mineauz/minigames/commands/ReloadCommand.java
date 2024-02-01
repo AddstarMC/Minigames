@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReloadCommand implements ICommand {
+public class ReloadCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -42,22 +42,22 @@ public class ReloadCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        for (Player p : plugin.getServer().getOnlinePlayers()) {
-            if (plugin.getPlayerManager().getMinigamePlayer(p).isInMinigame()) {
-                plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(p), true);
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        for (Player p : PLUGIN.getServer().getOnlinePlayers()) {
+            if (PLUGIN.getPlayerManager().getMinigamePlayer(p).isInMinigame()) {
+                PLUGIN.getPlayerManager().quitMinigame(PLUGIN.getPlayerManager().getMinigamePlayer(p), true);
             }
         }
 
         Minigames.getPlugin().getMinigameManager().getAllMinigames().clear();
 
         try {
-            plugin.getConfig().load(plugin.getDataFolder() + "/config.yml");
+            PLUGIN.getConfig().load(PLUGIN.getDataFolder() + "/config.yml");
         } catch (FileNotFoundException ex) {
-            plugin.getLogger().info("Failed to load config, creating one.");
+            PLUGIN.getLogger().info("Failed to load config, creating one.");
             try {
-                plugin.getConfig().save(plugin.getDataFolder() + "/config.yml");
+                PLUGIN.getConfig().save(PLUGIN.getDataFolder() + "/config.yml");
             } catch (IOException e) {
                 Minigames.getCmpnntLogger().error("Could not save config.yml!", e);
             }
@@ -84,7 +84,7 @@ public class ReloadCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         return null;
     }

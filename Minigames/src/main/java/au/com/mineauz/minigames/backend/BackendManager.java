@@ -94,14 +94,14 @@ public class BackendManager {
 
         // Handle conversion
         if (backendSection.getBoolean("convert", false)) {
-            ExportNotifier notifier = new ExportNotifier() {
+            Notifier convertNotifier = new Notifier() {
                 @Override
                 public void onProgress(String state, int count) {
                     logger.info("Conversion: " + state + " " + count);
                 }
 
                 @Override
-                public void onError(Throwable e, String state, int count) {
+                public void onError(Exception e, String state, int count) {
                     logger.error("Conversion error: " + state + " " + count, e);
                 }
 
@@ -111,7 +111,7 @@ public class BackendManager {
                 }
             };
 
-            if (backend.doConversion(notifier)) {
+            if (backend.doConversion(convertNotifier)) {
                 backendSection.set("convert", false);
             } else {
                 return false;
@@ -224,7 +224,7 @@ public class BackendManager {
      * @return A future to let you know when the process is finished
      * @throws IllegalArgumentException Thrown if the backend chosen cannot be used. Reason given in message
      */
-    public ListenableFuture<Void> exportTo(String type, ConfigurationSection config, final ExportNotifier notifier) throws IllegalArgumentException {
+    public ListenableFuture<Void> exportTo(String type, ConfigurationSection config, final Notifier notifier) throws IllegalArgumentException {
         final Backend destination = makeBackend(type);
         if (destination == null) {
             throw new IllegalArgumentException("Invalid backend type");

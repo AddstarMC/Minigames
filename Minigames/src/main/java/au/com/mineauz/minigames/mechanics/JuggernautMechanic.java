@@ -53,7 +53,7 @@ public class JuggernautMechanic extends GameMechanicBase {
     }
 
     @Override
-    public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
+    public void stopMinigame(Minigame minigame) {
     }
 
     @Override
@@ -73,7 +73,7 @@ public class JuggernautMechanic extends GameMechanicBase {
                 if (juggernaut != null) {
                     juggernautModule.setJuggernaut(juggernaut);
                     MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.INFO, MinigameLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
-                    mdata.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
+                    MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.getDisplayName(minigame.usePlayerDisplayNames()))),
                             MinigameMessageType.INFO, juggernaut);
                 }

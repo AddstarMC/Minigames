@@ -2,18 +2,24 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeleteCommand implements ICommand {
+public class DeleteCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -27,12 +33,12 @@ public class DeleteCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Deletes a Minigame from existence. It will be gone forever! (A very long time)";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DELETE_DESCRIPTION);
     }
 
     @Override
     public Component getUsage() {
-        return new String[]{"/minigame delete <Minigame>"};
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DELETE_USAGE);
     }
 
     @Override
@@ -41,29 +47,26 @@ public class DeleteCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        if (args != null) {
-            Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        if (args.length > 0) {
+            Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null) {
-                File save = new File(plugin.getDataFolder() + "/minigames/" + mgm.getName(false));
+                File save = new File(PLUGIN.getDataFolder() + "/minigames/" + mgm.getName(false));
                 if (save.exists() && save.isDirectory()) {
-                    if (save.list().length == 0) {
-                        save.delete();
-                    } else {
-                        for (String file : save.list()) {
-                            File nfile = new File(save, file);
-                            nfile.delete();
-                        }
-                        save.delete();
+                    try {
+                        FileUtils.deleteDirectory(save);
+                    } catch (IOException e) {
+                        PLUGIN.getComponentLogger().warn("couldn't delete files for minigame " + save.getPath() + ". Still going to try to delete from config.");
                     }
-                    List<String> ls = plugin.getConfig().getStringList("minigames");
+                    List<String> ls = PLUGIN.getConfig().getStringList("minigames");
                     ls.remove(mgm.getName(false));
-                    plugin.getConfig().set("minigames", ls);
-                    plugin.getMinigameManager().removeMinigame(mgm.getName(false));
-                    plugin.saveConfig();
-                    sender.sendMessage(ChatColor.RED + "The minigame " + mgm.getName(false) + " has been removed");
+                    PLUGIN.getConfig().set("minigames", ls);
+                    PLUGIN.getMinigameManager().removeMinigame(mgm.getName(false));
+                    PLUGIN.saveConfig();
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DELETE_SUCCESS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(false)));
                 }
             }
             return true;
@@ -72,7 +75,7 @@ public class DeleteCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>(Minigames.getPlugin().getMinigameManager().getAllMinigames().keySet());

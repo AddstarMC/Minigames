@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.backend.sqlite;
 
 import au.com.mineauz.minigames.backend.BackendImportCallback;
-import au.com.mineauz.minigames.backend.ExportNotifier;
+import au.com.mineauz.minigames.backend.Notifier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class FlatFileExporter {
     private final File file;
     private final FileConfiguration config;
-    private final ExportNotifier notifier;
+    private final Notifier notifier;
     private final BackendImportCallback callback;
     private final Map<String, Integer> minigameIds;
     private SetMultimap<String, UUID> completions;
@@ -32,7 +32,7 @@ public class FlatFileExporter {
     private int notifyCount;
     private long notifyTime;
 
-    public FlatFileExporter(File file, BackendImportCallback callback, ExportNotifier notifier) {
+    public FlatFileExporter(File file, BackendImportCallback callback, Notifier notifier) {
         this.file = file;
         this.callback = callback;
         this.notifier = notifier;

@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class SetGamemodeCommand implements ICommand {
+public class SetGamemodeCommand extends ASetCommand {
 
     @Override
     public @NotNull String getName() {
@@ -84,7 +83,7 @@ public class SetGamemodeCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull @Nullable [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(Arrays.stream(GameMode.values()).map(gm -> gm.name().toLowerCase()).toList(), args[0]);
         }

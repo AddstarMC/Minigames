@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SetRewardCommand implements ICommand { //todo allow commands
+public class SetRewardCommand extends ASetCommand { //todo allow commands
     private final static Pattern MONEY_PATTERN = Pattern.compile("\\$-?(\\d+(\\.\\d+)?)");
 
     @Override
@@ -91,7 +90,7 @@ public class SetRewardCommand implements ICommand { //todo allow commands
 
                 if (args.length >= 1) {
                     if (args[0].startsWith("$")) {
-                        Economy economy = plugin.getEconomy();
+                        Economy economy = PLUGIN.getEconomy();
 
                         if (economy != null) {
                             Matcher matcher = MONEY_PATTERN.matcher(args[0]);
@@ -211,8 +210,8 @@ public class SetRewardCommand implements ICommand { //todo allow commands
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                         @NotNull String @NotNull @Nullable [] args) {
         if (args.length == 3 || (args.length == 2 && args[0].startsWith("$"))) {
             List<String> ls = Arrays.stream(RewardRarity.values()).map(RewardRarity::toString).toList();
             return MinigameUtils.tabCompleteMatch(ls, args[args.length - 1]);

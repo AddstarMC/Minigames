@@ -93,7 +93,7 @@ public abstract class Backend {
      * @param other    The backend to export to
      * @param notifier A callback to receive progress updates
      */
-    public abstract void exportTo(Backend other, ExportNotifier notifier);
+    public abstract void exportTo(Backend other, Notifier notifier);
 
     protected abstract BackendImportCallback getImportCallback();
 
@@ -107,5 +107,5 @@ public abstract class Backend {
      * @param notifier A notifier for progress updates
      * @return True if the conversion succeeded
      */
-    public abstract boolean doConversion(ExportNotifier notifier);
+    public abstract boolean doConversion(Notifier notifier);
 }

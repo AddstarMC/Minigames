@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ListCommand implements ICommand {
+public class ListCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -37,9 +36,9 @@ public class ListCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        List<String> mglist = plugin.getConfig().getStringList("minigames");
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        List<String> mglist = PLUGIN.getConfig().getStringList("minigames");
         StringBuilder minigames = new StringBuilder();
 
         for (int i = 0; i < mglist.size(); i++) {
@@ -54,7 +53,7 @@ public class ListCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         return null;
     }

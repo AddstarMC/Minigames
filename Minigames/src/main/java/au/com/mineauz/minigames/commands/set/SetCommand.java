@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.commands.ACommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -23,14 +23,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-public class SetCommand implements ICommand {
-    private static final Map<String, ICommand> parameterList = new HashMap<>();
+public class SetCommand extends ACommand {
+    private static final Map<String, ASetCommand> parameterList = new HashMap<>();
     private static BufferedWriter cmdFile;
 
     static {
-        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
+        if (PLUGIN.getConfig().getBoolean("outputCMDToFile")) {
             try {
-                cmdFile = new BufferedWriter(new FileWriter(plugin.getDataFolder() + File.pathSeparator + "setcmds.txt"));
+                cmdFile = new BufferedWriter(new FileWriter(PLUGIN.getDataFolder() + File.pathSeparator + "setcmds.txt"));
                 cmdFile.write("{| class=\"wikitable\"");
                 cmdFile.newLine();
                 cmdFile.write("! Command");
@@ -106,7 +106,7 @@ public class SetCommand implements ICommand {
         registerSetCommand(new SetInfectedTeamCommand());
         registerSetCommand(new SetSurvivorTeamCommand());
 
-        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
+        if (PLUGIN.getConfig().getBoolean("outputCMDToFile")) {
             try {
                 cmdFile.write("|}");
                 cmdFile.close();
@@ -116,10 +116,10 @@ public class SetCommand implements ICommand {
         }
     }
 
-    public static void registerSetCommand(ICommand command) {
+    public static void registerSetCommand(ASetCommand command) {
         parameterList.put(command.getName(), command);
 
-        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
+        if (PLUGIN.getConfig().getBoolean("outputCMDToFile")) {
             PlainTextComponentSerializer plainCmpntSerial = PlainTextComponentSerializer.plainText();
 
             try {
@@ -190,24 +190,24 @@ public class SetCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame ignored,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
 
         if (args != null) {
-            ICommand comd = null;
+            ASetCommand comd = null;
             Minigame minigame = null;
             String[] shortArgs = null;
 
             if (args.length >= 1) {
-                if (plugin.getMinigameManager().hasMinigame(args[0])) {
-                    minigame = plugin.getMinigameManager().getMinigame(args[0]);
+                if (PLUGIN.getMinigameManager().hasMinigame(args[0])) {
+                    minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
                 }
                 if (args.length >= 2) {
                     if (parameterList.containsKey(args[1].toLowerCase())) {
                         comd = parameterList.get(args[1].toLowerCase());
                     } else {
                         AliasCheck:
-                        for (ICommand com : parameterList.values()) {
+                        for (ASetCommand com : parameterList.values()) {
                             if (com.getAliases() != null) {
                                 for (String alias : com.getAliases()) {
                                     if (args[1].equalsIgnoreCase(alias)) {
@@ -260,18 +260,18 @@ public class SetCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @Nullable [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
             Player ply = null;
             if (sender instanceof Player) {
                 ply = (Player) sender;
             }
-            ICommand comd = null;
+            ASetCommand comd = null;
             String[] shortArgs;
             Minigame mgm = null;
 
-            if (plugin.getMinigameManager().hasMinigame(args[0])) {
-                mgm = plugin.getMinigameManager().getMinigame(args[0]);
+            if (PLUGIN.getMinigameManager().hasMinigame(args[0])) {
+                mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
             }
 
             if (args.length > 1 && mgm != null) {
@@ -292,7 +292,7 @@ public class SetCommand implements ICommand {
                     return MinigameUtils.tabCompleteMatch(ls, args[1]);
                 }
             } else if (args.length == 1) {
-                List<String> ls = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+                List<String> ls = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
                 return MinigameUtils.tabCompleteMatch(ls, args[0]);
             }
         }

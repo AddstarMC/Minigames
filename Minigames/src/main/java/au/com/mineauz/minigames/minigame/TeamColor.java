@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -39,7 +40,7 @@ public enum TeamColor {
         this.displaMaterial = displaMaterial;
     }
 
-    public static TeamColor matchColor(@NotNull String color) {
+    public static @Nullable TeamColor matchColor(@NotNull String color) {
         for (TeamColor col : values()) {
             if (color.equalsIgnoreCase(col.toString())) {
                 return col;

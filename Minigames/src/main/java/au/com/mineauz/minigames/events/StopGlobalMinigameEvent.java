@@ -1,24 +1,24 @@
 package au.com.mineauz.minigames.events;
 
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.audience.Audience;
+import org.jetbrains.annotations.NotNull;
 
 public class StopGlobalMinigameEvent extends AbstractCancellableMinigameEvent {
+    private final @NotNull String mechanic;
+    private final Audience caller;
 
-    private final String mechanic;
-    private final MinigamePlayer caller;
-
-    public StopGlobalMinigameEvent(Minigame mgm, MinigamePlayer caller) {
+    public StopGlobalMinigameEvent(@NotNull Minigame mgm, Audience caller) {
         super(mgm);
         mechanic = mgm.getMechanicName();
         this.caller = caller;
     }
 
-    public String getMechanic() {
+    public @NotNull String getMechanicName() {
         return mechanic;
     }
 
-    public MinigamePlayer getCaller() {
+    public Audience getCaller() {
         return caller;
     }
 

@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import net.kyori.adventure.text.Component;
@@ -20,7 +19,7 @@ import java.util.Set;
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 15/02/2019.
  */
-public class ResourcePackCommand implements ICommand {
+public class ResourcePackCommand extends ACommand {
     @Override
     public @NotNull String getName() {
         return "resourcepack";
@@ -54,7 +53,7 @@ public class ResourcePackCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(final @NotNull CommandSender sender, Minigame minigame, @NotNull String @Nullable [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         ResourcePack pack;
         switch (args[0]) {
             case "apply":
@@ -62,9 +61,9 @@ public class ResourcePackCommand implements ICommand {
                     sender.sendMessage(getUsage());
                     return false;
                 }
-                pack = plugin.getResourceManager().getResourcePack(args[1]);
+                pack = PLUGIN.getResourceManager().getResourcePack(args[1]);
                 if (pack != null && pack.isValid()) {
-                    MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer(args[2]);
+                    MinigamePlayer player = PLUGIN.getPlayerManager().getMinigamePlayer(args[2]);
                     player.applyResourcePack(pack);
                     player.sendInfoMessage(MinigameMessageManager.getMessage(null, "minigame.resourcepack.apply"));
                     return true;
@@ -73,8 +72,8 @@ public class ResourcePackCommand implements ICommand {
                 if (args.length < 2) {
                     return false;
                 }
-                pack = plugin.getResourceManager().getResourcePack(args[1]);
-                plugin.getResourceManager().removeResourcePack(pack);
+                pack = PLUGIN.getResourceManager().getResourcePack(args[1]);
+                PLUGIN.getResourceManager().removeResourcePack(pack);
                 sender.sendMessage(MinigameMessageManager.getMessage(null, "minigame.resourcepack.command.remove"));
                 sendList(sender);
                 return true;
@@ -88,9 +87,9 @@ public class ResourcePackCommand implements ICommand {
                 try {
                     URL url = new URL(u);
                     final ResourcePack newPack = new ResourcePack(name, url);
-                    plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+                    PLUGIN.getServer().getScheduler().runTaskLaterAsynchronously(PLUGIN, () -> {
                         if (newPack.isValid()) {
-                            plugin.getResourceManager().addResourcePack(newPack);
+                            PLUGIN.getResourceManager().addResourcePack(newPack);
                             sender.sendMessage(MinigameMessageManager.getMessage(null, "minigame.resourcepack.command.addresource"));
                             sendList(sender);
                         } else {
@@ -107,8 +106,8 @@ public class ResourcePackCommand implements ICommand {
                 sendList(sender);
                 return true;
             case "clear":
-                for (MinigamePlayer p : plugin.getPlayerManager().getAllMinigamePlayers()) {
-                    p.applyResourcePack(plugin.getResourceManager().getResourcePack("empty"));
+                for (MinigamePlayer p : PLUGIN.getPlayerManager().getAllMinigamePlayers()) {
+                    p.applyResourcePack(PLUGIN.getResourceManager().getResourcePack("empty"));
                 }
                 return true;
         }
@@ -117,7 +116,7 @@ public class ResourcePackCommand implements ICommand {
 
     private void sendList(CommandSender sender) {
         sender.sendMessage("List of ResourcePacks");
-        Set<String> arr = plugin.getResourceManager().getResourceNames();
+        Set<String> arr = PLUGIN.getResourceManager().getResourceNames();
         for (String s : arr) {
             sender.sendMessage(s);
         }
@@ -125,7 +124,7 @@ public class ResourcePackCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         List<String> result = new ArrayList<>();
         switch (args.length) {
             case 1:
@@ -133,14 +132,14 @@ public class ResourcePackCommand implements ICommand {
                 break;
             case 2:
                 switch (args[0]) {
-                    case "apply", "remove" -> result.addAll(plugin.getResourceManager().getResourceNames());
+                    case "apply", "remove" -> result.addAll(PLUGIN.getResourceManager().getResourceNames());
                     case "addnew", "clear" -> {
                         return null;
                     }
                 }
             case 3:
                 if (args[0].equals("apply")) {
-                    for (MinigamePlayer p : plugin.getPlayerManager().getAllMinigamePlayers()) {
+                    for (MinigamePlayer p : PLUGIN.getPlayerManager().getAllMinigamePlayers()) {
                         result.add(p.getName());
                     }
                 }

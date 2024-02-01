@@ -19,6 +19,7 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -29,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -101,10 +103,12 @@ public class MinigamePlayer implements ScriptObject {
         return ChatColor.stripColor(this.player.getName());
     }
 
+    @Deprecated
     public String getDisplayName() {
         return this.getDisplayName(true);
     }
 
+    @Deprecated
     public String getDisplayName(final Boolean displayName) {
         if (displayName) {
             return ChatColor.stripColor(this.player.getDisplayName());
@@ -112,6 +116,11 @@ public class MinigamePlayer implements ScriptObject {
             return this.getName();
         }
     }
+
+    public Component displayName() {
+        return this.player.displayName();
+    }
+
 
     public UUID getUUID() {
         return this.player.getUniqueId();
@@ -200,7 +209,10 @@ public class MinigamePlayer implements ScriptObject {
         this.allowGMChange = allowGMChange;
     }
 
-    public Minigame getMinigame() {
+    /**
+     * Will return null, whenever the player is not currently in a minigame
+     */
+    public @Nullable Minigame getMinigame() {
         return this.minigame;
     }
 

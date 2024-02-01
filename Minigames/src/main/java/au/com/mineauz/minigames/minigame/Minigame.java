@@ -262,7 +262,8 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean isTeamGame() {
-        return getType() == MinigameType.MULTIPLAYER && !TeamsModule.getMinigameModule(this).getTeams().isEmpty();
+        TeamsModule teamsModule = TeamsModule.getMinigameModule(this);
+        return getType() == MinigameType.MULTIPLAYER && teamsModule != null && !teamsModule.getTeams().isEmpty();
     }
 
     public boolean hasFlags() {
@@ -597,7 +598,7 @@ public class Minigame implements ScriptObject {
         if (sbManager == null) {
             ScoreboardManager s = Minigames.getPlugin().getServer().getScoreboardManager();
             sbManager = s.getNewScoreboard();
-            Minigames.getPlugin().getLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name);
+            Minigames.getCmpnntLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name);
         }
         Objective o = sbManager.getObjective(getName(false));
         if (o != null) {

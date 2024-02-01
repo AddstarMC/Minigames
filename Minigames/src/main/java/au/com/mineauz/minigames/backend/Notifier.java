@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.backend;
 
-public interface ExportNotifier {
+public interface Notifier {
     void onProgress(String state, int count);
 
     void onComplete();
 
-    void onError(Throwable e, String state, int count);
+    void onError(Exception e, String state, int count);
 }

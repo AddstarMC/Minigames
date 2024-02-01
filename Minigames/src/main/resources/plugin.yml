@@ -436,7 +436,7 @@ permissions:
     description: Allows player to reload the currently loaded configuration files
     default: op
   minigame.treasure.announce:
-    description: Allows players to get the treasure broadcast message
+    description: Allows players to get the treasure broadcastServer message
     default: true
   minigame.treasure.hint:
     description: Allows access to the hint command and receiving hint messages
