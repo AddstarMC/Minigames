@@ -1,10 +1,15 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditCommand implements ICommand {
+public class EditCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -27,13 +32,12 @@ public class EditCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Lets you edit a Minigame using a neat menu. Clicking on the menu items will allow"
-                + " you to change the settings of the Minigame.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_EDIT_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame edit <Minigame>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_EDIT_USAGE);
     }
 
     @Override
@@ -42,35 +46,31 @@ public class EditCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-
-        if (args != null) {
-            if (plugin.getMinigameManager().hasMinigame(args[0])) {
-                Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
-                if (mgm == null) {
-                    plugin.getLogger().warning("The Minigame requested has a configuration"
-                            + " problem and is returning nulls");
-                    return false;
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        if (args.length > 0) {
+            Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
+            if (mgm != null) {
+                if (sender instanceof Player player) {
+                    MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
+                    mgm.displayMenu(mgPlayer);
+                    return true;
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
                 }
-                MinigamePlayer player = plugin.getPlayerManager()
-                        .getMinigamePlayer((Player) sender);
-                mgm.displayMenu(player);
             } else {
-                sender.sendMessage(ChatColor.RED
-                        + "There is no Minigame by the name " + args[0]);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
-            return true;
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        if (args != null && args.length == 1) {
-            List<String> mgs
-                    = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+        if (args.length == 1) {
+            List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);
         }
         return null;

@@ -95,8 +95,9 @@ public class SingleplayerType extends MinigameTypeBase {
             spc.saveCheckpoints();
         }
 
-        if (mgm.getState() != MinigameState.OCCUPIED)
+        if (mgm.getState() != MinigameState.OCCUPIED) {
             mgm.setState(MinigameState.OCCUPIED);
+        }
 
         mgPlayer.getLoadout().equiptLoadout(mgPlayer);
         return true;

@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,15 +26,10 @@ import java.util.List;
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 19/12/2017.
  */
-public class InfoCommand implements ICommand {
+public class InfoCommand extends ACommand {
     @Override
     public @NotNull String getName() {
         return "info";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
     }
 
     @Override
@@ -58,10 +54,18 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame, @NotNull String @Nullable [] args) {
-        if (args != null) {
-            minigame = plugin.getMinigameManager().getMinigame(args[0]);
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        Minigame minigame;
+        if (args.length > 0) {
+            minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
+        } else {
+            if (sender instanceof Player player) {
+                minigame = PLUGIN.getPlayerManager().getMinigamePlayer(player).getMinigame();
+            } else {
+                minigame = null;
+            }
         }
+
         if (minigame != null) {
             TextComponent.Builder outputBuilder = Component.text();
 
@@ -133,14 +137,15 @@ public class InfoCommand implements ICommand {
             return true;
         } else {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_INFO_OUTPUT_NOMINIGAME);
-            return false;
         }
+
+        return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+            List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);
         }
         return null;

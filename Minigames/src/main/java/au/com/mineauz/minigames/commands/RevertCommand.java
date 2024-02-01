@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -12,9 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-//import au.com.mineauz.minigames.StoredPlayerCheckpoints;
-
-public class RevertCommand implements ICommand {
+public class RevertCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -47,12 +44,12 @@ public class RevertCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        MinigamePlayer player = PLUGIN.getPlayerManager().getMinigamePlayer((Player) sender);
 
         if (player.isInMinigame()) {
-            plugin.getPlayerManager().revertToCheckpoint(player);
+            PLUGIN.getPlayerManager().revertToCheckpoint(player);
         }
         else {
             player.sendMessage(MinigameUtils.getLang("command.revert.noGlobal"), MinigameMessageType.ERROR);
@@ -61,7 +58,7 @@ public class RevertCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         return null;
     }

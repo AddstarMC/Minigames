@@ -48,7 +48,7 @@ public class MgBlockData {
 
     public MgBlockData(@NotNull Block original, @Nullable MinigamePlayer modifier) {
         location = original.getLocation();
-        state = original.getState();
+        state = original.getState(); // this already makes a copy of the data - not a reference!
         blockData = original.getBlockData().getAsString();
         if (modifier != null) {
             playerUUID = modifier.getUUID();
@@ -57,6 +57,10 @@ public class MgBlockData {
         }
     }
 
+    /**
+     * Please make sure, the blocksate is a copy not a reference.
+     * Obtaining through {@link Block#getState()} should be fine.
+     */
     public MgBlockData(@NotNull BlockState original, @Nullable MinigamePlayer modifier) {
         location = original.getLocation();
         state = original;

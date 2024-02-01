@@ -34,7 +34,7 @@ public class CustomMechanic extends GameMechanicBase {
     }
 
     @Override
-    public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
+    public void stopMinigame(Minigame minigame) {
     }
 
     @Override

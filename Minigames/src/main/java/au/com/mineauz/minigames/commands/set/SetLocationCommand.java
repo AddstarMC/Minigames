@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetLocationCommand implements ICommand { //todo i feel like this should be better identifiable not only does his not set a location but a hint, it isn't intuitive, that this belongs to treasure hunt
+public class SetLocationCommand extends ASetCommand { //todo i feel like this should be better identifiable not only does his not set a location but a hint, it isn't intuitive, that this belongs to treasure hunt
 
     @Override
     public @NotNull String getName() {
@@ -68,7 +67,7 @@ public class SetLocationCommand implements ICommand { //todo i feel like this sh
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull @Nullable [] args) {
         return null;
     }
 

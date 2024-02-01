@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateCommand implements ICommand {
+public class CreateCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -46,14 +46,14 @@ public class CreateCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame, @NotNull String @Nullable [] args) {
-        if (args != null) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        if (args.length > 0) {
             Player player = (Player) sender;
             String mgmName = args[0];
             if (MinigameUtils.sanitizeYamlString(mgmName) == null) {
                 throw new CommandException("Name is not valid for use in a Config.");
             }
-            if (!plugin.getMinigameManager().hasMinigame(mgmName)) {
+            if (!PLUGIN.getMinigameManager().hasMinigame(mgmName)) {
                 MinigameType type;
                 if (args.length >= 2) {
                     if (MinigameType.hasValue(args[1].toUpperCase())) {
@@ -70,17 +70,17 @@ public class CreateCommand implements ICommand {
                 MinigameMessageManager.sendMgMessage(player, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_CREATE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
                 List<String> mgs;
-                if (plugin.getConfig().contains("minigames")) {
-                    mgs = plugin.getConfig().getStringList("minigames");
+                if (PLUGIN.getConfig().contains("minigames")) {
+                    mgs = PLUGIN.getConfig().getStringList("minigames");
                 } else {
                     mgs = new ArrayList<>();
                 }
                 mgs.add(mgmName);
-                plugin.getConfig().set("minigames", mgs);
-                plugin.saveConfig();
+                PLUGIN.getConfig().set("minigames", mgs);
+                PLUGIN.saveConfig();
 
                 mgm.saveMinigame();
-                plugin.getMinigameManager().addMinigame(mgm);
+                PLUGIN.getMinigameManager().addMinigame(mgm);
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_CREATE_ERROR_EXISTS);
             }
@@ -90,7 +90,7 @@ public class CreateCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @Nullable Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 2) {
             List<String> types = new ArrayList<>(MinigameType.values().length);

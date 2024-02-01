@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DebugCommand implements ICommand {
+public class DebugCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -48,9 +48,9 @@ public class DebugCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        if (args != null && args.length > 0) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        if (args.length > 0) {
             switch (args[0].toUpperCase()) {
                 case "ON" -> {
                     if (Minigames.getPlugin().isDebugging()) {
@@ -89,7 +89,7 @@ public class DebugCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         List<String> out = new ArrayList<>();
         if (args.length == 0) {
@@ -130,9 +130,9 @@ public class DebugCommand implements ICommand {
                     new PasteContent(PasteContent.ContentType.TEXT,
                             getFile(Paths.get("spigot.yml"))));
             PasteFile startupLog = new PasteFile("startup.log", new PasteContent(PasteContent.ContentType.TEXT,
-                    plugin.getStartupLog()));
+                    PLUGIN.getStartupLog()));
             PasteFile startupExceptionsLog = new PasteFile("startupExceptions.log", new PasteContent(PasteContent.ContentType.TEXT,
-                    plugin.getStartupExceptionLog()));
+                    PLUGIN.getStartupExceptionLog()));
             PasteBuilder builder = new PasteBuilder();
             builder.addFile(startupLog);
             builder.addFile(startupExceptionsLog);

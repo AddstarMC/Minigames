@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetMaxHeightCommand implements ICommand { //todo it isn't intuitive, that this belongs to treasure hunt
+public class SetMaxHeightCommand extends ASetCommand { //todo it isn't intuitive, that this belongs to treasure hunt
 
     @Override
     public @NotNull String getName() {
@@ -43,7 +42,7 @@ public class SetMaxHeightCommand implements ICommand { //todo it isn't intuitive
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String @Nullable [] args) {
         if (args != null) {
             TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
@@ -71,8 +70,8 @@ public class SetMaxHeightCommand implements ICommand { //todo it isn't intuitive
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                         @NotNull String @NotNull @Nullable [] args) {
         return null;
     }
 

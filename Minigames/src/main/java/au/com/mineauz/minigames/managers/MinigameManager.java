@@ -22,7 +22,7 @@ import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import org.bukkit.Bukkit;
@@ -108,12 +108,12 @@ public class MinigameManager {
         }
     }
 
-    public void stopGlobalMinigame(final Minigame minigame, final MinigamePlayer caller) {
+    public void stopGlobalMinigame(final Minigame minigame, final Audience caller) {
         if (minigame.getType() == MinigameType.GLOBAL) {
             final StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame, caller);
             Bukkit.getPluginManager().callEvent(ev);
 
-            minigame.getMechanic().stopMinigame(minigame, caller);
+            minigame.getMechanic().stopMinigame(minigame);
 
             minigame.setEnabled(false);
             final ResourcePackModule module = ResourcePackModule.getMinigameModule(minigame);
@@ -196,8 +196,6 @@ public class MinigameManager {
         if (minigame.hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
             final RecorderData recorderData = minigame.getRecorderData();
 
-            recorderData.setCreatedRegenBlocks(true);
-
             for (MgRegion region : recorderData.getMinigame().getRegenRegions()) {
                 for (int x = (int) region.getMinX(); x <= region.getMaxX(); x++) {
                     for (int y = (int) region.getMinY(); y <= region.getMaxY(); y++) {
@@ -209,6 +207,7 @@ public class MinigameManager {
                 }
             }
 
+            recorderData.setCreatedRegenBlocks(true);
             MinigameMessageManager.debugMessage("Block Regen Data has been created for " + minigame.getName(false));
         }
     }
@@ -259,73 +258,6 @@ public class MinigameManager {
 
     public boolean hasLoadout(final @NotNull String name) {
         return this.globalLoadouts.containsKey(name);
-    }
-
-    public void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message) { //todo move this into Message Manager
-        this.sendMinigameMessage(minigame, message, MinigameMessageType.INFO);
-    }
-
-    public void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message, final @Nullable MinigameMessageType type) {
-        this.sendMinigameMessage(minigame, message, type, (List<MinigamePlayer>) null);
-    }
-
-    public void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message, final @Nullable MinigameMessageType type,
-                                    final @NotNull MinigamePlayer exclude) {
-        this.sendMinigameMessage(minigame, message, type, Collections.singletonList(exclude));
-    }
-
-    /**
-     * Sending a general Broadcast
-     *
-     * @param minigame The minigame in which this message shall be sent
-     * @param message  The message
-     * @param type     Message Type
-     * @param exclude  Players, which shall not get this message
-     */
-    public void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type,
-                                    final @Nullable List<@NotNull MinigamePlayer> exclude) {
-        if (!minigame.getShowPlayerBroadcasts()) {
-            return;
-        }
-        sendBroadcastMessage(minigame, message, type, exclude);
-    }
-
-    /**
-     * Sending a ctf relevant message
-     *
-     * @param minigame The minigame in which this message shall be sent
-     * @param message  The message
-     * @param type     Message Type
-     * @param exclude  Players, which shall not get this message
-     */
-    public void sendCTFMessage(final @NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type,
-                               final @Nullable List<@NotNull MinigamePlayer> exclude) {
-        if (!minigame.getShowCTFBroadcasts()) {
-            return;
-        }
-        sendBroadcastMessage(minigame, message, type, exclude);
-    }
-
-    public void sendCTFMessage(final @NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type) {
-        sendCTFMessage(minigame, message, type, null);
-    }
-
-    // This sends a message to every player which is not excluded from the exclude list
-    private void sendBroadcastMessage(@NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type, @Nullable List<@NotNull MinigamePlayer> exclude) {
-        if (type == null) {
-            type = MinigameMessageType.INFO;
-        }
-
-        final Set<MinigamePlayer> playersSendTo = new HashSet<>();
-        playersSendTo.addAll(minigame.getPlayers());
-        playersSendTo.addAll(minigame.getSpectators());
-        if (exclude != null) {
-            playersSendTo.removeAll(exclude);
-        }
-
-        for (final MinigamePlayer player : playersSendTo) {
-            MinigameMessageManager.sendMessage(player, type, message);
-        }
     }
 
     public void addRewardSign(final @NotNull Location loc) {
@@ -452,7 +384,7 @@ public class MinigameManager {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOEND);
             return false;
         } else if (minigame.getQuitLocation() == null) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOQUIT);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOQUITLOC);
             return false;
         } else if (minigame.getType() == null || this.minigameType(minigame.getType()).cannotStart(minigame, mgPlayer)) { //type specific reasons we cannot start.
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_INVALIDTYPE);
@@ -462,7 +394,7 @@ public class MinigameManager {
             return false;
         } else if (minigame.getStartLocations().isEmpty() ||
                 minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOSTART);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOSTARTLOC);
             return false;
         }
         return true;

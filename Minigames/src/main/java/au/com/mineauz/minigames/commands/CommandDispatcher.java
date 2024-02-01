@@ -3,18 +3,25 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.set.SetCommand;
-import org.bukkit.ChatColor;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class CommandDispatcher implements CommandExecutor, TabCompleter {
-    private static final Map<String, ICommand> commands = new HashMap<>();
+    private static final Map<String, ACommand> commands = new TreeMap<>(); // sort by name for display in help
     private static final Minigames plugin = Minigames.getPlugin();
 
     static {
@@ -22,7 +29,6 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new SetCommand());
         registerCommand(new JoinCommand());
         registerCommand(new StartCommand());
-        registerCommand(new StopCommand());
         registerCommand(new QuitCommand());
         registerCommand(new RevertCommand());
         registerCommand(new HintCommand());
@@ -55,92 +61,102 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new SelectCommand());
     }
 
-    public static void registerCommand(ICommand command) {
+    public static @NotNull Collection<ACommand> getCommands(){
+        return commands.values();
+    }
+
+    public static void registerCommand(ACommand command) {
         commands.put(command.getName(), command);
     }
 
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player ply = null;
         if (sender instanceof Player player) {
             ply = player;
         }
 
         if (args != null && args.length > 0) {
-            ICommand comd = null;
-            String[] shortArgs = null;
+            ACommand cmd = getCommand(args[0]);
 
-            if (commands.containsKey(args[0].toLowerCase())) {
-                comd = commands.get(args[0].toLowerCase());
-            } else {
-                AliasCheck:
-                for (ICommand com : commands.values()) {
-                    if (com.getAliases() != null) {
-                        for (String alias : com.getAliases()) {
-                            if (args[0].equalsIgnoreCase(alias)) {
-                                comd = com;
-                                break AliasCheck;
-                            }
-                        }
+            if (cmd != null) {
+                if (ply != null || cmd.canBeConsole()) {
+                    String[] shortArgs;
+                    if (args.length > 1) {
+                        shortArgs = new String[args.length - 1];
+                        System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
+                    } else {
+                        shortArgs = new String[]{};
                     }
-                }
-            }
 
-            if (args.length > 1) {
-                shortArgs = new String[args.length - 1];
-                System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
-            }
-
-            if (comd != null) {
-                if (ply != null || comd.canBeConsole()) {
-                    if (ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))) {
-                        boolean returnValue = comd.onCommand(sender, null, shortArgs);
+                    if (ply == null || (cmd.getPermission() == null || ply.hasPermission(cmd.getPermission()))) {
+                        boolean returnValue = cmd.onCommand(sender, shortArgs);
                         if (!returnValue) {
-                            sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
-                            sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
-                            sender.sendMessage(ChatColor.BLUE + "Usage: " + ChatColor.WHITE + "<newline>" + comd.getUsage());
-                            if (comd.getAliases() != null) {
-                                sender.sendMessage(ChatColor.BLUE + "Aliases: " + ChatColor.WHITE + String.join(", ", comd.getAliases()));
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_HEADER);
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_DESCRIPTION,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getDescription()));
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_USAGE,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getUsage()));
+                            if (cmd.getAliases() != null) {
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_ALIASES,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", command.getAliases())));
                             }
                         }
                     } else {
-                        sender.sendMessage(ChatColor.RED + comd.getPermissionMessage());
-                        sender.sendMessage(ChatColor.RED + comd.getPermission());
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "You must be a player to execute this command!");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
                 }
                 return true;
             }
         } else {
-            sender.sendMessage(ChatColor.GREEN + "Minigames");
-            sender.sendMessage(ChatColor.GRAY + "By: " + plugin.getDescription().getAuthors());
-            sender.sendMessage(ChatColor.GRAY + "Version: " + plugin.getDescription().getVersion());
-            sender.sendMessage(ChatColor.GRAY + "Type /minigame help for help");
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, Component.text(plugin.getPluginMeta().getName()));
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_AUTHORS,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", plugin.getPluginMeta().getAuthors())));
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_VERSION,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), plugin.getPluginMeta().getVersion()));
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_HELP);
             return true;
         }
         return false;
     }
 
+    public static @Nullable  ACommand getCommand(@NotNull String name) {
+        ACommand comd = null;
+        if (commands.containsKey(name.toLowerCase())) {
+            comd = commands.get(name.toLowerCase());
+        } else {
+            AliasCheck:
+            for (ACommand com : commands.values()) {
+                if (com.getAliases() != null) {
+                    for (String alias : com.getAliases()) {
+                        if (name.equalsIgnoreCase(alias)) {
+                            comd = com;
+                            break AliasCheck;
+                        }
+                    }
+                }
+            }
+        }
+        return comd;
+    }
+
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args != null && args.length > 0) {
-            ICommand comd = null;
-            String[] shortArgs = null;
-
-            if (commands.containsKey(args[0].toLowerCase())) {
-                comd = commands.get(args[0].toLowerCase());
-            }
-
-            if (args.length > 1) {
-                shortArgs = new String[args.length - 1];
-                System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
-            }
+            ACommand comd = commands.get(args[0].toLowerCase());
 
             if (comd != null) {
+                String[] shortArgs;
                 if (args.length > 1) {
-                    List<String> l = comd.onTabComplete(sender, null, shortArgs);
-                    return Objects.requireNonNullElseGet(l, () -> List.of(""));
+                    shortArgs = new String[args.length - 1];
+                    System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
+                } else {
+                    shortArgs = new String[]{};
                 }
-            } else {
+
+                List<String> l = comd.onTabComplete(sender, shortArgs);
+                return Objects.requireNonNullElseGet(l, () -> List.of(""));
+            } else if (args.length == 1) {
                 List<String> ls = new ArrayList<>(commands.keySet());
                 return MinigameUtils.tabCompleteMatch(ls, args[0]);
             }

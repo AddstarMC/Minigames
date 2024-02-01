@@ -10,7 +10,7 @@ import java.util.UUID;
 public class SQLExport {
     private final ConnectionPool pool;
     private final BackendImportCallback callback;
-    private final ExportNotifier notifier;
+    private final Notifier notifier;
 
     private final StatementKey getPlayers;
     private final StatementKey getMinigames;
@@ -24,7 +24,7 @@ public class SQLExport {
     private long notifyTime;
 
 
-    public SQLExport(ConnectionPool pool, BackendImportCallback callback, ExportNotifier notifier) {
+    public SQLExport(ConnectionPool pool, BackendImportCallback callback, Notifier notifier) {
         this.pool = pool;
         this.callback = callback;
         this.notifier = notifier;

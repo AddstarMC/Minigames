@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PartyModeCommand implements ICommand {
+public class PartyModeCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -43,11 +42,11 @@ public class PartyModeCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         if (args != null) {
             boolean bool = Boolean.parseBoolean(args[0]);
-            plugin.getPlayerManager().setPartyMode(bool);
+            PLUGIN.getPlayerManager().setPartyMode(bool);
             if (bool) {
                 sender.sendMessage(ChatColor.GREEN + "Party mode has been enabled! WooHoo!");
             } else {
@@ -59,7 +58,7 @@ public class PartyModeCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
     }

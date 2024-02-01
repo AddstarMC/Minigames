@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetGametypeNameCommand implements ICommand {
+public class SetGametypeNameCommand extends ASetCommand {
 
     @Override
     public @NotNull String getName() {
@@ -64,7 +63,7 @@ public class SetGametypeNameCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull @Nullable [] args) {
         return null;
     }
 

@@ -272,14 +272,14 @@ public class MySQLBackend extends Backend {
     }
 
     @Override
-    public void exportTo(Backend other, ExportNotifier notifier) {
+    public void exportTo(Backend other, Notifier notifier) {
         BackendImportCallback callback = getImportCallback(other);
         SQLExport exporter = new SQLExport(pool, callback, notifier);
         exporter.beginExport();
     }
 
     @Override
-    public boolean doConversion(ExportNotifier notifier) {
+    public boolean doConversion(Notifier notifier) {
         BackendImportCallback callback = getImportCallback();
         LegacyExporter exporter = new LegacyExporter(pool, database, callback, notifier);
         return exporter.doExport();

@@ -5,8 +5,12 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnableAllCommand implements ICommand {
+public class EnableAllCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -33,12 +37,12 @@ public class EnableAllCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage("command.enableAll.desc");
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_ENABLEALL_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame enableall [ExcludedMinigame]..."};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_ENABLEALL_USAGE);
     }
 
     @Override
@@ -47,29 +51,30 @@ public class EnableAllCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
         List<Minigame> minigames = new ArrayList<>(mdata.getAllMinigames().values());
-        if (args != null) {
-            for (String arg : args) {
-                if (mdata.hasMinigame(arg))
-                    minigames.remove(mdata.getMinigame(arg));
-                else
-                    MinigameMessageManager.sendMessage(sender, MinigameMessageType.ERROR, null, "command.enable.notfound", arg);
+        for (String arg : args) {
+            if (mdata.hasMinigame(arg)) {
+                minigames.remove(mdata.getMinigame(arg));
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), arg));
             }
         }
         for (Minigame mg : minigames) {
             mg.setEnabled(true);
         }
-        MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, null, "command.enable.resultnum", minigames.size());
+        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_ENABLEALL_SUCCESS,
+                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigames.size())));
         return true;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+        List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }
 

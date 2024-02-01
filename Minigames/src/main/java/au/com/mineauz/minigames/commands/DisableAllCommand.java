@@ -3,9 +3,14 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisableAllCommand implements ICommand {
+public class DisableAllCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -32,12 +37,12 @@ public class DisableAllCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Disables all Minigames, unless it's added to the exclude list.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DISABLEALL_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame disableall [ExcludedMinigame]..."};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DISABLEALL_USAGE);
     }
 
     @Override
@@ -46,29 +51,31 @@ public class DisableAllCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
         List<Minigame> minigames = new ArrayList<>(mdata.getAllMinigames().values());
-        if (args != null) {
-            for (String arg : args) {
-                if (mdata.hasMinigame(arg))
-                    minigames.remove(mdata.getMinigame(arg));
-                else
-                    sender.sendMessage(ChatColor.RED + "No Minigame found by the name \"" + arg + "\"; Ignoring...");
+        for (String arg : args) {
+            Minigame excluded = mdata.getMinigame(arg);
+            if (excluded != null) {
+                minigames.remove(excluded);
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), arg));
             }
         }
         for (Minigame mg : minigames) {
             mg.setEnabled(false);
         }
-        sender.sendMessage(ChatColor.GRAY + String.valueOf(minigames.size()) + " Minigames disabled!");
+        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_DISABLEALL_SUCCESS,
+                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigames.size())));
         return true;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+        List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }
 

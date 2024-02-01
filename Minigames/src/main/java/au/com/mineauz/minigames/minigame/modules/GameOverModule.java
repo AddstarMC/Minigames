@@ -86,7 +86,7 @@ public class GameOverModule extends MinigameModule {
     }
 
     public void startEndGameTimer() {
-        Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_GAMEOVERQUIT,
+        MinigameMessageManager.sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_GAMEOVERQUIT,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(timer.getFlag()))));
         getMinigame().setState(MinigameState.ENDED);
 

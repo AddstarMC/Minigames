@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuitCommand implements ICommand {
+public class QuitCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -50,34 +50,34 @@ public class QuitCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        if (args == null && sender instanceof Player) {
-            MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
-            if (player.isInMinigame()) {
-                plugin.getPlayerManager().quitMinigame(player, false);
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        if (args.length == 0 && sender instanceof Player player) {
+            MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
+            if (mgPlayer.isInMinigame()) {
+                PLUGIN.getPlayerManager().quitMinigame(mgPlayer, false);
             } else {
                 sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.quit.notPlaying"));
             }
             return true;
-        } else if (args != null) {
+        } else if (args.length > 0) {
             if (sender.hasPermission("minigame.quit.other")) {
                 if (args[0].equals("ALL")) {
                     if (args.length > 1) {
-                        if (plugin.getMinigameManager().hasMinigame(args[1])) {
-                            Minigame mg = plugin.getMinigameManager().getMinigame(args[1]);
+                        if (PLUGIN.getMinigameManager().hasMinigame(args[1])) {
+                            Minigame mg = PLUGIN.getMinigameManager().getMinigame(args[1]);
                             List<MinigamePlayer> pls = new ArrayList<>(mg.getPlayers());
                             for (MinigamePlayer pl : pls) {
-                                plugin.getPlayerManager().quitMinigame(pl, true);
+                                PLUGIN.getPlayerManager().quitMinigame(pl, true);
                             }
                             sender.sendMessage(ChatColor.GRAY + MinigameMessageManager.getMinigamesMessage("command.quit.quitAllMinigame", mg.getName(true)));
                         } else {
                             sender.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("minigame.error.noMinigameName", args[1]));
                         }
                     } else {
-                        for (MinigamePlayer pl : plugin.getPlayerManager().getAllMinigamePlayers()) {
+                        for (MinigamePlayer pl : PLUGIN.getPlayerManager().getAllMinigamePlayers()) {
                             if (pl.isInMinigame()) {
-                                plugin.getPlayerManager().quitMinigame(pl, true);
+                                PLUGIN.getPlayerManager().quitMinigame(pl, true);
                             }
                         }
                         sender.sendMessage(ChatColor.GRAY + MinigameUtils.getLang("command.quit.quitAll"));
@@ -91,11 +91,11 @@ public class QuitCommand implements ICommand {
                         sender.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
                         return true;
                     } else {
-                        ply = plugin.getPlayerManager().getMinigamePlayer(players.get(0));
+                        ply = PLUGIN.getPlayerManager().getMinigamePlayer(players.get(0));
                     }
 
                     if (ply.isInMinigame()) {
-                        plugin.getPlayerManager().quitMinigame(ply, false);
+                        PLUGIN.getPlayerManager().quitMinigame(ply, false);
                         sender.sendMessage(ChatColor.GRAY + MinigameMessageManager.getMinigamesMessage("command.quit.quitOther", ply.getName()));
                     } else {
                         sender.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
@@ -111,17 +111,17 @@ public class QuitCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> plys = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 1);
-            for (Player ply : plugin.getServer().getOnlinePlayers()) {
+            List<String> plys = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 1);
+            for (Player ply : PLUGIN.getServer().getOnlinePlayers()) {
                 plys.add(ply.getName());
             }
             plys.add("ALL");
             return MinigameUtils.tabCompleteMatch(plys, args[0]);
         } else if (args.length == 2) {
-            List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+            List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[1]);
         }
         return null;

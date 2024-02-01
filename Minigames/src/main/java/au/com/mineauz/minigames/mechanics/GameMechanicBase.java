@@ -129,7 +129,7 @@ public abstract class GameMechanicBase implements Listener {
                 teamToJoin.getAutobalanceMessage(),
                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor())))); //todo is NOT backwards compatible!!
 
-        mdata.sendMinigameMessage(minigame,
+        MinigameMessageManager.sendMinigameMessage(minigame,
                 MiniMessage.miniMessage().deserialize(teamToJoin.getGameAutobalanceMessage(),
                         Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getDisplayName(minigame.usePlayerDisplayNames())),
                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor()))) //todo is NOT backwards compatible!!
@@ -176,9 +176,8 @@ public abstract class GameMechanicBase implements Listener {
      * Called when a global Minigame has been stopped.
      *
      * @param minigame the game
-     * @param caller   The player who stopped the global Minigame or null if not by a player.
      */
-    public abstract void stopMinigame(Minigame minigame, MinigamePlayer caller);
+    public abstract void stopMinigame(Minigame minigame);
 
     /**
      * Called when a player joins a Minigame. Called after the player has completely joined the game.

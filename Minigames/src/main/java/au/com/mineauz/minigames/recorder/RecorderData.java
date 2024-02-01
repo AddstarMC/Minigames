@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.material.Attachable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -229,9 +230,12 @@ public class RecorderData implements Listener {
         }
     }
 
+    /**
+     * restores all recorded blocks
+     */
     public void restoreBlocks() {
         restoreBlocks(null);
-        //blockdata.clear(); //<-- probably
+        blockdata.clear();
     }
 
     public void restoreEntities() {
@@ -239,6 +243,9 @@ public class RecorderData implements Listener {
         entityData.clear();
     }
 
+    /**
+     * @param modifier the player to rollback. If null all blocks get restored
+     */
     public void restoreBlocks(final @Nullable MinigamePlayer modifier) {
         // When rolling back a single player's changes don't change the overall games state
         if (modifier == null) {
@@ -275,9 +282,9 @@ public class RecorderData implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             //first place all base blocks
             //next place the gravity blocks and finally place the attachable blocks
-            customblockComparator(baseBlocks);
-            customblockComparator(attachableBlocks);
-            customblockComparator(gravityBlocks);
+            customBlockComparator(baseBlocks);
+            customBlockComparator(attachableBlocks);
+            customBlockComparator(gravityBlocks);
             baseBlocks.addAll(gravityBlocks);
             baseBlocks.addAll(attachableBlocks);
 
@@ -285,7 +292,7 @@ public class RecorderData implements Listener {
         });
     }
 
-    private void customblockComparator(List<MgBlockData> baseBlocks) {
+    private void customBlockComparator(List<MgBlockData> baseBlocks) {
         baseBlocks.sort(
                 Comparator.comparingInt(
                         (MgBlockData o) -> o.getBlockState().getChunk().getX()
@@ -361,7 +368,7 @@ public class RecorderData implements Listener {
             return;
         }
 
-        File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
+        File file = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
 
         // register custom serializer for Position.
         // this is purely for backwards compatibility.
@@ -371,9 +378,11 @@ public class RecorderData implements Listener {
 
         gsonBuilder.registerTypeAdapter(Position.class, serializer);
         Gson customGson = gsonBuilder.create();
+        Type mapType = new TypeToken<Map<Position, MgBlockData>>() {
+        }.getType();
 
-        try (FileWriter writer = new FileWriter(f)) {
-            customGson.toJson(blockdata, writer);
+        try (FileWriter writer = new FileWriter(file)) {
+            customGson.toJson(blockdata, mapType, writer);
         } catch (FileNotFoundException e) {
             Minigames.getCmpnntLogger().error("File not found!!!", e);
         } catch (IOException e) {
@@ -381,44 +390,51 @@ public class RecorderData implements Listener {
         }
     }
 
+    /**
+     * loads block states from backup file
+     *
+     * @return true if loading the data was successful else false
+     */
     public boolean restoreBlockData() { //todo load entity data as well
-        File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
         if (covertOldFormat()) {
             saveAllBlockData();
-            Minigames.getPlugin().getLogger().info("Converted backup for: " + minigame.getName(false));
+            Minigames.getCmpnntLogger().info("Converted backup for: " + minigame.getName(false));
             return true;
         } else {
+            File file = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
 
-            // register custom deserializer for Position.
-            // this is purely for backwards compatibility.
-            // If that is not important to you, just use Gson gson = new Gson(); instead of GsonBuilder gsonBuilder = new GsonBuilder(); and following
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            JsonDeserializer<Position> deserializer = (json, typeOfT, context) -> {
-                try {
-                    String posStr = json.getAsString(); //throws JsonParseException
+            if (file.exists() && file.isFile() && file.canRead()) {
+                // register custom deserializer for Position.
+                // this is purely for backwards compatibility.
+                // If that is not important to you, just use Gson gson = new Gson(); instead of GsonBuilder gsonBuilder = new GsonBuilder(); and following
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                JsonDeserializer<Position> deserializer = (json, typeOfT, context) -> {
+                    try {
+                        String posStr = json.getAsString(); //throws JsonParseException
 
-                    String[] args = posStr.split(":");
-                    if (args.length < 3) {
-                        throw new JsonParseException("'" + posStr + "' is not a valid position.");
+                        String[] args = posStr.split(":");
+                        if (args.length < 3) {
+                            throw new JsonParseException("'" + posStr + "' is not a valid position.");
+                        }
+
+                        return Position.fine(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
+                    } catch (JsonParseException | NumberFormatException e) {
+                        Minigames.getCmpnntLogger().error("", e);
+                        return null;
                     }
+                };
 
-                    return Position.fine(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
-                } catch (JsonParseException | NumberFormatException e) {
+                gsonBuilder.registerTypeAdapter(Position.class, deserializer);
+
+                Gson customGson = gsonBuilder.create();
+                Type type = new TypeToken<Map<Position, MgBlockData>>() {
+                }.getType();
+                try (FileReader reader = new FileReader(file)) {
+                    blockdata = customGson.fromJson(reader, type);
+                    return true;
+                } catch (IOException e) {
                     Minigames.getCmpnntLogger().error("", e);
-                    return null;
                 }
-            };
-
-            gsonBuilder.registerTypeAdapter(Position.class, deserializer);
-
-            Gson customGson = gsonBuilder.create();
-            Type type = new TypeToken<Map<Position, MgBlockData>>() {
-            }.getType();
-            try (FileReader reader = new FileReader(f)) {
-                blockdata = customGson.fromJson(reader, type);
-                return true;
-            } catch (IOException e) {
-                Minigames.getCmpnntLogger().error("", e);
             }
         }
         return false;
@@ -495,8 +511,12 @@ public class RecorderData implements Listener {
                                     iargs.put(s.split("-")[0], s.split("-")[1]);
                                 }
                             }
-                            item = new ItemStack(Material.getMaterial(iargs.get("item")),
-                                    Integer.parseInt(iargs.get("c")), Short.parseShort(iargs.get("dur")));
+                            item = new ItemStack(Material.matchMaterial(iargs.get("item")),
+                                    Integer.parseInt(iargs.get("c")));
+                            if (item.getItemMeta() instanceof Damageable damageable) {
+                                damageable.setDamage(Short.parseShort(iargs.get("dur")));
+                                item.setItemMeta(damageable);
+                            }
 
                             if (iargs.containsKey("enc")) {
                                 for (String s : iargs.get("enc").split("\\]\\[")) {

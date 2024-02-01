@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.backend.test;
 
 import au.com.mineauz.minigames.backend.Backend;
 import au.com.mineauz.minigames.backend.BackendImportCallback;
-import au.com.mineauz.minigames.backend.ExportNotifier;
+import au.com.mineauz.minigames.backend.Notifier;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
@@ -154,7 +154,7 @@ public class TestBackEnd extends Backend {
      * @param notifier A callback to receive progress updates
      */
     @Override
-    public void exportTo(Backend other, ExportNotifier notifier) {
+    public void exportTo(Backend other, Notifier notifier) {
 
     }
 
@@ -170,7 +170,7 @@ public class TestBackEnd extends Backend {
      * @return True if the conversion succeeded
      */
     @Override
-    public boolean doConversion(ExportNotifier notifier) {
+    public boolean doConversion(Notifier notifier) {
         return true;
     }
 

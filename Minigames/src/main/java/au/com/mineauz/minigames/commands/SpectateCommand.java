@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpectateCommand implements ICommand {
+public class SpectateCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -46,13 +46,13 @@ public class SpectateCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         if (args != null) {
-            if (plugin.getMinigameManager().hasMinigame(args[0])) {
-                MinigamePlayer ply = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
-                Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
-                plugin.getPlayerManager().spectateMinigame(ply, mgm);
+            if (PLUGIN.getMinigameManager().hasMinigame(args[0])) {
+                MinigamePlayer ply = PLUGIN.getPlayerManager().getMinigamePlayer((Player) sender);
+                Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
+                PLUGIN.getPlayerManager().spectateMinigame(ply, mgm);
             } else {
                 sender.sendMessage(ChatColor.RED + "No Minigame found by the name: " + args[0]);
             }
@@ -62,9 +62,9 @@ public class SpectateCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+        List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }
 

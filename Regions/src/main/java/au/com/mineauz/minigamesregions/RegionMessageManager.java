@@ -72,7 +72,7 @@ public class RegionMessageManager {
 
     public static void debugMessage(@NotNull String message) { //todo
         if (Minigames.getPlugin().isDebugging()) {
-            Main.getPlugin().getLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
+            Main.getPlugin().getComponentLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
         }
     }
 }

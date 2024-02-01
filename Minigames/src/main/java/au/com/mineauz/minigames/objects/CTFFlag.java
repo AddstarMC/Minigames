@@ -199,10 +199,10 @@ public class CTFFlag {
             respawnFlag();
 
             if (getTeam() != null) {
-                Minigames.getPlugin().getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_FLAG_RETURNEDTEAM,
+                MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_FLAG_RETURNEDTEAM,
                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(getTeam().getDisplayName(), getTeam().getTextColor()))));
             } else {
-                Minigames.getPlugin().getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_FLAG_RETURNEDNEUTRAL));
+                MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_FLAG_RETURNEDNEUTRAL));
             }
             taskID = -1;
         }, respawnTime * 20L);

@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
@@ -59,7 +60,7 @@ public abstract class ConditionInterface {
 
     public void debug(@NotNull Minigame mg) {
         if (Minigames.getPlugin().isDebugging()) {
-            Minigames.getPlugin().getLogger().info("Cat " + this.getCategory() + " : " + this.getName() +
+            Main.getPlugin().getComponentLogger().info("Cat " + this.getCategory() + " : " + this.getName() +
                     " Check:" + mg.getName(false) + " mech: " + mg.getMechanicName() + "Condition:                     " + this);
         }
     }

@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -22,7 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetInfectedTeamCommand implements ICommand {
+public class SetInfectedTeamCommand extends ASetCommand {
+
     @Override
     public @NotNull String getName() {
         return "infectedteam";
@@ -106,7 +106,7 @@ public class SetInfectedTeamCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull @Nullable [] args) {
         InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
         TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
         if (infectionModule != null && teamsModule != null) {

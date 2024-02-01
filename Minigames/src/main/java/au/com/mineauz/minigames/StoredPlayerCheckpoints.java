@@ -151,7 +151,7 @@ public class StoredPlayerCheckpoints {
                     save.getConfig().set(mgm + ".reverts", getReverts(mgm));
             } catch (Exception e) {
                 // When an error is detected, remove the stored erroneous checkpoint
-                Minigames.getPlugin().getLogger().warning("Unable to save checkpoint for " + mgm + "! It has been been removed.");
+                Minigames.getCmpnntLogger().warn("Unable to save checkpoint for " + mgm + "! It has been been removed.");
                 Minigames.getCmpnntLogger().error("", e);
 
                 // Remove the checkpoint from memory, so it doesn't cause an error again
@@ -175,8 +175,7 @@ public class StoredPlayerCheckpoints {
             } catch (Exception e) {
                 // When an error is detected, remove the global checkpoint
                 save.getConfig().set("globalcheckpoint", null);
-                Minigames.getPlugin().getLogger().warning("Unable to save global checkpoint!");
-                Minigames.getCmpnntLogger().error("", e);
+                Minigames.getCmpnntLogger().warn("Unable to save global checkpoint!", e);
             }
         }
         save.saveConfig();
@@ -198,7 +197,7 @@ public class StoredPlayerCheckpoints {
 
                     World w = Minigames.getPlugin().getServer().getWorld(world);
                     if (w == null) {
-                        Minigames.getPlugin().getLogger().warning("WARNING: Invalid world \"" + world + "\" found in checkpoint for " + mgm + "! Checkpoint has been removed.");
+                        Minigames.getCmpnntLogger().warn("WARNING: Invalid world \"" + world + "\" found in checkpoint for " + mgm + "! Checkpoint has been removed.");
                         continue;
                     }
 
@@ -237,7 +236,7 @@ public class StoredPlayerCheckpoints {
 
             World w = Minigames.getPlugin().getServer().getWorld(world);
             if (w == null) {
-                Minigames.getPlugin().getLogger().warning("WARNING: Invalid world \"" + world + "\" found in global checkpoint! Checkpoint has been removed.");
+                Minigames.getCmpnntLogger().warn("WARNING: Invalid world \"" + world + "\" found in global checkpoint! Checkpoint has been removed.");
             } else {
                 globalCheckpoint = new Location(Minigames.getPlugin().getServer().getWorld(world), x, y, z, yaw, pitch);
             }

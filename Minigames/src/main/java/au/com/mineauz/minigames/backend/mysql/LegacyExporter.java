@@ -11,7 +11,7 @@ public class LegacyExporter {
     private final ConnectionPool pool;
     private final String database;
     private final BackendImportCallback callback;
-    private final ExportNotifier notifier;
+    private final Notifier notifier;
     private final StatementKey selectTables;
     private final StatementKey selectPlayers;
     private final StatementKey selectStats;
@@ -20,7 +20,7 @@ public class LegacyExporter {
     private int notifyCount;
     private long notifyTime;
 
-    public LegacyExporter(ConnectionPool pool, String database, BackendImportCallback callback, ExportNotifier notifier) {
+    public LegacyExporter(ConnectionPool pool, String database, BackendImportCallback callback, Notifier notifier) {
         this.pool = pool;
         this.database = database;
         this.callback = callback;

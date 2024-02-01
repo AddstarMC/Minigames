@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SetBlockWhitelistCommand implements ICommand {
+public class SetBlockWhitelistCommand extends ASetCommand {
 
     @Override
     public @NotNull String getName() {
@@ -137,7 +136,7 @@ public class SetBlockWhitelistCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull @Nullable [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false", "add", "remove", "list", "clear"), args[0]);
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {

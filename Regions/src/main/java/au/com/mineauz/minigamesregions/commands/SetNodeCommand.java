@@ -2,11 +2,11 @@ package au.com.mineauz.minigamesregions.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.commands.ACommand;
+import au.com.mineauz.minigames.commands.set.ASetCommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
@@ -24,16 +24,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetNodeCommand implements ICommand {
+public class SetNodeCommand implements ASetCommand {
 
     @Override
     public @NotNull String getName() {
         return "node";
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
     }
 
     @Override
@@ -45,11 +40,6 @@ public class SetNodeCommand implements ICommand {
     public @NotNull Component getDescription() { //todo translation String
         return List.of(
                 "Creates and modifies customizable nodes");
-    }
-
-    @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
     }
 
     @Override
@@ -67,13 +57,13 @@ public class SetNodeCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        if (args != null) {
+                             @NotNull String @NotNull [] args) {
+        if (args.length > 0) {
             MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             RegionModule rmod = RegionModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("create") && args.length >= 2) {
                 if (!rmod.hasNode(args[1])) {
-                    rmod.addNode(args[1], new Node(args[1], minigame, mgPlayer.getLocation()));
+                    rmod.addNode(args[1], new Node(args[1], mgPlayer.getLocation()));
                     MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                             RegionLangKey.NODE_ADDED,
                             Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), args[1]),
@@ -102,7 +92,7 @@ public class SetNodeCommand implements ICommand {
 
     // create, modify, delete
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();

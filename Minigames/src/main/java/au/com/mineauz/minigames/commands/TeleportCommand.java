@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeleportCommand implements ICommand {
+public class TeleportCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -57,13 +56,13 @@ public class TeleportCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         if (args != null) {
-            List<Player> plys = plugin.getServer().matchPlayer(args[0]);
+            List<Player> plys = PLUGIN.getServer().matchPlayer(args[0]);
             MinigamePlayer ply;
             if (!plys.isEmpty()) {
-                ply = plugin.getPlayerManager().getMinigamePlayer(plys.get(0));
+                ply = PLUGIN.getPlayerManager().getMinigamePlayer(plys.get(0));
             } else {
                 sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0] + "!");
                 return true;
@@ -170,11 +169,11 @@ public class TeleportCommand implements ICommand {
                 }
                 return true;
             } else if (args.length == 2) {
-                plys = plugin.getServer().matchPlayer(args[1]);
+                plys = PLUGIN.getServer().matchPlayer(args[1]);
                 MinigamePlayer ply2;
 
                 if (!plys.isEmpty()) {
-                    ply2 = plugin.getPlayerManager().getMinigamePlayer(plys.get(0));
+                    ply2 = PLUGIN.getPlayerManager().getMinigamePlayer(plys.get(0));
                 } else {
                     sender.sendMessage(ChatColor.RED + "No player found by the name " + args[1] + "!");
                     return true;
@@ -189,17 +188,17 @@ public class TeleportCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> pl = new ArrayList<>();
-            for (Player p : plugin.getServer().getOnlinePlayers()) {
+            for (Player p : PLUGIN.getServer().getOnlinePlayers()) {
                 pl.add(p.getName());
             }
             return MinigameUtils.tabCompleteMatch(pl, args[0]);
         } else if (args.length == 2) {
-            List<String> pl = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 2);
-            for (Player ply : plugin.getServer().getOnlinePlayers()) {
+            List<String> pl = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 2);
+            for (Player ply : PLUGIN.getServer().getOnlinePlayers()) {
                 pl.add(ply.getName());
             }
             pl.add("Start");

@@ -52,7 +52,7 @@ public class EventsTest {
         MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer(mock);
         JoinCommand command = new JoinCommand();
         String[] args = new String[]{game.getName(false)};
-        command.onCommand(mock, game, args);
+        command.onCommand(mock, args);
         Assertions.assertTrue(player.isInMinigame());
         PlayerQuitEvent event2 = new PlayerQuitEvent(mock, "has left the game");
         server.getPluginManager().callEvent(event2);

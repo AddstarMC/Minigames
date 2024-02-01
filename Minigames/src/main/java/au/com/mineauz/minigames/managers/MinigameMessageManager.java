@@ -309,8 +309,9 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     private static Component getPluginPrefix(MinigameMessageType type) { //todo get from langfile
         Component init = Component.text("[Minigames] ");
         return switch (type) {
-            case ERROR, WARNING, TIE -> init.color(NamedTextColor.RED);
-            case WIN -> init.color(NamedTextColor.GREEN);
+            case ERROR, TIE -> init.color(NamedTextColor.RED);
+            case WARNING -> init.color(NamedTextColor.GOLD);
+            case SUCCESS, WIN -> init.color(NamedTextColor.GREEN);
             case LOSS -> init.color(NamedTextColor.DARK_RED);
             case NONE -> Component.empty();
             default -> init.color(NamedTextColor.AQUA);
@@ -318,17 +319,17 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     }
 
     /**
-     * Broadcasts a message with a defined permission.
+     * Broadcasts a message with a defined permission for everyone on a server.
      *
-     * @param message    - The message to be broadcast (Can be manipulated with MinigamesBroadcastEvent)
+     * @param message    - The message to be broadcastServer (Can be manipulated with MinigamesBroadcastEvent)
      * @param minigame   - The Minigame this broadcast is related to.
-     * @param permission - The permission required to see this broadcast message.
+     * @param permission - The permission required to see this broadcastServer message.
      */
-    public static void broadcast(@NotNull Component message, @NotNull Minigame minigame, @NotNull String permission) {
+    public static void broadcastServer(@NotNull Component message, @NotNull Minigame minigame, @NotNull String permission) {
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(getPluginPrefix(MinigameMessageType.DEFAULT), message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
 
-        // Only send broadcast if event was not cancelled and is not empty
+        // Only send broadcastServer if event was not cancelled and is not empty
         if (!ev.isCancelled()) {
             Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
         }
@@ -336,20 +337,89 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
 
 
     /**
-     * Broadcasts a server message without a permission.
+     * Broadcasts a server message without a permission for everyone on a server.
      *
      * @param message  - The message to be broadcasted (Can be manipulated with MinigamesBroadcastEvent)
      * @param minigame - The Minigame this broadcast is related to.
      * @param type     - The color to be used in the prefix.
      */
-    public static void broadcast(@NotNull Component message, @NotNull Minigame minigame, @NotNull MinigameMessageType type) {
+    public static void broadcastServer(@NotNull Component message, @NotNull Minigame minigame, @NotNull MinigameMessageType type) {
         Component init = getPluginPrefix(type);
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(init, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
 
-        // Only send broadcast if event was not cancelled and is not empty
+        // Only send broadcastServer if event was not cancelled and is not empty
         if (!ev.isCancelled()) {
             Bukkit.getServer().broadcast(ev.getMessageWithPrefix());
+        }
+    }
+
+
+    /**
+     * Sending a general info Broadcast to all players in the minigame.
+     *
+     * @param minigame The minigame in which this message shall be sent
+     * @param message  The message
+     */
+    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message) {
+        sendMinigameMessage(minigame, message, MinigameMessageType.INFO);
+    }
+
+    /**
+     * Sending a general Broadcast to all players in the minigame.
+     *
+     * @param minigame The minigame in which this message shall be sent
+     * @param message  The message
+     * @param type     Message Type
+     */
+    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message, final @Nullable MinigameMessageType type) {
+        sendMinigameMessage(minigame, message, type, (List<MinigamePlayer>) null);
+    }
+
+    /**
+     * Sending a general Broadcast to all players in the minigame.
+     *
+     * @param minigame The minigame in which this message shall be sent
+     * @param message  The message
+     * @param type     Message Type
+     * @param exclude  Player, who shall not get this message
+     */
+    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message, final @Nullable MinigameMessageType type,
+                                           final @NotNull MinigamePlayer exclude) {
+        sendMinigameMessage(minigame, message, type, Collections.singletonList(exclude));
+    }
+
+    /**
+     * Sending a general Broadcast to all players in the minigame.
+     *
+     * @param minigame The minigame in which this message shall be sent
+     * @param message  The message
+     * @param type     Message Type
+     * @param exclude  Players, which shall not get this message
+     */
+    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type,
+                                           final @Nullable List<@NotNull MinigamePlayer> exclude) {
+        if (!minigame.getShowPlayerBroadcasts()) {
+            return;
+        }
+        sendBroadcastMessageUnchecked(minigame, message, type, exclude);
+    }
+
+    // This sends a message to every player which is not excluded from the exclude list
+    public static void sendBroadcastMessageUnchecked(@NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type, @Nullable List<@NotNull MinigamePlayer> exclude) {
+        if (type == null) {
+            type = MinigameMessageType.INFO;
+        }
+
+        final List<MinigamePlayer> playersSendTo = new ArrayList<>();
+        playersSendTo.addAll(minigame.getPlayers());
+        playersSendTo.addAll(minigame.getSpectators());
+        if (exclude != null) {
+            playersSendTo.removeAll(exclude);
+        }
+
+        for (final MinigamePlayer player : playersSendTo) {
+            MinigameMessageManager.sendMessage(player, type, message);
         }
     }
 
@@ -389,7 +459,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
 
     public static void debugMessage(@NotNull String message) { //todo
         if (Minigames.getPlugin().isDebugging()) {
-            Minigames.getPlugin().getLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
+            Minigames.getCmpnntLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
         }
     }
 }

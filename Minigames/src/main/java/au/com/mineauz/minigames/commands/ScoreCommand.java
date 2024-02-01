@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ScoreCommand implements ICommand {
+public class ScoreCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -48,17 +48,17 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        if (args != null && args.length >= 3) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
+        if (args.length >= 3) {
             MinigamePlayer ply = null;
             TeamColor color = TeamColor.matchColor(args[2]);
             Minigame mg = plugin.getMinigameManager().getMinigame(args[1]);
 
             if (color == null) {
-                List<Player> plys = plugin.getServer().matchPlayer(args[2]);
+                List<Player> plys = PLUGIN.getServer().matchPlayer(args[2]);
                 if (!plys.isEmpty()) {
-                    ply = plugin.getPlayerManager().getMinigamePlayer(plys.get(0));
+                    ply = PLUGIN.getPlayerManager().getMinigamePlayer(plys.get(0));
                 } else {
                     sender.sendMessage(ChatColor.RED + "No player or team found by the name " + args[2]);
                     return true;
@@ -111,7 +111,7 @@ public class ScoreCommand implements ICommand {
                                     sender.sendMessage(ChatColor.GRAY + ply.getName() + "'s score has been set to " + score);
 
                                     if (ply.getMinigame().getMaxScore() != 0 && score >= ply.getMinigame().getMaxScorePerPlayer()) {
-                                        plugin.getPlayerManager().endMinigame(ply);
+                                        PLUGIN.getPlayerManager().endMinigame(ply);
                                     }
                                 } else {
                                     sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
@@ -136,7 +136,7 @@ public class ScoreCommand implements ICommand {
                                                 }
                                             }
 
-                                            plugin.getPlayerManager().endMinigame(mg, winners, losers);
+                                            PLUGIN.getPlayerManager().endMinigame(mg, winners, losers);
                                         }
                                     } else {
                                         sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
@@ -169,7 +169,7 @@ public class ScoreCommand implements ICommand {
                                     sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + ply.getName() + "'s score, new score: " + ply.getScore());
 
                                     if (ply.getMinigame().getMaxScore() != 0 && ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()) {
-                                        plugin.getPlayerManager().endMinigame(ply);
+                                        PLUGIN.getPlayerManager().endMinigame(ply);
                                     }
                                 } else {
                                     sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
@@ -196,7 +196,7 @@ public class ScoreCommand implements ICommand {
                                                     losers.addAll(team.getPlayers());
                                                 }
                                             }
-                                            plugin.getPlayerManager().endMinigame(mg, winners, losers);
+                                            PLUGIN.getPlayerManager().endMinigame(mg, winners, losers);
                                         }
                                     } else {
                                         sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
@@ -232,16 +232,16 @@ public class ScoreCommand implements ICommand {
                     return MinigameUtils.tabCompleteMatch(List.of("get", "set", "add"), args[0]);
                 }
                 case 2 -> {
-                    List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+                    List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
                     return MinigameUtils.tabCompleteMatch(mgs, args[1]);
                 }
                 case 3 -> {
-                    List<String> pt = new ArrayList<>(plugin.getServer().getOnlinePlayers().size());
-                    for (Player pl : plugin.getServer().getOnlinePlayers()) {
+                    List<String> pt = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size());
+                    for (Player pl : PLUGIN.getServer().getOnlinePlayers()) {
                         pt.add(pl.getName());
                     }
 
-                    Minigame mgm = plugin.getMinigameManager().getMinigame(args[1]);
+                    Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[1]);
 
                     if (mgm != null && mgm.isTeamGame()) {
                         pt.addAll(TeamsModule.getMinigameModule(mgm).getTeams().stream().map(t -> t.getColor().name()).toList());

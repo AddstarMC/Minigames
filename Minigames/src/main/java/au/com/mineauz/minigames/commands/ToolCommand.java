@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ToolCommand implements ICommand {
+public class ToolCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -53,8 +53,8 @@ public class ToolCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
         if (args == null) {
             MinigameUtils.giveMinigameTool(player);
@@ -135,9 +135,9 @@ public class ToolCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        List<String> ret = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+        List<String> ret = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         if (args.length == 1) {
             Collections.addAll(ret, getParameters());
             return MinigameUtils.tabCompleteMatch(ret, args[0]);

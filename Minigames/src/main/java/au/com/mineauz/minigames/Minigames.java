@@ -62,6 +62,7 @@ public class Minigames extends JavaPlugin {
     private MinigamePlayerManager playerManager;
     private MinigameManager minigameManager;
     private PlaceHolderManager placeHolderManager;
+    private CommandDispatcher disp;
     private boolean debug;
     private boolean hasPAPI = false;
     private long lastUpdateCheck;
@@ -99,6 +100,10 @@ public class Minigames extends JavaPlugin {
 
     public PlaceHolderManager getPlaceHolderManager() {
         return placeHolderManager;
+    }
+
+    public CommandDispatcher getCommandDispatcher(){
+        return disp;
     }
 
     public void onDisable() {
@@ -213,10 +218,10 @@ public class Minigames extends JavaPlugin {
             minigameSigns = new SignBase();
             this.minigameManager.loadRewardSigns();
 
-            final CommandDispatcher disp = new CommandDispatcher();
+            disp = new CommandDispatcher();
             PluginCommand command = this.getCommand("minigame");
             if (command == null) {
-                throw (new Throwable("Could not find command `minigame`"));
+                throw (new NoSuchElementException("Could not find command `minigame`"));
             }
             command.setExecutor(disp);
             command.setTabCompleter(disp);
@@ -234,7 +239,7 @@ public class Minigames extends JavaPlugin {
 
             logger.info(desc.getName() + " successfully enabled.");
             this.hookPlaceHolderApi();
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             plugin = null;
             logger.error("Failed to enable Minigames " + this.getDescription().getVersion() + ": ", e);
             Bukkit.getPluginManager().disablePlugin(this);
