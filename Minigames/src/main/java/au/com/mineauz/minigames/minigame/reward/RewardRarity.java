@@ -17,6 +17,17 @@ public enum RewardRarity {
         rarity = r;
     }
 
+    @Contract("null -> null")
+    public static @Nullable RewardRarity matchRarity(@Nullable String toMatch) {
+        for (RewardRarity rarity : RewardRarity.values()) {
+            if (rarity.toString().equalsIgnoreCase(toMatch)) {
+                return rarity;
+            }
+        }
+
+        return null;
+    }
+
     public double getRarity() {
         return rarity;
     }
@@ -38,16 +49,5 @@ public enum RewardRarity {
             case NORMAL -> COMMON;
             default -> VERY_COMMON;
         };
-    }
-
-    @Contract("null -> null")
-    public static @Nullable RewardRarity matchRarity(@Nullable String toMatch) {
-        for (RewardRarity rarity : RewardRarity.values()) {
-            if (rarity.toString().equalsIgnoreCase(toMatch)) {
-                return rarity;
-            }
-        }
-
-        return null;
     }
 }

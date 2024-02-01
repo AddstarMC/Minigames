@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
@@ -22,7 +21,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class EndCommand extends ACommand {
@@ -142,7 +142,7 @@ public class EndCommand extends ACommand {
         } else if (args.length > 0) { // not a player. return proper message
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
         } else {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             return false;
         }
 
@@ -228,10 +228,10 @@ public class EndCommand extends ACommand {
             result.addAll(PLUGIN.getMinigameManager().getAllMinigames().keySet());
 
             return MinigameUtils.tabCompleteMatch(result, args[0]);
-        } else if (args.length == 2){
+        } else if (args.length == 2) {
             Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
-            if (minigame != null){
+            if (minigame != null) {
                 if (minigame.isTeamGame()) {
                     TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
                     List<String> result = teamsModule.getTeams().stream().map(team -> team.getColor().toString()).toList();

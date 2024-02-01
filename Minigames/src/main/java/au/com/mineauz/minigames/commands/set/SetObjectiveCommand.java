@@ -34,9 +34,10 @@ public class SetObjectiveCommand extends ASetCommand {
     public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_OBJECTIVE_DESCRIPTION);
     }
+
     @Override
     public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SEt_OBJECTIVE_USAGE);
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_OBJECTIVE_USAGE);
     }
 
     @Override

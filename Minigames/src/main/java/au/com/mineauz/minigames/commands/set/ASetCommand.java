@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommandInfo;
 import au.com.mineauz.minigames.minigame.Minigame;
-import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

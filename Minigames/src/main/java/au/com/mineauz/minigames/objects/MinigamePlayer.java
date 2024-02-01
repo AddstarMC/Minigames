@@ -699,7 +699,7 @@ public class MinigamePlayer implements ScriptObject {
             this.player.getPlayer().setResourcePack(pack.getUrl().toString(), pack.getSH1Hash());
             return true;
         } catch (final IllegalArgumentException e) {
-            Minigames.getCmpnntLogger().warn("", e);
+            Minigames.getCmpnntLogger().warn("Could not apply ressource pack to player " + this.getPlayer().getName(), e);
         }
         return false;
     }

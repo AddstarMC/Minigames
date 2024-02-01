@@ -101,7 +101,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
                             return minigame.getGameTypeName();
                         }
                         case "timeLeft" -> {
-                            return Integer.toString(minigame.getMinigameTimer().getTimeLeft());
+                            return Long.toString(minigame.getMinigameTimer().getTimeLeft());
                         }
                         case "name" -> {
                             return minigame.getName(true);

@@ -1137,18 +1137,18 @@ public class Minigame implements ScriptObject {
         itemsMain.add(new MenuItemNewLine());
         itemsMain.add(new MenuItemTime("Time Length", List.of("Multiplayer Only"), Material.CLOCK, new Callback<>() {
 
-                    @Override
-                    public Integer getValue() {
-                        return timer.getFlag();
-                    }
+            @Override
+            public Integer getValue() {
+                return timer.getFlag();
+            }
 
-                    @Override
-                    public void setValue(Integer value) {
-                        timer.setFlag(value);
-                    }
+            @Override
+            public void setValue(Integer value) {
+                timer.setFlag(value);
+            }
 
 
-                }, 0, null));
+        }, 0, null));
         itemsMain.add(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
         itemsMain.add(new MenuItemTime("Start Wait Time", List.of("Multiplayer Only"), Material
                 .CLOCK,

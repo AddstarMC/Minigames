@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.objects;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -24,7 +25,7 @@ import java.util.Map;
 
 public final class ResourcePack implements ConfigurationSerializable {
     private static final String ext = "resourcepack";
-    private final String name;
+    private final Component name;
     private final URL url;
     private final File local;
     private final String description;
@@ -62,7 +63,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param name the name
      * @param url  the url
      */
-    public ResourcePack(final String name, final @NotNull URL url) {
+    public ResourcePack(final Component name, final @NotNull URL url) {
         this(name, url, null);
     }
 
@@ -73,7 +74,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param url  the url
      * @param file the file
      */
-    public ResourcePack(final String name, final @NotNull URL url, final File file) {
+    public ResourcePack(final Component name, final @NotNull URL url, final File file) {
         this(name, url, file, null);
     }
 
@@ -85,7 +86,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param file        the file
      * @param description the description
      */
-    public ResourcePack(final String name, final @NotNull URL url, final File file, final String description) {
+    public ResourcePack(final Component name, final @NotNull URL url, final File file, final String description) {
         this.name = name;
         final Path path = ResourcePackManager.getResourceDir();
         this.local = file != null ? file : new File(path.toFile(), name + '.' + ext);
@@ -237,7 +238,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      *
      * @return the name
      */
-    public String getName() {
+    public Component getName() {
         return this.name;
     }
 

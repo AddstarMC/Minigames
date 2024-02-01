@@ -22,9 +22,9 @@ import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
+import au.com.mineauz.minigames.recorder.RecorderData;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import au.com.mineauz.minigames.recorder.RecorderData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
@@ -59,6 +59,7 @@ public class MinigameManager {
     public void addModule(final @NotNull ModuleFactory moduleFactory) {
         this.modules.put(moduleFactory.getName(), moduleFactory);
     }
+
     public void removeModule(final @NotNull String moduleName) {
         for (final Minigame mg : this.minigames.values()) {
             mg.removeModule(moduleName);

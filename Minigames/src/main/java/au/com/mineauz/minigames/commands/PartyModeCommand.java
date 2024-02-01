@@ -1,8 +1,13 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,12 +33,12 @@ public class PartyModeCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Changes party mode state between on and off.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PARTYMODE_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame partymode <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PARTYMODE_USAGE);
     }
 
     @Override
@@ -42,25 +47,31 @@ public class PartyModeCommand extends ACommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
-        if (args != null) {
-            boolean bool = Boolean.parseBoolean(args[0]);
-            PLUGIN.getPlayerManager().setPartyMode(bool);
-            if (bool) {
-                sender.sendMessage(ChatColor.GREEN + "Party mode has been enabled! WooHoo!");
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        if (args.length > 0) {
+            Boolean bool = BooleanUtils.toBooleanObject(args[0]);
+
+            if (bool != null) {
+                PLUGIN.getPlayerManager().setPartyMode(bool);
+
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_PARTYMODE_SUCCESS,
+                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
+                return true;
             } else {
-                sender.sendMessage(ChatColor.RED + "Party mode has been disabled. :(");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
-            return true;
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
-                                                         @NotNull String @NotNull [] args) {
-        return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        if (args.length == 1) {
+            return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
+        } else {
+            return null;
+        }
     }
-
 }

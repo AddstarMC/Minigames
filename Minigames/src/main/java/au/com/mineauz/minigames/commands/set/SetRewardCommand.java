@@ -30,30 +30,6 @@ import java.util.regex.Pattern;
 public class SetRewardCommand extends ASetCommand { //todo allow commands
     private final static Pattern MONEY_PATTERN = Pattern.compile("\\$-?(\\d+(\\.\\d+)?)");
 
-    @Override
-    public @NotNull String getName() {
-        return "reward";
-    }
-
-    @Override
-    public boolean canBeConsole() {
-        return true;
-    }
-
-    @Override
-    public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD_DESCRIPTION);
-    }
-    @Override
-    public Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD_USAGE);
-    }
-
-    @Override
-    public @Nullable String getPermission() {
-        return "minigame.set.reward";
-    }
-
     private static void setItemReward(@NotNull Minigame minigame, @NotNull Rewards rewards, @NotNull CommandSender sender,
                                       @NotNull ItemStack item, @NotNull RewardRarity rarity, boolean isPrimary) {
         if (item.getType().isAir()) {
@@ -144,7 +120,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                 return true;
 
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
                             }
                         } else {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.REWARD_ERROR_NOVAULT,
@@ -201,6 +177,31 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
         }
         return false;
 
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "reward";
+    }
+
+    @Override
+    public boolean canBeConsole() {
+        return true;
+    }
+
+    @Override
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD_DESCRIPTION);
+    }
+
+    @Override
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD_USAGE);
+    }
+
+    @Override
+    public @Nullable String getPermission() {
+        return "minigame.set.reward";
     }
 
     @Override

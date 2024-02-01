@@ -58,6 +58,7 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     MINIGAME_RESSOURCEPACK_APPLY("minigame.resourcepack.apply"),
     MINIGAME_RESSOURCEPACK_NORESSOURCEPACK("minigame.resourcepack.noResourcepack"),
     MINIGAME_RESSOURCEPACK_REMOVE("minigames.resourcepack.remove"),
+    MINIGAME_SAVED("minigame.saved"),
     MINIGAME_SCORETOWIN("minigame.scoreToWin"),
     MINIGAME_SKIPWAITTIME("minigame.skipWaitTime"),
     MINIGAME_STARTRANDOMIZED("minigame.startRandomized"),
@@ -228,7 +229,8 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     TOOL_SET_ENDLOCATION("tool.set.endLocation"),
     TOOL_SET_LOBBYLOCATION("tool.set.lobbyLocation"),
     TOOL_SET_QUITLOCATION("tool.set.quitLocation"),
-    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation");
+    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation"),
+    MINIGAME_ERROR_NOTTEAMGAME("minigame.error.notTeamGame");
 
     private final @NotNull String path;
 

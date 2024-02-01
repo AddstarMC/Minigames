@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import net.kyori.adventure.text.Component;
@@ -71,8 +71,8 @@ public class MinigameUtils {
      * Converts seconds into weeks, days, hours, minutes and seconds to be neatly
      * displayed.
      *
-     * @param duration  - The duration to be converted
-     * @param small - If the time should be shortened to: hh:mm:ss
+     * @param duration - The duration to be converted
+     * @param small    - If the time should be shortened to: hh:mm:ss
      * @return A message with a neat time
      */
     public static Component convertTime(Duration duration, boolean small) { //todo make reverse methode

@@ -2,6 +2,8 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
@@ -37,14 +39,12 @@ public class GlobalLoadoutCommand extends ACommand { //todo merge with loadout c
 
     @Override
     public @NotNull Component getDescription() {
-        return "Opens the Loadout edit window for Global Loadouts. These loadouts may be used in any Minigame.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_GLOBALLOADOUT_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{
-                "/minigame globalloadout"
-        };
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_GLOBALLOADOUT_USAGE);
     }
 
     @Override

@@ -1,9 +1,14 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,12 +30,12 @@ public class ToggleTimerCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Toggles a multiplayer Minigames countdown timer to pause or continue.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_TOGGLETIMER_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame toggletimer <Minigame>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_TOGGLETIMER_USAGE);
     }
 
     @Override
@@ -41,22 +46,31 @@ public class ToggleTimerCommand extends ACommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender,
                              @NotNull String @NotNull [] args) {
-        if (args != null) {
-            Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
-            if (mgm != null) {
-                if (mgm.getMpTimer() != null) {
-                    if (mgm.getMpTimer().isPaused()) {
-                        mgm.getMpTimer().resumeTimer();
-                        sender.sendMessage(ChatColor.GRAY + "Resumed " + mgm.getName(false) + "'s countdown timer.");
+        if (args.length > 0) {
+            Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
+            if (minigame != null) {
+                if (minigame.getMpTimer() != null) {
+                    if (minigame.getMpTimer().isPaused()) {
+                        minigame.getMpTimer().resumeTimer();
+
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_TOGGLETIMER_RESUME_SUCCESS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                     } else {
-                        mgm.getMpTimer().pauseTimer(sender.getName() + " forced countdown pause.");
-                        sender.sendMessage(ChatColor.GRAY + "Paused " + mgm.getName(false) + "'s countdown timer. (" + mgm.getMpTimer().getPlayerWaitTimeLeft() + "s)");
+                        // message to players of Minigame
+                        minigame.getMpTimer().pauseTimer(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_TOGGLETIMER_PAUSE_MSG,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), sender.getName())));
+                        // message to sender
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_TOGGLETIMER_PAUSE_SUCCESS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minigame.getMpTimer().getPlayerWaitTimeLeft())));
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Error: This minigame does not have a timer running!");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOGGLETIMER_ERROR_NOTIMER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + "Error: The Minigame " + args[0] + " does not exist!");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;
         }
@@ -69,5 +83,4 @@ public class ToggleTimerCommand extends ACommand {
         List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }
-
 }

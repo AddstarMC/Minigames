@@ -60,12 +60,32 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new ResourcePackCommand());
     }
 
-    public static @NotNull Collection<ACommand> getCommands(){
+    public static @NotNull Collection<ACommand> getCommands() {
         return commands.values();
     }
 
     public static void registerCommand(ACommand command) {
         commands.put(command.getName(), command);
+    }
+
+    public static @Nullable ACommand getCommand(@NotNull String name) {
+        ACommand comd = null;
+        if (commands.containsKey(name.toLowerCase())) {
+            comd = commands.get(name.toLowerCase());
+        } else {
+            AliasCheck:
+            for (ACommand com : commands.values()) {
+                if (com.getAliases() != null) {
+                    for (String alias : com.getAliases()) {
+                        if (name.equalsIgnoreCase(alias)) {
+                            comd = com;
+                            break AliasCheck;
+                        }
+                    }
+                }
+            }
+        }
+        return comd;
     }
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -104,7 +124,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
                 }
                 return true;
             }
@@ -118,26 +138,6 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
             return true;
         }
         return false;
-    }
-
-    public static @Nullable  ACommand getCommand(@NotNull String name) {
-        ACommand comd = null;
-        if (commands.containsKey(name.toLowerCase())) {
-            comd = commands.get(name.toLowerCase());
-        } else {
-            AliasCheck:
-            for (ACommand com : commands.values()) {
-                if (com.getAliases() != null) {
-                    for (String alias : com.getAliases()) {
-                        if (name.equalsIgnoreCase(alias)) {
-                            comd = com;
-                            break AliasCheck;
-                        }
-                    }
-                }
-            }
-        }
-        return comd;
     }
 
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {

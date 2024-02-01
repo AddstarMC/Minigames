@@ -2,17 +2,25 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayerCommand extends ACommand {
 
@@ -33,15 +41,12 @@ public class PlayerCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Tells you what Minigame a player is playing and other useful information or lists all players currently playing Minigames.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{
-                "/minigame player <PlayerName>",
-                "/minigame player list"
-        };
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_USAGE);
     }
 
     @Override
@@ -52,41 +57,54 @@ public class PlayerCommand extends ACommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender,
                              @NotNull String @NotNull [] args) {
-        if (args != null) {
+        if (args.length > 0) {
             if (args[0].equalsIgnoreCase("list")) {
-                List<MinigamePlayer> pls = new ArrayList<>();
+                List<MinigamePlayer> mgPlayers = new ArrayList<>();
                 for (MinigamePlayer pl : Minigames.getPlugin().getPlayerManager().getAllMinigamePlayers()) {
                     if (pl.isInMinigame()) {
-                        pls.add(pl);
+                        mgPlayers.add(pl);
                     }
                 }
 
-                sender.sendMessage(ChatColor.AQUA + "-----------List of Players Playing Minigames-----------");
-                if (!pls.isEmpty()) {
-                    for (MinigamePlayer pl : pls) {
-                        sender.sendMessage(ChatColor.GREEN + pl.getName() + ChatColor.GRAY + " (Playing \"" + pl.getMinigame().getName(false) + "\")");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_PLAYER_LIST_HEADER);
+                if (!mgPlayers.isEmpty()) {
+                    for (MinigamePlayer mgPlayer : mgPlayers) {
+                        //todo don't send x trillion messages. merge to list and send as pages
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_PLAYER_LIST_ENTRY,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName(false)), //  mgPlayer.getMinigame() is never null, we only add player in Minigame to list
+                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "None");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_PLAYERS_NONE);
                 }
             } else {
-                List<Player> plmatch = Minigames.getPlugin().getServer().matchPlayer(args[0]);
-                if (!plmatch.isEmpty()) {
-                    MinigamePlayer pl = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(plmatch.get(0));
-                    sender.sendMessage(ChatColor.AQUA + "--------Player info on " + pl.getName() + "--------");
-                    if (pl.isInMinigame()) {
-                        sender.sendMessage(ChatColor.GREEN + "Minigame: " + ChatColor.GRAY + pl.getMinigame().getName(false));
-                        sender.sendMessage(ChatColor.GREEN + "Score: " + ChatColor.GRAY + pl.getScore());
-                        sender.sendMessage(ChatColor.GREEN + "Kills: " + ChatColor.GRAY + pl.getKills());
-                        sender.sendMessage(ChatColor.GREEN + "Deaths: " + ChatColor.GRAY + pl.getDeaths());
-                        sender.sendMessage(ChatColor.GREEN + "Reverts: " + ChatColor.GRAY + pl.getReverts());
-                        sender.sendMessage(ChatColor.GREEN + "Play Time: " + ChatColor.GRAY +
-                                MinigameUtils.convertTime((int) ((Calendar.getInstance().getTimeInMillis() - pl.getStartTime() + pl.getStoredTime()) / 1000)));
+                List<Player> playerMatch = Bukkit.matchPlayer(args[0]);
+                if (!playerMatch.isEmpty()) {
+                    MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(playerMatch.get(0));
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_HEADER,
+                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
+                    if (mgPlayer.isInMinigame()) {
+                        Duration playTime = Duration.ofMillis(Calendar.getInstance().getTimeInMillis() - mgPlayer.getStartTime() + mgPlayer.getStoredTime());
+
+                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_MINIGAME,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName(false)));
+                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_SCORE,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())));
+                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_KILLS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.KILLS.getKey(), String.valueOf(mgPlayer.getKills())));
+                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_DEATHS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.DEATHS.getKey(), String.valueOf(mgPlayer.getDeaths())));
+                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_REVERTS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.REVERTS.getKey(), String.valueOf(mgPlayer.getReverts())));
+                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_PLAYTIME,
+                                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(playTime)));
                     } else {
-                        sender.sendMessage(ChatColor.GREEN + "Minigame: " + ChatColor.RED + "Not in Minigame");
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_PLAYER,
+                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Could not find a player by the name \"" + args[0] + "\"");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             }
             return true;
@@ -98,10 +116,9 @@ public class PlayerCommand extends ACommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> plys = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 1);
-            for (Player ply : PLUGIN.getServer().getOnlinePlayers()) {
-                plys.add(ply.getName());
-            }
+            List<String> plys = new ArrayList<>(PLUGIN.getPlayerManager().getAllMinigamePlayers()).stream().
+                    map(MinigamePlayer::getName).collect(Collectors.toCollection(ArrayList::new));
+
             plys.add("list");
             return MinigameUtils.tabCompleteMatch(plys, args[0]);
         }

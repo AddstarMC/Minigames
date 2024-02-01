@@ -66,7 +66,7 @@ public class BackendCommand extends ACommand {
                 Futures.addCallback(future, new FutureCallback<>() {
                     @Override
                     public void onFailure(@NotNull Throwable t) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), t.getMessage()));
                         Minigames.getCmpnntLogger().error("An internal error occurred while exporting.", t);
                     }
@@ -76,7 +76,7 @@ public class BackendCommand extends ACommand {
                     }
                 }, directExecutor());
             } catch (IllegalArgumentException e) {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
                 Minigames.getCmpnntLogger().error("An internal error occurred while exporting.", e);
             }
@@ -89,7 +89,7 @@ public class BackendCommand extends ACommand {
                 Futures.addCallback(future, new FutureCallback<>() {
                     @Override
                     public void onFailure(@NotNull Throwable t) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), t.getMessage()));
                         Minigames.getCmpnntLogger().error("An internal error occurred while exporting.", t);
                     }
@@ -101,7 +101,7 @@ public class BackendCommand extends ACommand {
                     }
                 }, directExecutor());
             } catch (IllegalArgumentException e) {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
                 Minigames.getCmpnntLogger().error("An internal error occurred while exporting.", e);
             }
@@ -136,7 +136,7 @@ public class BackendCommand extends ACommand {
 
         @Override
         public void onError(Exception e, String state, int count) {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_BACKEND_ERROR_INTERNAL,
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
             Minigames.getCmpnntLogger().error("Exporting error at " + state + ": " + count, e);
         }

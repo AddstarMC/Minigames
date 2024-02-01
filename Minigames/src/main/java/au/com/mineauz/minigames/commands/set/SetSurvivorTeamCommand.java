@@ -41,6 +41,7 @@ public class SetSurvivorTeamCommand extends ASetCommand {
     public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_DESCRIPTION);
     }
+
     @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_USAGE);

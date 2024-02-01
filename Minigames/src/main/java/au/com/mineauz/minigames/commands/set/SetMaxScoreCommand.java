@@ -29,6 +29,7 @@ public class SetMaxScoreCommand extends ASetCommand {
     public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_MAXSCORE_DESCRIPTION);
     }
+
     @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_MAXSCORE_USAGE);

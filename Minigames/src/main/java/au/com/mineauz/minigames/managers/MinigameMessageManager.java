@@ -214,6 +214,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * Register a new Bundle
      * To load the bundle use the {@link UTF8ResourceBundleControl instance as the resource control.
      * This loads the resource with UTF8
+     *
      * @param identifier Unique identifier for your resource bundle
      * @param bundle     the ResourceBundle
      * @return true on success.

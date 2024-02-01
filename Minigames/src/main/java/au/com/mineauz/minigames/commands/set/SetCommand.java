@@ -164,8 +164,28 @@ public class SetCommand extends ACommand {
         }
     }
 
-    public static @NotNull Collection<@NotNull ASetCommand> getSetCommands(){
+    public static @NotNull Collection<@NotNull ASetCommand> getSetCommands() {
         return parameterList.values();
+    }
+
+    public static @Nullable ASetCommand getSetCommand(@NotNull String name) {
+        ASetCommand comd = null;
+        if (parameterList.containsKey(name.toLowerCase())) {
+            comd = parameterList.get(name.toLowerCase());
+        } else {
+            AliasCheck:
+            for (ASetCommand com : parameterList.values()) {
+                if (com.getAliases() != null) {
+                    for (String alias : com.getAliases()) {
+                        if (name.equalsIgnoreCase(alias)) {
+                            comd = com;
+                            break AliasCheck;
+                        }
+                    }
+                }
+            }
+        }
+        return comd;
     }
 
     @Override
@@ -235,7 +255,7 @@ public class SetCommand extends ACommand {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             }
             return true;
         } else if (minigame == null) {
@@ -243,26 +263,6 @@ public class SetCommand extends ACommand {
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
         }
         return false;
-    }
-
-    public static @Nullable ASetCommand getSetCommand(@NotNull String name) {
-        ASetCommand comd = null;
-        if (parameterList.containsKey(name.toLowerCase())) {
-            comd = parameterList.get(name.toLowerCase());
-        } else {
-            AliasCheck:
-            for (ASetCommand com : parameterList.values()) {
-                if (com.getAliases() != null) {
-                    for (String alias : com.getAliases()) {
-                        if (name.equalsIgnoreCase(alias)) {
-                            comd = com;
-                            break AliasCheck;
-                        }
-                    }
-                }
-            }
-        }
-        return comd;
     }
 
     @Override

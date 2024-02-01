@@ -19,15 +19,30 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class HelpCommand extends ACommand {
     private final Pattern NUM_PATTERN = Pattern.compile("^\\d*$");
     private final int COMMANDS_PER_SITE = 6; // just a random number. Change it if you know a better one!
+
+    private static boolean sendHelpInfo(@NotNull CommandSender sender, @NotNull ICommandInfo setCommand) {
+        if (setCommand.getPermission() != null || sender.hasPermission(setCommand.getPermission())) {
+            Component info = Component.empty();
+            if (setCommand.getAliases() != null) {
+                info = info.append(Component.join(JoinConfiguration.arrayLike(), Arrays.stream(setCommand.getAliases()).map(Component::text).toList()));
+            }
+
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
+                    MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
+                            append(info.appendNewline().append(setCommand.getUsage()).appendNewline().append(setCommand.getDescription())));//todo needs formatting (not hardcoded)
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     @Override
     public @NotNull String getName() {
@@ -54,16 +69,16 @@ public class HelpCommand extends ACommand {
         return "minigame.help";
     }
 
-    private Component makePage(@NotNull Permissible permissible, int pageNumber){
+    private Component makePage(@NotNull Permissible permissible, int pageNumber) {
         List<ICommandInfo> allCommands = new ArrayList<>(CommandDispatcher.getCommands());
         allCommands.addAll(SetCommand.getSetCommands());
         // filter per permission
         allCommands = allCommands.stream().filter(cmd -> cmd.getPermission() == null || permissible.hasPermission(cmd.getPermission())).toList();
 
-        final int numPages = (int)Math.ceil((float) allCommands.size() / COMMANDS_PER_SITE);
+        final int numPages = (int) Math.ceil((float) allCommands.size() / COMMANDS_PER_SITE);
         pageNumber = Math.max(1, Math.min(pageNumber, numPages)); // stay in range
 
-        final List<ICommandInfo> commandsOfPage = allCommands.subList(COMMANDS_PER_SITE*(pageNumber-1), Math.min(allCommands.size(), pageNumber*COMMANDS_PER_SITE));
+        final List<ICommandInfo> commandsOfPage = allCommands.subList(COMMANDS_PER_SITE * (pageNumber - 1), Math.min(allCommands.size(), pageNumber * COMMANDS_PER_SITE));
         // command name + description + click event for detailed info
         final Component pageCore = Component.join(JoinConfiguration.newlines(), commandsOfPage.stream().
                 map(cmd -> Component.text(cmd.getName()).append(Component.text(" - ")).append(cmd.getDescription()).
@@ -72,32 +87,15 @@ public class HelpCommand extends ACommand {
         final Component header = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_LIST_HEADER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pageNumber)),
                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(numPages)));
-        //todo clickable next/back buttons on footer
+        final Component footer = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DIVIDER_LARGE); //todo clickable next/back buttons on footer
 
-        return header.appendNewline().append(pageCore);
-    }
-
-    private static boolean sendHelpInfo(@NotNull CommandSender sender, @NotNull ICommandInfo setCommand) {
-        if (setCommand.getPermission() != null || sender.hasPermission(setCommand.getPermission())){
-            Component info = Component.empty();
-            if (setCommand.getAliases() != null) {
-                info = info.append(Component.text("[").append(Component.text(String.join(", ", setCommand.getAliases()))).append(Component.text("]")));
-            }
-
-            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
-                    MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
-                            append(info.appendNewline().append(setCommand.getUsage()).appendNewline().append(setCommand.getDescription())));//todo needs formatting (not hardcoded)
-            return true;
-        } else {
-            return false;
-        }
+        return header.appendNewline().append(pageCore).appendNewline().append(footer);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (args.length > 0) {
-            if (NUM_PATTERN.matcher(args[0]).matches()){
+            if (NUM_PATTERN.matcher(args[0]).matches()) {
                 MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(sender, Integer.parseInt(args[0])));
             } else {
                 ACommand subCommand = CommandDispatcher.getCommand(args[0]);
@@ -107,7 +105,7 @@ public class HelpCommand extends ACommand {
                 } else {
                     ASetCommand setCommand = SetCommand.getSetCommand(args[0]);
 
-                    if (setCommand != null){
+                    if (setCommand != null) {
                         return sendHelpInfo(sender, setCommand);
                     } else {
                         return false;
@@ -128,7 +126,7 @@ public class HelpCommand extends ACommand {
             // filter per permission
             allCommands = allCommands.stream().filter(cmd -> cmd.getPermission() == null || sender.hasPermission(cmd.getPermission())).toList();
             // get number of filtered commands before the next step
-            final int numPages = (int)Math.ceil((float) allCommands.size() / COMMANDS_PER_SITE);
+            final int numPages = (int) Math.ceil((float) allCommands.size() / COMMANDS_PER_SITE);
 
             // can't reuse the stream from above, since using Stream#count() would terminate it.
             // first map commands to name + aliases, then append all possible page numbers

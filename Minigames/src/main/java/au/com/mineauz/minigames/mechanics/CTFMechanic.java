@@ -38,6 +38,19 @@ import java.util.List;
 
 public class CTFMechanic extends GameMechanicBase {
 
+    /**
+     * Sending a ctf relevant message
+     *
+     * @param minigame The minigame in which this message shall be sent
+     * @param message  The message
+     */
+    private static void sendCTFMessage(final @NotNull Minigame minigame, final @NotNull Component message) {
+        if (!minigame.getShowCTFBroadcasts()) {
+            return;
+        }
+        MinigameMessageManager.sendBroadcastMessageUnchecked(minigame, message, MinigameMessageType.INFO, null);
+    }
+
     @Override
     public String getMechanic() {
         return "ctf";
@@ -81,19 +94,6 @@ public class CTFMechanic extends GameMechanicBase {
         if (minigame.getPlayers().size() == 1) {
             minigame.resetFlags();
         }
-    }
-
-    /**
-     * Sending a ctf relevant message
-     *
-     * @param minigame The minigame in which this message shall be sent
-     * @param message  The message
-     */
-    private static void sendCTFMessage(final @NotNull Minigame minigame, final @NotNull Component message) {
-        if (!minigame.getShowCTFBroadcasts()) {
-            return;
-        }
-        MinigameMessageManager.sendBroadcastMessageUnchecked(minigame, message, MinigameMessageType.INFO, null);
     }
 
     @Override
@@ -168,7 +168,7 @@ public class CTFMechanic extends GameMechanicBase {
                                 if (mgm.getFlagCarrier(mgPlayer).getTeam() != null) {
                                     Team flagTeam = mgm.getFlagCarrier(mgPlayer).getTeam();
                                     sendCTFMessage(mgm, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_CTF_STOLE,
-                                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
                                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(flagTeam.getDisplayName(), flagTeam.getTextColor())))
                                     );
                                     mgm.getFlagCarrier(mgPlayer).startCarrierParticleEffect(mgPlayer.getPlayer());
@@ -217,7 +217,7 @@ public class CTFMechanic extends GameMechanicBase {
 
                                     if (end) {
                                         sendCTFMessage(mgm, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_CTF_CAPTUREFINAL,
-                                                        Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
                                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(mgPlayer.getTeam().getDisplayName(), mgPlayer.getTeam().getTextColor())))
                                         );
                                         List<MinigamePlayer> w = new ArrayList<>(mgPlayer.getTeam().getPlayers());
@@ -259,7 +259,7 @@ public class CTFMechanic extends GameMechanicBase {
                             flag.respawnFlag();
 
                             sendCTFMessage(mgm, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_CTF_RETURNED,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(mgPlayer.getTeam().getDisplayName(), mgPlayer.getTeam().getTextColor())))
                             );
                         } else if (mgm.getFlagCarrier(mgPlayer) != null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()) {
@@ -290,7 +290,7 @@ public class CTFMechanic extends GameMechanicBase {
 
                         if (team != null) {
                             sendCTFMessage(mgm, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_CTF_DROPPED,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), ply.getName()),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), ply.getName()),
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName(), team.getTextColor())))
                             );
                         } else {

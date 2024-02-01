@@ -29,10 +29,12 @@ public class SetPresetCommand extends ASetCommand {
     public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_PRESET_DESCRIPTION);
     }
+
     @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_PRESET_USAGE);
     }
+
     @Override
     public @Nullable String getPermission() {
         return "minigame.set.preset";

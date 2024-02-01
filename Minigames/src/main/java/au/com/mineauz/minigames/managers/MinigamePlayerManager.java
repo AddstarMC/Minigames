@@ -151,8 +151,8 @@ public class MinigamePlayerManager {
 
         //Send other players the join message.
         MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(
-                MinigameLangKey.PLAYER_JOIN_PLAYERMSG,
-                Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
+                        MinigameLangKey.PLAYER_JOIN_PLAYERMSG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))),
                 MinigameMessageType.INFO);
         mgPlayer.updateInventory();

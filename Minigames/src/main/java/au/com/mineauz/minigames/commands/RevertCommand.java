@@ -1,7 +1,8 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -30,12 +31,12 @@ public class RevertCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameUtils.getLang("command.revert.description");
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_REVERT_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame revert"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_REVERT_USAGE);
     }
 
     @Override
@@ -44,15 +45,17 @@ public class RevertCommand extends ACommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
-        MinigamePlayer player = PLUGIN.getPlayerManager().getMinigamePlayer((Player) sender);
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        if (sender instanceof Player player) {
+            MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
 
-        if (player.isInMinigame()) {
-            PLUGIN.getPlayerManager().revertToCheckpoint(player);
-        }
-        else {
-            player.sendMessage(MinigameUtils.getLang("command.revert.noGlobal"), MinigameMessageType.ERROR);
+            if (mgPlayer.isInMinigame() && mgPlayer.getCheckpoint() != null) {
+                PLUGIN.getPlayerManager().revertToCheckpoint(mgPlayer);
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_REVERT_ERROR_NOCHECKPOINTS);
+            }
+        } else {
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
         }
         return true;
     }

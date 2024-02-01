@@ -36,6 +36,7 @@ public class SetStoreCheckpointsCommand extends ASetCommand {
     public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_STORECHECKPOINT_DESCRIPTION);
     }
+
     @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_STORECHECKPOINT_USAGE);

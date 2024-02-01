@@ -3,10 +3,15 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.MultiplayerTimer;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -29,12 +34,12 @@ public class StartCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Starts a Global Minigame. If the game isn't Global, it will force start a game begin countdown without waiting for players.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_START_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame start <Minigame>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_START_USAGE);
     }
 
     @Override
@@ -51,11 +56,12 @@ public class StartCommand extends ACommand {
             if (mgm != null) {
                 if (mgm.getType() == MinigameType.GLOBAL) {
                     if (mgm.isEnabled()) {
-                        sender.sendMessage(ChatColor.RED + mgm.getName(false) + " is already running!");
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_START_ERROR_GLOBALISRUNNING,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(false)));
                     } else {
                         MinigamePlayer caller = null;
-                        if (sender instanceof Player) {
-                            caller = PLUGIN.getPlayerManager().getMinigamePlayer((Player) sender);
+                        if (sender instanceof Player player) {
+                            caller = PLUGIN.getPlayerManager().getMinigamePlayer(player);
                         }
 
                         PLUGIN.getMinigameManager().startGlobalMinigame(mgm, caller);
@@ -69,11 +75,12 @@ public class StartCommand extends ACommand {
                         mgm.getMpTimer().setCurrentLobbyWaitTime(0);
                         mgm.getMpTimer().startTimer();
                     } else {
-                        sender.sendMessage(ChatColor.RED + mgm.getName(false) + " has already started.");
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_STARTED);
                     }
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + "No Global or Multiplayer Minigame found by the name " + args[0]);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;
         }

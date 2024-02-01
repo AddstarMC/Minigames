@@ -11,7 +11,7 @@ public interface ICommandInfo {
     /**
      * if this returns null, no aliases exists. Only {@link #getName()} is always valid
      */
-    default @NotNull String @Nullable [] getAliases(){
+    default @NotNull String @Nullable [] getAliases() {
         return null;
     }
 

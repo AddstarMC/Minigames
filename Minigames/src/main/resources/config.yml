@@ -34,7 +34,7 @@ disabledCommands:
   - home
   - warp
   - spawn
-  
+
 broadcastCompletion: true
 playSounds: true
 
@@ -43,7 +43,7 @@ regeneration:
 
 lang: 'en_AU'
 # Select language
-  
+
 backend:
   # Can be sqlite, or mysql
   type: sqlite

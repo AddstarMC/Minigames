@@ -2,12 +2,16 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HintCommand extends ACommand { //todo make subcommands for all treasure hunt ones
+public class HintCommand extends ACommand { //todo make subcommands for all treasure hunt ones e.a. /minigames tr hint;  /minigames tr maxheight etc.
 
     @Override
     public @NotNull String getName() {
@@ -30,12 +34,12 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
 
     @Override
     public @NotNull Component getDescription() {
-        return "Hints a player to the whereabouts of a treasure hunt treasure. If more than one, the name of the Minigame must be entered. (Will be listed)";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HINT_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame hint [Minigame Name]"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HINT_USAGE);
     }
 
     @Override
@@ -53,13 +57,15 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
             if (mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL &&
                     mgm.getMechanicName().equals("treasure_hunt")) {
                 TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
-                if (thm.hasTreasureLocation() && !thm.isTreasureFound()) {
+                if (thm != null && thm.hasTreasureLocation() && !thm.isTreasureFound()) {
                     thm.getHints(player);
                 } else {
-                    player.sendInfoMessage(ChatColor.GRAY + mgm.getName(false) + " is currently not running.");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTSTARTED,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(false)));
                 }
             } else if (mgm == null || mgm.getType() != MinigameType.GLOBAL) {
-                player.sendMessage(ChatColor.RED + "There is no treasure hunt running by the name \"" + args[0] + "\"", MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NOTTREASUREHUNT,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
         } else {
             List<Minigame> mgs = new ArrayList<>();
@@ -70,25 +76,20 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
             }
             if (!mgs.isEmpty()) {
                 if (mgs.size() > 1) {
-                    player.sendInfoMessage(ChatColor.LIGHT_PURPLE + "Currently running Treasure Hunts:");
-                    StringBuilder treasures = new StringBuilder();
-                    for (int i = 0; i < mgs.size(); i++) {
-                        treasures.append(mgs.get(i).getName(false));
-                        if (i != mgs.size() - 1) {
-                            treasures.append(", ");
-                        }
-                    }
-                    player.sendInfoMessage(ChatColor.GRAY + treasures.toString());
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_HINT_LISTHUNTS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", mgs.stream().map(th -> th.getName(true)).toList())));
+
                 } else {
                     TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.get(0));
-                    if (thm.hasTreasureLocation() && !thm.isTreasureFound()) {
+                    if (thm != null && thm.hasTreasureLocation() && !thm.isTreasureFound()) {
                         thm.getHints(player);
                     } else {
-                        player.sendInfoMessage(ChatColor.GRAY + mgs.get(0).getName(false) + " is currently not running.");
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTSTARTED,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgs.get(0).getName(false)));
                     }
                 }
             } else {
-                player.sendInfoMessage(ChatColor.LIGHT_PURPLE + "There are no Treasure Hunt minigames currently running.");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NORUNNING);
             }
         }
         return true;
