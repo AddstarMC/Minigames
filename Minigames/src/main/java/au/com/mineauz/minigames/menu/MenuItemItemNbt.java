@@ -10,6 +10,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/*todo when I did this I didn't really thought about item amount.
+* While clicking with a stack on this should work, it gets tricky if the desired number exceeds the stack limit.
+* sure, one could easily work with left / right click but there is no guarantee overstacking works and clicking 300 times isn't fun.
+* for now I will add a Integer menu item besides this one. Maybe someone will have a bright idea in future
+* Amounts are not supported here.
+*/
 public class MenuItemItemNbt extends MenuItem {
     /**
      * NEVER EVER confuse this item with the display item of MenuItem!

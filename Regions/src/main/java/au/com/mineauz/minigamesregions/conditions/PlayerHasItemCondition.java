@@ -26,8 +26,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayerHasItemCondition extends ConditionInterface {
+public class PlayerHasItemCondition extends ConditionInterface { //todo amount
     private final ItemFlag itemToSearchFor = new ItemFlag(new ItemStack(Material.STONE), "item");
+    private final IntegerFlag count = new IntegerFlag(1, "amount");
     private final EnumFlag<PositionType> where = new EnumFlag<>(PositionType.ANYWHERE, "where");
     private final IntegerFlag slot = new IntegerFlag(0, "slot");
 
@@ -35,6 +36,28 @@ public class PlayerHasItemCondition extends ConditionInterface {
     private final BooleanFlag matchLore = new BooleanFlag(false, "matchLore");
     private final BooleanFlag matchEnchantments = new BooleanFlag(false, "matchEnchantments");
     private final BooleanFlag matchExact = new BooleanFlag(false, "matchExact");
+
+    static void createPattern(String value, StringBuffer buffer) {
+        int start = 0;
+        int index;
+        while (true) {
+            index = value.indexOf('%', start);
+            // End of input, append the rest
+            if (index == -1) {
+                buffer.append(Pattern.quote(value.substring(start)));
+                break;
+            }
+
+            // Append the start
+            buffer.append(Pattern.quote(value.substring(start, index)));
+
+            // Append the wildcard code
+            buffer.append(".*?");
+
+            // Move to next position
+            start = index + 1;
+        }
+    }
 
     @Override
     public String getName() {
@@ -49,6 +72,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
     @Override
     public void describe(@NotNull Map<String, Object> out) {
         out.put("Item", itemToSearchFor.getFlag().getType());
+        out.put("Amount", count.getFlag());
         out.put("Where", where.getFlag());
         out.put("Slot", slot.getFlag());
 
@@ -88,6 +112,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         ItemStack[] searchItems;
         int startSlot;
         int endSlot;
+        int foundAmount = 0;
+
 
         if (checkType == PositionType.ARMOR) {
             searchItems = inventory.getArmorContents();
@@ -143,45 +169,48 @@ public class PlayerHasItemCondition extends ConditionInterface {
 
 
             if (itemInSlot != null && itemInSlot.getType() == material) {
-                ItemMeta meta = itemInSlot.getItemMeta();
-
-                if (namePattern != null) {
-                    Matcher m = namePattern.matcher(meta.getDisplayName());
-                    if (!m.matches()) {
-                        continue;
-                    }
-                }
-
-                if (matchLore.getFlag()) {
-                    if (lorePattern != null) {
-                        Matcher m = lorePattern.matcher(String.join("\n", meta.getLore()));
-                        if (!m.matches()) {
-                            continue;
-                        }
-                    } else {
-                        // Only an unset lore pattern can match this
-                        if (itemToSearchFor.getFlag().lore() != null) {
-                            continue;
-                        }
-                    }
-                }
-
                 if (matchExact.getFlag()) {
                     if (itemToSearchFor.getFlag().hasItemMeta() != itemInSlot.hasItemMeta() || (
                             itemToSearchFor.getFlag().hasItemMeta() &&
                                     !itemToSearchFor.getFlag().getItemMeta().equals(itemInSlot.getItemMeta()))) {
                         continue;
                     }
+                } else {
+                    ItemMeta meta = itemInSlot.getItemMeta();
+
+                    if (namePattern != null) {
+                        Matcher m = namePattern.matcher(meta.getDisplayName());
+                        if (!m.matches()) {
+                            continue;
+                        }
+                    }
+
+                    if (matchLore.getFlag()) {
+                        if (lorePattern != null) {
+                            Matcher m = lorePattern.matcher(String.join("\n", meta.getLore()));
+                            if (!m.matches()) {
+                                continue;
+                            }
+                        } else {
+                            // Only an unset lore pattern can match this
+                            if (itemToSearchFor.getFlag().lore() != null) {
+                                continue;
+                            }
+                        }
+                    }
+
+                    if (matchEnchantments.getFlag() && !enchantmentsToMatch.equals(itemInSlot.getEnchantments())) {
+                        continue;
+                    }
                 }
 
-                if (matchEnchantments.getFlag() && !enchantmentsToMatch.equals(itemInSlot.getEnchantments())) {
-                    continue;
+                foundAmount += itemInSlot.getAmount();
+                if (foundAmount >= count.getFlag()) {
+                    // This item completely matches
+                    return true;
                 }
-
-                // This item completely matches
-                return true;
-            }
-        }
+            } // material match
+        } // for loop
         return false;
     }
 
@@ -212,31 +241,10 @@ public class PlayerHasItemCondition extends ConditionInterface {
         }
     }
 
-    static void createPattern(String value, StringBuffer buffer) {
-        int start = 0;
-        int index;
-        while (true) {
-            index = value.indexOf('%', start);
-            // End of input, append the rest
-            if (index == -1) {
-                buffer.append(Pattern.quote(value.substring(start)));
-                break;
-            }
-
-            // Append the start
-            buffer.append(Pattern.quote(value.substring(start, index)));
-
-            // Append the wildcard code
-            buffer.append(".*?");
-
-            // Move to next position
-            start = index + 1;
-        }
-    }
-
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         itemToSearchFor.saveValue(path, config);
+        count.saveValue(path, config);
         where.saveValue(path, config);
         slot.saveValue(path, config);
 
@@ -247,6 +255,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
         saveInvert(config, path);
 
         // remove legacy
+        // datafixerupper
         config.set(path + ".type", null);
         config.set(path + ".name", null);
         config.set(path + ".lore", null);
@@ -257,6 +266,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
         if (config.contains(path + ".type")) { // load legacy data
             Material flag = Material.getMaterial(config.getString(path + ".type"));
 
+            // datafixerupper
             if (flag != null) {
                 ItemStack legacyItem = new ItemStack(flag);
                 ItemMeta meta = legacyItem.getItemMeta();
@@ -284,6 +294,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         } else { // new data load system
             itemToSearchFor.loadValue(path, config);
         }
+
+        count.loadValue(path, config);
 
         where.loadValue(path, config);
         slot.loadValue(path, config);
@@ -330,6 +342,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
         });
 
         menu.addItem(itemMenuItem);
+        menu.addItem(count.getMenuItem("Amount", Material.STONE_SLAB, 1, 999));
 
         final MenuItemInteger slotMenuItem = slot.getMenuItem("Slot", Material.DIAMOND, null, 0, 40);
         final MenuItemEnum<PositionType> whereMenuItem = new MenuItemEnum<>("Search Where", Material.COMPASS, new Callback<>() {
@@ -342,9 +355,9 @@ public class PlayerHasItemCondition extends ConditionInterface {
             public void setValue(PositionType value) {
                 // only enable if relevant
                 if (value == PositionType.SLOT) {
-                    menu.addItem(slotMenuItem, 2);
+                    menu.addItem(slotMenuItem, 3);
                 } else {
-                    menu.removeItem(2);
+                    menu.removeItem(3);
                 }
 
                 where.setFlag(value);
