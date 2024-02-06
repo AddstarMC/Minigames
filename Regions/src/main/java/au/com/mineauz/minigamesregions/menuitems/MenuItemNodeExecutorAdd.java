@@ -5,8 +5,11 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,12 +18,13 @@ import java.util.List;
 public class MenuItemNodeExecutorAdd extends MenuItem {
     private final Node node;
 
-    public MenuItemNodeExecutorAdd(String name, Material displayItem, Node node) {
+    public MenuItemNodeExecutorAdd(@Nullable Component name, @Nullable Material displayItem, @NotNull Node node) {
         super(name, displayItem);
         this.node = node;
     }
 
-    public MenuItemNodeExecutorAdd(String name, List<String> description, Material displayItem, Node node) {
+    public MenuItemNodeExecutorAdd(@Nullable Component name, @Nullable List<@NotNull Component> description,
+                                   @Nullable Material displayItem, @NotNull Node node) {
         super(name, description, displayItem);
         this.node = node;
     }

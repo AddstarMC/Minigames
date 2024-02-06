@@ -2,26 +2,41 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemList extends MenuItem {
-    private final Callback<String> value;
-    private final List<String> options;
+public class MenuItemList<T> extends MenuItem {
+    private final Callback<T> value;
+    private final List<T> options;
 
-    public MenuItemList(String name, Material displayItem, Callback<String> value, List<String> options) {
+    public MenuItemList(@NotNull LangKey langKey, @Nullable Material displayItem, @NotNull Callback<@NotNull T> value,
+                        @NotNull List<@NotNull T> options) {
+        super(langKey, displayItem);
+        this.value = value;
+        this.options = options;
+        updateDescription();
+    }
+
+    public MenuItemList(@Nullable Component name, @Nullable Material displayItem, @NotNull Callback<@NotNull T> value,
+                        @NotNull List<@NotNull T> options) {
         super(name, displayItem);
         this.value = value;
         this.options = options;
         updateDescription();
     }
 
-    public MenuItemList(String name, List<String> description, Material displayItem, Callback<String> value, List<String> options) {
+    public MenuItemList(@Nullable Component name, @Nullable List<@NotNull Component> description,
+                        @Nullable Material displayItem, @NotNull Callback<@NotNull T> value,
+                        @NotNull List<@NotNull T> options) {
         super(name, description, displayItem);
         this.value = value;
         this.options = options;
@@ -29,7 +44,7 @@ public class MenuItemList extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description;
+        List<Component> description;
         int pos = options.indexOf(value.getValue());
         int before = pos - 1;
         int after = pos + 1;

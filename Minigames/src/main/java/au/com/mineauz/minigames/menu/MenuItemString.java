@@ -1,10 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +17,19 @@ public class MenuItemString extends MenuItem {
     protected final Callback<String> str;
     private boolean allowNull = false;
 
-    public MenuItemString(String name, Material displayItem, Callback<String> str) {
+    public MenuItemString(@NotNull LangKey langKey, @Nullable Material displayItem, @NotNull Callback<String> str) {
+        super(langKey, displayItem);
+        this.str = str;
+        updateDescription();
+    }
+
+    public MenuItemString(@Nullable Component name, @Nullable Material displayItem, @NotNull Callback<String> str) {
         super(name, displayItem);
         this.str = str;
         updateDescription();
     }
 
-    public MenuItemString(String name, List<String> description, Material displayItem, Callback<String> str) {
+    public MenuItemString(@Nullable Component name, @Nullable List<@NotNull Component> description, @Nullable Material displayItem, @NotNull Callback<String> str) {
         super(name, description, displayItem);
         this.str = str;
         updateDescription();
@@ -30,7 +40,7 @@ public class MenuItemString extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description;
+        List<Component> description;
         String setting = str.getValue();
         if (setting == null)
             setting = "Not Set";
@@ -40,7 +50,7 @@ public class MenuItemString extends MenuItem {
 
         if (getDescription() != null) {
             description = getDescription();
-            String desc = getDescription().get(0);
+            Component desc = getDescription().get(0);
 
             if (desc.startsWith(ChatColor.GREEN.toString()))
                 description.set(0, ChatColor.GREEN + setting);

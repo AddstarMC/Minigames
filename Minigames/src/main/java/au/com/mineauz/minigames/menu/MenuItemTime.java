@@ -4,17 +4,22 @@ import au.com.mineauz.minigames.MinigameUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemTime extends MenuItemInteger {
 
-    public MenuItemTime(Component name, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
+    public MenuItemTime(@Nullable Component name, @Nullable Material displayItem, @NotNull Callback<Integer> value,
+                        @Nullable Integer min, @Nullable Integer max) {
         super(name, displayItem, value, min, max);
     }
 
-    public MenuItemTime(Component name, List<Component> description, Material displayItem, Callback<Long> value, Integer min, Integer max) {
+    public MenuItemTime(@Nullable Component name, @Nullable List<@NotNull Component> description,
+                        @Nullable Material displayItem, @NotNull Callback<Long> value,
+                        @Nullable Integer min, @Nullable Integer max) {
         super(name, description, displayItem, value, min, max);
     }
 

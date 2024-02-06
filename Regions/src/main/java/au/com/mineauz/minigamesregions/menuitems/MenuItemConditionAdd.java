@@ -5,23 +5,25 @@ import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class MenuItemConditionAdd extends MenuItem {
-
     private RegionExecutor rexec;
     private NodeExecutor nexec;
 
-    public MenuItemConditionAdd(String name, Material displayItem, RegionExecutor exec) {
+    public MenuItemConditionAdd(@NotNull Component name, @Nullable Material displayItem, @NotNull RegionExecutor exec) {
         super(name, displayItem);
         this.rexec = exec;
     }
 
-    public MenuItemConditionAdd(String name, Material displayItem, NodeExecutor exec) {
+    public MenuItemConditionAdd(@NotNull Component name, @Nullable Material displayItem, @NotNull NodeExecutor exec) {
         super(name, displayItem);
         this.nexec = exec;
     }

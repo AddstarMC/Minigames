@@ -6,9 +6,12 @@ import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +23,7 @@ public class MenuItemCondition extends MenuItem {
     private RegionExecutor rexec;
     private NodeExecutor nexec;
 
-    public MenuItemCondition(String name, Material displayItem, RegionExecutor exec, ConditionInterface con) {
+    public MenuItemCondition(@Nullable Component name, @Nullable Material displayItem, @NotNull RegionExecutor exec, @NotNull ConditionInterface con) {
         super(name, displayItem);
         this.rexec = exec;
         this.con = con;
@@ -28,7 +31,7 @@ public class MenuItemCondition extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemCondition(String name, Material displayItem, NodeExecutor exec, ConditionInterface con) {
+    public MenuItemCondition(@Nullable Component name, @Nullable Material displayItem, @NotNull NodeExecutor exec, @NotNull ConditionInterface con) {
         super(name, displayItem);
         this.nexec = exec;
         this.con = con;

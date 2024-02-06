@@ -62,7 +62,7 @@ public class SetInfectedPercentCommand extends ASetCommand {
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(val)));
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_ERROR_RANGE,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), "1"),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), "99"));
                     }

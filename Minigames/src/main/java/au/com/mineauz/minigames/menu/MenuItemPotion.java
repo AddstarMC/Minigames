@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.PlayerLoadout;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -14,14 +15,14 @@ public class MenuItemPotion extends MenuItem {
     private final PotionEffect eff;
     private final PlayerLoadout loadout;
 
-    public MenuItemPotion(String name, Material displayItem, PotionEffect eff, PlayerLoadout loadout) {
+    public MenuItemPotion(Component name, Material displayItem, PotionEffect eff, PlayerLoadout loadout) {
         super(name, displayItem);
         this.eff = eff;
         this.loadout = loadout;
         updateDescription();
     }
 
-    public MenuItemPotion(String name, List<String> description, Material displayItem, PotionEffect eff, PlayerLoadout loadout) {
+    public MenuItemPotion(Component name, List<Component> description, Material displayItem, PotionEffect eff, PlayerLoadout loadout) {
         super(name, description, displayItem);
         this.eff = eff;
         this.loadout = loadout;
@@ -29,7 +30,7 @@ public class MenuItemPotion extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description;
+        List<Component> description;
         if (getDescription() != null) {
             description = getDescription();
             if (getDescription().size() >= 2) {

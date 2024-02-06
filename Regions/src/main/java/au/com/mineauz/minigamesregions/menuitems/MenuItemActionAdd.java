@@ -4,9 +4,12 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -14,7 +17,7 @@ public class MenuItemActionAdd extends MenuItem {
 
     private final BaseExecutor exec;
 
-    public MenuItemActionAdd(String name, Material displayItem, BaseExecutor exec) {
+    public MenuItemActionAdd(@Nullable Component name, @Nullable Material displayItem, @NotNull BaseExecutor exec) {
         super(name, displayItem);
         this.exec = exec;
     }

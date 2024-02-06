@@ -8,23 +8,27 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemRegion extends MenuItem {
-    private final Region region;
-    private final RegionModule rmod;
+    private final @NotNull Region region;
+    private final @NotNull RegionModule rmod;
 
-    public MenuItemRegion(String name, Material displayItem, Region region, RegionModule rmod) {
+    public MenuItemRegion(@Nullable Component name, @Nullable Material displayItem, @NotNull Region region, @NotNull RegionModule rmod) {
         super(name, displayItem);
         this.region = region;
         this.rmod = rmod;
     }
 
-    public MenuItemRegion(String name, List<String> description, Material displayItem, Region region, RegionModule rmod) {
+    public MenuItemRegion(@NotNull Component name, @Nullable List<@NotNull Component> description,
+                          @Nullable Material displayItem, @NotNull Region region, @Nullable RegionModule rmod) {
         super(name, description, displayItem);
         this.region = region;
         this.rmod = rmod;

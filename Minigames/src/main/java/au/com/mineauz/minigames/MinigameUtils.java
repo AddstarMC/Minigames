@@ -30,7 +30,7 @@ public class MinigameUtils {
      * using the same time unit more than once is permitted.
      * If no time unit follows a number, it gets treated as seconds.
      *
-     * @return the parsed duration, or null if not possible
+     * @return the parsed duration in milliseconds, or null if not possible
      */
     public static @Nullable Long parsePeriod(@NotNull String periodStr) {
         Matcher matcher = PERIOD_PATTERN.matcher(periodStr);

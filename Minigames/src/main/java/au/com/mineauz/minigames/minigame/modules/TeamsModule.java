@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TeamSetFlag;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -220,11 +221,11 @@ public class TeamsModule extends MinigameModule {
         teams.add("None");
         items.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));
         items.add(new MenuItemNewLine());
-        for (Team t : this.teams.values()) {
-            items.add(new MenuItemTeam(t.getTextColor() + t.getDisplayName(), t));
+        for (Team team : this.teams.values()) {
+            items.add(new MenuItemTeam(team.getColoredDisplayName(), team));
         }
 
-        m.addItem(new MenuItemAddTeam("Add Team", getMinigame()), m.getSize() - 1);
+        m.addItem(new MenuItemAddTeam(MgMenuLangKey.MENU_TEAMADD_NAME, this), m.getSize() - 1);
 
         m.addItems(items);
 

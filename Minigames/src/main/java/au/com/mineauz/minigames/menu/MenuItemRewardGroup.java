@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemRewardGroup extends MenuItem {
-
     private final RewardGroup group;
     private final Rewards rewards;
 

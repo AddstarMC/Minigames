@@ -1,10 +1,14 @@
 package au.com.mineauz.minigames.config;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -56,7 +60,11 @@ public abstract class Flag<T> {
 
     public abstract void loadValue(String path, FileConfiguration config);
 
-    public abstract MenuItem getMenuItem(Component name, Material displayItem);
+    public MenuItem getMenuItem(@NotNull LangKey langKey, @Nullable Material displayMaterial) {
+        return getMenuItem(MinigameMessageManager.getMgMessage(langKey), displayMaterial);
+    }
 
-    public abstract MenuItem getMenuItem(Component name, Material displayItem, List<Component> description);
+    public abstract MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMaterial);
+
+    public abstract MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayItem, @Nullable List<@NotNull Component> description);
 }

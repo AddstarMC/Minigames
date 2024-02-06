@@ -7,15 +7,17 @@ import au.com.mineauz.minigames.stats.StatFormat;
 import com.google.common.base.Functions;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class MenuItemModifyStatSetting extends MenuItem {
-    private final Minigame minigame;
-    private final MinigameStat stat;
+    private final @NotNull Minigame minigame;
+    private final @NotNull MinigameStat stat;
 
-    public MenuItemModifyStatSetting(Minigame minigame, MinigameStat stat, Material material) {
+    public MenuItemModifyStatSetting(@NotNull Minigame minigame, @NotNull MinigameStat stat, @Nullable Material material) {
         super(stat.getDisplayName(), material);
 
         this.minigame = minigame;

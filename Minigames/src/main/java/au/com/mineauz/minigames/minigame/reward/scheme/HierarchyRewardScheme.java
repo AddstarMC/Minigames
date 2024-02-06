@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -25,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -288,8 +290,8 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
             mgPlayer.getPlayer().closeInventory();
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MENU_ENTERCHAT,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(10)));
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(10))));
 
             mgPlayer.setManualEntry(this);
             getContainer().startReopenTimer(10);
@@ -348,7 +350,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
             mgPlayer.getPlayer().closeInventory();
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MENU_ENTERCHAT,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(10)));
 
             mgPlayer.setManualEntry(this);

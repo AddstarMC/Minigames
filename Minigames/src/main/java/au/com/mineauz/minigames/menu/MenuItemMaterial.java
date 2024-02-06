@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -17,16 +18,16 @@ public class MenuItemMaterial extends MenuItem {
 
     private Callback<Material> materialCallback;
 
-    public MenuItemMaterial(String name, Material displayItem) {
+    public MenuItemMaterial(Component name, Material displayItem) {
         super(name, displayItem);
     }
 
-    public MenuItemMaterial(String name, Material displayItem, Callback<Material> c) {
+    public MenuItemMaterial(Component name, Material displayItem, Callback<Material> c) {
         super(name, displayItem);
         materialCallback = c;
     }
 
-    public MenuItemMaterial(String name, List<String> description, Material displayItem, Callback<Material> c) {
+    public MenuItemMaterial(Component name, List<Component> description, Material displayItem, Callback<Material> c) {
         super(name, description, displayItem);
         materialCallback = c;
     }

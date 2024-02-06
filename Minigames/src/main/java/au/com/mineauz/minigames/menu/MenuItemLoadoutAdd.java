@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,24 +17,24 @@ public class MenuItemLoadoutAdd extends MenuItem {
     private final Map<String, PlayerLoadout> loadouts;
     private Minigame minigame = null;
 
-    public MenuItemLoadoutAdd(String name, Material displayItem, Map<String, PlayerLoadout> loadouts, Minigame mgm) {
+    public MenuItemLoadoutAdd(Component name, Material displayItem, Map<String, PlayerLoadout> loadouts, Minigame mgm) {
         super(name, displayItem);
         this.loadouts = loadouts;
         this.minigame = mgm;
     }
 
-    public MenuItemLoadoutAdd(String name, List<String> description, Material displayItem, Map<String, PlayerLoadout> loadouts, Minigame mgm) {
+    public MenuItemLoadoutAdd(Component name, List<Component> description, Material displayItem, Map<String, PlayerLoadout> loadouts, Minigame mgm) {
         super(name, description, displayItem);
         this.loadouts = loadouts;
         this.minigame = mgm;
     }
 
-    public MenuItemLoadoutAdd(String name, Material displayItem, Map<String, PlayerLoadout> loadouts) {
+    public MenuItemLoadoutAdd(Component name, Material displayItem, Map<String, PlayerLoadout> loadouts) {
         super(name, displayItem);
         this.loadouts = loadouts;
     }
 
-    public MenuItemLoadoutAdd(String name, List<String> description, Material displayItem, Map<String, PlayerLoadout> loadouts) {
+    public MenuItemLoadoutAdd(Component name, List<Component> description, Material displayItem, Map<String, PlayerLoadout> loadouts) {
         super(name, description, displayItem);
         this.loadouts = loadouts;
     }

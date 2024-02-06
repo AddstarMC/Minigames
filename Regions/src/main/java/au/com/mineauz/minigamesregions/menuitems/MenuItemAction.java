@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class MenuItemAction extends MenuItem {
-
     private final BaseExecutor exec;
     private final ActionInterface act;
 
@@ -43,7 +42,7 @@ public class MenuItemAction extends MenuItem {
         int lineLimit = 35;
 
         // Convert the description
-        List<String> description = Lists.newArrayList();
+        List<Component> description = Lists.newArrayList();
         for (Entry<String, Object> entry : out.entrySet()) {
             Object value = entry.getValue();
             String line = ChatColor.GRAY + entry.getKey() + ": ";

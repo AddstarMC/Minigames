@@ -1,43 +1,52 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemInteger extends MenuItem {
-
     private final Callback<Integer> value;
-    private Integer min = null;
-    private Integer max = null;
+    private final Integer min;
+    private final Integer max;
 
-    public MenuItemInteger(Component name, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
-        super(name, displayItem);
+    public MenuItemInteger(@NotNull LangKey langKey, @Nullable Material displayItem, @NotNull Callback<Integer> value,
+                           @Nullable Integer min, @Nullable Integer max) {
+        super(langKey, displayItem);
         this.value = value;
-        if (min != null)
-            this.min = min;
-        if (max != null)
-            this.max = max;
+        this.min = min;
+        this.max = max;
         updateDescription();
     }
 
-    public MenuItemInteger(Component name, List<Component> description, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
+    public MenuItemInteger(@Nullable Component name, @Nullable Material displayItem, @NotNull Callback<Integer> value,
+                           @Nullable Integer min, @Nullable Integer max) {
+        super(name, displayItem);
+        this.value = value;
+        this.min = min;
+        this.max = max;
+        updateDescription();
+    }
+
+    public MenuItemInteger(@Nullable Component name, @Nullable List<Component> description, @Nullable Material displayItem,
+                           @NotNull Callback<Integer> value, @Nullable Integer min, @Nullable Integer max) {
         super(name, description, displayItem);
         this.value = value;
-        if (min != null)
-            this.min = min;
-        if (max != null)
-            this.max = max;
+        this.min = min;
+        this.max = max;
         updateDescription();
     }
 
     public void updateDescription() {
-        List<String> description;
+        List<Component> description;
         if (getDescription() != null) {
             description = getDescription();
             String desc = ChatColor.stripColor(getDescription().get(0));

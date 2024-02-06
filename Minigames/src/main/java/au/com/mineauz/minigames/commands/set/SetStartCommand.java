@@ -165,7 +165,7 @@ public class SetStartCommand extends ASetCommand {
                 }
 
             } else { // not valid number
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_RANGE,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), "0"),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(Integer.MAX_VALUE)));
                 return false;

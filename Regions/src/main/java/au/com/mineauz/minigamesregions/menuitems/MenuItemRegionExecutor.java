@@ -10,14 +10,15 @@ import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class MenuItemRegionExecutor extends MenuItem {
-    private final Region region;
-    private final RegionExecutor ex;
+    private final @NotNull Region region;
+    private final @NotNull RegionExecutor ex;
 
-    public MenuItemRegionExecutor(Region region, RegionExecutor ex) {
+    public MenuItemRegionExecutor(@NotNull Region region, @NotNull RegionExecutor ex) {
         super("Region Executor:", Material.ENDER_PEARL);
         this.region = region;
         this.ex = ex;

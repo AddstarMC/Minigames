@@ -89,7 +89,7 @@ public class ScoreboardCommand extends ACommand {
         if (field == null) {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTFIELD,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]),
-                    Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), stat.getDisplayName()));
+                    Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), stat.getDisplayName()));
             return true;
         }
 

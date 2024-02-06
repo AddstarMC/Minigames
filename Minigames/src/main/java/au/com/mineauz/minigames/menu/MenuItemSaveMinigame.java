@@ -2,21 +2,23 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class MenuItemSaveMinigame extends MenuItem {
     private final @NotNull Minigame mgm;
 
-    public MenuItemSaveMinigame(String name, Material displayItem, @NotNull Minigame minigame) {
+    public MenuItemSaveMinigame(@Nullable Component name, @NotNull Material displayItem, @NotNull Minigame minigame) {
         super(name, displayItem);
         mgm = minigame;
     }
 
-    public MenuItemSaveMinigame(String name, List<@NotNull String> description, Material displayItem, @NotNull Minigame minigame) {
+    public MenuItemSaveMinigame(@Nullable Component name, @Nullable List<@NotNull Component> description, Material displayItem, @NotNull Minigame minigame) {
         super(name, description, displayItem);
         mgm = minigame;
     }

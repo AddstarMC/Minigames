@@ -1,13 +1,13 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
 public class MenuItemFlag extends MenuItem {
-
     private final String flag;
     private final List<String> flags;
 
@@ -17,7 +17,7 @@ public class MenuItemFlag extends MenuItem {
         this.flags = flags;
     }
 
-    public MenuItemFlag(List<String> description, Material displayItem, String flag, List<String> flags) {
+    public MenuItemFlag(List<Component> description, Material displayItem, String flag, List<String> flags) {
         super(flag, description, displayItem);
         this.flag = flag;
         this.flags = flags;

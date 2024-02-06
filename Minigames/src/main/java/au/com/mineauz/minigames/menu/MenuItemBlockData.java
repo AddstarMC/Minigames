@@ -1,7 +1,13 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,19 +16,20 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemBlockData extends MenuItem {
     private Callback<BlockData> dataCallback;
 
-    public MenuItemBlockData(String name, Material displayItem) {
+    public MenuItemBlockData(Component name, Material displayItem) {
         super(name, displayItem);
         dataCallback.setValue(displayItem.createBlockData());
         setDescription(createDescription(dataCallback.getValue()));
     }
 
-    public MenuItemBlockData(String name, Material displayItem, Callback<BlockData> callback) {
+    public MenuItemBlockData(Component name, Material displayItem, Callback<BlockData> callback) {
         super(name, displayItem);
         this.dataCallback = callback;
         setDescription(createDescription(dataCallback.getValue()));
@@ -36,8 +43,8 @@ public class MenuItemBlockData extends MenuItem {
     /**
      * minecraft:chest[facing=north,type=single,waterlogged=false]{Items:[{Slot:0b,id:"minecraft:grass_block",Count:1b}],Lock:""}
      */
-    private List<String> createDescription(BlockData data) {
-        List<String> result = new ArrayList<>();
+    private List<Component> createDescription(BlockData data) {
+        List<Component> result = new ArrayList<>();
         result.add("Material: " + data.getMaterial().name());
         String dataString = data.getAsString();
         int firstbracket = StringUtils.indexOf(dataString, "[", 0);
@@ -59,63 +66,53 @@ public class MenuItemBlockData extends MenuItem {
 
     @Override
     public ItemStack onClickWithItem(@Nullable ItemStack item) {
-        try {
-            BlockData data = item.getType().createBlockData();
-            this.dataCallback.setValue(data);
+        if (item != null && item.getType().isBlock()) {
+            this.dataCallback.setValue(item.getType().createBlockData());
 
             // update the display item
             ItemStack stackUpdate = getItem();
             stackUpdate.setType(item.getType());
             setItem(stackUpdate);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            String name = "unknown";
-            if (item != null) {
-                name = item.getType().name();
-            }
-            getContainer().getViewer().sendMessage(name + " cannot be made into a block!", MinigameMessageType.ERROR);
+        } else {
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_BLOCKDATA_ERROR_INVALID,
+                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item != null ? Component.translatable(item.getType().translationKey()) : Component.text("?")));
         }
         return getItem();
     }
 
     @Override
     public void checkValidEntry(String entry) {
-        String err = "No MgBlockData detected";
+        String err;
         try {
             BlockData d = Bukkit.createBlockData(entry);
             dataCallback.setValue(d);
+            setDescription(createDescription(dataCallback.getValue()));
 
             // update the display item
-            setDescription(createDescription(dataCallback.getValue()));
             if (d.getMaterial().isItem()) {
                 ItemStack stackUpdate = getItem();
                 stackUpdate.setType(d.getMaterial());
                 setItem(stackUpdate);
             }
-
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
-            return;
         } catch (IllegalArgumentException e) {
-            err = "Invalid MgBlockData !";
+            MinigameMessageManager.sendMessage(getContainer().getViewer(), MinigameMessageType.ERROR, Component.text(e.getLocalizedMessage()));
         }
+
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
-        getContainer().getViewer().sendMessage(err, MinigameMessageType.ERROR);
-
     }
 
     @Override
     public ItemStack onDoubleClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendMessage("Click a block to set Data for " + getName() + ", the menu" +
-                " " +
-                "will " +
-                "automatically reopen in 10s if nothing is clicked.", MinigameMessageType.INFO);
-        ply.setManualEntry(this);
-        getContainer().startReopenTimer(10);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        final int reopenSeconds = 10;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_BLOCKDATA_CLICKBLOCK,
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+        mgPlayer.setManualEntry(this);
+        getContainer().startReopenTimer(reopenSeconds);
         return null;
     }
-
 }

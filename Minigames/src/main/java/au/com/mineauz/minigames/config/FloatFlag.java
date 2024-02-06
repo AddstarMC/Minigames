@@ -3,8 +3,11 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDecimal;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -27,44 +30,25 @@ public class FloatFlag extends Flag<Float> {
     }
 
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
-        return new MenuItemDecimal(name, displayItem, new Callback<>() {
-
-            @Override
-            public Double getValue() {
-                return getFlag().doubleValue();
-            }
-
-            @Override
-            public void setValue(Double value) {
-                setFlag(value.floatValue());
-            }
-
-
-        }, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+        return this.getMenuItem(name, displayMat, null);
     }
 
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem,
-                                List<String> description) {
-        return new MenuItemDecimal(name, description, displayItem, new Callback<>() {
-
-            @Override
-            public Double getValue() {
-                return getFlag().doubleValue();
-            }
-
-            @Override
-            public void setValue(Double value) {
-                setFlag(value.floatValue());
-            }
-
-
-        }, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                @Nullable List<@NotNull Component> description) {
+        return this.getMenuItem(name, displayMat, description, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
     }
 
-    public MenuItem getMenuItem(String name, Material displayItem, double lowerinc, double upperinc, Double min, Double max) {
-        return new MenuItemDecimal(name, displayItem, new Callback<>() {
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                double lowerinc, double upperinc, @Nullable Double min, @Nullable Double max) {
+        return this.getMenuItem(name, displayMat, null, lowerinc, upperinc, min, max);
+    }
+
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                @Nullable List<@NotNull Component> description,
+                                double lowerinc, double upperinc, @Nullable Double min, @Nullable Double max) {
+        return new MenuItemDecimal(name, description, displayMat, new Callback<>() {
 
             @Override
             public Double getValue() {
@@ -75,27 +59,7 @@ public class FloatFlag extends Flag<Float> {
             public void setValue(Double value) {
                 setFlag(value.floatValue());
             }
-
 
         }, lowerinc, upperinc, min, max);
     }
-
-    public MenuItem getMenuItem(String name, Material displayItem,
-                                List<String> description, double lowerinc, double upperinc, Double min, Double max) {
-        return new MenuItemDecimal(name, description, displayItem, new Callback<>() {
-
-            @Override
-            public Double getValue() {
-                return getFlag().doubleValue();
-            }
-
-            @Override
-            public void setValue(Double value) {
-                setFlag(value.floatValue());
-            }
-
-
-        }, lowerinc, upperinc, min, max);
-    }
-
 }

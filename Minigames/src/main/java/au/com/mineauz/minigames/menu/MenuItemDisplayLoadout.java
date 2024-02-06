@@ -2,27 +2,31 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemDisplayLoadout extends MenuItem {
-
-    private PlayerLoadout loadout = null;
-    private Minigame mgm = null;
+    private final @NotNull PlayerLoadout loadout;
+    private @Nullable Minigame mgm = null;
     private boolean allowDelete = true;
     private Menu altMenu = null;
 
-    public MenuItemDisplayLoadout(String name, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
+    public MenuItemDisplayLoadout(@Nullable Component name, @Nullable Material displayItem, @NotNull PlayerLoadout loadout, @Nullable Minigame minigame) {
         super(name, displayItem);
         this.loadout = loadout;
         mgm = minigame;
@@ -30,14 +34,15 @@ public class MenuItemDisplayLoadout extends MenuItem {
             allowDelete = false;
     }
 
-    public MenuItemDisplayLoadout(String name, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemDisplayLoadout(@Nullable Component name, @Nullable Material displayItem, @NotNull PlayerLoadout loadout) {
         super(name, displayItem);
         this.loadout = loadout;
         if (!loadout.isDeleteable())
             allowDelete = false;
     }
 
-    public MenuItemDisplayLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
+    public MenuItemDisplayLoadout(@Nullable Component name, @Nullable List<@NotNull Component> description,
+                                  @Nullable Material displayItem, @NotNull PlayerLoadout loadout, @NotNull Minigame minigame) {
         super(name, description, displayItem);
         this.loadout = loadout;
         mgm = minigame;
@@ -45,7 +50,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
             allowDelete = false;
     }
 
-    public MenuItemDisplayLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemDisplayLoadout(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout) {
         super(name, description, displayItem);
         this.loadout = loadout;
         if (!loadout.isDeleteable())
@@ -93,7 +98,8 @@ public class MenuItemDisplayLoadout extends MenuItem {
         Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
 
         potionMenu.setPreviousPage(loadoutMenu);
-        potionMenu.addItem(new MenuItemPotionAdd("Add Potion", MenuUtility.getCreateMaterial(), loadout), 44);
+        potionMenu.addItem(new MenuItemPotionAdd(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_POTIONADD_NAME),
+                MenuUtility.getCreateMaterial(), loadout), 44);
 
         if (mgm == null) {
             dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout);

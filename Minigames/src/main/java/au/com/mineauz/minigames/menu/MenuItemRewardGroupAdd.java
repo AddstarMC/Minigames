@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class MenuItemRewardGroupAdd extends MenuItem {
-
     private final Rewards rewards;
 
     public MenuItemRewardGroupAdd(Component name, Material displayItem, Rewards rewards) {

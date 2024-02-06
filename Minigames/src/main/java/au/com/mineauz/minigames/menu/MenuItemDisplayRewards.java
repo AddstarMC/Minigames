@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,12 +11,12 @@ public class MenuItemDisplayRewards extends MenuItem {
 
     private final Rewards rewards;
 
-    public MenuItemDisplayRewards(String name, Material displayItem, Rewards rewards) {
+    public MenuItemDisplayRewards(Component name, Material displayItem, Rewards rewards) {
         super(name, displayItem);
         this.rewards = rewards;
     }
 
-    public MenuItemDisplayRewards(String name, List<String> description, Material displayItem, Rewards rewards) {
+    public MenuItemDisplayRewards(Component name, List<Component> description, Material displayItem, Rewards rewards) {
         super(name, description, displayItem);
         this.rewards = rewards;
     }
@@ -27,5 +28,4 @@ public class MenuItemDisplayRewards extends MenuItem {
         rewardMenu.displayMenu(getContainer().getViewer());
         return null;
     }
-
 }

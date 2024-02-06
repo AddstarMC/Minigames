@@ -1,9 +1,11 @@
 package au.com.mineauz.minigames.stats;
 
+import net.kyori.adventure.text.Component;
+
 public abstract class MinigameStat {
     private final String name;
     private final StatFormat format;
-    private String displayName;
+    private Component displayName;
 
     MinigameStat(String name, StatFormat format) {
         this.name = name;
@@ -28,11 +30,11 @@ public abstract class MinigameStat {
      * @return Returns the current name for display purposes.
      * This will be the display name if set, otherwise it will be the actual name
      */
-    public String getDisplayName() {
+    public Component getDisplayName() {
         if (displayName != null) {
             return displayName;
         } else {
-            return name;
+            return Component.text(name);
         }
     }
 
@@ -41,7 +43,7 @@ public abstract class MinigameStat {
      *
      * @param name The new name or null to reset
      */
-    public void setDisplayName(String name) {
+    public void setDisplayName(Component name) {
         displayName = name;
     }
 

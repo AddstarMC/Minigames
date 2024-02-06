@@ -7,19 +7,21 @@ import au.com.mineauz.minigames.tool.ToolMode;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class MenuItemToolMode extends MenuItem {
-
     private final ToolMode mode;
 
-    public MenuItemToolMode(Component name, Material displayItem, ToolMode mode) {
+    public MenuItemToolMode(@Nullable Component name, @Nullable Material displayItem, @NotNull ToolMode mode) {
         super(name, displayItem);
         this.mode = mode;
     }
 
-    public MenuItemToolMode(Component name, List<Component> description, Material displayItem, ToolMode mode) {
+    public MenuItemToolMode(@Nullable Component name, @Nullable List<@NotNull Component> description,
+                            @Nullable Material displayItem, @NotNull ToolMode mode) {
         super(name, description, displayItem);
         this.mode = mode;
     }

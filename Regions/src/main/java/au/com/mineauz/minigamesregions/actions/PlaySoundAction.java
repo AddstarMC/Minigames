@@ -4,15 +4,11 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionMessageManager;
-import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -20,12 +16,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class PlaySoundAction extends AbstractAction {
-
     private final StringFlag sound = new StringFlag("ENTITY_PLAYER_LEVELUP", "sound");
     private final BooleanFlag priv = new BooleanFlag(true, "private");
     private final FloatFlag vol = new FloatFlag(1f, "volume");
@@ -107,36 +102,30 @@ public class PlaySoundAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Play Sound", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        List<String> sounds = new ArrayList<>();
-        for (Sound sound : Sound.values())
-            sounds.add(WordUtils.capitalize(sound.toString().replace("_", " ")));
-        m.addItem(new MenuItemList("Sound", Material.NOTE_BLOCK, new Callback<>() {
+        Menu m = new Menu(3, MgMenuLangKey.MENU_PLAYSOUND_MENU_NAME, mgPlayer);
+
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+        List<Sound> sounds = Arrays.asList(Sound.values());
+        m.addItem(new MenuItemList<>(MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, Material.NOTE_BLOCK, new Callback<>() {
 
             @Override
-            public String getValue() {
+            public Sound getValue() {
                 Sound s = getSound(sound.getFlag());              //ENSURE CONFIG doesn't contain old enums replace if they do.
                 if (!s.toString().equals(sound.getFlag())) {
                     sound.setFlag(s.toString());
                 }
-                return WordUtils.capitalize(sound.getFlag().replace("_", " "));
+                return s;
             }
 
             @Override
-            public void setValue(String value) {
-                if (sounds.contains(value)) {
-                    sound.setFlag(value.toUpperCase().replace(" ", "_"));
-                } else {
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                            RegionLangKey.ACTION_PLAYSOUND_ERROR_NOSOUND);
-                }
+            public void setValue(Sound value) {
+                sound.setFlag(value.toString().toUpperCase().replace(" ", "_"));
             }
 
 
         }, sounds));
-        m.addItem(priv.getMenuItem("Private Playback", Material.ENDER_PEARL));
-        m.addItem(new MenuItemDecimal("Volume", Material.JUKEBOX, new Callback<>() {
+        m.addItem(priv.getMenuItem(MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME, Material.ENDER_PEARL));
+        m.addItem(new MenuItemDecimal(MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, Material.JUKEBOX, new Callback<>() {
 
             @Override
             public Double getValue() {
@@ -150,7 +139,7 @@ public class PlaySoundAction extends AbstractAction {
 
 
         }, 0.1, 1d, 0.5, null));
-        m.addItem(new MenuItemDecimal("Pitch", Material.ENDER_EYE, new Callback<>() {
+        m.addItem(new MenuItemDecimal(MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME, Material.ENDER_EYE, new Callback<>() {
 
             @Override
             public Double getValue() {

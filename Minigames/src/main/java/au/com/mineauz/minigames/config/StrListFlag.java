@@ -29,12 +29,12 @@ public class StrListFlag extends Flag<List<String>> {
     }
 
     @Override
-    public MenuItem getMenuItem(@NotNull Component name, @Nullable Material displayItem) {
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayItem) {
         return getMenuItem(name, displayItem, null);
     }
 
     @Override
-    public MenuItem getMenuItem(@NotNull Component name, @Nullable Material displayItem,
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayItem,
                                 @Nullable List<@NotNull Component> description) {
         return null; //todo
     }

@@ -54,7 +54,7 @@ public class MinigameTool {
         return mode;
     }
 
-    public void setMode(ToolMode mode) {
+    public void setMode(@NotNull ToolMode mode) {
         ItemMeta meta = tool.getItemMeta();
         List<String> lore = meta.getLore();
         lore.set(1, ChatColor.AQUA + "Mode: " + ChatColor.WHITE + WordUtils.capitalize(mode.getName().replace("_", " ")));

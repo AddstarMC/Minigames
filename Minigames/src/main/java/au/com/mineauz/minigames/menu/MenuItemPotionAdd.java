@@ -1,39 +1,51 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MenuItemPotionAdd extends MenuItem {
     private final PlayerLoadout loadout;
 
-    public MenuItemPotionAdd(String name, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemPotionAdd(Component name, Material displayItem, PlayerLoadout loadout) {
         super(name, displayItem);
         this.loadout = loadout;
     }
 
-    public MenuItemPotionAdd(String name, List<String> description, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemPotionAdd(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout) {
         super(name, description, displayItem);
         this.loadout = loadout;
     }
 
     @Override
     public ItemStack onClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendInfoMessage("Enter a potion using the syntax below into chat, the menu will automatically reopen in 30s if nothing is entered.");
-        ply.sendInfoMessage("PotionName, level, duration (duration can be \"inf\")");
-        ply.setManualEntry(this);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
 
-        getContainer().startReopenTimer(30);
+        // time for a player to write a valid potion into chat
+        int reopenSeconds = 30;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_POTIONADD_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+        mgPlayer.setManualEntry(this);
+
+        getContainer().startReopenTimer(reopenSeconds);
         return null;
     }
 
@@ -42,26 +54,20 @@ public class MenuItemPotionAdd extends MenuItem {
         String[] split = entry.split(", ");
         if (split.length == 3) {
             String effect = split[0].toUpperCase();
-            if (PotionEffectType.getByName(effect) != null) {
-                PotionEffectType eff = PotionEffectType.getByName(effect);
-                if (split[1].matches("[0-9]+") && Integer.parseInt(split[1]) != 0) {
+            PotionEffectType eff = PotionEffectType.getByName(effect);
+            if (eff != null) {
+                if (split[1].matches("[+]?[0-9]+") && Integer.parseInt(split[1]) != 0) {
                     int level = Integer.parseInt(split[1]) - 1;
-                    if ((split[2].matches("[0-9]+") && Integer.parseInt(split[2]) != 0) || split[2].equalsIgnoreCase("inf")) {
-                        int dur;
-                        if (split[2].equalsIgnoreCase("inf"))
-                            dur = 100000; //todo there is a new infinit long thing for potions
-                        else
-                            dur = Integer.parseInt(split[2]);
 
-                        if (dur > 100000) {
-                            dur = 100000;
-                        }
-                        dur *= 20;
+                    Long dur = split[2].equalsIgnoreCase("inf") ? Long.valueOf(-1L) : MinigameUtils.parsePeriod(split[2]);
+                    if (dur != null) {
+                        dur = Math.max(-1, Math.min(dur, 100000)); // stay in range
+                        dur = TimeUnit.MILLISECONDS.toSeconds(dur) * 20; // millis to ticks
 
-                        List<String> des = new ArrayList<>();
-                        des.add("Shift + Right Click to Delete");
+                        List<Component> des = new ArrayList<>();
+                        des.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
 
-                        PotionEffect peff = new PotionEffect(eff, dur, level);
+                        PotionEffect peff = new PotionEffect(eff, dur.intValue(), level);
                         for (int slot : getContainer().getSlotMap()) {
                             if (getContainer().getClicked(slot) instanceof MenuItemPotion pot) {
                                 if (pot.getEffect().getType() == peff.getType()) {
@@ -72,25 +78,31 @@ public class MenuItemPotionAdd extends MenuItem {
                         }
                         for (int i = 0; i < 36; i++) {
                             if (!getContainer().hasMenuItem(i)) {
-                                getContainer().addItem(new MenuItemPotion(eff.getName().toLowerCase().replace("_", " "), des, Material.POTION, peff, loadout), i);
+                                getContainer().addItem(new MenuItemPotion(Component.text(eff.getName().toLowerCase().replace("_", " ")), des, Material.POTION, peff, loadout), i);
                                 loadout.addPotionEffect(peff);
                                 break;
                             }
                         }
-                    } else
-                        getContainer().getViewer().sendMessage(split[2] + " is not a valid duration! The time must be in seconds", MinigameMessageType.ERROR);
-                } else
-                    getContainer().getViewer().sendMessage(split[1] + " is not a valid level number!", MinigameMessageType.ERROR);
-            } else
-                getContainer().getViewer().sendMessage(split[0] + " is not a valid potion name!", MinigameMessageType.ERROR);
+                    } else {
+                        MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
+                    }
+                } else {
+                    MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
+                }
+            } else {
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTPOTION,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
+            }
 
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
-            return;
-        }
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        } else {
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
 
-        getContainer().getViewer().sendMessage("Invalid syntax entry! Make sure there is an comma and a space (\", \") between each item.", MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_POTIONADD_ERROR_SYNTAX);
+        }
     }
 }

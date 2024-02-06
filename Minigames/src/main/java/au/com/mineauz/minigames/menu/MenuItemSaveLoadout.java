@@ -2,32 +2,33 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
 public class MenuItemSaveLoadout extends MenuItem {
-    private PlayerLoadout loadout = null;
+    private PlayerLoadout loadout;
     private Menu altMenu = null;
 
-    public MenuItemSaveLoadout(String name, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemSaveLoadout(Component name, Material displayItem, PlayerLoadout loadout) {
         super(name, displayItem);
         this.loadout = loadout;
     }
 
-    public MenuItemSaveLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout) {
+    public MenuItemSaveLoadout(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout) {
         super(name, description, displayItem);
         this.loadout = loadout;
     }
 
-    public MenuItemSaveLoadout(String name, Material displayItem, PlayerLoadout loadout, Menu altMenu) {
+    public MenuItemSaveLoadout(Component name, Material displayItem, PlayerLoadout loadout, Menu altMenu) {
         super(name, displayItem);
         this.loadout = loadout;
         this.altMenu = altMenu;
     }
 
-    public MenuItemSaveLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout, Menu altMenu) {
+    public MenuItemSaveLoadout(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout, Menu altMenu) {
         super(name, description, displayItem);
         this.loadout = loadout;
         this.altMenu = altMenu;

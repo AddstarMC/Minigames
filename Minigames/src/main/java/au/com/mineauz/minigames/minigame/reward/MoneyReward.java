@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -75,7 +76,7 @@ public class MoneyReward extends RewardType {
         private List<String> options = new ArrayList<>();
 
         public MenuItemReward(MoneyReward reward) {
-            super("$" + money, Material.PAPER);
+            super(Component.text("$" + money), Material.PAPER);
             for (RewardRarity rarity : RewardRarity.values()) {
                 options.add(rarity.toString());
             }
@@ -168,8 +169,8 @@ public class MoneyReward extends RewardType {
 
         @Override
         public ItemStack onShiftClick() {
-            Menu m = new Menu(3, "Set Money Amount", getContainer().getViewer());
-            MenuItemDecimal dec = new MenuItemDecimal("Money", Material.PAPER, new Callback<>() {
+            Menu m = new Menu(3, MgMenuLangKey.MENU_MONEYREWARD_MENU_NAME, getContainer().getViewer());
+            MenuItemDecimal dec = new MenuItemDecimal(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME), Material.PAPER, new Callback<>() {
 
                 @Override
                 public Double getValue() {

@@ -1,34 +1,36 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.scoreboard.Team.OptionStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MenuItemTeam extends MenuItem {
+    private final @NotNull Team team;
 
-    private final Team team;
-
-    public MenuItemTeam(String name, Team team) {
+    public MenuItemTeam(@Nullable Component name, @NotNull Team team) {
         super(name, Material.LEATHER_CHESTPLATE);
 
-        setDescription(List.of(ChatColor.DARK_PURPLE + "(Right Click to delete)"));
+        setDescription(List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK)));
         this.team = team;
         setTeamIcon();
     }
 
-    public MenuItemTeam(String name, List<String> description, Team team) {
+    public MenuItemTeam(@Nullable Component name, @NotNull List<@NotNull Component> description, @NotNull Team team) {
         super(name, description, Material.LEATHER_CHESTPLATE);
 
-        getDescription().add(0, ChatColor.DARK_PURPLE + "(Right Click to delete)");
+        getDescription().add(0, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
         this.team = team;
         setTeamIcon();
     }
@@ -59,7 +61,7 @@ public class MenuItemTeam extends MenuItem {
     @Override
     public ItemStack onClick() {
         Menu m = new Menu(3, getName(), getContainer().getViewer());
-        m.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<>() {
+        m.addItem(new MenuItemString(MgMenuLangKey.MENU_TEAM_DISPLAYNAME, Material.NAME_TAG, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -70,10 +72,8 @@ public class MenuItemTeam extends MenuItem {
             public void setValue(String value) {
                 team.setDisplayName(value);
             }
-
-
         }));
-        m.addItem(new MenuItemInteger("Max Players", Material.STONE, new Callback<>() {
+        m.addItem(new MenuItemInteger(MgMenuLangKey.MENU_TEAM_MAXPLAYERS, Material.STONE, new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -84,29 +84,25 @@ public class MenuItemTeam extends MenuItem {
             public void setValue(Integer value) {
                 team.setMaxPlayers(value);
             }
-
-
         }, 0, null));
+
         for (Flag<?> flag : team.getFlags()) {
             switch (flag.getName()) {
                 case "assignMsg" -> m.addItem(flag.getMenuItem("Join Team Message", Material.PAPER,
-                        List.of("Message sent to player", "when they join", "the team.", "Use %s for team name")));
+                        List.of("Message sent to player", "when they join", "the team.", "Use <team> for team name")));
                 case "gameAssignMsg" -> m.addItem(flag.getMenuItem("Join Team Broadcast Message", Material.PAPER,
-                        List.of("Message sent to all players", "when someone joins", "a team.", "Use %s for team/player name")));
+                        List.of("Message sent to all players", "when someone joins", "a team.", "Use <team>/<player> for team/player name")));
                 case "autobalanceMsg" -> m.addItem(flag.getMenuItem("Autobalance Message", Material.PAPER,
-                        List.of("Message sent to player", "when they are", "auto-balanced.", "Use %s for team name")));
+                        List.of("Message sent to player", "when they are", "auto-balanced.", "Use <team> for team name")));
                 case "gameAutobalanceMsg" -> m.addItem(flag.getMenuItem("Autobalance Broadcast Message", Material.PAPER,
-                        List.of("Message sent to all players", "when someone is", "auto-balanced.", "Use %s for team/player name")));
+                        List.of("Message sent to all players", "when someone is", "auto-balanced.", "Use <team>/<player> for team/player name")));
             }
         }
-        List<String> ntvo = new ArrayList<>();
-        for (OptionStatus v : OptionStatus.values()) {
-            ntvo.add(v.toString());
-        }
-        m.addItem(new MenuItemList("NameTag Visibility", Material.NAME_TAG, team.getNameTagVisibilityCallback(), ntvo));
-        m.addItem(new MenuItemBoolean("Auto Balance Team", Material.PAPER, team.getAutoBalanceCallBack()));
+        m.addItem(new MenuItemList<>(MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NAME, Material.NAME_TAG, team.getNameTagVisibilityCallback(),
+                Arrays.asList(Team.VisibilityMapper.values())));
+        m.addItem(new MenuItemBoolean(MgMenuLangKey.MENU_TEAM_AUTOBALANCE, Material.PAPER, team.getAutoBalanceCallBack()));
 
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), getContainer()), m.getSize() - 9);
+        m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
         m.displayMenu(getContainer().getViewer());
         return null;
     }

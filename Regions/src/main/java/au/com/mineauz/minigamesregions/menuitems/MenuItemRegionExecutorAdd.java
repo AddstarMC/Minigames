@@ -5,22 +5,25 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class MenuItemRegionExecutorAdd extends MenuItem {
-    private final Region region;
+    private final @NotNull Region region;
 
-    public MenuItemRegionExecutorAdd(String name, Material displayItem, Region region) {
+    public MenuItemRegionExecutorAdd(@Nullable Component name, @Nullable Material displayItem, @NotNull Region region) {
         super(name, displayItem);
         this.region = region;
     }
 
-    public MenuItemRegionExecutorAdd(String name, List<String> description, Material displayItem, Region region) {
+    public MenuItemRegionExecutorAdd(@Nullable Component name, @Nullable List<@NotNull Component> description, @Nullable Material displayItem, @NotNull Region region) {
         super(name, description, displayItem);
         this.region = region;
     }

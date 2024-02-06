@@ -1,25 +1,31 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class MenuItem {
-    private ItemStack displayItem = null;
+    private ItemStack displayItem;
     private Menu container = null;
     private int slot = 0;
 
-    public MenuItem(Component name, Material displayItem) {
+    public MenuItem(@Nullable Component name, @Nullable Material displayItem) {
         this(name, null, displayItem);
-
     }
 
-    public MenuItem(Component name, List<Component> description, Material displayItem) {
+    public MenuItem(@NotNull LangKey langKey, @Nullable Material displayItem) {
+        this(MinigameMessageManager.getMgMessage(langKey), null, displayItem);
+    }
+
+    public MenuItem(@Nullable Component name, @Nullable List<Component> description, @Nullable Material displayItem) {
         if (displayItem == null)
             if (description == null) {
                 displayItem = MenuUtility.getSlotFillerItem();
