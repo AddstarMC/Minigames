@@ -20,7 +20,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
     private final List<Material> whitelist;
 
     public MenuItemAddWhitelistBlock(Component name, List<Material> whitelist) {
-        super(name, MenuUtility.getCreateMaterial());
+        super(MenuUtility.getCreateMaterial(), name);
         setDescription(List.of("Left Click with item to", "add to whitelist/blacklist", "Click without item to", "manually add item."));
         this.whitelist = whitelist;
     }

@@ -209,13 +209,13 @@ public class TeleportCommand extends ACommand {
             }
             return MinigameUtils.tabCompleteMatch(pl, args[0]);
         } else if (args.length == 2) {
-            List<String> pl = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 2);
-            for (Player ply : PLUGIN.getServer().getOnlinePlayers()) {
-                pl.add(ply.getName());
+            List<String> playerNames = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 2);
+            for (Player player : PLUGIN.getServer().getOnlinePlayers()) {
+                playerNames.add(player.getName());
             }
-            pl.add("Start");
-            pl.add("Checkpoint");
-            return MinigameUtils.tabCompleteMatch(pl, args[1]);
+            playerNames.add("Start");
+            playerNames.add("Checkpoint");
+            return MinigameUtils.tabCompleteMatch(playerNames, args[1]);
         }
         return null;
     }

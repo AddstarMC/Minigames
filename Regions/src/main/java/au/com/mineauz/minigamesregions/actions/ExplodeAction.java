@@ -3,8 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
@@ -94,7 +93,7 @@ public class ExplodeAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Explode", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(power.getMenuItem("Explosion Power", Material.TNT));
         m.addItem(fire.getMenuItem("Cause Fire", Material.FLINT_AND_STEEL));
         m.displayMenu(mgPlayer);

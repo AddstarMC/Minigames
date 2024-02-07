@@ -6,6 +6,8 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.objects.CTFFlag;
@@ -34,6 +36,8 @@ import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+import java.util.List;
 import java.util.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -52,7 +56,7 @@ public class Minigame implements ScriptObject {
     private final StringFlag degenType = new StringFlag("inward", "degentype");
     private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
     private final RegionFlag floorDegen = new RegionFlag(null, "sfloor", "sfloorpos.1", "sfloorpos.2");
-    private final LongFlag floorDegenTime = new LongFlag(Minigames.getPlugin().getConfig().getLong("multiplayer.floordegenerator.time"), "floordegentime");
+    private final TimeFlag floorDegenTime = new TimeFlag(Minigames.getPlugin().getConfig().getLong("multiplayer.floordegenerator.time"), "floordegentime");
     // Respawn Module
     private final BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
     private final LocationListFlag startLocations = new LocationListFlag(null, "startpos");
@@ -62,9 +66,9 @@ public class Minigame implements ScriptObject {
     private final LocationFlag lobbyLocation = new LocationFlag(null, "lobbypos");
     private final LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
     private final BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
-    private final LongFlag timer = new LongFlag(0L, "timer");
+    private final TimeFlag timer = new TimeFlag(0L, "timer");
     private final BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
-    private final LongFlag startWaitTime = new LongFlag(0L, "startWaitTime");
+    private final TimeFlag startWaitTime = new TimeFlag(0L, "startWaitTime");
     private final BooleanFlag showCompletionTime = new BooleanFlag(false, "showCompletionTime");
     private final BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
     private final BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
@@ -93,7 +97,7 @@ public class Minigame implements ScriptObject {
     // just to stay backwards compatible we have to save this int as a float
     private final FloatFlag lives = new FloatFlag(0F, "lives");
     private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
-    private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
+    private final TimeFlag regenDelay = new TimeFlag(0L, "regenDelay");
     private final IntegerFlag maxBlocksRegenRegions = new IntegerFlag(300000, "maxBlocksRegenRegions");
     private final @NotNull Map<@NotNull String, @NotNull MinigameModule> modules = new HashMap<>();
     private final IntegerFlag minScore = new IntegerFlag(5, "minscore");
@@ -140,7 +144,7 @@ public class Minigame implements ScriptObject {
         this.playersAtStart = playersAtStart;
     }
 
-    private void setup(MinigameType type, Location start) {
+    private void setup(@NotNull MinigameType type, @Nullable Location start) {
         this.type.setFlag(type);
         startLocations.setFlag(new ArrayList<>());
 
@@ -489,29 +493,12 @@ public class Minigame implements ScriptObject {
         this.showCTFBroadcasts.setFlag(showCTFBroadcasts);
     }
 
-    public MinigameType getType() {
+    public @NotNull MinigameType getType() {
         return type.getFlag();
     }
 
-    public void setType(MinigameType type) {
+    public void setType(@NotNull MinigameType type) {
         this.type.setFlag(type);
-    }
-
-    private Callback<String> getTypeCallback() {
-        return new Callback<>() {
-
-            @Override
-            public String getValue() {
-                return WordUtils.capitalize(type.getFlag().toString().replace("_", " "));
-            }
-
-            @Override
-            public void setValue(String value) {
-                type.setFlag(MinigameType.valueOf(value.toUpperCase().replace(" ", "_")));
-            }
-
-
-        };
     }
 
     public MultiplayerTimer getMpTimer() {
@@ -595,7 +582,7 @@ public class Minigame implements ScriptObject {
         return spectators.contains(player);
     }
 
-    public void setScore(MinigamePlayer ply, int amount) {
+    public void setScore(@NotNull MinigamePlayer mgPlayer, int amount) {
         if (sbManager == null) {
             ScoreboardManager s = Minigames.getPlugin().getServer().getScoreboardManager();
             sbManager = s.getNewScoreboard();
@@ -603,7 +590,7 @@ public class Minigame implements ScriptObject {
         }
         Objective o = sbManager.getObjective(getName(false));
         if (o != null) {
-            o.getScore(ply.getName()).setScore(amount);
+            o.getScore(mgPlayer.getName()).setScore(amount);
         }
     }
 
@@ -716,29 +703,12 @@ public class Minigame implements ScriptObject {
         this.blockPlace.setFlag(blockPlace);
     }
 
-    public GameMode getDefaultGamemode() {
+    public @NotNull GameMode getDefaultGamemode() {
         return defaultGamemode.getFlag();
     }
 
-    public void setDefaultGamemode(GameMode defaultGamemode) {
+    public void setDefaultGamemode(@NotNull GameMode defaultGamemode) {
         this.defaultGamemode.setFlag(defaultGamemode);
-    }
-
-    public Callback<String> getDefaultGamemodeCallback() {
-        return new Callback<>() {
-
-            @Override
-            public String getValue() {
-                return WordUtils.capitalize(defaultGamemode.getFlag().toString());
-            }
-
-            @Override
-            public void setValue(String value) {
-                defaultGamemode.setFlag(GameMode.valueOf(value.toUpperCase()));
-            }
-
-
-        };
     }
 
     public boolean canBlocksdrop() {
@@ -761,26 +731,26 @@ public class Minigame implements ScriptObject {
         this.mechanic.setFlag(gameMechanicBase.getMechanic());
     }
 
-    public boolean isFlagCarrier(MinigamePlayer ply) {
-        return flagCarriers.containsKey(ply);
+    public boolean isFlagCarrier(@Nullable MinigamePlayer mgPlayer) {
+        return flagCarriers.containsKey(mgPlayer);
     }
 
-    public void addFlagCarrier(MinigamePlayer ply, CTFFlag flag) {
-        flagCarriers.put(ply, flag);
+    public void addFlagCarrier(@NotNull MinigamePlayer mgPlayer, @NotNull CTFFlag flag) {
+        flagCarriers.put(mgPlayer, flag);
     }
 
-    public void removeFlagCarrier(MinigamePlayer ply) {
-        flagCarriers.remove(ply);
+    public void removeFlagCarrier(@NotNull MinigamePlayer mgPlayer) {
+        flagCarriers.remove(mgPlayer);
     }
 
-    public CTFFlag getFlagCarrier(MinigamePlayer ply) {
-        return flagCarriers.get(ply);
+    public @Nullable CTFFlag getFlagCarrier(@NotNull MinigamePlayer mgPlayer) {
+        return flagCarriers.get(mgPlayer);
     }
 
     public void resetFlags() {
-        for (MinigamePlayer ply : flagCarriers.keySet()) {
-            getFlagCarrier(ply).respawnFlag();
-            getFlagCarrier(ply).stopCarrierParticleEffect();
+        for (MinigamePlayer mgPlayer : flagCarriers.keySet()) {
+            getFlagCarrier(mgPlayer).respawnFlag();
+            getFlagCarrier(mgPlayer).stopCarrierParticleEffect();
         }
         flagCarriers.clear();
         for (String id : droppedFlag.keySet()) {
@@ -1085,16 +1055,12 @@ public class Minigame implements ScriptObject {
         List<MenuItem> itemsMain = new ArrayList<>();
         itemsMain.add(enabled.getMenuItem("Enabled", Material.PAPER));
         itemsMain.add(usePermissions.getMenuItem("Use Permissions", Material.PAPER));
-        List<String> mgTypes = new ArrayList<>();
-        for (MinigameType val : MinigameType.values()) {
-            mgTypes.add(WordUtils.capitalize(val.toString().replace("_", " ")));
-        }
-        itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
+        itemsMain.add(type.getMenuItem("Game Type", Material.PAPER));
         List<String> scoreTypes = new ArrayList<>();
         for (GameMechanicBase val : GameMechanics.getGameMechanics()) {
             scoreTypes.add(WordUtils.capitalize(val.getMechanic()));
         }
-        itemsMain.add(new MenuItemList("Game Mechanic", List.of("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<>() {
+        itemsMain.add(new MenuItemList<>("Game Mechanic", List.of("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -1106,9 +1072,8 @@ public class Minigame implements ScriptObject {
                 mechanic.setFlag(value.toLowerCase());
             }
 
-
         }, scoreTypes));
-        final MenuItemCustom mechSettings = new MenuItemCustom("Game Mechanic Settings", Material.PAPER);
+        final MenuItemCustom mechSettings = new MenuItemCustom(Material.PAPER, "Game Mechanic Settings");
         final Minigame mgm = this;
         final Menu fmain = main;
         mechSettings.setClick(object -> {
@@ -1136,42 +1101,14 @@ public class Minigame implements ScriptObject {
         itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.OAK_SIGN));
         itemsMain.add(new MenuItemPage("Lobby Settings", List.of("Multiplayer Only"), Material.OAK_DOOR, lobby));
         itemsMain.add(new MenuItemNewLine());
-        itemsMain.add(new MenuItemTime("Time Length", List.of("Multiplayer Only"), Material.CLOCK, new Callback<>() {
-
-            @Override
-            public Integer getValue() {
-                return timer.getFlag();
-            }
-
-            @Override
-            public void setValue(Integer value) {
-                timer.setFlag(value);
-            }
-
-
-        }, 0, null));
+        itemsMain.add(timer.getMenuItem("Time Length", List.of("Multiplayer Only"), Material.CLOCK, 0, null));
         itemsMain.add(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
-        itemsMain.add(new MenuItemTime("Start Wait Time", List.of("Multiplayer Only"), Material
-                .CLOCK,
-                new Callback<>() {
-
-                    @Override
-                    public Integer getValue() {
-                        return startWaitTime.getFlag();
-                    }
-
-                    @Override
-                    public void setValue(Integer value) {
-                        startWaitTime.setFlag(value);
-                    }
-
-
-                }, 3, null));
+        itemsMain.add(startWaitTime.getMenuItem("Start Wait Time", List.of("Multiplayer Only"), Material.CLOCK, 3, null));
         itemsMain.add(showCompletionTime.getMenuItem("Show completion time", Material.PAPER));
         itemsMain.add(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH, List.of("Multiplayer Only")));
         itemsMain.add(randomizeStart.getMenuItem("Randomize Start Point", Material.LIGHT_BLUE_GLAZED_TERRACOTTA, List.of("The location will be", "chosen at random", "from global or team lists.")));
-        itemsMain.add(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", List.of("Blocks that can/can't", "be broken"),
-                Material.CHEST, getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(), List.of("If whitelist mode only", "added items can be", "broken.")));
+        itemsMain.add(new MenuItemDisplayWhitelist(Material.CHEST, "Block Whitelist/Blacklist", List.of("Blocks that can/can't", "be broken"),
+                getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(), List.of("If whitelist mode only", "added items can be", "broken.")));
         itemsMain.add(new MenuItemNewLine());
         List<String> floorDegenDes = new ArrayList<>();
         floorDegenDes.add("Mainly used to prevent");
@@ -1192,29 +1129,15 @@ public class Minigame implements ScriptObject {
                 degenType.setFlag(value.toLowerCase());
             }
 
-
         }, floorDegenOpt));
         List<String> degenRandDes = new ArrayList<>();
         degenRandDes.add("Chance of block being");
         degenRandDes.add("removed on random");
         degenRandDes.add("degeneration.");
         itemsMain.add(degenRandomChance.getMenuItem("Random Floor Degen Chance", Material.SNOW, degenRandDes, 1, 100));
-        itemsMain.add(floorDegenTime.getMenuItem("Floor Degenerator Delay", Material.CLOCK, 1, null));
-        itemsMain.add(new MenuItemTime("Regeneration Delay", List.of("Time in seconds before",
-                "Minigame regeneration starts"), Material.CLOCK, new Callback<>() {
-
-            @Override
-            public Integer getValue() {
-                return regenDelay.getFlag();
-            }
-
-            @Override
-            public void setValue(Integer value) {
-                regenDelay.setFlag(value);
-            }
-
-
-        }, 0, null));
+        itemsMain.add(floorDegenTime.getMenuItem("Floor Degenerator Delay", Material.CLOCK, 1L, null));
+        itemsMain.add(regenDelay.getMenuItem("Regeneration Delay",
+                List.of("Time in seconds before", "Minigame regeneration starts"), Material.CLOCK, 0, null));
         itemsMain.add(new MenuItemNewLine());
         itemsMain.add(new MenuItemPage("Player Settings", Material.SKELETON_SKULL, playerMenu));
 //      List<String> thDes = new ArrayList<>();
@@ -1236,50 +1159,46 @@ public class Minigame implements ScriptObject {
         rndChstDes.clear();
         rndChstDes.add("Max. item randomization");
         itemsMain.add(maxChestRandom.getMenuItem("Max. Chest Random", Material.STONE, rndChstDes, 0, null));
-        itemsMain.add(new MenuItemStatisticsSettings(this, "Stat Settings", Material.WRITABLE_BOOK));
+        itemsMain.add(new MenuItemStatisticsSettings(Material.WRITABLE_BOOK, "Stat Settings", this));
         itemsMain.add(new MenuItemNewLine());
 
         //--------------//
         //Loadout Settings
         //--------------//
         List<MenuItem> mi = new ArrayList<>();
-        List<String> des = new ArrayList<>();
+        List<Component> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");
 
 
         LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(this);
         if (loadoutModule != null) {
             for (String ld : loadoutModule.getLoadouts()) {
-                Material item = Material.GLASS_PANE;
+                Material material = Material.GLASS_PANE;
                 PlayerLoadout playerLoadout = loadoutModule.getLoadout(ld);
 
-                if (!playerLoadout.getItems().isEmpty()) {
-                    item = playerLoadout.getItem((Integer) playerLoadout.getItems().toArray()[0]).getType();
+                if (!playerLoadout.getItemSlots().isEmpty()) {
+                    material = playerLoadout.getItem((Integer) playerLoadout.getItemSlots().toArray()[0]).getType();
                 }
                 if (playerLoadout.isDeleteable()) {
-                    mi.add(new MenuItemDisplayLoadout(ld, des, item, playerLoadout, this));
+                    mi.add(new MenuItemDisplayLoadout(ld, des, material, playerLoadout, this));
                 } else {
-                    mi.add(new MenuItemDisplayLoadout(ld, item, playerLoadout, this));
+                    mi.add(new MenuItemDisplayLoadout(ld, material, playerLoadout, this));
                 }
             }
 
             loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", MenuUtility.getCreateMaterial(), loadoutModule.getLoadoutMap(), this), 53);
-            loadouts.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), main), loadouts.getSize() - 9);
+            loadouts.addItem(new MenuItemBack(main), loadouts.getSize() - 9);
             loadouts.addItems(mi);
         }
 
         main.addItems(itemsMain);
-        main.addItem(new MenuItemSaveMinigame("Save " + getName(false), MenuUtility.getSaveMaterial(), this), main.getSize() - 1);
+        main.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(), "Save " + getName(false), this), main.getSize() - 1);
 
         //----------------------//
         //Minigame Player Settings
         //----------------------//
         List<MenuItem> itemsPlayer = new ArrayList<>(20);
-        List<String> gmopts = new ArrayList<>();
-        for (GameMode gm : GameMode.values()) {
-            gmopts.add(WordUtils.capitalize(gm.toString()));
-        }
-        itemsPlayer.add(new MenuItemList("Players Gamemode", Material.CRAFTING_TABLE, getDefaultGamemodeCallback(), gmopts));
+        itemsPlayer.add(defaultGamemode.getMenuItem("Players Gamemode", Material.CRAFTING_TABLE));
         itemsPlayer.add(allowEnderPearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
         itemsPlayer.add(itemDrops.getMenuItem("Allow Item Drops", Material.DIAMOND_SWORD));
         itemsPlayer.add(deathDrops.getMenuItem("Allow Death Drops", Material.SKELETON_SKULL));
@@ -1304,7 +1223,7 @@ public class Minigame implements ScriptObject {
         itemsPlayer.add(friendlyFireSplashPotions.getMenuItem("Allow friendly fire with splash potions", Material.SPLASH_POTION));
         itemsPlayer.add(friendlyFireLingeringPotions.getMenuItem("Allow friendly fire with lingering potions", Material.LINGERING_POTION));
         playerMenu.addItems(itemsPlayer);
-        playerMenu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), main), main.getSize() - 9);
+        playerMenu.addItem(new MenuItemBack(main), main.getSize() - 9);
 
         //--------------//
         //Minigame Flags//
@@ -1313,7 +1232,7 @@ public class Minigame implements ScriptObject {
         for (String flag : getFlags()) {
             itemsFlags.add(new MenuItemFlag(Material.OAK_SIGN, flag, getFlags()));
         }
-        flags.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), playerMenu), flags.getSize() - 9);
+        flags.addItem(new MenuItemBack(playerMenu), flags.getSize() - 9);
         flags.addItem(new MenuItemAddFlag(MgMenuLangKey.MENU_FLAGADD_NAME,
                 MenuUtility.getCreateMaterial(), this), flags.getSize() - 1);
         flags.addItems(itemsFlags);
@@ -1332,11 +1251,10 @@ public class Minigame implements ScriptObject {
                     Material.ENDER_PEARL, lobbySettingsModule.getTeleportOnPlayerWaitCallback()));
             itemsLobby.add(new MenuItemBoolean("Teleport on Start", List.of("Should players teleport", "to the start position", "after lobby?"),
                     Material.ENDER_PEARL, lobbySettingsModule.getTeleportOnStartCallback()));
-            itemsLobby.add(new MenuItemInteger("Waiting for Players Time", List.of("The time in seconds", "the game will wait for", "more players to join.", "A value of 0 will use", "the config setting"),
-                    Material.CLOCK, lobbySettingsModule.getPlayerWaitTimeCallback(), 0, Integer
-                    .MAX_VALUE));
+            itemsLobby.add(new MenuItemTime(Material.CLOCK, "Waiting for Players Time", List.of("The time in seconds", "the game will wait for", "more players to join.", "A value of 0 will use", "the config setting"),
+                    lobbySettingsModule.getPlayerWaitTimeCallback(), 0, Long.MAX_VALUE));
             lobby.addItems(itemsLobby);
-            lobby.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), main), lobby.getSize() - 9);
+            lobby.addItem(new MenuItemBack(main), lobby.getSize() - 9);
         }
 
         for (MinigameModule mod : getModules()) {

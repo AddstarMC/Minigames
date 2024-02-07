@@ -97,7 +97,7 @@ public class StandardRewardScheme implements RewardScheme {
 
     @Override
     public void addMenuItems(Menu menu) {
-        menu.addItem(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, primaryReward));
-        menu.addItem(new MenuItemDisplayRewards("Secondary Rewards", Material.CHEST, secondaryReward));
+        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, "Primary Rewards", primaryReward));
+        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, "Secondary Rewards", secondaryReward));
     }
 }

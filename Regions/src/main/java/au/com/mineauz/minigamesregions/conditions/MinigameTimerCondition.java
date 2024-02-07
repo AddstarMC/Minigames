@@ -2,33 +2,38 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemTime;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class MinigameTimerCondition extends ConditionInterface {
+public class MinigameTimerCondition extends ACondition {
+    private final TimeFlag minTime = new TimeFlag(5L, "minTime");
+    private final TimeFlag maxTime = new TimeFlag(10L, "maxTime");
 
-    private final IntegerFlag minTime = new IntegerFlag(5, "minTime");
-    private final IntegerFlag maxTime = new IntegerFlag(10, "maxTime");
+    protected MinigameTimerCondition(@NotNull String name) {
+        super(name);
+    }
 
     @Override
-    public String getName() {
-        return "MINIGAME_TIMER";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MINIGAMETIMER_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "Minigame Conditions";
+        return "Minigame ConditionRegistry";
     }
 
     @Override
@@ -62,12 +67,11 @@ public class MinigameTimerCondition extends ConditionInterface {
         if (timer == null) {
             return false;
         } else {
-            int timeLeft = timer.getTimeLeft();
-            int min = minTime.getFlag();
-            int max = maxTime.getFlag();
+            long timeLeft = timer.getTimeLeft();
+            long min = minTime.getFlag();
+            long max = maxTime.getFlag();
             debug(mg);
-            return timeLeft >= min &&
-                    timeLeft <= max;
+            return timeLeft >= min && timeLeft <= max;
         }
     }
 
@@ -89,10 +93,10 @@ public class MinigameTimerCondition extends ConditionInterface {
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Minigame Timer", player);
 
-        m.addItem(new MenuItemTime("Min Time", Material.CLOCK, minTime.getCallback(), 0, null));
-        m.addItem(new MenuItemTime("Max Time", Material.CLOCK, maxTime.getCallback(), 0, null));
+        m.addItem(minTime.getMenuItem("Min Time", Material.CLOCK, 0L, null));
+        m.addItem(maxTime.getMenuItem("Max Time", Material.CLOCK, 0L, null));
 
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

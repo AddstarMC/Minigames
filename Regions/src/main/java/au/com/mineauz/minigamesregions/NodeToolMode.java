@@ -53,10 +53,10 @@ public class NodeToolMode implements ToolMode {
         tool.addSetting("Node", "None");
         final Menu m = new Menu(2, "Node Selection", player);
         if (player.isInMenu()) {
-            m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), player.getMenu()), m.getSize() - 9);
+            m.addItem(new MenuItemBack(player.getMenu()), m.getSize() - 9);
         }
         final MinigameTool ftool = tool;
-        m.addItem(new MenuItemString("Node Name", Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemString("Node Name", Material.PAPER, new Callback<String>() {
 
             @Override
             public String getValue() {
@@ -77,7 +77,7 @@ public class NodeToolMode implements ToolMode {
             List<MenuItem> items = new ArrayList<>();
 
             for (final Node node : module.getNodes()) {
-                MenuItemCustom item = new MenuItemCustom(node.getName(), Material.STONE_BUTTON);
+                MenuItemCustom item = new MenuItemCustom(Material.STONE_BUTTON, node.getName());
 
                 // Set the node and go back to the main menu
                 item.setClick(object -> {
@@ -91,7 +91,7 @@ public class NodeToolMode implements ToolMode {
             }
 
             nodeMenu.addItems(items);
-            nodeMenu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), m), nodeMenu.getSize() - 9);
+            nodeMenu.addItem(new MenuItemBack(m), nodeMenu.getSize() - 9);
 
             m.addItem(new MenuItemPage("Edit Node", Material.STONE_BUTTON, nodeMenu));
         }

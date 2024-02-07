@@ -12,18 +12,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemRegenRegion extends MenuItem {
-    private final MgRegion region;
-    private final RegionModule rmod;
+    private final @NotNull MgRegion region;
+    private final @NotNull RegionModule rmod;
 
-    public MenuItemRegenRegion(@Nullable Component name, @Nullable Material displayItem, MgRegion region, RegionModule rmod) {
-        super(name, displayItem);
+    public MenuItemRegenRegion(@Nullable Material displayMat, @Nullable Component name, @NotNull MgRegion region,
+                               @NotNull RegionModule rmod) {
+        super(displayMat, name);
         this.region = region;
         this.rmod = rmod;
     }
 
-    public MenuItemRegenRegion(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                               @Nullable Material displayItem, @Nullable MgRegion region, @NotNull RegionModule rmod) {
-        super(name, description, displayItem);
+    public MenuItemRegenRegion(@Nullable Material displayMat, @Nullable Component name,
+                               @Nullable List<@NotNull Component> description, @NotNull MgRegion region,
+                               @NotNull RegionModule rmod) {
+        super(displayMat, name, description);
         this.region = region;
         this.rmod = rmod;
     }

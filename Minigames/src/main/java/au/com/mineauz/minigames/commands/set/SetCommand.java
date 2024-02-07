@@ -268,10 +268,6 @@ public class SetCommand extends ACommand {
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
-            Player ply = null;
-            if (sender instanceof Player) {
-                ply = (Player) sender;
-            }
             ASetCommand comd = null;
             String[] shortArgs;
             Minigame mgm = null;
@@ -289,7 +285,7 @@ public class SetCommand extends ACommand {
                 System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
 
                 if (comd != null) {
-                    if (ply != null) {
+                    if (sender instanceof Player) {
                         List<String> l = comd.onTabComplete(sender, mgm, shortArgs);
                         return Objects.requireNonNullElseGet(l, () -> List.of(""));
                     }

@@ -7,7 +7,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -17,17 +16,17 @@ public class MenuItemTrigger extends MenuItem {
     private final @NotNull Trigger trigger;
     private final @NotNull Menu previous;
     private @Nullable Region region;
-    private @NotNull Node node;
+    private @Nullable Node node;
 
     public MenuItemTrigger(@NotNull Trigger trigger, @NotNull Region region, @NotNull Menu previous) {
-        super(WordUtils.capitalize(trigger.getName().replace("_", " ")), Material.LEVER);
+        super(Material.LEVER, trigger.getDisplayName());
         this.trigger = trigger;
         this.region = region;
         this.previous = previous;
     }
 
     public MenuItemTrigger(@NotNull Trigger trigger, @NotNull Node node, @NotNull Menu previous) {
-        super(WordUtils.capitalize(trigger.getName().replace("_", " ")), Material.LEVER);
+        super(Material.LEVER, trigger.getDisplayName());
         this.trigger = trigger;
         this.node = node;
         this.previous = previous;
@@ -48,5 +47,4 @@ public class MenuItemTrigger extends MenuItem {
         }
         return null;
     }
-
 }

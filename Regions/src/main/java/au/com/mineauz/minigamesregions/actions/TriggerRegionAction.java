@@ -2,14 +2,13 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
-import au.com.mineauz.minigamesregions.triggers.Triggers;
+import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +53,7 @@ public class TriggerRegionAction extends AbstractAction {
         if (mg != null) {
             RegionModule rmod = RegionModule.getMinigameModule(mg);
             if (rmod.hasRegion(this.region.getFlag()))
-                rmod.getRegion(this.region.getFlag()).execute(Triggers.getTrigger("REMOTE"), mgPlayer);
+                rmod.getRegion(this.region.getFlag()).execute(MgRegTrigger.REMOTE, mgPlayer);
         }
     }
 
@@ -66,7 +65,7 @@ public class TriggerRegionAction extends AbstractAction {
         if (mg != null) {
             RegionModule rmod = RegionModule.getMinigameModule(mg);
             if (rmod.hasRegion(region.getFlag()))
-                rmod.getRegion(region.getFlag()).execute(Triggers.getTrigger("REMOTE"), mgPlayer);
+                rmod.getRegion(region.getFlag()).execute(MgRegTrigger.REMOTE, mgPlayer);
         }
     }
 
@@ -85,7 +84,7 @@ public class TriggerRegionAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Trigger Node", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(region.getMenuItem("Region Name", Material.ENDER_EYE));
         m.displayMenu(mgPlayer);
         return true;

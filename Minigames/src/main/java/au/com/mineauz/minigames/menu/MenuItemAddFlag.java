@@ -21,19 +21,19 @@ import java.util.List;
 public class MenuItemAddFlag extends MenuItem {
     private final Minigame mgm;
 
-    public MenuItemAddFlag(@NotNull LangKey langKey, @Nullable Material displayItem, @NotNull Minigame mgm) {
-        super(langKey, displayItem);
+    public MenuItemAddFlag(@NotNull LangKey langKey, @Nullable Material displayMat, @NotNull Minigame mgm) {
+        super(displayMat, langKey);
         this.mgm = mgm;
     }
 
-    public MenuItemAddFlag(@NotNull Component name, @Nullable Material displayItem, @NotNull Minigame mgm) {
-        super(name, displayItem);
+    public MenuItemAddFlag(@NotNull Component name, @Nullable Material displayMat, @NotNull Minigame mgm) {
+        super(displayMat, name);
         this.mgm = mgm;
     }
 
-    public MenuItemAddFlag(@Nullable Component name, List<@NotNull Component> description, @Nullable Material displayItem,
+    public MenuItemAddFlag(@Nullable Material displayMat, @Nullable Component name, List<@NotNull Component> description,
                            @NotNull Minigame mgm) {
-        super(name, description, displayItem);
+        super(displayMat, name, description);
         this.mgm = mgm;
     }
 

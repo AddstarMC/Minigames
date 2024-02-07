@@ -138,11 +138,11 @@ public class InfectionMechanic extends GameMechanicBase {
                             List<MinigamePlayer> losers) {
         List<MinigamePlayer> wins = new ArrayList<>(winners);
         InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
-        for (MinigamePlayer ply : wins) {
-            if (infectionModule.isInfectedPlayer(ply)) {
-                winners.remove(ply);
-                losers.add(ply);
-                infectionModule.removeInfectedPlayer(ply);
+        for (MinigamePlayer mgPlayer : wins) {
+            if (infectionModule.isInfectedPlayer(mgPlayer)) {
+                winners.remove(mgPlayer);
+                losers.add(mgPlayer);
+                infectionModule.removeInfectedPlayer(mgPlayer);
             }
         }
     }

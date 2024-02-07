@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.events.TakeFlagEvent;
+import au.com.mineauz.minigames.events.TakeCTFFlagEvent;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
@@ -15,7 +15,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagSign implements MinigameSign {
+public class CTFFlagSign implements MinigameSign {
 
     @Override
     public @NotNull String getName() {
@@ -70,7 +70,7 @@ public class FlagSign implements MinigameSign {
                         mgm.getMechanicName().equals("ctf") &&
                         !mgPlayer.hasFlag(ChatColor.stripColor(sign.getLine(2))) &&
                         !mgPlayer.getTeam().getDisplayName().equals(ChatColor.stripColor(sign.getLine(2) + " Team"))) {
-                    TakeFlagEvent ev = new TakeFlagEvent(mgm, mgPlayer, ChatColor.stripColor(sign.getLine(2)));
+                    TakeCTFFlagEvent ev = new TakeCTFFlagEvent(mgm, mgPlayer, ChatColor.stripColor(sign.getLine(2)));
                     Bukkit.getPluginManager().callEvent(ev);
                     return true;
                 }

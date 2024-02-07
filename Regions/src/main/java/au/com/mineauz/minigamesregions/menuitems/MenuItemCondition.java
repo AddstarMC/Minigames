@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import com.google.common.collect.Lists;
@@ -18,21 +18,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class MenuItemCondition extends MenuItem {
+    private final @NotNull ACondition con;
+    private final @Nullable RegionExecutor rexec;
+    private final @Nullable NodeExecutor nexec;
 
-    private final ConditionInterface con;
-    private RegionExecutor rexec;
-    private NodeExecutor nexec;
-
-    public MenuItemCondition(@Nullable Component name, @Nullable Material displayItem, @NotNull RegionExecutor exec, @NotNull ConditionInterface con) {
-        super(name, displayItem);
+    public MenuItemCondition(@Nullable Material displayMat, @Nullable Component name,
+                             @NotNull RegionExecutor exec, @NotNull ACondition con) {
+        super(displayMat, name);
         this.rexec = exec;
+        this.nexec = null;
         this.con = con;
 
         updateDescription();
     }
 
-    public MenuItemCondition(@Nullable Component name, @Nullable Material displayItem, @NotNull NodeExecutor exec, @NotNull ConditionInterface con) {
-        super(name, displayItem);
+    public MenuItemCondition(@Nullable Material displayMat, @Nullable Component name,
+                             @NotNull NodeExecutor exec, @NotNull ACondition con) {
+        super(displayMat, name);
+        this.rexec = null;
         this.nexec = exec;
         this.con = con;
 
@@ -101,10 +104,11 @@ public class MenuItemCondition extends MenuItem {
 
     @Override
     public ItemStack onRightClick() {
-        if (rexec != null)
+        if (rexec != null) {
             rexec.removeCondition(con);
-        else
+        } else {
             nexec.removeCondition(con);
+        }
         getContainer().removeItem(getSlot());
         return null;
     }

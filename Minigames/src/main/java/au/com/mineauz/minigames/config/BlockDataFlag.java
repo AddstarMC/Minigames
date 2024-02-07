@@ -1,12 +1,16 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBlockData;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,40 +31,31 @@ public class BlockDataFlag extends Flag<BlockData> {
     @Override
     public void loadValue(String path, FileConfiguration config) {
         String obj = config.getString(path + "." + getName());
-        BlockData data;
+        BlockData data = null;
         try {
             data = Bukkit.createBlockData(obj);
-        } catch (IllegalArgumentException e) {
-            data = parseOldMaterialData(path, config);
+        } catch (NullPointerException | IllegalArgumentException e) {
+            Minigames.getCmpnntLogger().warn("couldn't load Blockdata flag. Legacy data loading was removed.", e);
         }
         setFlag(Objects.requireNonNullElseGet(data, Material.STONE::createBlockData));
     }
 
     /**
-     * Remove in 1.14 as no configs should have materialdata stored.
+     * @param description ignored and replaced with a description of the data
      */
-    @Deprecated(forRemoval = true)
-    private BlockData parseOldMaterialData(String path, FileConfiguration config) {
-        try {
-            String obj = config.getString(path + "." + getName());
-            Material mat = Material.matchMaterial(obj);
-            int olddata = config.getInt(path + ".matchdatavalue");
-            if (olddata == 0) olddata = config.getInt(path + ".todatavalue");
-            if (olddata == 0) olddata = config.getInt(path + ".dur");
-            return Bukkit.getUnsafe().fromLegacy(mat, (byte) olddata);
-        } catch (Exception ignored) {
-            Minigames.getCmpnntLogger().trace("Error loading Value for" + path);
-        }
-        return Material.STONE.createBlockData();
-    }
-
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
-        return new MenuItemBlockData(name, displayItem);
-    }
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemBlockData(displayMat, name, new Callback<>() {
+            @Override
+            public BlockData getValue() {
+                return getFlag();
+            }
 
-    @Override
-    public MenuItem getMenuItem(String name, Material displayItem, List<String> description) {
-        return new MenuItemBlockData(name, displayItem);
+            @Override
+            public void setValue(BlockData value) {
+                setFlag(value);
+            }
+        });
     }
 }

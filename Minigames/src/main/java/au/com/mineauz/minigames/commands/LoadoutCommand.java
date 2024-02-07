@@ -37,24 +37,23 @@ public class LoadoutCommand extends ACommand {
         return "minigame.loadout.menu";
     }
 
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
-        MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
-        if (ply.isInMinigame()) {
-            if (args == null) {
-                LoadoutModule.getMinigameModule(ply.getMinigame()).displaySelectionMenu(ply, false);
-            } else {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
+        if (mgPlayer.isInMinigame()) {
+            if (args.length > 0) {
                 String ln = args[0];
-                if (LoadoutModule.getMinigameModule(ply.getMinigame()).hasLoadout(ln)) {
-                    ply.setLoadout(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadout(ln));
-                    ply.sendInfoMessage(
+                if (LoadoutModule.getMinigameModule(mgPlayer.getMinigame()).hasLoadout(ln)) {
+                    mgPlayer.setLoadout(LoadoutModule.getMinigameModule(mgPlayer.getMinigame()).getLoadout(ln));
+                    mgPlayer.sendInfoMessage(
                             MinigameMessageManager.getMinigamesMessage("player.loadout.nextSpawnName", ln));
                 } else {
-                    ply.sendMessage(MinigameMessageManager.getMinigamesMessage("player.loadout.error.noLoadout", ln), MinigameMessageType.ERROR);
+                    mgPlayer.sendMessage(MinigameMessageManager.getMinigamesMessage("player.loadout.error.noLoadout", ln), MinigameMessageType.ERROR);
                 }
+            } else {
+                LoadoutModule.getMinigameModule(mgPlayer.getMinigame()).displaySelectionMenu(mgPlayer, false);
             }
         } else {
-            ply.sendMessage(MinigameUtils.getLang("command.loadout.noMinigame"), MinigameMessageType.ERROR);
+            mgPlayer.sendMessage(MinigameUtils.getLang("command.loadout.noMinigame"), MinigameMessageType.ERROR);
         }
         return true;
     }
@@ -62,11 +61,11 @@ public class LoadoutCommand extends ACommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @Nullable [] args) {
         if (args != null) {
-            MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
-            if (ply.isInMinigame()) {
+            MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
+            if (mgPlayer.isInMinigame()) {
                 if (args.length == 1) {
                     return MinigameUtils.tabCompleteMatch(
-                            new ArrayList<>(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()),
+                            new ArrayList<>(LoadoutModule.getMinigameModule(mgPlayer.getMinigame()).getLoadoutMap().keySet()),
                             args[0]);
                 }
             }

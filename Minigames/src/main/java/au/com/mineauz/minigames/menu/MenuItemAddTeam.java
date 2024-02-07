@@ -23,7 +23,7 @@ public class MenuItemAddTeam extends MenuItem {
     private final TeamsModule tm;
 
     public MenuItemAddTeam(@NotNull LangKey name, @NotNull TeamsModule tm) {
-        super(name, MenuUtility.getCreateMaterial());
+        super(MenuUtility.getCreateMaterial(), name);
         this.tm = tm;
     }
 
@@ -61,7 +61,7 @@ public class MenuItemAddTeam extends MenuItem {
             }
             teams.add("None");
             getContainer().removeItem(0);
-            getContainer().addItem(new MenuItemList(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DEFAULTWINNINGTEAM_NAME), Material.PAPER, tm.getDefaultWinnerCallback(), teams), 0);
+            getContainer().addItem(new MenuItemList(Material.PAPER, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DEFAULTWINNINGTEAM_NAME), tm.getDefaultWinnerCallback(), teams), 0);
 
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());

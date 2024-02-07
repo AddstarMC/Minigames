@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +17,16 @@ import java.util.List;
  * Created by benjamincharlton on 15/11/2018.
  */
 public class MenuItemMaterial extends MenuItem {
+    private final @NotNull Callback<Material> materialCallback;
 
-    private Callback<Material> materialCallback;
-
-    public MenuItemMaterial(Component name, Material displayItem) {
-        super(name, displayItem);
-    }
-
-    public MenuItemMaterial(Component name, Material displayItem, Callback<Material> c) {
-        super(name, displayItem);
+    public MenuItemMaterial(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Material> c) {
+        super(displayMat, name);
         materialCallback = c;
     }
 
-    public MenuItemMaterial(Component name, List<Component> description, Material displayItem, Callback<Material> c) {
-        super(name, description, displayItem);
+    public MenuItemMaterial(@Nullable Material displayMat, @Nullable Component name,
+                            @Nullable List<@NotNull Component> description, @NotNull Callback<Material> c) {
+        super(displayMat, name, description);
         materialCallback = c;
     }
 
@@ -52,7 +50,7 @@ public class MenuItemMaterial extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description;
+        List<Component> description;
         Material setting = materialCallback.getValue();
 
         if (getDescription() != null) {
@@ -70,6 +68,4 @@ public class MenuItemMaterial extends MenuItem {
         setDescription(description);
         setItem(new ItemStack(materialCallback.getValue(), 1));
     }
-
-
 }

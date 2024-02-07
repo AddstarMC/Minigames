@@ -3,7 +3,10 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -131,7 +134,7 @@ public class InfectionModule extends MinigameModule {
     @Override
     public boolean displayMechanicSettings(Menu previous) {
         Menu m = new Menu(6, "Infection Settings", previous.getViewer());
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.ZOMBIE_HEAD,
                 List.of("The percentage of players", "chosen to start as", "infected"), 1, 99));
@@ -222,16 +225,16 @@ public class InfectionModule extends MinigameModule {
         return TeamColor.matchColor(survivorTeam.getDefaultFlag());
     }
 
-    public void addInfectedPlayer(MinigamePlayer ply) {
-        infected.add(ply);
+    public void addInfectedPlayer(@NotNull MinigamePlayer mgPlayer) {
+        infected.add(mgPlayer);
     }
 
-    public void removeInfectedPlayer(MinigamePlayer ply) {
-        infected.remove(ply);
+    public void removeInfectedPlayer(@NotNull MinigamePlayer mgPlayer) {
+        infected.remove(mgPlayer);
     }
 
-    public boolean isInfectedPlayer(MinigamePlayer ply) {
-        return infected.contains(ply);
+    public boolean isInfectedPlayer(@Nullable MinigamePlayer mgPlayer) {
+        return infected.contains(mgPlayer);
     }
 
     public void clearInfectedPlayers() {

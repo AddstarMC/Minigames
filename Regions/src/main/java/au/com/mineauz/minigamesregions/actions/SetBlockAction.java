@@ -3,7 +3,10 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemBlockData;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
@@ -106,8 +109,8 @@ public class SetBlockAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Set Block", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.addItem(new MenuItemBlockData("Type", Material.STONE, new Callback<>() {
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+        m.addItem(new MenuItemBlockData(Material.STONE, "Type", new Callback<>() {
             @Override
             public BlockData getValue() {
                 return type.getFlag();

@@ -1,10 +1,14 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemMaterial;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -38,13 +42,34 @@ public class MaterialFlag extends Flag<Material> {
         }
     }
 
-    @Override
-    public MenuItem getMenuItem(String name, org.bukkit.Material displayItem) {
-        return new MenuItemMaterial(name, getFlag());
+    public MenuItem getMenuItem(@Nullable Component name) {
+        return getMenuItem(name, getFlag(), null);
     }
 
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable List<@NotNull Component> description) {
+        return getMenuItem(name, getFlag(), description);
+    }
+
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, org.bukkit.Material displayItem, List<String> description) {
-        return null;
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+        return getMenuItem(name, displayMat, null);
+    }
+
+    @Deprecated
+    @Override
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemMaterial(displayMat, name, description, new Callback<>() {
+            @Override
+            public Material getValue() {
+                return getFlag();
+            }
+
+            @Override
+            public void setValue(Material value) {
+                setFlag(value);
+            }
+        });
     }
 }

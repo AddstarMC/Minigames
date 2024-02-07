@@ -18,7 +18,6 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -349,35 +348,15 @@ public class MemorySwapBlockAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Memory Swap Block", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced
-        m.addItem(new MenuItemMaterial("Match Block", matchType.getFlag(), new Callback<>() {
-
-            @Override
-            public Material getValue() {
-                return matchType.getFlag();
-            }
-
-            @Override
-            public void setValue(Material value) {
-                matchType.setFlag(value);
-            }
-
-
-        }) {
-            @Override
-            public ItemStack getItem() {
-                ItemStack stack = super.getItem();
-                stack.setType(Objects.requireNonNullElse(matchType.getFlag(), Material.COBBLESTONE));
-                return stack;
-            }
-        });
+        m.addItem(matchType.getMenuItem("Match Block"));
 
         //Menu entry for the white/blacklist entry, aka the blocks that will be only accounted for / removed from the block pool
         m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", List.of("Blocks that can/can't", "used as memory."),
-                Material.BOOK, wbList.getFlag(), new Callback<>() {
+        m.addItem(new MenuItemDisplayWhitelist(Material.BOOK, "Block Whitelist/Blacklist", List.of("Blocks that can/can't", "used as memory."),
+                wbList.getFlag(), new Callback<>() {
 
             @Override
             public Boolean getValue() {

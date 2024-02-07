@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class MenuItemWhitelistBlock extends MenuItem {
-    private final List<Material> whitelist;
+    private final @NotNull List<Material> whitelist;
 
-    public MenuItemWhitelistBlock(@NotNull Material displayItem, List<Material> whitelist) {
-        super(Component.translatable(displayItem.translationKey()), displayItem);
+    public MenuItemWhitelistBlock(@NotNull Material displayMat, @NotNull List<@NotNull Material> whitelist) {
+        super(displayMat, Component.translatable(displayMat.translationKey()));
         setDescription(List.of("Right Click to remove"));
         this.whitelist = whitelist;
     }

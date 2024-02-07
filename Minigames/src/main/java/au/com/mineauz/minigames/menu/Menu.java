@@ -126,10 +126,10 @@ public class Menu {
 
     public void addPage() {
         Menu nextPage = new Menu(rows, name, viewer);
-        addItem(new MenuItemPage(MgMenuLangKey.MENU_PAGE_NEXT, MenuUtility.getBackMaterial(), nextPage), 9 * (rows - 1) + 5);
+        addItem(new MenuItemPage(MenuUtility.getBackMaterial(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
         setNextPage(nextPage);
         nextPage.setPreviousPage(this);
-        nextPage.addItem(new MenuItemPage(MgMenuLangKey.MENU_PAGE_PREVIOUS, MenuUtility.getBackMaterial(), this), 9 * (rows - 1) + 3);
+        nextPage.addItem(new MenuItemPage(MenuUtility.getBackMaterial(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
         for (int j = 9 * (rows - 1) + 6; j < 9 * rows; j++) {
             if (getClicked(j) != null)
                 nextPage.addItem(getClicked(j), j);
@@ -170,17 +170,17 @@ public class Menu {
         }
     }
 
-    public void displayMenu(MinigamePlayer ply) {
+    public void displayMenu(final @NotNull MinigamePlayer mgPlayer) {
         Menu t = this;
-        Player player = ply.getPlayer();
+        Player player = mgPlayer.getPlayer();
         updateAll();
         populateMenu();
         inv = Bukkit.createInventory(player, rows * 9, name);
         inv.setContents(pageView);
         // Some calls of displayMenu are async, which is not allowed.
         Minigames.getPlugin().getServer().getScheduler().runTask(Minigames.getPlugin(), () -> {
-            ply.getPlayer().openInventory(inv);
-            ply.setMenu(t);
+            mgPlayer.getPlayer().openInventory(inv);
+            mgPlayer.setMenu(t);
         });
     }
 

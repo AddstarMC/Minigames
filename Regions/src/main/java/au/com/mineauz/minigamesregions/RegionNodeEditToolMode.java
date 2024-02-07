@@ -136,7 +136,7 @@ public class RegionNodeEditToolMode implements ToolMode {
             menu = MenuItemNode.createMenu(mgPlayer, null, node);
         }
 
-        menu.addItem(new MenuItemSaveMinigame("Save", MenuUtility.getSaveMaterial(), minigame), menu.getSize() - 9);
+        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(), "Save", minigame), menu.getSize() - 9);
 
         menu.displayMenu(mgPlayer);
     }
@@ -152,16 +152,16 @@ public class RegionNodeEditToolMode implements ToolMode {
 
             if (object instanceof Region) {
                 options.append(((Region) object).getName());
-                MenuItemRegion item = new MenuItemRegion(((Region) object).getName(), Material.CHEST, (Region) object, module);
+                MenuItemRegion item = new MenuItemRegion(Material.CHEST, ((Region) object).getName(), (Region) object, module);
                 menu.addItem(item);
             } else if (object instanceof Node) {
                 options.append(((Node) object).getName());
-                MenuItemNode item = new MenuItemNode(((Node) object).getName(), Material.STONE_BUTTON, (Node) object, module);
+                MenuItemNode item = new MenuItemNode(Material.STONE_BUTTON, ((Node) object).getName(), (Node) object, module);
                 menu.addItem(item);
             }
         }
 
-        menu.addItem(new MenuItemSaveMinigame("Save", MenuUtility.getSaveMaterial(), module.getMinigame()), menu.getSize() - 9);
+        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(), "Save", module.getMinigame()), menu.getSize() - 9);
 
         menu.displayMenu(mgPlayer);
 

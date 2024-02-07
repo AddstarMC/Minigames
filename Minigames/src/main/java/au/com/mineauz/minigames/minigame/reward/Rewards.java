@@ -116,7 +116,7 @@ public class Rewards {
 
         rewardMenu.setPreviousPage(parent);
 
-        rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", MenuUtility.getCreateMaterial(), this), 42);
+        rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateMaterial(), "Add Group", this), 42);
         rewardMenu.addItem(new MenuItemRewardAdd("Add Item", MenuUtility.getCreateMaterial(), this), 43);
         rewardMenu.addItem(new MenuItemPage("Save " + name, MenuUtility.getSaveMaterial(), parent), 44);
 
@@ -127,7 +127,7 @@ public class Rewards {
         List<String> des = new ArrayList<>();
         des.add("Double Click to edit");
         for (RewardGroup group : groups) {
-            MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, this);
+            MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST, group.getName() + " Group", des, group, this);
             mi.add(rwg);
         }
         rewardMenu.addItems(mi);

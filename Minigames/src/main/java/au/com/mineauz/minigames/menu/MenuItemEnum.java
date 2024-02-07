@@ -2,30 +2,36 @@ package au.com.mineauz.minigames.menu;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
 public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
-    private final List<String> baseDescription;
-    private final List<T> enumList;
-    private final Callback<T> callback;
+    private final List<Component> baseDescription;
+    private final @NotNull List<T> enumList;
+    private final @NotNull Callback<T> callback;
 
-    public MenuItemEnum(String name, List<String> description, Material displayItem, Callback<T> callback, Class<T> enumClass) {
-        super(name, description, displayItem);
+    public MenuItemEnum(@Nullable Material displayMat, @Nullable Component name,
+                        @Nullable List<@NotNull Component> description, @NotNull Callback<T> callback,
+                        @NotNull Class<T> enumClass) {
+        super(displayMat, name, description);
         this.callback = callback;
         enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
         baseDescription = description;
         updateDescription();
     }
 
-    public MenuItemEnum(String name, Material displayItem, Callback<T> callback, Class<T> enumClass) {
-        super(name, displayItem);
+    public MenuItemEnum(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<T> callback,
+                        @NotNull Class<T> enumClass) {
+        super(displayMat, name);
         this.callback = callback;
         enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
         baseDescription = Collections.emptyList();
@@ -38,11 +44,6 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
     }
 
     protected List<String> getValueDescription(T value) {
-        // For the initial update
-        if (enumList == null) {
-            return Collections.emptyList();
-        }
-
         if (enumList.isEmpty()) {
             return Collections.emptyList();
         }

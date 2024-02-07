@@ -59,13 +59,13 @@ public class MinigameTimer {
             else
                 level = time;
 
-            for (MinigamePlayer ply : minigame.getPlayers()) {
+            for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
                 if (timeper < 0) {
-                    ply.getPlayer().setExp(0);
-                    ply.getPlayer().setLevel(0);
+                    mgPlayer.getPlayer().setExp(0);
+                    mgPlayer.getPlayer().setLevel(0);
                 } else {
-                    ply.getPlayer().setExp(timeper);
-                    ply.getPlayer().setLevel(level);
+                    mgPlayer.getPlayer().setExp(timeper);
+                    mgPlayer.getPlayer().setLevel(level);
                 }
             }
         }

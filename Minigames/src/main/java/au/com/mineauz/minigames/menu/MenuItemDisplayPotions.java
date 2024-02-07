@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -16,15 +15,15 @@ import java.util.List;
 public class MenuItemDisplayPotions extends MenuItem {
     private final @NotNull PlayerLoadout loadout;
 
-    public MenuItemDisplayPotions(@Nullable Component name, @Nullable Material displayMaterial,
+    public MenuItemDisplayPotions(@Nullable Material displayMaterial, @Nullable Component name,
                                   @NotNull PlayerLoadout loadout) {
-        super(name, displayMaterial);
+        super(displayMaterial, name);
         this.loadout = loadout;
     }
 
-    public MenuItemDisplayPotions(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                                  @Nullable Material displayMaterial, @NotNull PlayerLoadout loadout) {
-        super(name, description, displayMaterial);
+    public MenuItemDisplayPotions(@Nullable Material displayMaterial, @Nullable Component name,
+                                  @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout) {
+        super(displayMaterial, name, description);
         this.loadout = loadout;
     }
 
@@ -35,8 +34,7 @@ public class MenuItemDisplayPotions extends MenuItem {
 
         potionMenu.setAllowModify(true);
         potionMenu.setPreviousPage(getContainer());
-        potionMenu.addItem(new MenuItemPotionAdd(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_POTIONADD_NAME),
-                MenuUtility.getCreateMaterial(), loadout), 43);
+        potionMenu.addItem(new MenuItemPotionAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_POTIONADD_NAME, loadout), 43);
         potionMenu.addItem(new MenuItemPage("Save Potions", MenuUtility.getSaveMaterial(), getContainer().getPreviousPage()), 44);
 
         List<String> des = new ArrayList<>();
@@ -44,7 +42,7 @@ public class MenuItemDisplayPotions extends MenuItem {
 
         int inc = 0;
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
-            potionMenu.addItem(new MenuItemPotion(eff.getType().getName().toLowerCase().replace("_", " "), des, Material.POTION, eff, loadout), inc);
+            potionMenu.addItem(new MenuItemPotion(Material.POTION, eff.getType().getName().toLowerCase().replace("_", " "), des, eff, loadout), inc);
             inc++;
         }
 

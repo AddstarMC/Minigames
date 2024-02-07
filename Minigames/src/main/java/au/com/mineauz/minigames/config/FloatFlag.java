@@ -30,11 +30,6 @@ public class FloatFlag extends Flag<Float> {
     }
 
     @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return this.getMenuItem(name, displayMat, null);
-    }
-
-    @Override
     public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
                                 @Nullable List<@NotNull Component> description) {
         return this.getMenuItem(name, displayMat, description, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
@@ -48,7 +43,7 @@ public class FloatFlag extends Flag<Float> {
     public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
                                 @Nullable List<@NotNull Component> description,
                                 double lowerinc, double upperinc, @Nullable Double min, @Nullable Double max) {
-        return new MenuItemDecimal(name, description, displayMat, new Callback<>() {
+        return new MenuItemDecimal(displayMat, name, description, new Callback<>() {
 
             @Override
             public Double getValue() {

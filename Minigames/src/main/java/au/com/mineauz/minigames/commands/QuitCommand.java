@@ -119,12 +119,12 @@ public class QuitCommand extends ACommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> plys = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 1);
-            for (Player ply : PLUGIN.getServer().getOnlinePlayers()) {
-                plys.add(ply.getName());
+            List<String> playerNames = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 1);
+            for (Player player : PLUGIN.getServer().getOnlinePlayers()) {
+                playerNames.add(player.getName());
             }
-            plys.add("ALL");
-            return MinigameUtils.tabCompleteMatch(plys, args[0]);
+            playerNames.add("ALL");
+            return MinigameUtils.tabCompleteMatch(playerNames, args[0]);
         } else if (args.length == 2) {
             List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[1]);

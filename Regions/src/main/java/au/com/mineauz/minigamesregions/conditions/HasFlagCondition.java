@@ -2,27 +2,34 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class HasFlagCondition extends ConditionInterface {
+public class HasFlagCondition extends ACondition {
     private final StringFlag flagName = new StringFlag("flag", "flag");
 
+    protected HasFlagCondition(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public String getName() {
-        return "HAS_FLAG";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASFLAG_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "Player Conditions";
+        return "Player ConditionRegistry";
     }
 
     @Override
@@ -72,7 +79,7 @@ public class HasFlagCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Has Flag", player);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.addItem(flagName.getMenuItem("Flag Name", Material.NAME_TAG));
         addInvertMenuItem(m);
         m.displayMenu(player);

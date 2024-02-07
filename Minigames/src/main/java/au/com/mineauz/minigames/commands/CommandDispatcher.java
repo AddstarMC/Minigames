@@ -89,16 +89,16 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
     }
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player ply = null;
-        if (sender instanceof Player player) {
-            ply = player;
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player) sender;
         }
 
         if (args != null && args.length > 0) {
             ACommand cmd = getCommand(args[0]);
 
             if (cmd != null) {
-                if (ply != null || cmd.canBeConsole()) {
+                if (player != null || cmd.canBeConsole()) {
                     String[] shortArgs;
                     if (args.length > 1) {
                         shortArgs = new String[args.length - 1];
@@ -107,7 +107,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                         shortArgs = new String[]{};
                     }
 
-                    if (ply == null || (cmd.getPermission() == null || ply.hasPermission(cmd.getPermission()))) {
+                    if (player == null || (cmd.getPermission() == null || player.hasPermission(cmd.getPermission()))) {
                         boolean returnValue = cmd.onCommand(sender, shortArgs);
                         if (!returnValue) {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_HEADER);

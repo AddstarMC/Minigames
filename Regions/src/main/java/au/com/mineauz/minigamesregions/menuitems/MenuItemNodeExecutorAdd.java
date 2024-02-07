@@ -4,40 +4,43 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.triggers.Triggers;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.triggers.Trigger;
+import au.com.mineauz.minigamesregions.triggers.TriggerRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MenuItemNodeExecutorAdd extends MenuItem {
-    private final Node node;
+    private final @NotNull Node node;
 
-    public MenuItemNodeExecutorAdd(@Nullable Component name, @Nullable Material displayItem, @NotNull Node node) {
-        super(name, displayItem);
+    public MenuItemNodeExecutorAdd(@Nullable Material displayMat, @Nullable RegionLangKey langKey, @NotNull Node node) {
+        super(displayMat, RegionMessageManager.getMessage(langKey));
         this.node = node;
     }
 
-    public MenuItemNodeExecutorAdd(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                                   @Nullable Material displayItem, @NotNull Node node) {
-        super(name, description, displayItem);
+    public MenuItemNodeExecutorAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Node node) {
+        super(displayMat, name);
+        this.node = node;
+    }
+
+    public MenuItemNodeExecutorAdd(@Nullable Material displayMat, @Nullable Component name,
+                                   @Nullable List<@NotNull Component> description, @NotNull Node node) {
+        super(displayMat, name, description);
         this.node = node;
     }
 
     @Override
     public ItemStack onClick() {
-        Menu m = new Menu(6, "Select Trigger", getContainer().getViewer());
+        Menu m = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_ADD_NAME), getContainer().getViewer());
 
-        List<String> triggers = new ArrayList<>(Triggers.getAllNodeTriggers());
-        Collections.sort(triggers);
-
-        for (String trig : triggers) {
-            m.addItem(new MenuItemTrigger(Triggers.getTrigger(trig), node, getContainer()));
+        for (Trigger trig : TriggerRegistry.getAllNodeTriggers()) {
+            m.addItem(new MenuItemTrigger(trig, node, getContainer()));
         }
 
         m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);

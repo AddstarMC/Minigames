@@ -129,7 +129,7 @@ public class MultiplayerType extends MinigameTypeBase {
                         }
                         Collections.shuffle(locs);
                         fply.teleport(locs.get(0));
-                        fply.getLoadout().equiptLoadout(fply);
+                        fply.getLoadout().equipLoadout(fply);
                         fply.setLatejoining(false);
                         fply.setFrozen(false);
                         fply.setCanInteract(true);
@@ -142,7 +142,7 @@ public class MultiplayerType extends MinigameTypeBase {
                         List<Location> locs = new ArrayList<>(fmgm.getStartLocations());
                         Collections.shuffle(locs);
                         fply.teleport(locs.get(0));
-                        fply.getLoadout().equiptLoadout(fply);
+                        fply.getLoadout().equipLoadout(fply);
                         fply.setLatejoining(false);
                         fply.setFrozen(false);
                         fply.setCanInteract(true);
@@ -158,7 +158,7 @@ public class MultiplayerType extends MinigameTypeBase {
     }
 
     @Override
-    public void quitMinigame(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm, boolean forced) {
+    public void quitMinigame(final @NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm, boolean forced) {
         int teamsWithPlayers = 0;
 
         if (mgm.isTeamGame()) {
@@ -178,8 +178,7 @@ public class MultiplayerType extends MinigameTypeBase {
             if (mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)) {
                 if (mgm.getMpBets().getPlayersItemBet(mgPlayer) != null) {
                     final ItemStack item = mgm.getMpBets().getPlayersItemBet(mgPlayer).clone();
-                    final MinigamePlayer ply = mgPlayer;
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.getPlayer().getInventory().addItem(item));
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> mgPlayer.getPlayer().getInventory().addItem(item));
                 } else if (mgm.getMpBets().getPlayersMoneyBet(mgPlayer) != null) {
                     plugin.getEconomy().depositPlayer(mgPlayer.getPlayer().getPlayer(), mgm.getMpBets().getPlayersMoneyBet(mgPlayer));
                 }
@@ -417,18 +416,18 @@ public class MultiplayerType extends MinigameTypeBase {
             MinigamePlayer winningPlayer = null;
             int winingScore = 0;
 
-            for (MinigamePlayer ply : mgm.getPlayers()) {
-                if (ply.getScore() > 0) {
-                    if (ply.getScore() > winingScore) {
-                        winningPlayer = ply;
-                        winingScore = ply.getScore();
+            for (MinigamePlayer mgPlayer : mgm.getPlayers()) {
+                if (mgPlayer.getScore() > 0) {
+                    if (mgPlayer.getScore() > winingScore) {
+                        winningPlayer = mgPlayer;
+                        winingScore = mgPlayer.getScore();
 
-                    } else if (ply.getScore() == winingScore) {
-                        if (winningPlayer != null && ply.getDeaths() < winningPlayer.getDeaths()) {
-                            winningPlayer = ply;
+                    } else if (mgPlayer.getScore() == winingScore) {
+                        if (winningPlayer != null && mgPlayer.getDeaths() < winningPlayer.getDeaths()) {
+                            winningPlayer = mgPlayer;
 
                         } else if (winningPlayer == null) {
-                            winningPlayer = ply;
+                            winningPlayer = mgPlayer;
                         }
                     }
                 }
@@ -452,41 +451,41 @@ public class MultiplayerType extends MinigameTypeBase {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void playerRespawn(PlayerRespawnEvent event) {
-        final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.MULTIPLAYER) {
-            Minigame mg = ply.getMinigame();
+        final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
+        if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getType() == MinigameType.MULTIPLAYER) {
+            Minigame mg = mgPlayer.getMinigame();
             Location respawnPos;
-            if (ply.getMinigame().isTeamGame()) {
-                Team team = ply.getTeam();
-                if (mg.hasStarted() && !ply.isLatejoining()) {
-                    if (mg.isAllowedMPCheckpoints() && ply.hasCheckpoint()) {
-                        respawnPos = ply.getCheckpoint();
+            if (mgPlayer.getMinigame().isTeamGame()) {
+                Team team = mgPlayer.getTeam();
+                if (mg.hasStarted() && !mgPlayer.isLatejoining()) {
+                    if (mg.isAllowedMPCheckpoints() && mgPlayer.hasCheckpoint()) {
+                        respawnPos = mgPlayer.getCheckpoint();
                     } else {
                         List<Location> starts = new ArrayList<>();
                         if (TeamsModule.getMinigameModule(mg).hasTeamStartLocations()) {
                             starts.addAll(team.getStartLocations());
-                            ply.getLoadout().equiptLoadout(ply);
+                            mgPlayer.getLoadout().equipLoadout(mgPlayer);
                         } else {
                             starts.addAll(mg.getStartLocations());
                         }
                         Collections.shuffle(starts);
                         respawnPos = starts.get(0);
                     }
-                    ply.getLoadout().equiptLoadout(ply);
+                    mgPlayer.getLoadout().equipLoadout(mgPlayer);
                 } else {
                     respawnPos = mg.getLobbyLocation();
                 }
             } else {
-                if (mg.hasStarted() && !ply.isLatejoining()) {
-                    if (mg.isAllowedMPCheckpoints() && ply.hasCheckpoint()) {
-                        respawnPos = ply.getCheckpoint();
+                if (mg.hasStarted() && !mgPlayer.isLatejoining()) {
+                    if (mg.isAllowedMPCheckpoints() && mgPlayer.hasCheckpoint()) {
+                        respawnPos = mgPlayer.getCheckpoint();
                     } else {
                         List<Location> starts = new ArrayList<>(mg.getStartLocations());
                         Collections.shuffle(starts);
                         respawnPos = starts.get(0);
                     }
 
-                    ply.getLoadout().equiptLoadout(ply);
+                    mgPlayer.getLoadout().equipLoadout(mgPlayer);
                 } else {
                     respawnPos = mg.getLobbyLocation();
                 }
@@ -494,7 +493,7 @@ public class MultiplayerType extends MinigameTypeBase {
 
             event.setRespawnLocation(respawnPos);
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.getPlayer().setNoDamageTicks(60));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> mgPlayer.getPlayer().setNoDamageTicks(60));
         }
     }
 

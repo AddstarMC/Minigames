@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -55,8 +56,9 @@ public class TriggerRandomAction extends AbstractAction {
         debug(mgPlayer, region);
         List<RegionExecutor> exs = new ArrayList<>();
         for (RegionExecutor ex : region.getExecutors()) {
-            if (ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
+            if (ex.getTrigger() == MgRegTrigger.RANDOM) {
                 exs.add(ex);
+            }
         }
         Collections.shuffle(exs);
         if (timesTriggered.getFlag() == 1) {
@@ -82,8 +84,9 @@ public class TriggerRandomAction extends AbstractAction {
         debug(mgPlayer, node);
         List<NodeExecutor> exs = new ArrayList<>();
         for (NodeExecutor ex : node.getExecutors()) {
-            if (ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
+            if (ex.getTrigger() == MgRegTrigger.RANDOM) {
                 exs.add(ex);
+            }
         }
         Collections.shuffle(exs);
         if (timesTriggered.getFlag() == 1) {

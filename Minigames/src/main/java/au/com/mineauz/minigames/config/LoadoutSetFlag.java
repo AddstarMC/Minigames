@@ -2,8 +2,11 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.menu.MenuItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -38,15 +41,16 @@ public class LoadoutSetFlag extends Flag<Map<String, PlayerLoadout>> {
         }
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
-        return null;
+    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+        return getMenuItem(name, displayMat, null);
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem,
-                                List<String> description) {
-        return null;
+    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                          @Nullable List<@NotNull Component> description) {
+        return null; //todo
     }
-
 }

@@ -104,13 +104,13 @@ public class JuggernautMechanic extends GameMechanicBase {
         return plys.get(0);
     }
 
-    private void checkScore(MinigamePlayer ply) {
-        if (ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()) {
+    private void checkScore(MinigamePlayer mgPlayer) {
+        if (mgPlayer.getScore() >= mgPlayer.getMinigame().getMaxScorePerPlayer()) {
             List<MinigamePlayer> winners = new ArrayList<>();
-            winners.add(ply);
-            List<MinigamePlayer> losers = new ArrayList<>(ply.getMinigame().getPlayers());
-            losers.remove(ply);
-            pdata.endMinigame(ply.getMinigame(), winners, losers);
+            winners.add(mgPlayer);
+            List<MinigamePlayer> losers = new ArrayList<>(mgPlayer.getMinigame().getPlayers());
+            losers.remove(mgPlayer);
+            pdata.endMinigame(mgPlayer.getMinigame(), winners, losers);
         }
     }
 
@@ -129,11 +129,11 @@ public class JuggernautMechanic extends GameMechanicBase {
 
     @EventHandler
     private void playerDeath(PlayerDeathEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if (ply.getMinigame() != null && ply.getMinigame().getMechanic() == this) {
-            JuggernautModule jm = JuggernautModule.getMinigameModule(ply.getMinigame());
+        MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
+        if (mgPlayer.getMinigame() != null && mgPlayer.getMinigame().getMechanic() == this) {
+            JuggernautModule jm = JuggernautModule.getMinigameModule(mgPlayer.getMinigame());
 
-            if (jm.getJuggernaut() == ply) {
+            if (jm.getJuggernaut() == mgPlayer) {
                 if (event.getEntity().getKiller() != null) {
                     MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
                     jm.setJuggernaut(pk);
@@ -142,7 +142,7 @@ public class JuggernautMechanic extends GameMechanicBase {
                     checkScore(pk);
 
                 } else {
-                    jm.setJuggernaut(assignNewJuggernaut(ply.getMinigame().getPlayers(), ply));
+                    jm.setJuggernaut(assignNewJuggernaut(mgPlayer.getMinigame().getPlayers(), mgPlayer));
                 }
             } else {
                 if (event.getEntity().getKiller() != null) {

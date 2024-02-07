@@ -7,12 +7,13 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MenuItemStatisticsSettings extends MenuItem {
-    private final Minigame minigame;
+    private final @NotNull Minigame minigame;
 
-    public MenuItemStatisticsSettings(@NotNull Minigame minigame, Component name, Material displayItem) {
-        super(name, displayItem);
+    public MenuItemStatisticsSettings(@Nullable Material displayMat, @Nullable Component name, @NotNull Minigame minigame) {
+        super(displayMat, name);
         this.minigame = minigame;
     }
 
@@ -21,7 +22,7 @@ public class MenuItemStatisticsSettings extends MenuItem {
         Menu subMenu = new Menu(6, "Statistics Settings", getContainer().getViewer());
 
         for (MinigameStat stat : MinigameStats.getAllStats().values()) {
-            subMenu.addItem(new MenuItemModifyStatSetting(minigame, stat, Material.WRITABLE_BOOK));
+            subMenu.addItem(new MenuItemModifyStatSetting(Material.WRITABLE_BOOK, minigame, stat));
         }
 
         subMenu.addItem(new MenuItemBack(getContainer()), subMenu.getSize() - 9);

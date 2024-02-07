@@ -58,13 +58,13 @@ public class GlobalLoadoutCommand extends ACommand { //todo merge with loadout c
         MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
         Menu loadouts = new Menu(6, getName(), player);
 
-        List<String> des = new ArrayList<>();
+        List<Component> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");
         List<MenuItem> mi = new ArrayList<>();
         for (String ld : mdata.getLoadouts()) {
             Material item = Material.WHITE_STAINED_GLASS_PANE;
-            if (!mdata.getLoadout(ld).getItems().isEmpty()) {
-                item = mdata.getLoadout(ld).getItem((Integer) mdata.getLoadout(ld).getItems().toArray()[0]).getType();
+            if (!mdata.getLoadout(ld).getItemSlots().isEmpty()) {
+                item = mdata.getLoadout(ld).getItem((Integer) mdata.getLoadout(ld).getItemSlots().toArray()[0]).getType();
             }
             mi.add(new MenuItemDisplayLoadout(ld, des, item, mdata.getLoadout(ld)));
         }
@@ -76,9 +76,7 @@ public class GlobalLoadoutCommand extends ACommand { //todo merge with loadout c
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @Nullable [] args) {
         return null;
     }
-
 }

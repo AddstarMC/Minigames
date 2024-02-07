@@ -9,13 +9,17 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import com.google.common.base.Joiner;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +27,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayerHasItemCondition extends ConditionInterface {
+public class PlayerHasItemCondition extends ACondition {
     private final MaterialFlag type = new MaterialFlag(Material.STONE, "type");
     private final StringFlag where = new StringFlag("ANYWHERE", "where");
     private final IntegerFlag slot = new IntegerFlag(0, "slot");
@@ -34,14 +38,18 @@ public class PlayerHasItemCondition extends ConditionInterface {
     private final StringFlag name = new StringFlag(null, "name");
     private final StringFlag lore = new StringFlag(null, "lore");
 
+    protected PlayerHasItemCondition(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public String getName() {
-        return "PLAYER_HAS_ITEM";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "Player Conditions";
+        return "Player ConditionRegistry";
     }
 
     @Override
@@ -244,24 +252,9 @@ public class PlayerHasItemCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Player Has Item", player);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
-        Material display = type.getFlag();
-        if (display == null) display = Material.STONE;
-        m.addItem(new MenuItemMaterial("Item", display, new Callback<>() {
-
-            @Override
-            public Material getValue() {
-                return type.getFlag();
-            }
-
-            @Override
-            public void setValue(Material value) {
-                type.setFlag(value);
-            }
-
-
-        }));
-        m.addItem(new MenuItemList("Search Where", Material.COMPASS, new Callback<>() {
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
+        m.addItem(type.getMenuItem("Item"));
+        m.addItem(new MenuItemList<String>("Search Where", Material.COMPASS, new Callback<>() {
             @Override
             public String getValue() {
                 return WordUtils.capitalizeFully(where.getFlag());

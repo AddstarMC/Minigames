@@ -90,10 +90,10 @@ public class LivesMechanic extends GameMechanicBase {
 
     @EventHandler
     private void playerDeath(PlayerDeathEvent event) {
-        MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getEntity());
-        if (ply.isInMinigame() && ply.getMinigame().getMechanicName().equals(getMechanic())) {
-            ply.addScore(-1);
-            ply.getMinigame().setScore(ply, ply.getScore());
+        MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getEntity());
+        if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getMechanicName().equals(getMechanic())) {
+            mgPlayer.addScore(-1);
+            mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
         }
     }
 

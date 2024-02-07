@@ -10,29 +10,34 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 
-public class MatchBlockCondition extends ConditionInterface {
-
+public class MatchBlockCondition extends ACondition {
     private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
     private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");
 
+    protected MatchBlockCondition(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public String getName() {
-        return "MATCH_BLOCK";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHBLOCK_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "World Conditions";
+        return "World ConditionRegistry";
     }
 
     @Override
@@ -88,12 +93,12 @@ public class MatchBlockCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Match Block", player);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
-        final MenuItemCustom autoSetBlockMenuItem = new MenuItemCustom("Auto Set Block",
-                List.of("Click here with a", "block you wish to", "match to."), Material.ITEM_FRAME);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
+        final MenuItemCustom autoSetBlockMenuItem = new MenuItemCustom(Material.ITEM_FRAME, "Auto Set Block",
+                List.of("Click here with a", "block you wish to", "match to."));
         m.addItem(autoSetBlockMenuItem, m.getSize() - 1);
 
-        final MenuItemBlockData btype = new MenuItemBlockData("Block Type", Material.STONE, new Callback<>() {
+        final MenuItemBlockData btype = new MenuItemBlockData(Material.STONE, "Block Type", new Callback<>() {
 
             @Override
             public BlockData getValue() {

@@ -1,26 +1,33 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Map;
 
-public class ContainsEntireTeamCondition extends ConditionInterface {
+public class ContainsEntireTeamCondition extends ACondition {
+
+    protected ContainsEntireTeamCondition(@NotNull String name) {
+        super(name);
+    }
 
     @Override
-    public String getName() {
-        return "CONTAINS_ENTIRE_TEAM";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTIRETEAM_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "Team Conditions";
+        return "Team ConditionRegistry";
     }
 
     @Override
@@ -61,7 +68,7 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu menu = new Menu(3, "Contains Entire Team", player);
-        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), menu.getSize() - 9);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
         menu.displayMenu(player);
         return true;

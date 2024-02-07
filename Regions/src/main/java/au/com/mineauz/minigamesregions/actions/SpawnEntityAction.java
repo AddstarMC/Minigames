@@ -110,7 +110,7 @@ public class SpawnEntityAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Spawn Entity", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         List<String> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
             if (type != EntityType.ITEM_FRAME && type != EntityType.LEASH_HITCH && type != EntityType.PLAYER &&
@@ -181,8 +181,8 @@ public class SpawnEntityAction extends AbstractAction {
         m.addItem(new MenuItemNewLine());
 
         final Menu eSet = new Menu(3, "Settings", mgPlayer);
-        final MenuItemPage backButton = new MenuItemPage("Back", MenuUtility.getBackMaterial(), m);
-        final MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
+        final MenuItemBack backButton = new MenuItemBack(m);
+        final MenuItemCustom cus = new MenuItemCustom(Material.CHEST, "Entity Settings");
         final MinigamePlayer fply = mgPlayer;
         cus.setClick(object -> {
             if (type.getFlag().equals("ZOMBIE")) {

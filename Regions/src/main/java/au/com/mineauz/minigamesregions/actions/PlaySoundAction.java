@@ -106,7 +106,7 @@ public class PlaySoundAction extends AbstractAction {
 
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         List<Sound> sounds = Arrays.asList(Sound.values());
-        m.addItem(new MenuItemList<>(MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, Material.NOTE_BLOCK, new Callback<>() {
+        m.addItem(new MenuItemList<>(Material.NOTE_BLOCK, MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, new Callback<>() {
 
             @Override
             public Sound getValue() {
@@ -125,7 +125,7 @@ public class PlaySoundAction extends AbstractAction {
 
         }, sounds));
         m.addItem(priv.getMenuItem(MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME, Material.ENDER_PEARL));
-        m.addItem(new MenuItemDecimal(MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, Material.JUKEBOX, new Callback<>() {
+        m.addItem(new MenuItemDecimal(Material.JUKEBOX, MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, new Callback<>() {
 
             @Override
             public Double getValue() {
@@ -139,7 +139,7 @@ public class PlaySoundAction extends AbstractAction {
 
 
         }, 0.1, 1d, 0.5, null));
-        m.addItem(new MenuItemDecimal(MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME, Material.ENDER_EYE, new Callback<>() {
+        m.addItem(new MenuItemDecimal(Material.ENDER_EYE, MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME, new Callback<>() {
 
             @Override
             public Double getValue() {

@@ -17,20 +17,21 @@ public class MenuItemString extends MenuItem {
     protected final Callback<String> str;
     private boolean allowNull = false;
 
-    public MenuItemString(@NotNull LangKey langKey, @Nullable Material displayItem, @NotNull Callback<String> str) {
-        super(langKey, displayItem);
+    public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<String> str) {
+        super(displayMat, langKey);
         this.str = str;
         updateDescription();
     }
 
-    public MenuItemString(@Nullable Component name, @Nullable Material displayItem, @NotNull Callback<String> str) {
-        super(name, displayItem);
+    public MenuItemString(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<String> str) {
+        super(displayMat, name);
         this.str = str;
         updateDescription();
     }
 
-    public MenuItemString(@Nullable Component name, @Nullable List<@NotNull Component> description, @Nullable Material displayItem, @NotNull Callback<String> str) {
-        super(name, description, displayItem);
+    public MenuItemString(@Nullable Material displayMat, @Nullable Component name,
+                          @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
+        super(displayMat, name, description);
         this.str = str;
         updateDescription();
     }
@@ -66,14 +67,14 @@ public class MenuItemString extends MenuItem {
 
     @Override
     public ItemStack onDoubleClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", MinigameMessageType.INFO);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        mgPlayer.sendMessage("Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", MinigameMessageType.INFO);
         if (allowNull) {
-            ply.sendInfoMessage("Enter \"null\" to remove the string value");
+            mgPlayer.sendInfoMessage("Enter \"null\" to remove the string value");
         }
-        ply.setManualEntry(this);
+        mgPlayer.setManualEntry(this);
         getContainer().startReopenTimer(20);
 
         return null;

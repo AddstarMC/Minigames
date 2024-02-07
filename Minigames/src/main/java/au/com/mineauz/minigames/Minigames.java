@@ -138,7 +138,7 @@ public class Minigames extends JavaPlugin {
         final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
         if (this.minigameManager.hasLoadouts()) {
             for (final String loadout : this.minigameManager.getLoadouts()) {
-                for (final Integer slot : this.minigameManager.getLoadout(loadout).getItems()) {
+                for (final Integer slot : this.minigameManager.getLoadout(loadout).getItemSlots()) {
                     globalLoadouts.getConfig().set(loadout + '.' + slot, this.minigameManager.getLoadout(loadout).getItem(slot));
                 }
                 if (!this.minigameManager.getLoadout(loadout).getAllPotionEffects().isEmpty()) {

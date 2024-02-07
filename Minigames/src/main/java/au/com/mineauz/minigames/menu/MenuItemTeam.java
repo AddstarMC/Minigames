@@ -20,7 +20,7 @@ public class MenuItemTeam extends MenuItem {
     private final @NotNull Team team;
 
     public MenuItemTeam(@Nullable Component name, @NotNull Team team) {
-        super(name, Material.LEATHER_CHESTPLATE);
+        super(Material.LEATHER_CHESTPLATE, name);
 
         setDescription(List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK)));
         this.team = team;
@@ -28,7 +28,7 @@ public class MenuItemTeam extends MenuItem {
     }
 
     public MenuItemTeam(@Nullable Component name, @NotNull List<@NotNull Component> description, @NotNull Team team) {
-        super(name, description, Material.LEATHER_CHESTPLATE);
+        super(Material.LEATHER_CHESTPLATE, name, description);
 
         getDescription().add(0, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
         this.team = team;
@@ -61,7 +61,7 @@ public class MenuItemTeam extends MenuItem {
     @Override
     public ItemStack onClick() {
         Menu m = new Menu(3, getName(), getContainer().getViewer());
-        m.addItem(new MenuItemString(MgMenuLangKey.MENU_TEAM_DISPLAYNAME, Material.NAME_TAG, new Callback<>() {
+        m.addItem(new MenuItemString(Material.NAME_TAG, MgMenuLangKey.MENU_TEAM_DISPLAYNAME, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -73,7 +73,7 @@ public class MenuItemTeam extends MenuItem {
                 team.setDisplayName(value);
             }
         }));
-        m.addItem(new MenuItemInteger(MgMenuLangKey.MENU_TEAM_MAXPLAYERS, Material.STONE, new Callback<>() {
+        m.addItem(new MenuItemInteger(Material.STONE, MgMenuLangKey.MENU_TEAM_MAXPLAYERS, new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -98,9 +98,9 @@ public class MenuItemTeam extends MenuItem {
                         List.of("Message sent to all players", "when someone is", "auto-balanced.", "Use <team>/<player> for team/player name")));
             }
         }
-        m.addItem(new MenuItemList<>(MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NAME, Material.NAME_TAG, team.getNameTagVisibilityCallback(),
+        m.addItem(new MenuItemList<>(Material.NAME_TAG, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NAME, team.getNameTagVisibilityCallback(),
                 Arrays.asList(Team.VisibilityMapper.values())));
-        m.addItem(new MenuItemBoolean(MgMenuLangKey.MENU_TEAM_AUTOBALANCE, Material.PAPER, team.getAutoBalanceCallBack()));
+        m.addItem(new MenuItemBoolean(Material.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCE, team.getAutoBalanceCallBack()));
 
         m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
         m.displayMenu(getContainer().getViewer());

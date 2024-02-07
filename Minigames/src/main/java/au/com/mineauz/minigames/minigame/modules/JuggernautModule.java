@@ -74,7 +74,7 @@ public class JuggernautModule extends MinigameModule {
             LoadoutModule lm = LoadoutModule.getMinigameModule(getMinigame());
             if (lm.hasLoadout("juggernaut")) {
                 player.setLoadout(lm.getLoadout("juggernaut"));
-                player.getLoadout().equiptLoadout(player);
+                player.getLoadout().equipLoadout(player);
             }
         }
     }

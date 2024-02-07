@@ -25,6 +25,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -67,13 +68,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         menu.addItem(lossUsesSecondary.getMenuItem("Losers Get Secondary", Material.LEVER, List.of("When on, the losers", "will only get the", "secondary reward")));
         menu.addItem(new MenuItemNewLine());
 
-        MenuItemCustom primary = new MenuItemCustom("Primary Rewards", Material.CHEST);
+        MenuItemCustom primary = new MenuItemCustom(Material.CHEST, "Primary Rewards");
         primary.setClick(object -> {
             showRewardsMenu(primaryRewards, menu.getViewer(), menu);
             return null;
         });
 
-        MenuItemCustom secondary = new MenuItemCustom("Secondary Rewards", Material.CHEST);
+        MenuItemCustom secondary = new MenuItemCustom(Material.CHEST, "Secondary Rewards");
         secondary.setClick(object -> {
             showRewardsMenu(secondaryRewards, menu.getViewer(), menu);
             return null;
@@ -87,10 +88,10 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         Menu submenu = new Menu(6, "Rewards", player);
 
         for (T key : rewards.keySet()) {
-            submenu.addItem(new MenuItemRewardPair(rewards, key, Material.CHEST));
+            submenu.addItem(new MenuItemRewardPair(Material.CHEST, rewards, key));
         }
 
-        submenu.addItem(new MenuItemAddReward(rewards, "Add Reward Set", Material.ITEM_FRAME), submenu.getSize() - 2);
+        submenu.addItem(new MenuItemAddReward(MenuUtility.getCreateMaterial(), "Add Reward Set", rewards), submenu.getSize() - 2);
         submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 1);
 
         submenu.setPreviousPage(parent);
@@ -216,12 +217,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     }
 
     private class MenuItemRewardPair extends MenuItem {
-        private final Rewards reward;
-        private final TreeMap<T, Rewards> map;
-        private T value;
+        private final @NotNull Rewards reward;
+        private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
+        private @NotNull T value;
 
-        public MenuItemRewardPair(TreeMap<T, Rewards> map, T value, Material displayItem) {
-            super(getMenuItemName(value), displayItem);
+        public MenuItemRewardPair(@Nullable Material displayMat, @NotNull TreeMap<@NotNull T, @NotNull Rewards> map,
+                                  @NotNull T value) {
+            super(displayMat, getMenuItemName(value));
 
             this.map = map;
             this.value = value;
@@ -337,10 +339,11 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     }
 
     private class MenuItemAddReward extends MenuItem {
-        private final TreeMap<T, Rewards> map;
+        private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
 
-        public MenuItemAddReward(TreeMap<T, Rewards> map, Component name, Material displayItem) {
-            super(name, displayItem);
+        public MenuItemAddReward(@Nullable Material displayMat, @NotNull Component name,
+                                 @NotNull TreeMap<@NotNull T, @NotNull Rewards> map) {
+            super(displayMat, name);
 
             this.map = map;
         }

@@ -17,8 +17,8 @@ public class MenuItemModifyStatSetting extends MenuItem {
     private final @NotNull Minigame minigame;
     private final @NotNull MinigameStat stat;
 
-    public MenuItemModifyStatSetting(@NotNull Minigame minigame, @NotNull MinigameStat stat, @Nullable Material material) {
-        super(stat.getDisplayName(), material);
+    public MenuItemModifyStatSetting(@Nullable Material displayMat, @NotNull Minigame minigame, @NotNull MinigameStat stat) {
+        super(displayMat, stat.getDisplayName());
 
         this.minigame = minigame;
         this.stat = stat;

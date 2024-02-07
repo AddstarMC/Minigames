@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.triggers;
 
 /**
  * This action fires if a TimedTriggerAction executes.
- */
+ */ //todo deleted
 public class TimedRemoteTrigger implements Trigger {
 
     @Override

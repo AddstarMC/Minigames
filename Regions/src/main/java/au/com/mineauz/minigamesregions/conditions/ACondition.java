@@ -8,12 +8,19 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public abstract class ConditionInterface {
+public abstract class ACondition {
+    protected @NotNull String name;
+
+    protected ACondition(@NotNull String name) {
+        this.name = name;
+    }
 
     private final BooleanFlag invert = new BooleanFlag(false, "invert");
 
@@ -33,7 +40,11 @@ public abstract class ConditionInterface {
         return invert.getFlag();
     }
 
-    public abstract String getName();
+    public @NotNull String getName() {
+        return name;
+    }
+
+    public abstract @NotNull Component getDisplayName();
 
     public abstract String getCategory();
 

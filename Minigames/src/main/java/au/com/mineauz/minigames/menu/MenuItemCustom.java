@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.menu;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -14,12 +16,13 @@ public class MenuItemCustom extends MenuItem {
     private InteractionInterface shiftRightClick = null;
     private InteractionInterface doubleClick = null;
 
-    public MenuItemCustom(Component name, Material displayItem) {
-        super(name, displayItem);
+    public MenuItemCustom(@Nullable Material displayMat, @Nullable Component name) {
+        super(displayMat, name);
     }
 
-    public MenuItemCustom(Component name, List<Component> description, Material displayItem) {
-        super(name, description, displayItem);
+    public MenuItemCustom(@Nullable Material displayMat, @Nullable Component name,
+                          @Nullable List<@NotNull Component> description) {
+        super(displayMat, name, description);
     }
 
     @Override

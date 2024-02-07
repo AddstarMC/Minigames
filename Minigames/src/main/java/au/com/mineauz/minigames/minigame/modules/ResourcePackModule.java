@@ -20,8 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
-
 public class ResourcePackModule extends MinigameModule { //todo rework to work with multiple ressource packs
     private final BooleanFlag enabled = new BooleanFlag(false, "resourcePackEnabled");
     private final StringFlag resourcePackName = new StringFlag("", "resourcePackName");
@@ -86,7 +84,7 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
         Menu m = new Menu(3, "Teams", menu.getViewer());
         m.setPreviousPage(menu);
         m.addItem(enabled.getMenuItem("Enable Resource Pack", Material.MAP));
-        MenuItem item = new MenuItemString("Resource Pack Name", Material.PAPER, new Callback<>() {
+        MenuItem item = new MenuItemString(Material.PAPER, "Resource Pack Name", new Callback<>() {
             @Override
             public String getValue() {
                 return resourcePackName.getFlag();
@@ -117,7 +115,7 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
         m.addItem(item);
         m.addItem(forced.getMenuItem("Force Resource Pack", Material.SKELETON_SKULL));
         MenuItemPage p = new MenuItemPage("Resource Pack Options", Material.MAP, m);
-        m.addItem(new MenuItemPage("Back", getBackMaterial(), menu), m.getSize() - 9);
+        m.addItem(new MenuItemBack(menu), m.getSize() - 9);
         menu.addItem(p);
     }
 

@@ -64,7 +64,10 @@ public abstract class Flag<T> {
         return getMenuItem(MinigameMessageManager.getMgMessage(langKey), displayMaterial);
     }
 
-    public abstract MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMaterial);
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMaterial) {
+        return getMenuItem(name, displayMaterial, null);
+    }
 
-    public abstract MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayItem, @Nullable List<@NotNull Component> description);
+    public abstract MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                         @Nullable List<@NotNull Component> description);
 }

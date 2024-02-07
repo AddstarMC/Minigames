@@ -72,11 +72,11 @@ public class MoneyReward extends RewardType {
     }
 
     private class MenuItemReward extends MenuItem {
-        private final MoneyReward reward;
-        private List<String> options = new ArrayList<>();
+        private final @NotNull MoneyReward reward;
+        private final @NotNull List<@NotNull String> options = new ArrayList<>();
 
-        public MenuItemReward(MoneyReward reward) {
-            super(Component.text("$" + money), Material.PAPER);
+        public MenuItemReward(@NotNull MoneyReward reward) {
+            super(Material.PAPER, Component.text("$" + money));
             for (RewardRarity rarity : RewardRarity.values()) {
                 options.add(rarity.toString());
             }
@@ -92,12 +92,6 @@ public class MoneyReward extends RewardType {
 
         public void updateDescription() {
             List<Component> description;
-            if (options == null) {
-                options = new ArrayList<>();
-                for (RewardRarity rarity : RewardRarity.values()) {
-                    options.add(rarity.toString());
-                }
-            }
             int pos = options.indexOf(getRarity().toString());
             int before = pos - 1;
             int after = pos + 1;
@@ -170,7 +164,7 @@ public class MoneyReward extends RewardType {
         @Override
         public ItemStack onShiftClick() {
             Menu m = new Menu(3, MgMenuLangKey.MENU_MONEYREWARD_MENU_NAME, getContainer().getViewer());
-            MenuItemDecimal dec = new MenuItemDecimal(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME), Material.PAPER, new Callback<>() {
+            MenuItemDecimal dec = new MenuItemDecimal(Material.PAPER, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME), new Callback<>() {
 
                 @Override
                 public Double getValue() {

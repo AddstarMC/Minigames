@@ -9,6 +9,8 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -58,8 +60,9 @@ public final class RewardSchemes {
         return definedSchemes.inverse().get(schemeClass);
     }
 
-    public static MenuItem newMenuItem(Component name, Material displayItem, Callback<Class<? extends RewardScheme>> callback) {
-        return new MenuItemRewardScheme(name, displayItem, callback);
+    public static MenuItem newMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                       @NotNull Callback<Class<? extends RewardScheme>> callback) {
+        return new MenuItemRewardScheme(displayMat, name, callback);
     }
 
     private static List<String> getSchemesAsNameList() {
@@ -80,9 +83,10 @@ public final class RewardSchemes {
         };
     }
 
-    private static class MenuItemRewardScheme extends MenuItemList {
-        public MenuItemRewardScheme(Component name, Material displayItem, Callback<Class<? extends RewardScheme>> callback) {
-            super(name, displayItem, transformCallback(callback), getSchemesAsNameList());
+    private static class MenuItemRewardScheme extends MenuItemList<String> {
+        public MenuItemRewardScheme(@Nullable Material displayMat, @Nullable Component name,
+                                    @NotNull Callback<Class<? extends RewardScheme>> callback) {
+            super(displayMat, name, transformCallback(callback), getSchemesAsNameList());
         }
     }
 }

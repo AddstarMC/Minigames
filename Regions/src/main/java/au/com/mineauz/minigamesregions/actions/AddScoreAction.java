@@ -1,7 +1,10 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.Node;
@@ -93,7 +96,7 @@ public class AddScoreAction extends ScoreAction {
                 amount.setFlag(value);
             }
         }, null, null));
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.displayMenu(mgPlayer);
         return true;
     }

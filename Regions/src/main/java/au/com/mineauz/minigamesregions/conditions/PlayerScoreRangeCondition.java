@@ -2,28 +2,35 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class PlayerScoreRangeCondition extends ConditionInterface {
+public class PlayerScoreRangeCondition extends ACondition {
     private final IntegerFlag min = new IntegerFlag(5, "min");
     private final IntegerFlag max = new IntegerFlag(10, "max");
 
+    protected PlayerScoreRangeCondition(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public String getName() {
-        return "PLAYER_SCORE_RANGE";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERSCORERANGE_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "Player Conditions";
+        return "Player ConditionRegistry";
     }
 
     @Override
@@ -72,7 +79,7 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
         Menu m = new Menu(3, "Score Range", player);
         m.addItem(min.getMenuItem("Min Score", Material.STONE_SLAB));
         m.addItem(max.getMenuItem("Max Score", Material.STONE));
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

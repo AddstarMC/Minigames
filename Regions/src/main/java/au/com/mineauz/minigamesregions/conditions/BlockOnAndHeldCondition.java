@@ -1,16 +1,19 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -18,16 +21,20 @@ import java.util.Map;
  * This class allows a check if the first solid block under a player is equal
  * to the block that player holds in his hand.
  */
-public class BlockOnAndHeldCondition extends ConditionInterface {
+public class BlockOnAndHeldCondition extends ACondition {
+
+    protected BlockOnAndHeldCondition(@NotNull String name) {
+        super(name);
+    }
 
     @Override
-    public String getName() {
-        return "BLOCK_ON_AND_HELD";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_BLOCKONANDHELD_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "World Conditions";
+        return "World ConditionRegistry";
     }
 
     @Override
@@ -89,7 +96,7 @@ public class BlockOnAndHeldCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Match Block", player);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

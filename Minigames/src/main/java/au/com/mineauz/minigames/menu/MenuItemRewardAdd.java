@@ -9,31 +9,34 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class MenuItemRewardAdd extends MenuItem {
-
-    private Rewards rewards;
+    private Rewards rewards = null;
     private RewardGroup group = null;
 
-    public MenuItemRewardAdd(Component name, Material displayItem, Rewards rewards) {
-        super(name, displayItem);
+    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Rewards rewards) {
+        super(displayMat, name);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardAdd(Component name, List<Component> description, Material displayItem, Rewards rewards) {
-        super(name, description, displayItem);
+    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name,
+                             @Nullable List<@NotNull Component> description, @NotNull Rewards rewards) {
+        super(displayMat, name, description);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardAdd(Component name, Material displayItem, RewardGroup group) {
-        super(name, displayItem);
+    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull RewardGroup group) {
+        super(displayMat, name);
         this.group = group;
     }
 
-    public MenuItemRewardAdd(Component name, List<Component> description, Material displayItem, RewardGroup group) {
-        super(name, description, displayItem);
+    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name,
+                             @Nullable List<@NotNull Component> description, @NotNull RewardGroup group) {
+        super(displayMat, name, description);
         this.group = group;
     }
 
@@ -42,7 +45,7 @@ public class MenuItemRewardAdd extends MenuItem {
         Menu m = new Menu(6, "Select Reward Type", getContainer().getViewer());
         final Menu orig = getContainer();
         for (String type : RewardTypes.getAllRewardTypeNames()) {
-            final MenuItemCustom custom = new MenuItemCustom("TYPE", Material.STONE);
+            final MenuItemCustom custom = new MenuItemCustom(Material.STONE, "TYPE");
             final RewardType rewType = RewardTypes.getRewardType(type, rewards);
             if (rewType.isUsable()) {
                 ItemMeta meta = custom.getItem().getItemMeta();
@@ -50,10 +53,11 @@ public class MenuItemRewardAdd extends MenuItem {
                 custom.getItem().setItemMeta(meta);
                 custom.setItem(rewType.getMenuItem().getItem());
                 custom.setClick(object -> {
-                    if (rewards != null)
+                    if (rewards != null) {
                         rewards.addReward(rewType);
-                    else
+                    } else {
                         group.addItem(rewType);
+                    }
                     orig.displayMenu(orig.getViewer());
                     orig.addItem(rewType.getMenuItem());
                     return null;

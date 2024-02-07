@@ -88,9 +88,9 @@ public class RewardSign implements MinigameSign {
 
             Menu rewardMenu = new Menu(5, getName(), mgPlayer);
 
-            rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", MenuUtility.getCreateMaterial(), rew), 42);
+            rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateMaterial(), "Add Group", rew), 42);
             rewardMenu.addItem(new MenuItemRewardAdd("Add Item", MenuUtility.getCreateMaterial(), rew), 43);
-            final MenuItemCustom mic = new MenuItemCustom("Save Rewards", MenuUtility.getSaveMaterial());
+            final MenuItemCustom mic = new MenuItemCustom(MenuUtility.getSaveMaterial(), "Save Rewards");
             final Location floc = loc;
             mic.setClick(object -> {
                 mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
@@ -111,7 +111,7 @@ public class RewardSign implements MinigameSign {
             List<String> des = new ArrayList<>();
             des.add("Double Click to edit");
             for (RewardGroup group : rew.getGroups()) {
-                MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, rew);
+                MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST, group.getName() + " Group", des, group, rew);
                 mi.add(rwg);
             }
             rewardMenu.addItems(mi);

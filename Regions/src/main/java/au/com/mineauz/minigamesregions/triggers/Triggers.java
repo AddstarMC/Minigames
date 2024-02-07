@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Triggers {
+public class Triggers { //todo deleted
     private static final Map<String, Trigger> triggers = new HashMap<>();
 
     //this maps from legacy to updated trigger names

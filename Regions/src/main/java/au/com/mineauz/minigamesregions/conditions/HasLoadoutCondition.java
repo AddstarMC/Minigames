@@ -1,27 +1,38 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class HasLoadoutCondition extends ConditionInterface {
+public class HasLoadoutCondition extends ACondition {
     private final StringFlag loadOutName = new StringFlag("default", "loadout");
 
+    protected HasLoadoutCondition(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public String getName() {
-        return "HAS_LOADOUT";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASLOADOUT_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "Player Conditions";
+        return "Player ConditionRegistry";
     }
 
     @Override
@@ -39,7 +50,7 @@ public class HasLoadoutCondition extends ConditionInterface {
         if (player == null || !player.isInMinigame()) return false;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
         if (lmod.hasLoadout(loadOutName.getFlag())) {
-            return player.getLoadout().getName(false).equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
+            return player.getLoadout().getName().equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
         }
         return false;
     }
@@ -50,7 +61,7 @@ public class HasLoadoutCondition extends ConditionInterface {
         if (player == null || !player.isInMinigame()) return false;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
         if (lmod.hasLoadout(loadOutName.getFlag())) {
-            return player.getLoadout().getName(false).equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
+            return player.getLoadout().getName().equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
         }
         return false;
     }
@@ -72,7 +83,7 @@ public class HasLoadoutCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Equip Loadout", player);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.addItem(new MenuItemString("Loadout Name", Material.DIAMOND_SWORD, new Callback<>() {
 
             @Override

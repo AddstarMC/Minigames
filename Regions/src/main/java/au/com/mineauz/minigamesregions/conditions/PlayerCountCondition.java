@@ -2,28 +2,35 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class PlayerCountCondition extends ConditionInterface {
+public class PlayerCountCondition extends ACondition {
     private final IntegerFlag min = new IntegerFlag(1, "min");
     private final IntegerFlag max = new IntegerFlag(5, "max");
 
+    protected PlayerCountCondition(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public String getName() {
-        return "PLAYER_COUNT";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERCOUNT_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "Player Conditions";
+        return "Player ConditionRegistry";
     }
 
     @Override
@@ -68,7 +75,7 @@ public class PlayerCountCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Player Count", player);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.addItem(min.getMenuItem("Min Player Count", Material.STONE_SLAB, 1, null));
         m.addItem(max.getMenuItem("Max Player Count", Material.STONE, 1, null));
         addInvertMenuItem(m);

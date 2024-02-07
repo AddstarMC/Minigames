@@ -95,7 +95,7 @@ public class MinigamePlayer implements ScriptObject {
         this.startPos = startPos;
     }
 
-    public Player getPlayer() {
+    public @NotNull Player getPlayer() {
         return this.player;
     }
 

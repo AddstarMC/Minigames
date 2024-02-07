@@ -28,13 +28,15 @@ public class StrListFlag extends Flag<List<String>> {
         setFlag(config.getStringList(path + "." + getName()));
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayItem) {
-        return getMenuItem(name, displayItem, null);
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+        return getMenuItem(name, displayMat, null);
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayItem,
+    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
                                 @Nullable List<@NotNull Component> description) {
         return null; //todo
     }

@@ -4,14 +4,12 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.*;
-import au.com.mineauz.minigamesregions.triggers.TimedRemoteTrigger;
-import au.com.mineauz.minigamesregions.triggers.Triggers;
+import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 /**
- * This Action trips {@link TimedRemoteTrigger} in a region or a node Applicable to nodes Uses the
+ * This Action trips {@link MgRegTrigger#REMOTE_TIMED} in a region or a node Applicable to nodes Uses the
  * {@link org.bukkit.scheduler.BukkitScheduler} scheduler for threading.
  *
  * @author <a href="https://github.com/Turidus/Minigames">Turidus</a>
@@ -83,7 +81,7 @@ public class TimedTriggerAction extends AbstractAction {
             return;
         }
         ExecutableScriptObject toExecute = isRegion.getFlag() ? rMod.getRegion(toTrigger.getFlag()) : rMod.getNode(toTrigger.getFlag());
-        Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> toExecute.execute(Triggers.getTrigger("TIMED_REMOTE"), player), delay.getFlag());
+        Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> toExecute.execute(MgRegTrigger.REMOTE_TIMED, player), delay.getFlag());
     }
 
     @Override
@@ -103,7 +101,7 @@ public class TimedTriggerAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Timed Trigger", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(toTrigger.getMenuItem("Object Name", Material.ENDER_EYE));
         m.addItem(isRegion.getMenuItem("Is Region?", Material.ENDER_PEARL));
         m.addItem(delay.getMenuItem("Delay in ticks", Material.ENDER_PEARL));

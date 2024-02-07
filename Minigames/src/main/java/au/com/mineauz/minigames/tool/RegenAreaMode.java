@@ -58,7 +58,7 @@ public class RegenAreaMode implements ToolMode {
         final Menu menu = new Menu(2, "Regen Region Selection", mgPlayer);
 
         if (mgPlayer.isInMenu()) {
-            menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), mgPlayer.getMenu()), menu.getSize() - 9);
+            menu.addItem(new MenuItemBack(mgPlayer.getMenu()), menu.getSize() - 9);
         }
 
         menu.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<>() {
@@ -79,7 +79,7 @@ public class RegenAreaMode implements ToolMode {
             List<MenuItem> items = new ArrayList<>();
 
             for (final MgRegion region : tool.getMinigame().getRegenRegions()) {
-                MenuItemCustom item = new MenuItemCustom(region.getName(), Material.CHEST);
+                MenuItemCustom item = new MenuItemCustom(Material.CHEST, region.getName());
 
                 // Set the node and go back to the main menu
                 item.setClick(object -> {
@@ -94,7 +94,7 @@ public class RegenAreaMode implements ToolMode {
             }
 
             regionMenu.addItems(items);
-            regionMenu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), menu), regionMenu.getSize() - 9);
+            regionMenu.addItem(new MenuItemBack(menu), regionMenu.getSize() - 9);
 
             menu.addItem(new MenuItemPage("Edit Region", Material.CHEST, regionMenu));
         }

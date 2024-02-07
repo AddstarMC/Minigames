@@ -1,26 +1,28 @@
 package au.com.mineauz.minigames.menu;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemDisplayWhitelist extends MenuItem {
+    private final @NotNull List<@NotNull Material> whitelist;
+    private final @NotNull Callback<Boolean> whitelistMode;
+    private final @NotNull List<@NotNull Component> modeDescription;
 
-    private final List<Material> whitelist;
-    private final Callback<Boolean> whitelistMode;
-    private final List<String> modeDescription;
-
-    public MenuItemDisplayWhitelist(String name, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode, List<String> modeDescription) {
-        super(name, displayItem);
-        this.whitelist = whitelist;
-        this.whitelistMode = whitelistMode;
-        this.modeDescription = modeDescription;
+    public MenuItemDisplayWhitelist(@Nullable Material displayMat, @Nullable Component name, @NotNull List<@NotNull Material> whitelist,
+                                    @NotNull Callback<Boolean> whitelistMode, @NotNull List<@NotNull Component> modeDescription) {
+        this(displayMat, name, null, whitelist, whitelistMode, modeDescription);
     }
 
-    public MenuItemDisplayWhitelist(String name, List<String> mainDescription, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode, List<String> modeDescription) {
-        super(name, mainDescription, displayItem);
+    public MenuItemDisplayWhitelist(@Nullable Material displayMat, @Nullable Component name,
+                                    @Nullable List<@NotNull Component> mainDescription, @NotNull List<@NotNull Material> whitelist,
+                                    @NotNull Callback<Boolean> whitelistMode, @NotNull List<@NotNull Component> modeDescription) {
+        super(displayMat, name, mainDescription);
         this.whitelist = whitelist;
         this.whitelistMode = whitelistMode;
         this.modeDescription = modeDescription;
@@ -33,7 +35,7 @@ public class MenuItemDisplayWhitelist extends MenuItem {
         for (Material bl : whitelist) {
             items.add(new MenuItemWhitelistBlock(bl, whitelist));
         }
-        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), getContainer()), menu.getSize() - 9);
+        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
         menu.addItem(new MenuItemAddWhitelistBlock("Add Material", whitelist), menu.getSize() - 1);
         menu.addItem(new MenuItemBoolean("Whitelist Mode", modeDescription,
                 Material.ENDER_PEARL, whitelistMode), menu.getSize() - 2);

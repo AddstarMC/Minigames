@@ -41,14 +41,14 @@ public class ReequipLoadoutAction extends AbstractAction {
                                   @NotNull Node node) {
         debug(mgPlayer, node);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
-        mgPlayer.getLoadout().equiptLoadout(mgPlayer);
+        mgPlayer.getLoadout().equipLoadout(mgPlayer);
     }
 
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
-        mgPlayer.getLoadout().equiptLoadout(mgPlayer);
+        mgPlayer.getLoadout().equipLoadout(mgPlayer);
     }
 
     @Override

@@ -10,14 +10,15 @@ import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
-import au.com.mineauz.minigamesregions.conditions.Conditions;
+import au.com.mineauz.minigamesregions.conditions.ACondition;
+import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemNode;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemRegenRegion;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemRegion;
-import au.com.mineauz.minigamesregions.triggers.Triggers;
+import au.com.mineauz.minigamesregions.triggers.Trigger;
+import au.com.mineauz.minigamesregions.triggers.TriggerRegistry;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -28,31 +29,32 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class RegionModule extends MinigameModule {
-    private final Map<String, Region> regions = new HashMap<>();
-    private final Map<String, Node> nodes = new HashMap<>();
+    private final @NotNull Map<@NotNull String, @NotNull Region> regions = new HashMap<>();
+    private final @NotNull Map<@NotNull String, @NotNull Node> nodes = new HashMap<>();
+    private final static @NotNull ModuleFactory moduleFactory = new ModuleFactory() {
+        private final String name = "Regions";
+
+        @Override
+        public @NotNull MinigameModule makeNewModule(Minigame minigame) {
+            return new RegionModule(minigame, name);
+        }
+
+        @Override
+        public @NotNull String getName() {
+            return name;
+        }
+    };
 
     public RegionModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
     }
 
-    public static @Nullable RegionModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((RegionModule) mgm.getModule(getFactory().getName()));
+    public static @Nullable RegionModule getMinigameModule(@NotNull Minigame minigame) {
+        return (RegionModule) minigame.getModule(moduleFactory.getName());
     }
 
     public static @NotNull ModuleFactory getFactory() {
-        return new ModuleFactory() {
-            private final String name = "Regions";
-
-            @Override
-            public @NotNull MinigameModule makeNewModule(Minigame minigame) {
-                return new RegionModule(minigame, name);
-            }
-
-            @Override
-            public @NotNull String getName() {
-                return name;
-            }
-        };
+        return moduleFactory;
     }
 
     @Override
@@ -88,9 +90,7 @@ public class RegionModule extends MinigameModule {
             int c = 0;
             for (RegionExecutor ex : r.getExecutors()) {
                 String path = getMinigame() + ".regions." + name + ".executors." + c;
-                if (ex.getTrigger() != null) {
-                    config.set(path + ".trigger", ex.getTrigger().getName());
-                }
+                config.set(path + ".trigger", ex.getTrigger().getName());
                 int acc = 0;
                 for (ActionInterface act : ex.getActions()) {
                     config.set(path + ".actions." + acc + ".type", act.getName());
@@ -99,7 +99,7 @@ public class RegionModule extends MinigameModule {
                 }
 
                 acc = 0;
-                for (ConditionInterface con : ex.getConditions()) {
+                for (ACondition con : ex.getConditions()) {
                     config.set(path + ".conditions." + acc + ".type", con.getName());
                     con.saveArguments(config, path + ".conditions." + acc + ".arguments");
                     acc++;
@@ -134,7 +134,7 @@ public class RegionModule extends MinigameModule {
                 }
 
                 acc = 0;
-                for (ConditionInterface con : ex.getConditions()) {
+                for (ACondition con : ex.getConditions()) {
                     config.set(path + ".conditions." + acc + ".type", con.getName());
                     con.saveArguments(config, path + ".conditions." + acc + ".arguments");
                     acc++;
@@ -168,40 +168,48 @@ public class RegionModule extends MinigameModule {
                 Location loc2 = new Location(w2, x2, y2, z2);
 
                 regions.put(name, new Region(name, loc1, loc2));
-                Region r = regions.get(name);
+                Region region = regions.get(name);
                 if (config.contains(getMinigame() + ".regions." + name + ".tickDelay")) {
-                    r.changeTickDelay(config.getLong(getMinigame() + ".regions." + name + ".tickDelay"));
+                    region.changeTickDelay(config.getLong(getMinigame() + ".regions." + name + ".tickDelay"));
                 }
                 if (config.contains(getMinigame() + ".regions." + name + ".executors")) {
                     Set<String> ex = config.getConfigurationSection(getMinigame() + ".regions." + name + ".executors").getKeys(false);
                     for (String i : ex) {
                         String path = getMinigame() + ".regions." + name + ".executors." + i;
-                        RegionExecutor rex = new RegionExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
+                        Trigger trigger = TriggerRegistry.matchTrigger(config.getString(path + ".trigger"));
 
-                        if (config.contains(path + ".actions")) {
-                            for (String a : config.getConfigurationSection(path + ".actions").getKeys(false)) {
-                                ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
-                                if (ai != null) {
-                                    ai.loadArguments(config, path + ".actions." + a + ".arguments");
-                                    rex.addAction(ai);
+                        if (trigger != null) {
+                            RegionExecutor rex = new RegionExecutor(trigger);
+
+                            if (config.contains(path + ".actions")) {
+                                for (String a : config.getConfigurationSection(path + ".actions").getKeys(false)) {
+                                    ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
+                                    if (ai != null) {
+                                        ai.loadArguments(config, path + ".actions." + a + ".arguments");
+                                        rex.addAction(ai);
+                                    }
                                 }
                             }
-                        }
-                        if (config.contains(path + ".conditions")) {
-                            for (String c : config.getConfigurationSection(path + ".conditions").getKeys(false)) {
-                                ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
-                                if (ci != null) {
-                                    ci.loadArguments(config, path + ".conditions." + c + ".arguments");
-                                    rex.addCondition(ci);
+                            if (config.contains(path + ".conditions")) {
+                                for (String c : config.getConfigurationSection(path + ".conditions").getKeys(false)) {
+                                    ACondition ci = ConditionRegistry.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+                                    if (ci != null) {
+                                        ci.loadArguments(config, path + ".conditions." + c + ".arguments");
+                                        rex.addCondition(ci);
+                                    }
                                 }
                             }
-                        }
 
-                        if (config.contains(path + ".isTriggeredPerPlayer"))
-                            rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
-                        if (config.contains(path + ".triggerCount"))
-                            rex.setTriggerCount(config.getInt(path + ".triggerCount"));
-                        r.addExecutor(rex);
+                            if (config.contains(path + ".isTriggeredPerPlayer")) {
+                                rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
+                            }
+                            if (config.contains(path + ".triggerCount")) {
+                                rex.setTriggerCount(config.getInt(path + ".triggerCount"));
+                            }
+                            region.addExecutor(rex);
+                        } else {
+                            Minigames.getCmpnntLogger().error("Couldn't load trigger in path " + path);
+                        }
                     }
                 }
             }
@@ -229,7 +237,7 @@ public class RegionModule extends MinigameModule {
                     Set<String> ex = config.getConfigurationSection(getMinigame() + ".nodes." + name + ".executors").getKeys(false);
                     for (String i : ex) {
                         String path = getMinigame() + ".nodes." + name + ".executors." + i;
-                        NodeExecutor rex = new NodeExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
+                        NodeExecutor rex = new NodeExecutor(TriggerRegistry.matchTrigger(config.getString(path + ".trigger")));
 
                         if (config.contains(path + ".actions")) {
                             for (String a : config.getConfigurationSection(path + ".actions").getKeys(false)) {
@@ -240,7 +248,7 @@ public class RegionModule extends MinigameModule {
                         }
                         if (config.contains(path + ".conditions")) {
                             for (String c : config.getConfigurationSection(path + ".conditions").getKeys(false)) {
-                                ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+                                ACondition ci = ConditionRegistry.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
                                 ci.loadArguments(config, path + ".conditions." + c + ".arguments");
                                 rex.addCondition(ci);
                             }
@@ -353,37 +361,37 @@ public class RegionModule extends MinigameModule {
         Menu rm = new Menu(6, "Regions and Nodes", viewer);
         List<MenuItem> items = new ArrayList<>(regions.size());
         for (String name : regions.keySet()) {
-            MenuItemRegion mir = new MenuItemRegion(name, Material.ENDER_CHEST, regions.get(name), this);
+            MenuItemRegion mir = new MenuItemRegion(Material.ENDER_CHEST, name, regions.get(name), this);
             items.add(mir);
         }
         items.add(new MenuItemNewLine());
         for (String name : nodes.keySet()) {
-            MenuItemNode min = new MenuItemNode(name, Material.CHEST, nodes.get(name), this);
+            MenuItemNode min = new MenuItemNode(Material.CHEST, name, nodes.get(name), this);
             items.add(min);
         }
 
         //display for regen regions
         items.add(new MenuItemNewLine());
         for (MgRegion region : getMinigame().getRegenRegions()) {
-            MenuItem min = new MenuItemRegenRegion(region.getName(), List.of(
+            MenuItem min = new MenuItemRegenRegion(Material.CHEST_MINECART, region.getName(), List.of(
                     region.getName(),
                     "from " + region.getMinX() + ", " + region.getMinY() + ", " + region.getMinZ(),
                     "to " + region.getMaxX() + ", " + region.getMaxY() + ", " + region.getMaxZ(),
                     "(" + region.getVolume() + ")"),
-                    Material.CHEST_MINECART, region, this);
+                    region, this);
             items.add(min);
         }
         rm.addItems(items);
 
         if (previous != null)
-            rm.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), rm.getSize() - 9);
+            rm.addItem(new MenuItemBack(previous), rm.getSize() - 9);
         rm.displayMenu(viewer);
     }
 
 
     @Override
     public void addEditMenuOptions(Menu menu) {
-        final MenuItemCustom c = new MenuItemCustom("Regions and Nodes", Material.DIAMOND_BLOCK);
+        final MenuItemCustom c = new MenuItemCustom(Material.DIAMOND_BLOCK, "Regions and Nodes");
         final Menu fmenu = menu;
         c.setClick(object -> {
             displayMenu(c.getContainer().getViewer(), fmenu);

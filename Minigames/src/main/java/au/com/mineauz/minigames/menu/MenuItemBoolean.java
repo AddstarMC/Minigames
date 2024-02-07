@@ -14,23 +14,23 @@ import java.util.List;
 public class MenuItemBoolean extends MenuItem {
     private final @NotNull Callback<@NotNull Boolean> toggle;
 
-    public MenuItemBoolean(@NotNull LangKey langKey, @Nullable Material displayItem,
+    public MenuItemBoolean(@Nullable Material displayMat, @NotNull LangKey langKey,
                            @NotNull Callback<@NotNull Boolean> toggle) {
-        super(langKey, displayItem);
+        super(displayMat, langKey);
         this.toggle = toggle;
         updateDescription();
     }
 
-    public MenuItemBoolean(@Nullable Component name, @Nullable Material displayItem,
+    public MenuItemBoolean(@Nullable Material displayMat, @Nullable Component name,
                            @NotNull Callback<@NotNull Boolean> toggle) {
-        super(name, displayItem);
+        super(displayMat, name);
         this.toggle = toggle;
         updateDescription();
     }
 
     public MenuItemBoolean(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                           @Nullable Material displayItem, @NotNull Callback<@NotNull Boolean> toggle) {
-        super(name, description, displayItem);
+                           @Nullable Material displayMat, @NotNull Callback<@NotNull Boolean> toggle) {
+        super(displayMat, name, description);
         this.toggle = toggle;
         updateDescription();
     }

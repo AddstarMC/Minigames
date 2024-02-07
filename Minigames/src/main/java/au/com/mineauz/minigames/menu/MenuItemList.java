@@ -18,26 +18,23 @@ public class MenuItemList<T> extends MenuItem {
     private final Callback<T> value;
     private final List<T> options;
 
-    public MenuItemList(@NotNull LangKey langKey, @Nullable Material displayItem, @NotNull Callback<@NotNull T> value,
+    public MenuItemList(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
-        super(langKey, displayItem);
+        super(displayMat, langKey);
         this.value = value;
         this.options = options;
         updateDescription();
     }
 
-    public MenuItemList(@Nullable Component name, @Nullable Material displayItem, @NotNull Callback<@NotNull T> value,
+    public MenuItemList(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
-        super(name, displayItem);
-        this.value = value;
-        this.options = options;
-        updateDescription();
+        this(name, null, displayMat, value, options);
     }
 
-    public MenuItemList(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                        @Nullable Material displayItem, @NotNull Callback<@NotNull T> value,
+    public MenuItemList(@Nullable Material displayMat, @Nullable Component name,
+                        @Nullable List<@NotNull Component> description, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
-        super(name, description, displayItem);
+        super(displayMat, name, description);
         this.value = value;
         this.options = options;
         updateDescription();
@@ -110,16 +107,16 @@ public class MenuItemList<T> extends MenuItem {
 
     @Override
     public ItemStack onDoubleClick() {
-        MinigamePlayer ply = getContainer().getViewer();
+        MinigamePlayer mgPlayer = getContainer().getViewer();
 
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendInfoMessage("Enter the name of the option into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.");
-        ply.setManualEntry(this);
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        mgPlayer.sendInfoMessage("Enter the name of the option into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.");
+        mgPlayer.setManualEntry(this);
         if (MinigameUtils.listToString(options).getBytes().length > 16000) {
-            ply.sendInfoMessage("Unfortunately there are too many options to provide a list in game. Perhaps use the WIKI");
+            mgPlayer.sendInfoMessage("Unfortunately there are too many options to provide a list in game. Perhaps use the WIKI");
         } else {
-            ply.sendInfoMessage("Possible Options: " + MinigameUtils.listToString(options));
+            mgPlayer.sendInfoMessage("Possible Options: " + MinigameUtils.listToString(options));
         }
         getContainer().startReopenTimer(10);
         return null;

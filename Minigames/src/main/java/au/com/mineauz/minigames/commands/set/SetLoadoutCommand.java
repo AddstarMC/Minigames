@@ -52,34 +52,34 @@ public class SetLoadoutCommand extends ASetCommand {
                              @NotNull String @Nullable [] args) {
 
         MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
-        Menu loadouts = new Menu(6, getName(), player);
+        Menu loadoutMenu = new Menu(6, getName(), player);
         List<MenuItem> mi = new ArrayList<>();
         LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
 
-        List<String> des = new ArrayList<>();
+        List<Component> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");
 
         Material item;
 
         for (String ld : mod.getLoadouts()) {
             item = Material.WHITE_STAINED_GLASS_PANE;
-            if (!mod.getLoadout(ld).getItems().isEmpty()) {
-                item = mod.getLoadout(ld).getItem((Integer) mod.getLoadout(ld).getItems().toArray()[0]).getType();
+            if (!mod.getLoadout(ld).getItemSlots().isEmpty()) {
+                item = mod.getLoadout(ld).getItem((Integer) mod.getLoadout(ld).getItemSlots().toArray()[0]).getType();
             }
             MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(ld, des, item, mod.getLoadout(ld), minigame);
             mil.setAllowDelete(mod.getLoadout(ld).isDeleteable());
             mi.add(mil);
         }
-        loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mod.getLoadoutMap(), minigame), 53);
-        loadouts.addItems(mi);
+        loadoutMenu.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mod.getLoadoutMap(), minigame), 53);
+        loadoutMenu.addItems(mi);
 
-        loadouts.displayMenu(player);
+        loadoutMenu.displayMenu(player);
         return true;
     }
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

@@ -135,8 +135,8 @@ public class MinigameTool {
     public void openMenu(MinigamePlayer player) {
         Menu men = new Menu(2, "Set Tool Mode", player);
 
-        final MenuItemCustom miselect = new MenuItemCustom("Select", List.of("Selects and area", "or points visually"), Material.DIAMOND_BLOCK);
-        final MenuItemCustom mideselect = new MenuItemCustom("Deselect", List.of("Deselects an", "area or points"), Material.GLASS);
+        final MenuItemCustom miselect = new MenuItemCustom(Material.DIAMOND_BLOCK, "Select", List.of("Selects and area", "or points visually"));
+        final MenuItemCustom mideselect = new MenuItemCustom(Material.GLASS, "Deselect", List.of("Deselects an", "area or points"));
         final MinigamePlayer fply = player;
         miselect.setClick(object -> {
             if (mode != null) {
@@ -157,7 +157,7 @@ public class MinigameTool {
 
         List<String> teams = new ArrayList<>(TeamColor.colorNames());
 
-        men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<>() { //todo new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams)
+        men.addItem(new MenuItemToolTeam(Material.PAPER, "Team", new Callback<>() { //todo new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams)
 
             @Override
             public String getValue() {
@@ -173,7 +173,7 @@ public class MinigameTool {
         }, teams), men.getSize() - 3);
 
         for (ToolMode toolMode : ToolModes.getToolModes()) {
-            men.addItem(new MenuItemToolMode(toolMode.getDisplayName(), toolMode.getDescription(), toolMode.getIcon(), toolMode));
+            men.addItem(new MenuItemToolMode(toolMode.getIcon(), toolMode.getDisplayName(), toolMode.getDescription(), toolMode));
         }
 
         men.displayMenu(player);

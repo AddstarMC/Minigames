@@ -93,7 +93,7 @@ public class AddTeamScoreAction extends ScoreAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Add Team Score", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemInteger("Add Score Amount", Material.STONE, new Callback<>() {
 
             @Override

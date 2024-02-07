@@ -118,10 +118,10 @@ public class RandomFillingAction extends AbstractAction {
     public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) {
 
         Menu m = new Menu(4, "Random Filling", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         //The menu entry for the block that will be placed
-        m.addItem(new MenuItemString("To Block", Material.COBBLESTONE, new Callback<>() {
+        m.addItem(new MenuItemString(Material.COBBLESTONE, "To Block", new Callback<>() {
 
             @Override
             public String getValue() {
@@ -151,8 +151,8 @@ public class RandomFillingAction extends AbstractAction {
         //Percentage of blocks that will replaced
         m.addItem(new MenuItemNewLine());
         m.addItem(
-                new MenuItemInteger("Chance in integer percentage (0-100)", List.of(""),
-                        Material.BOOK, new Callback<>() {
+                new MenuItemInteger(Material.BOOK, "Chance in integer percentage (0-100)", List.of(""),
+                        new Callback<>() {
 
                     @Override
                     public Integer getValue() {

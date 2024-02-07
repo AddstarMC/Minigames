@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
@@ -20,9 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ApplyPotionAction extends AbstractAction {
-
     private final StringFlag type = new StringFlag("SPEED", "type");
-    private final IntegerFlag dur = new IntegerFlag(60, "duration");
+    private final TimeFlag dur = new TimeFlag(60L, "duration");
     private final IntegerFlag amp = new IntegerFlag(1, "amplifier");
 
     @Override
@@ -90,40 +90,26 @@ public class ApplyPotionAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Apply Potion", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         List<String> pots = new ArrayList<>(PotionEffectType.values().length);
         for (PotionEffectType type : PotionEffectType.values()) {
             pots.add(WordUtils.capitalize(type.getName().replace("_", " ")));
         }
-        m.addItem(new MenuItemList("Potion Type", Material.POTION, new Callback<>() {
+        m.addItem(new MenuItemList<PotionEffectType>("Potion Type", Material.POTION, new Callback<>() {
 
             @Override
-            public String getValue() {
+            public PotionEffectType getValue() {
                 return WordUtils.capitalize(type.getFlag().replace("_", " "));
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(PotionEffectType value) {
                 type.setFlag(value.toUpperCase().replace(" ", "_"));
             }
 
 
         }, pots));
-        m.addItem(new MenuItemTime("Duration", Material.CLOCK, new Callback<>() {
-
-
-            @Override
-            public Integer getValue() {
-                return dur.getFlag();
-            }
-
-            @Override
-            public void setValue(Integer value) {
-                dur.setFlag(value);
-            }
-
-
-        }, 0, 86400));
+        m.addItem(dur.getMenuItem("Duration", Material.CLOCK, 0L, 86400));
         m.addItem(new MenuItemInteger("Level", Material.STONE, new Callback<>() {
 
             @Override

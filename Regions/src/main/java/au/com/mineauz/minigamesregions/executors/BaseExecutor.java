@@ -3,8 +3,9 @@ package au.com.mineauz.minigamesregions.executors;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,30 +13,30 @@ import java.util.List;
 import java.util.Map;
 
 public class BaseExecutor {
-    private final Trigger trigger;
-    private final List<ConditionInterface> conditions = new ArrayList<>();
+    private final @NotNull Trigger trigger;
+    private final List<ACondition> conditions = new ArrayList<>();
     private final List<ActionInterface> actions = new ArrayList<>();
     private final Map<String, Integer> triggers = new HashMap<>();
     private boolean triggerPerPlayer = false;
     private int triggerCount = 0;
 
-    public BaseExecutor(Trigger trigger) {
+    public BaseExecutor(@NotNull Trigger trigger) {
         this.trigger = trigger;
     }
 
-    public Trigger getTrigger() {
+    public @NotNull Trigger getTrigger() {
         return trigger;
     }
 
-    public List<ConditionInterface> getConditions() {
+    public List<ACondition> getConditions() {
         return conditions;
     }
 
-    public void addCondition(ConditionInterface condition) {
+    public void addCondition(ACondition condition) {
         conditions.add(condition);
     }
 
-    public void removeCondition(ConditionInterface condition) {
+    public void removeCondition(ACondition condition) {
         conditions.remove(condition);
     }
 

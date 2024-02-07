@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -14,6 +15,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -21,15 +24,21 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MenuItemPotionAdd extends MenuItem {
-    private final PlayerLoadout loadout;
+    private final @NotNull PlayerLoadout loadout;
 
-    public MenuItemPotionAdd(Component name, Material displayItem, PlayerLoadout loadout) {
-        super(name, displayItem);
+    public MenuItemPotionAdd(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull PlayerLoadout loadout) {
+        super(displayMat, langKey);
         this.loadout = loadout;
     }
 
-    public MenuItemPotionAdd(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout) {
-        super(name, description, displayItem);
+    public MenuItemPotionAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull PlayerLoadout loadout) {
+        super(displayMat, name);
+        this.loadout = loadout;
+    }
+
+    public MenuItemPotionAdd(@Nullable Material displayMat, @Nullable Component name,
+                             @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout) {
+        super(displayMat, name, description);
         this.loadout = loadout;
     }
 
@@ -78,7 +87,7 @@ public class MenuItemPotionAdd extends MenuItem {
                         }
                         for (int i = 0; i < 36; i++) {
                             if (!getContainer().hasMenuItem(i)) {
-                                getContainer().addItem(new MenuItemPotion(Component.text(eff.getName().toLowerCase().replace("_", " ")), des, Material.POTION, peff, loadout), i);
+                                getContainer().addItem(new MenuItemPotion(Material.POTION, Component.text(eff.getName().toLowerCase().replace("_", " ")), des, peff, loadout), i);
                                 loadout.addPotionEffect(peff);
                                 break;
                             }

@@ -17,22 +17,26 @@ public class MenuItem {
     private Menu container = null;
     private int slot = 0;
 
-    public MenuItem(@Nullable Component name, @Nullable Material displayItem) {
-        this(name, null, displayItem);
+    public MenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        this(displayMat, name, null);
     }
 
-    public MenuItem(@NotNull LangKey langKey, @Nullable Material displayItem) {
-        this(MinigameMessageManager.getMgMessage(langKey), null, displayItem);
+    public MenuItem(@Nullable Material displayMat, @NotNull LangKey langKey) {
+        this(displayMat, langKey, null);
     }
 
-    public MenuItem(@Nullable Component name, @Nullable List<Component> description, @Nullable Material displayItem) {
-        if (displayItem == null)
+    public MenuItem(@Nullable Material displayMat, @Nullable LangKey langKey, @Nullable List<Component> description) {
+        this(displayMat, MinigameMessageManager.getMgMessage(langKey), description);
+    }
+
+    public MenuItem(@Nullable Material displayMat, @Nullable Component name, @Nullable List<Component> description) {
+        if (displayMat == null)
             if (description == null) {
-                displayItem = MenuUtility.getSlotFillerItem();
+                displayMat = MenuUtility.getSlotFillerItem();
             } else {
-                displayItem = MenuUtility.getUnknownDisplayItem();
+                displayMat = MenuUtility.getUnknownDisplayItem();
             }
-        this.displayItem = new ItemStack(displayItem);
+        this.displayItem = new ItemStack(displayMat);
         ItemMeta meta = this.displayItem.getItemMeta();
         meta.displayName(name);
         if (description != null) meta.lore(description);

@@ -305,7 +305,7 @@ public class MinigamePlayerManager {
             if (minigame.isFlightEnabled() && mgPlayer.canFly()) {
                 mgPlayer.getPlayer().setFlying(true);
             }
-            mgPlayer.getLoadout().equiptLoadout(mgPlayer);
+            mgPlayer.getLoadout().equipLoadout(mgPlayer);
 
             if (!minigame.isTeamGame()) {
                 if (minigame.getLives() > 0) {
@@ -352,17 +352,17 @@ public class MinigamePlayerManager {
 
     public void teleportToStart(@NotNull Minigame minigame) {
         List<MinigamePlayer> findStart = new ArrayList<>();
-        for (MinigamePlayer ply : minigame.getPlayers()) {
-            if (ply.getStartPos() == null) {
-                findStart.add(ply);
+        for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
+            if (mgPlayer.getStartPos() == null) {
+                findStart.add(mgPlayer);
             }
         }
         if (!findStart.isEmpty()) {
             getStartLocations(findStart, minigame);
         }
 
-        for (MinigamePlayer ply : minigame.getPlayers()) {
-            ply.teleport(ply.getStartPos());
+        for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
+            mgPlayer.teleport(mgPlayer.getStartPos());
         }
         minigame.setPlayersAtStart(true);
     }

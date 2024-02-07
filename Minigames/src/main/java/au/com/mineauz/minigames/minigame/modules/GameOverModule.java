@@ -3,13 +3,13 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.LongFlag;
+import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GameOverModule extends MinigameModule {
-    private final LongFlag timer = new LongFlag(0L, "gameOver.timer");
+    private final TimeFlag timer = new TimeFlag(0L, "gameOver.timer");
     private final BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
     private final BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
     private final BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
@@ -69,13 +69,13 @@ public class GameOverModule extends MinigameModule {
     @Override
     public void addEditMenuOptions(Menu menu) {
         Menu m = new Menu(6, "Game Over Settings", menu.getViewer());
-        m.addItem(timer.getMenuItem("Time Length", Material.CLOCK, 0, null));
+        m.addItem(timer.getMenuItem("Time Length", Material.CLOCK, 0L, null));
 
         m.addItem(invincible.getMenuItem("Invincibility", Material.ENDER_PEARL));
         m.addItem(humiliation.getMenuItem("Humiliation Mode", Material.DIAMOND_SWORD, List.of("Losers are stripped", "of weapons and can't kill")));
         m.addItem(interact.getMenuItem("Allow Interact", Material.STONE_PRESSURE_PLATE));
 
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), menu), m.getSize() - 9);
+        m.addItem(new MenuItemBack(menu), m.getSize() - 9);
 
         menu.addItem(new MenuItemPage("Game Over Settings", Material.OAK_DOOR, m));
     }

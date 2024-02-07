@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
@@ -87,10 +87,10 @@ public class Actions {
         Menu m = new Menu(3, "Actions", player);
         m.setPreviousPage(prev);
         for (ActionInterface act : exec.getActions()) {
-            m.addItem(new MenuItemAction(WordUtils.capitalize(act.getName()), Material.PAPER, exec, act));
+            m.addItem(new MenuItemAction(Material.PAPER, WordUtils.capitalize(act.getName()), exec, act));
         }
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
-        m.addItem(new MenuItemActionAdd("Add Action", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
+        m.addItem(new MenuItemActionAdd(MenuUtility.getCreateMaterial(), "Add Action", exec), m.getSize() - 1);
         m.displayMenu(player);
     }
 

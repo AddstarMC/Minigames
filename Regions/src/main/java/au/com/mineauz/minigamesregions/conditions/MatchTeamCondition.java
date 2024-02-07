@@ -1,32 +1,43 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MatchTeamCondition extends ConditionInterface {
+public class MatchTeamCondition extends ACondition {
     private final StringFlag team = new StringFlag(TeamColor.RED.toString(), "team");
 
+    protected MatchTeamCondition(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public String getName() {
-        return "MATCH_TEAM";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHTEAM_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "Team Conditions";
+        return "Team ConditionRegistry";
     }
 
     @Override
@@ -71,11 +82,11 @@ public class MatchTeamCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Match Team", player);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
 
         List<String> teams = new ArrayList<>(TeamColor.validColorNames());
 
-        m.addItem(new MenuItemList("Team Color", getTeamMaterial(), new Callback<>() {
+        m.addItem(new MenuItemList<String>(getTeamMaterial(), "Team Color", new Callback<>() {
             @Override
             public String getValue() {
                 return WordUtils.capitalize(team.getFlag().replace("_", " "));

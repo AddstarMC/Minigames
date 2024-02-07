@@ -13,13 +13,14 @@ import java.util.List;
 public class MenuItemSaveMinigame extends MenuItem {
     private final @NotNull Minigame mgm;
 
-    public MenuItemSaveMinigame(@Nullable Component name, @NotNull Material displayItem, @NotNull Minigame minigame) {
-        super(name, displayItem);
+    public MenuItemSaveMinigame(@Nullable Material displayMat, @Nullable Component name, @NotNull Minigame minigame) {
+        super(displayMat, name);
         mgm = minigame;
     }
 
-    public MenuItemSaveMinigame(@Nullable Component name, @Nullable List<@NotNull Component> description, Material displayItem, @NotNull Minigame minigame) {
-        super(name, description, displayItem);
+    public MenuItemSaveMinigame(@Nullable Material displayMat, @Nullable Component name,
+                                @Nullable List<@NotNull Component> description, @NotNull Minigame minigame) {
+        super(displayMat, name, description);
         mgm = minigame;
     }
 

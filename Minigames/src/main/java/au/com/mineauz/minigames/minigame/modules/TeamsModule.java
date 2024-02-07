@@ -19,8 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
-
 public class TeamsModule extends MinigameModule {
     private final Map<TeamColor, Team> teams = new HashMap<>();
     private final TeamSetFlag teamsFlag;
@@ -229,7 +227,7 @@ public class TeamsModule extends MinigameModule {
 
         m.addItems(items);
 
-        m.addItem(new MenuItemPage("Back", getBackMaterial(), menu), m.getSize() - 9);
+        m.addItem(new MenuItemBack(menu), m.getSize() - 9);
 
         MenuItemPage p = new MenuItemPage("Team Options", Material.CHEST, m);
         menu.addItem(p);

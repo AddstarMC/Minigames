@@ -2,29 +2,35 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Random;
 
-public class RandomChanceCondition extends ConditionInterface {
-
+public class RandomChanceCondition extends ACondition {
     private final IntegerFlag chance = new IntegerFlag(50, "chance");
 
+    protected RandomChanceCondition(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public String getName() {
-        return "RANDOM_CHANCE";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_RANCOMCHANCE_NAME);
     }
 
     @Override
     public String getCategory() {
-        return "Misc Conditions";
+        return "Misc ConditionRegistry";
     }
 
     @Override
@@ -73,7 +79,7 @@ public class RandomChanceCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Random Chance", player);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.addItem(chance.getMenuItem("Percentage Chance", Material.ENDER_EYE, 1, 99));
         addInvertMenuItem(m);
         m.displayMenu(player);

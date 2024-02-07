@@ -1,10 +1,12 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.MenuItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -38,15 +40,16 @@ public class LocationFlag extends Flag<Location> {
         setFlag(new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch));
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
-        return null;
+    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+        return getMenuItem(name, displayMat, null);
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem,
-                                List<String> description) {
+    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                          @Nullable List<@Nullable Component> description) {
         return null;
     }
-
 }

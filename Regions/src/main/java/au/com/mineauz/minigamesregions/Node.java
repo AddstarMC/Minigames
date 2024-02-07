@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import com.google.common.collect.ImmutableSet;
@@ -89,7 +89,7 @@ public class Node implements ExecutableScriptObject {
     }
 
     public boolean checkConditions(NodeExecutor exec, MinigamePlayer player) {
-        for (ConditionInterface con : exec.getConditions()) {
+        for (ACondition con : exec.getConditions()) {
             boolean c = con.checkNodeCondition(player, this);
             if (con.isInverted())
                 c = !c;

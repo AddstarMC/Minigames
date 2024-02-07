@@ -3,9 +3,11 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MgRegion;
 import io.papermc.paper.math.Position;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -70,13 +72,16 @@ public class RegionFlag extends Flag<MgRegion> {
         }
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
+    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
         return null;
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem, List<String> description) {
+    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                          @Nullable List<@NotNull Component> description) {
         return null;
     }
 }

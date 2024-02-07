@@ -18,27 +18,27 @@ public class MenuItemInteger extends MenuItem {
     private final Integer min;
     private final Integer max;
 
-    public MenuItemInteger(@NotNull LangKey langKey, @Nullable Material displayItem, @NotNull Callback<Integer> value,
+    public MenuItemInteger(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Integer> value,
                            @Nullable Integer min, @Nullable Integer max) {
-        super(langKey, displayItem);
+        super(displayMat, langKey);
         this.value = value;
         this.min = min;
         this.max = max;
         updateDescription();
     }
 
-    public MenuItemInteger(@Nullable Component name, @Nullable Material displayItem, @NotNull Callback<Integer> value,
+    public MenuItemInteger(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Integer> value,
                            @Nullable Integer min, @Nullable Integer max) {
-        super(name, displayItem);
+        super(displayMat, name);
         this.value = value;
         this.min = min;
         this.max = max;
         updateDescription();
     }
 
-    public MenuItemInteger(@Nullable Component name, @Nullable List<Component> description, @Nullable Material displayItem,
+    public MenuItemInteger(@Nullable Material displayMat, @Nullable Component name, @Nullable List<Component> description,
                            @NotNull Callback<Integer> value, @Nullable Integer min, @Nullable Integer max) {
-        super(name, description, displayItem);
+        super(displayMat, name, description);
         this.value = value;
         this.min = min;
         this.max = max;
@@ -101,10 +101,10 @@ public class MenuItemInteger extends MenuItem {
 
     @Override
     public ItemStack onDoubleClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter number value into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        mgPlayer.sendMessage("Enter number value into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
         String min = "N/A";
         String max = "N/A";
         if (this.min != null) {
@@ -113,8 +113,8 @@ public class MenuItemInteger extends MenuItem {
         if (this.max != null) {
             max = this.max.toString();
         }
-        ply.setManualEntry(this);
-        ply.sendInfoMessage("Min: " + min + ", Max: " + max);
+        mgPlayer.setManualEntry(this);
+        mgPlayer.sendInfoMessage("Min: " + min + ", Max: " + max);
         getContainer().startReopenTimer(10);
 
         return null;

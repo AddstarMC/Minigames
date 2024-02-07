@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.LongFlag;
+import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -19,7 +19,7 @@ public class LobbySettingsModule extends MinigameModule {
     private final BooleanFlag canInteractStartWait = new BooleanFlag(true, "canInteractStartWait");
     private final BooleanFlag teleportOnPlayerWait = new BooleanFlag(false, "teleportOnPlayerWait");
     private final BooleanFlag teleportOnStart = new BooleanFlag(true, "teleportOnStart");
-    private final LongFlag playerWaitTime = new LongFlag(0L, "playerWaitTime");
+    private final TimeFlag playerWaitTime = new TimeFlag(0L, "playerWaitTime");
 
     public LobbySettingsModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
@@ -79,7 +79,6 @@ public class LobbySettingsModule extends MinigameModule {
                 canMovePlayerWait.setFlag(value);
             }
 
-
         };
     }
 
@@ -102,7 +101,6 @@ public class LobbySettingsModule extends MinigameModule {
             public void setValue(Boolean value) {
                 canMoveStartWait.setFlag(value);
             }
-
 
         };
     }
@@ -127,7 +125,6 @@ public class LobbySettingsModule extends MinigameModule {
                 canInteractPlayerWait.setFlag(value);
             }
 
-
         };
     }
 
@@ -151,7 +148,6 @@ public class LobbySettingsModule extends MinigameModule {
                 canInteractStartWait.setFlag(value);
             }
 
-
         };
     }
 
@@ -174,7 +170,6 @@ public class LobbySettingsModule extends MinigameModule {
             public void setValue(Boolean value) {
                 teleportOnStart.setFlag(value);
             }
-
 
         };
     }

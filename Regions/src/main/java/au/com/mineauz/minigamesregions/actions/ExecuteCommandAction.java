@@ -2,7 +2,10 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ExpressionParser;
 import au.com.mineauz.minigames.script.ScriptObject;
@@ -179,9 +182,9 @@ public class ExecuteCommandAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Execute Command", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.addItem(new MenuItemString("Command", List.of("Do not include '/'", "If '//' command, start with './'"),
-                Material.COMMAND_BLOCK, new Callback<>() {
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+        m.addItem(new MenuItemString(Material.COMMAND_BLOCK, "Command", List.of("Do not include '/'", "If '//' command, start with './'"),
+                new Callback<>() {
 
             @Override
             public String getValue() {

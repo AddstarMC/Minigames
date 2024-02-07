@@ -3,22 +3,23 @@ package au.com.mineauz.minigames.events;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.jetbrains.annotations.NotNull;
 
-public class TakeFlagEvent extends AbstractCancellableMinigameEvent {
+public class TakeCTFFlagEvent extends AbstractCancellableMinigameEvent {
     private final CTFFlag flag;
     private final String flagName;
     private final MinigamePlayer player;
     private boolean displayMessage = true;
 
-    public TakeFlagEvent(Minigame minigame, MinigamePlayer player, CTFFlag flag) {
+    public TakeCTFFlagEvent(@NotNull Minigame minigame, @NotNull MinigamePlayer player, CTFFlag flag) {
         this(minigame, player, flag, null);
     }
 
-    public TakeFlagEvent(Minigame minigame, MinigamePlayer player, String flagName) {
+    public TakeCTFFlagEvent(@NotNull Minigame minigame, @NotNull MinigamePlayer player, String flagName) {
         this(minigame, player, null, flagName);
     }
 
-    public TakeFlagEvent(Minigame minigame, MinigamePlayer player, CTFFlag flag, String flagName) {
+    public TakeCTFFlagEvent(@NotNull Minigame minigame, @NotNull MinigamePlayer player, CTFFlag flag, String flagName) {
         super(minigame);
         this.flag = flag;
         this.flagName = flagName;
