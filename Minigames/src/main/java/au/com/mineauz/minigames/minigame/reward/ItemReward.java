@@ -81,12 +81,12 @@ public class ItemReward extends RewardType {
     }
 
     private class MenuItemReward extends MenuItem {
-        private final ItemReward reward;
-        private List<String> options = new ArrayList<>();
+        private final @NotNull ItemReward reward;
+        private final @NotNull List<String> options = new ArrayList<>();
 
-        public MenuItemReward(ItemReward reward) {
-            super("PLACEHOLDER", List.of("Click with item", "to change."), Material.DIAMOND);
-            setDisplayItem(reward.getRewardItem());
+        public MenuItemReward(@NotNull ItemReward reward) {
+            super(Material.DIAMOND, "PLACEHOLDER", List.of("Click with item", "to change."));
+            setItem(reward.getRewardItem());
             for (RewardRarity rarity : RewardRarity.values()) {
                 options.add(rarity.toString());
             }
@@ -112,12 +112,6 @@ public class ItemReward extends RewardType {
 
         public void updateDescription() {
             List<Component> description;
-            if (options == null) {
-                options = new ArrayList<>();
-                for (RewardRarity rarity : RewardRarity.values()) {
-                    options.add(rarity.toString());
-                }
-            }
             int pos = options.indexOf(getRarity().toString());
             int before = pos - 1;
             int after = pos + 1;
@@ -162,8 +156,9 @@ public class ItemReward extends RewardType {
         public ItemStack onClick() {
             int ind = options.lastIndexOf(getRarity().toString());
             ind++;
-            if (ind == options.size())
+            if (ind == options.size()) {
                 ind = 0;
+            }
 
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
@@ -175,8 +170,9 @@ public class ItemReward extends RewardType {
         public ItemStack onRightClick() {
             int ind = options.lastIndexOf(getRarity().toString());
             ind--;
-            if (ind == -1)
+            if (ind == -1) {
                 ind = options.size() - 1;
+            }
 
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();

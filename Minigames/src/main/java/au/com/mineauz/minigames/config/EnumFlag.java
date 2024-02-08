@@ -1,13 +1,17 @@
 package au.com.mineauz.minigames.config;
 
+import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class EnumFlag<T extends Enum<T>> extends Flag<T> {
-
     private final Class<T> enumClass;
 
     @SuppressWarnings("unchecked")
@@ -28,15 +32,23 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
         setFlag(T.valueOf(enumClass, config.getString(path + "." + getName())));
     }
 
+    /**
+     * @param description will get ignored
+     */
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
-        return null;
-    }
+    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemEnum<>(displayMat, name, new Callback<>() {
 
-    @Override
-    public MenuItem getMenuItem(String name, Material displayItem,
-                                List<String> description) {
-        return null;
-    }
+            @Override
+            public T getValue() {
+                return getFlag();
+            }
 
+            @Override
+            public void setValue(T value) {
+                setFlag(value);
+            }
+        }, enumClass);
+    }
 }

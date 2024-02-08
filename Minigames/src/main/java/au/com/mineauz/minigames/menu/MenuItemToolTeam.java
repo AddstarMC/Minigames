@@ -7,24 +7,27 @@ import au.com.mineauz.minigames.tool.MinigameTool;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MenuItemToolTeam extends MenuItemList {
-    private final Callback<String> value;
+public class MenuItemToolTeam extends MenuItemList<TeamColor> {
+    private final Callback<TeamColor> value;
 
-    public MenuItemToolTeam(Component name, Material displayItem, Callback<String> value, List<String> options) {
-        super(name, displayItem, value, options);
+    public MenuItemToolTeam(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<TeamColor> value,
+                            @NotNull List<@NotNull TeamColor> options) {
+        super(displayMat, name, value, options);
         this.value = value;
     }
 
     @Override
     public ItemStack onClick() {
         super.onClick();
-        MinigamePlayer ply = getContainer().getViewer();
-        if (MinigameUtils.hasMinigameTool(ply)) {
-            MinigameTool tool = MinigameUtils.getMinigameTool(ply);
-            tool.setTeam(TeamColor.matchColor(value.getValue().replace(" ", "_")));
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        if (MinigameUtils.hasMinigameTool(mgPlayer)) {
+            MinigameTool tool = MinigameUtils.getMinigameTool(mgPlayer);
+            tool.setTeam(value.getValue());
         }
         return getDisplayItem();
     }
@@ -32,10 +35,10 @@ public class MenuItemToolTeam extends MenuItemList {
     @Override
     public ItemStack onRightClick() {
         super.onRightClick();
-        MinigamePlayer ply = getContainer().getViewer();
-        if (MinigameUtils.hasMinigameTool(ply)) {
-            MinigameTool tool = MinigameUtils.getMinigameTool(ply);
-            tool.setTeam(TeamColor.matchColor(value.getValue().replace(" ", "_")));
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        if (MinigameUtils.hasMinigameTool(mgPlayer)) {
+            MinigameTool tool = MinigameUtils.getMinigameTool(mgPlayer);
+            tool.setTeam(value.getValue());
         }
         return getDisplayItem();
     }

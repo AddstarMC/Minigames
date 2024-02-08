@@ -99,7 +99,7 @@ public class SingleplayerType extends MinigameTypeBase {
             mgm.setState(MinigameState.OCCUPIED);
         }
 
-        mgPlayer.getLoadout().equiptLoadout(mgPlayer);
+        mgPlayer.getLoadout().equipLoadout(mgPlayer);
         return true;
     }
 
@@ -149,7 +149,7 @@ public class SingleplayerType extends MinigameTypeBase {
                 event.setRespawnLocation(mgPlayer.getCheckpoint());
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_CHECKPOINT_DEATHREVERT);
 
-                mgPlayer.getLoadout().equiptLoadout(mgPlayer);
+                mgPlayer.getLoadout().equipLoadout(mgPlayer);
             }
         }
     }

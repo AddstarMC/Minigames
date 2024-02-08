@@ -3,8 +3,7 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -73,11 +72,11 @@ public class CTFModule extends MinigameModule {
     @Override
     public boolean displayMechanicSettings(Menu previous) {
         Menu m = new Menu(6, "CTF Settings", previous.getViewer());
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
-        m.addItem(useFlagAsCapturePoint.getMenuItem("CTF Flag is Capture Point", Material.BLACK_BANNER,
+        m.addItem(useFlagAsCapturePoint.getMenuItem(Material.BLACK_BANNER, "CTF Flag is Capture Point",
                 List.of("Use a teams Flag as a capture point")));
-        m.addItem(bringFlagBackManual.getMenuItem("Bring Flag Back Manually", Material.ENDER_EYE,
+        m.addItem(bringFlagBackManual.getMenuItem(Material.ENDER_EYE, "Bring Flag Back Manually",
                 List.of("If enabled, the flag can be brought", "back to the base manually")));
         m.displayMenu(previous.getViewer());
         return true;

@@ -2,11 +2,17 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,12 +37,12 @@ public class ScoreboardCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Displays a scoreboard of the desired Minigame, SQL must be enabled!";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SCOREBOARD_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame scoreboard <Minigame> <Statistic> <Field> [-o <asc/desc>|-l <length>|-s <start>]"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SCOREBOARD_USAGE);
     }
 
     @Override
@@ -53,13 +59,15 @@ public class ScoreboardCommand extends ACommand {
         // Decode arguments
         final Minigame minigame = plugin.getMinigameManager().getMinigame(args[0]);
         if (minigame == null) {
-            sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[0]);
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             return true;
         }
 
         final MinigameStat stat = MinigameStats.getStat(args[1]);
         if (stat == null) {
-            sender.sendMessage(ChatColor.RED + "No statistic found by the name " + args[1]);
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTSTAT,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
             return true;
         }
 
@@ -74,7 +82,9 @@ public class ScoreboardCommand extends ACommand {
         }
 
         if (field == null) {
-            sender.sendMessage(ChatColor.RED + "No field found by the name " + args[2] + " for the statistic " + stat.getDisplayName());
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTFIELD,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]),
+                    Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), stat.getDisplayName()));
             return true;
         }
 
@@ -96,46 +106,51 @@ public class ScoreboardCommand extends ACommand {
                 } else if (args[i + 1].equalsIgnoreCase("desc") || args[i + 1].equalsIgnoreCase("descending")) {
                     order = ScoreboardOrder.DESCENDING;
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Unknown order " + args[i + 1] + ". Expected asc, ascending, desc, or descending.");
-                    return true;
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTORDER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[i + 1]));
+                    return false;
                 }
             } else if (args[i].equalsIgnoreCase("-l")) {
                 // Length
                 if (args[i + 1].matches("[1-9][0-9]*")) {
                     length = Integer.parseInt(args[i + 1]);
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Unknown length " + args[i + 1] + ". Expected positive non-zero number");
-                    return true;
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[i + 1]));
+                    return false;
                 }
             } else if (args[i].equalsIgnoreCase("-s")) {
                 // Start
                 if (args[i + 1].matches("[1-9][0-9]*")) {
                     start = Integer.parseInt(args[i + 1]) - 1;
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Unknown start " + args[i + 1] + ". Expected positive non-zero number");
-                    return true;
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[i + 1]));
+                    return false;
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + "Unknown option " + args[i] + ". Expected -o, -l, or -s");
-                return true;
+                return false;
             }
         }
 
         final ScoreboardOrder fOrder = order;
         final StatValueField fField = field;
 
-        sender.sendMessage(ChatColor.GRAY + "Loading scoreboard...");
+        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SCOREBOARD_LOAD);
         // Now load the values
         CompletableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start, length);
         future.whenComplete((result, throwable) -> {
             if (throwable == null) {
-                sender.sendMessage(ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase());
+                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, //todo don't hardcode this
+                        Component.text(minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase(), NamedTextColor.GREEN));
                 for (StoredStat playerStat : result) {
-                    sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue(), settings));
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SCOREBOARD_LIST_PLAYER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), playerStat.getPlayerDisplayName()),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), stat.displayValue(playerStat.getValue(), settings)));
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + "An internal error occurred while loading the statistics. " + throwable.getMessage());
-                Minigames.getCmpnntLogger().error("An internal error occurred while loading statistics.", throwable);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL);
+                Minigames.getCmpnntLogger().error("An internal error occurred while loading the statistics", t);
             }
         });
 

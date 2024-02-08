@@ -1,10 +1,12 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -29,14 +31,8 @@ public class RewardsFlag extends Flag<Rewards> {
     }
 
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
-        return new MenuItemDisplayRewards(name, displayItem, getFlag());
+    public MenuItemDisplayRewards getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemDisplayRewards(displayMat, name, description, getFlag());
     }
-
-    @Override
-    public MenuItem getMenuItem(String name, Material displayItem,
-                                List<String> description) {
-        return new MenuItemDisplayRewards(name, description, displayItem, getFlag());
-    }
-
 }

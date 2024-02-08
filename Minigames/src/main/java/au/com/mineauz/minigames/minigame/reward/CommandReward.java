@@ -59,13 +59,11 @@ public class CommandReward extends RewardType {
     }
 
     private class CommandRewardItem extends MenuItemString {
-
         private final CommandReward reward;
-        private List<String> options = new ArrayList<>();
+        private final @NotNull List<@NotNull String> options = new ArrayList<>();
 
         public CommandRewardItem(CommandReward reward) {
-            super("/" + command, Material.COMMAND_BLOCK, new Callback<>() {
-
+            super(Material.COMMAND_BLOCK, Component.text("/" + command), new Callback<>() {
 
                 @Override
                 public String getValue() {
@@ -79,6 +77,7 @@ public class CommandReward extends RewardType {
                     command = value;
                 }
             });
+
             for (RewardRarity rarity : RewardRarity.values()) {
                 options.add(rarity.toString());
             }
@@ -101,12 +100,6 @@ public class CommandReward extends RewardType {
         @Override
         public void updateDescription() {
             List<Component> description;
-            if (options == null) {
-                options = new ArrayList<>();
-                for (RewardRarity rarity : RewardRarity.values()) {
-                    options.add(rarity.toString());
-                }
-            }
             int pos = options.indexOf(getRarity().toString());
             int before = pos - 1;
             int after = pos + 1;
@@ -172,8 +165,9 @@ public class CommandReward extends RewardType {
         public ItemStack onRightClick() {
             int ind = options.lastIndexOf(getRarity().toString());
             ind--;
-            if (ind == -1)
+            if (ind == -1) {
                 ind = options.size() - 1;
+            }
 
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
@@ -200,5 +194,4 @@ public class CommandReward extends RewardType {
             updateName(entry);
         }
     }
-
 }

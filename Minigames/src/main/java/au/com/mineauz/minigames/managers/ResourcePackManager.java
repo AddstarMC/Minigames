@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.managers;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.objects.ResourcePack;
+import net.kyori.adventure.text.Component;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -14,7 +15,7 @@ import java.util.*;
 
 public class ResourcePackManager { //todo work with multiple ressource packs
     final static Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
-    private final Map<String, ResourcePack> resources = new HashMap<>();
+    private final Map<Component, ResourcePack> resources = new HashMap<>();
     private boolean enabled = true;
     private MinigameSave config;
 
@@ -112,9 +113,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         config.saveConfig();
     }
 
-    public Set<String> getResourceNames() {
+    public Set<Component> getResourceNames() {
         return resources.keySet();
     }
-
-
 }

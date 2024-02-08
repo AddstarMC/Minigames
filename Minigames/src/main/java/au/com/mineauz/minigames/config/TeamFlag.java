@@ -4,14 +4,16 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 
 public class TeamFlag extends Flag<Team> {
-
     private final Minigame mgm;
 
     public TeamFlag(Team value, String name, Minigame mgm) {
@@ -61,15 +63,16 @@ public class TeamFlag extends Flag<Team> {
         setFlag(t);
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return null; //TODO: Menu Item
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem,
-                                List<String> description) {
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                          @Nullable List<@NotNull Component> description) {
         return null;
     }
-
 }

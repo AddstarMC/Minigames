@@ -4,22 +4,29 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class ReequipLoadoutAction extends AbstractAction {
+public class ReequipLoadoutAction extends AAction {
 
-    @Override
-    public @NotNull String getName() {
-        return "REEQUIP_LOADOUT";
+    protected ReequipLoadoutAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Minigame Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REEQUIPLOADOUT_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.MINIGAME;
     }
 
     @Override
@@ -37,18 +44,17 @@ public class ReequipLoadoutAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
         if (!mgPlayer.isInMinigame()) return;
-        mgPlayer.getLoadout().equiptLoadout(mgPlayer);
+        mgPlayer.getLoadout().equipLoadout(mgPlayer);
     }
 
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
-        mgPlayer.getLoadout().equiptLoadout(mgPlayer);
+        mgPlayer.getLoadout().equipLoadout(mgPlayer);
     }
 
     @Override
@@ -68,5 +74,4 @@ public class ReequipLoadoutAction extends AbstractAction {
         // None
         return false;
     }
-
 }

@@ -8,7 +8,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -38,7 +40,7 @@ import java.util.*;
  *   setAgeLock
  */
 
-public class SpawnEntityAction extends AbstractAction {
+public class SpawnEntityAction extends AAction {
     /**
      * Contains all entities that are problematic to spawn as is.
      * Some problems may get resolved, if their (default)settings get added in the future;
@@ -70,8 +72,13 @@ public class SpawnEntityAction extends AbstractAction {
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "World Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.WORLD;
     }
 
     @Override
@@ -195,8 +202,8 @@ public class SpawnEntityAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu menu = new Menu(3, "Spawn Entity", mgPlayer);
-        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), menu.getSize() - 9);
+        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         List<String> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
             if (!NOT_SPAWNABLE.contains(type)) {
@@ -308,7 +315,7 @@ public class SpawnEntityAction extends AbstractAction {
 
 
         }, 0.5, 1, null, null));
-        velocityMenu.addItem(new MenuItemDecimal("Y Velocity", Material.ARROW, new Callback<>() {
+        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW, "Y Velocity", new Callback<>() {
             @Override
             public Double getValue() {
                 ConfigSerializableBridge<?> value = settings.get("velocity");
@@ -337,7 +344,7 @@ public class SpawnEntityAction extends AbstractAction {
 
 
         }, 0.5, 1, null, null));
-        velocityMenu.addItem(new MenuItemDecimal("Z Velocity", Material.ARROW, new Callback<>() {
+        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW, "Z Velocity", new Callback<>() {
 
             @Override
             public Double getValue() {
@@ -531,7 +538,5 @@ public class SpawnEntityAction extends AbstractAction {
                 settings.put("isCollidable", new ConfigSerializableBridge<>(value));
             }
         }));
-
-
     }
 }

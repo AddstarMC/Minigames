@@ -13,6 +13,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -23,20 +24,24 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class GiveItemAction extends AbstractAction {
+public class GiveItemAction extends AAction {
     private final StringFlag type = new StringFlag("STONE", "type");
     private final IntegerFlag count = new IntegerFlag(1, "count");
     private final StringFlag name = new StringFlag(null, "name");
     private final StringFlag lore = new StringFlag(null, "lore");
 
-    @Override
-    public @NotNull String getName() {
-        return "GIVE_ITEM";
+    protected GiveItemAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Player Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_GIVEITEM_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.PLAYER;
     }
 
     @Override
@@ -112,19 +117,19 @@ public class GiveItemAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull final MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Give Item", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
 
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
-        MenuItemString n = (MenuItemString) name.getMenuItem("Name", Material.NAME_TAG);
+        MenuItemString n = (MenuItemString) name.getMenuItem(Material.NAME_TAG, "Name");
         n.setAllowNull(true);
         m.addItem(n);
-        MenuItemString l = (MenuItemString) lore.getMenuItem("Lore", Material.PAPER,
+        MenuItemString l = lore.getMenuItem(Material.PAPER, "Lore",
                 List.of("Separate with semicolons", "for new lines"));
         l.setAllowNull(true);
         m.addItem(l);
 
-        m.addItem(new MenuItemString("Type", Material.STONE, new Callback<>() {
+        m.addItem(new MenuItemString(Material.STONE, "Type", new Callback<>() {
             @Override
             public String getValue() {
                 return type.getFlag();
@@ -139,7 +144,7 @@ public class GiveItemAction extends AbstractAction {
                 }
             }
         }));
-        m.addItem(count.getMenuItem("Count", Material.STONE_SLAB, 1, 64));
+        m.addItem(count.getMenuItem(Material.STONE_SLAB, "Count", 1, 64));
         m.displayMenu(mgPlayer);
         return true;
     }

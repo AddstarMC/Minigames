@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.signs.CTFFlagSign;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
@@ -21,7 +22,7 @@ import java.util.List;
 
 /**
  * Flag of Capture the Flag.
- * Technical background for au.com.mineauz.minigames.signs.FlagSign
+ * Technical background for {@link CTFFlagSign}
  */
 public class CTFFlag {
     private final @NotNull BlockState spawnData;

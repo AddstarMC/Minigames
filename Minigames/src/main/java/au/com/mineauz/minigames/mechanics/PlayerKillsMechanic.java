@@ -125,28 +125,28 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
     @EventHandler
     private void playerSuicide(PlayerDeathEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if (ply.isInMinigame() &&
-                (ply.getPlayer().getKiller() == null || ply.getPlayer().getKiller() == ply.getPlayer()) &&
-                ply.getMinigame().hasStarted()) {
-            Minigame mgm = ply.getMinigame();
+        MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
+        if (mgPlayer.isInMinigame() &&
+                (mgPlayer.getPlayer().getKiller() == null || mgPlayer.getPlayer().getKiller() == mgPlayer.getPlayer()) &&
+                mgPlayer.getMinigame().hasStarted()) {
+            Minigame mgm = mgPlayer.getMinigame();
             if (mgm.getMechanicName().equals("kills")) {
-                ply.takeScore();
-                mgm.setScore(ply, ply.getScore());
+                mgPlayer.takeScore();
+                mgm.setScore(mgPlayer, mgPlayer.getScore());
                 if (mgm.isTeamGame())
-                    ply.getTeam().setScore(ply.getTeam().getScore() - 1);
+                    mgPlayer.getTeam().setScore(mgPlayer.getTeam().getScore() - 1);
             }
         }
     }
 
     @EventHandler
     public void playerAutoBalance(PlayerDeathEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if (ply.isInMinigame() && ply.getMinigame().isTeamGame()) {
-            Minigame mgm = ply.getMinigame();
+        MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
+        if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isTeamGame()) {
+            Minigame mgm = mgPlayer.getMinigame();
 
             if (mgm.getMechanicName().equals("kills")) {
-                autoBalanceOnDeath(ply, mgm);
+                autoBalanceOnDeath(mgPlayer, mgm);
             }
         }
     }

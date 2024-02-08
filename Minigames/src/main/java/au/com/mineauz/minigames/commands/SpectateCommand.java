@@ -1,10 +1,15 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -32,12 +37,12 @@ public class SpectateCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Allows a player to force spectate a Minigame.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SPECTATE_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame spectate <Minigame>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SPECTATE_USAGE);
     }
 
     @Override
@@ -48,14 +53,20 @@ public class SpectateCommand extends ACommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender,
                              @NotNull String @NotNull [] args) {
-        if (args != null) {
-            if (PLUGIN.getMinigameManager().hasMinigame(args[0])) {
-                MinigamePlayer ply = PLUGIN.getPlayerManager().getMinigamePlayer((Player) sender);
+        if (sender instanceof Player player) {
+            if (args.length > 0) {
                 Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
-                PLUGIN.getPlayerManager().spectateMinigame(ply, mgm);
-            } else {
-                sender.sendMessage(ChatColor.RED + "No Minigame found by the name: " + args[0]);
+                if (mgm != null) {
+                    MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
+                    PLUGIN.getPlayerManager().spectateMinigame(mgPlayer, mgm);
+                    return true;
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
+                }
             }
+        } else {
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             return true;
         }
         return false;

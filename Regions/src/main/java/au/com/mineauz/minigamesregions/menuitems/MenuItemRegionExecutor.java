@@ -3,26 +3,28 @@ package au.com.mineauz.minigamesregions.menuitems;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.actions.Actions;
-import au.com.mineauz.minigamesregions.conditions.Conditions;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.actions.ActionRegistry;
+import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
-import org.apache.commons.text.WordUtils;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class MenuItemRegionExecutor extends MenuItem {
-    private final Region region;
-    private final RegionExecutor ex;
+    private final @NotNull Region region;
+    private final @NotNull RegionExecutor ex;
 
-    public MenuItemRegionExecutor(Region region, RegionExecutor ex) {
-        super("Region Executor:", Material.ENDER_PEARL);
+    public MenuItemRegionExecutor(@NotNull Region region, @NotNull RegionExecutor ex) {
+        super(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONEXECUTOR_NAME));
         this.region = region;
         this.ex = ex;
-        setDescriptionStr(List.of(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY +
-                        WordUtils.capitalizeFully(ex.getTrigger().getName()),
+        setDescription(List.of(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY +
+                        ex.getTrigger().getDisplayName(),
                 ChatColor.GREEN + "Actions: " + ChatColor.GRAY +
                         ex.getActions().size(),
                 ChatColor.DARK_PURPLE + "(Right click to delete)",
@@ -32,36 +34,39 @@ public class MenuItemRegionExecutor extends MenuItem {
     @Override
     public ItemStack onClick() {
         final MinigamePlayer fviewer = getContainer().getViewer();
-        Menu m = new Menu(3, "Executor", fviewer);
-        final Menu ffm = m;
+        final Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONEXECUTOR_NAME), fviewer);
 
-        MenuItemCustom ca = new MenuItemCustom("Actions", Material.CHEST);
+        MenuItemCustom ca = new MenuItemCustom(Material.CHEST,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME));
         ca.setClick(object -> {
-            Actions.displayMenu(fviewer, ex, ffm);
+            ActionRegistry.displayMenu(fviewer, ex, menu);
             return null;
         });
-        m.addItem(ca);
+        menu.addItem(ca);
 
-        MenuItemCustom c2 = new MenuItemCustom("Conditions", Material.CHEST);
+        MenuItemCustom c2 = new MenuItemCustom(Material.CHEST,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME));
         c2.setClick(object -> {
-            Conditions.displayMenu(fviewer, ex, ffm);
+            ConditionRegistry.displayMenu(fviewer, ex, menu);
             return null;
         });
-        m.addItem(c2);
+        menu.addItem(c2);
 
-        m.addItem(new MenuItemNewLine());
+        menu.addItem(new MenuItemNewLine());
         if (ex.getTrigger().triggerOnPlayerAvailable()) {
-            m.addItem(new MenuItemInteger("Trigger Count",
-                    List.of("Number of times this", "node can be", "triggered"),
-                    Material.STONE, ex.getTriggerCountCallback(), 0, null));
+            menu.addItem(new MenuItemInteger(Material.STONE,
+                    RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_NAME),
+                    List.of("Number of times this", "executor can be", "triggered"),
+                    ex.getTriggerCountCallback(), 0, null));
         }
         if (ex.getTrigger().triggerOnPlayerAvailable()) {
-            m.addItem(new MenuItemBoolean("Trigger Per Player",
-                    List.of("Whether this node", "is triggered per player", "or just on count"),
-                    Material.ENDER_PEARL, ex.getIsTriggerPerPlayerCallback()));
+            menu.addItem(new MenuItemBoolean(Material.PLAYER_HEAD,
+                    RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
+                    List.of("Whether this executor", "is triggered per player", "or just on count"),
+                    ex.getIsTriggerPerPlayerCallback()));
         }
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), getContainer()), m.getSize() - 9);
-        m.displayMenu(fviewer);
+        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
+        menu.displayMenu(fviewer);
         return null;
     }
 
@@ -71,5 +76,4 @@ public class MenuItemRegionExecutor extends MenuItem {
         getContainer().removeItem(getSlot());
         return null;
     }
-
 }

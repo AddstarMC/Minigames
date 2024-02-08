@@ -6,19 +6,21 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class MenuItemSaveMinigame extends MenuItem {
     private final @NotNull Minigame mgm;
 
-    public MenuItemSaveMinigame(Component name, Material displayItem, @NotNull Minigame minigame) {
-        super(name, displayItem);
+    public MenuItemSaveMinigame(@Nullable Material displayMat, @Nullable Component name, @NotNull Minigame minigame) {
+        super(displayMat, name);
         mgm = minigame;
     }
 
-    public MenuItemSaveMinigame(Component name, List<@NotNull Component> description, Material displayItem, @NotNull Minigame minigame) {
-        super(name, description, displayItem);
+    public MenuItemSaveMinigame(@Nullable Material displayMat, @Nullable Component name,
+                                @Nullable List<@NotNull Component> description, @NotNull Minigame minigame) {
+        super(displayMat, name, description);
         mgm = minigame;
     }
 

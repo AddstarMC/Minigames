@@ -4,24 +4,31 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class ResetTriggerCountAction extends AbstractAction {
+public class ResetTriggerCountAction extends AAction {
 
-    @Override
-    public @NotNull String getName() {
-        return "RESET_TRIGGER_COUNT";
+    protected ResetTriggerCountAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Region/Node Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RESETTRIGGERCOUNT_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.REGION_NODE;
     }
 
     @Override

@@ -1,11 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +17,21 @@ public class MenuItemString extends MenuItem {
     protected final Callback<String> str;
     private boolean allowNull = false;
 
-    public MenuItemString(Component name, Material displayItem, Callback<String> str) {
-        super(name, displayItem);
+    public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<String> str) {
+        super(displayMat, langKey);
         this.str = str;
         updateDescription();
     }
 
-    public MenuItemString(Component name, List<Component> description, Material displayItem, Callback<String> str) {
-        super(name, description, displayItem);
+    public MenuItemString(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<String> str) {
+        super(displayMat, name);
+        this.str = str;
+        updateDescription();
+    }
+
+    public MenuItemString(@Nullable Material displayMat, @Nullable Component name,
+                          @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
+        super(displayMat, name, description);
         this.str = str;
         updateDescription();
     }
@@ -41,12 +51,13 @@ public class MenuItemString extends MenuItem {
 
         if (getDescription() != null) {
             description = getDescription();
-            String desc = getDescription().get(0);
+            Component desc = getDescription().get(0);
 
-            if (desc.startsWith(ChatColor.GREEN.toString()))
+            if (desc.startsWith(ChatColor.GREEN.toString())) {
                 description.set(0, ChatColor.GREEN + setting);
-            else
+            } else {
                 description.add(0, ChatColor.GREEN + setting);
+            }
         } else {
             description = new ArrayList<>();
             description.add(ChatColor.GREEN + setting);
@@ -57,14 +68,14 @@ public class MenuItemString extends MenuItem {
 
     @Override
     public ItemStack onDoubleClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", MinigameMessageType.INFO);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        mgPlayer.sendMessage("Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", MinigameMessageType.INFO);
         if (allowNull) {
-            ply.sendInfoMessage("Enter \"null\" to remove the string value");
+            mgPlayer.sendInfoMessage("Enter \"null\" to remove the string value");
         }
-        ply.setManualEntry(this);
+        mgPlayer.setManualEntry(this);
         getContainer().startReopenTimer(20);
 
         return null;

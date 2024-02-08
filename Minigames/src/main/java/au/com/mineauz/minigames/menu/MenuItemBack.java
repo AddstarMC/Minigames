@@ -1,12 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class MenuItemBack extends MenuItem {
-    private final Menu prev;
+    private final @NotNull Menu prev;
 
-    public MenuItemBack(Menu prev) {
-        super("Back", MenuUtility.getBackMaterial());
+    public MenuItemBack(@NotNull Menu prev) {
+        super(MenuUtility.getBackMaterial(), MgMenuLangKey.MENU_PAGE_BACK);
         this.prev = prev;
     }
 
@@ -15,5 +17,4 @@ public class MenuItemBack extends MenuItem {
         prev.displayMenu(prev.getViewer());
         return null;
     }
-
 }

@@ -11,9 +11,10 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import net.kyori.adventure.text.Component;
@@ -118,7 +119,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
-                execute(Triggers.getTrigger("TICK"), player);
+                execute(MgRegTrigger.TIME_TICK, player);
             }
         }, 0, delay);
     }
@@ -135,7 +136,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
-                execute(Triggers.getTrigger("TICK"), player);
+                execute(MgRegTrigger.TIME_TICK, player);
             }
         }, 0, taskDelay);
     }
@@ -181,7 +182,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
     }
 
     public boolean checkConditions(@NotNull RegionExecutor exec, @Nullable MinigamePlayer player) {
-        for (ConditionInterface con : exec.getConditions()) {
+        for (ACondition con : exec.getConditions()) {
             boolean c = con.checkRegionCondition(player, this);
             if (con.isInverted())
                 c = !c;
@@ -210,7 +211,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
             for (ActionInterface act : exec.getActions()) {
                 if (!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
                 try {
-                    if (checkConditions(exec, null) && exec.getTrigger() == Triggers.getTrigger("GAME_TICK")) {
+                    if (checkConditions(exec, null) && exec.getTrigger() == MgRegTrigger.TIME_GAMETICK) {
                         act.executeRegionAction(null, this);
                         exec.addPublicTrigger();
                     }

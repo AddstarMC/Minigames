@@ -51,7 +51,7 @@ public class RegionToolMode implements ToolMode {
         tool.addSetting("Region", "None");
         final Menu m = new Menu(2, "Region Selection", player);
         if (player.isInMenu()) {
-            m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), player.getMenu()), m.getSize() - 9);
+            m.addItem(new MenuItemBack(player.getMenu()), m.getSize() - 9);
         }
         final MinigameTool ftool = tool;
         m.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<>() {
@@ -75,7 +75,7 @@ public class RegionToolMode implements ToolMode {
             List<MenuItem> items = new ArrayList<>();
 
             for (final Region region : module.getRegions()) {
-                MenuItemCustom item = new MenuItemCustom(region.getName(), Material.CHEST);
+                MenuItemCustom item = new MenuItemCustom(Material.CHEST, region.getName());
 
                 // Set the node and go back to the main menu
                 item.setClick(object -> {
@@ -90,7 +90,7 @@ public class RegionToolMode implements ToolMode {
             }
 
             regionMenu.addItems(items);
-            regionMenu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), m), regionMenu.getSize() - 9);
+            regionMenu.addItem(new MenuItemBack(m), regionMenu.getSize() - 9);
 
             m.addItem(new MenuItemPage("Edit Region", Material.CHEST, regionMenu));
         }

@@ -2,10 +2,14 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -33,15 +37,12 @@ public class QuitCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameUtils.getLang("command.quit.description");
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_QUIT_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{
-                "/minigame quit [Player]",
-                "/minigame quit ALL [MinigameName]"
-        };
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_QUIT_USAGE);
     }
 
     @Override
@@ -57,22 +58,24 @@ public class QuitCommand extends ACommand {
             if (mgPlayer.isInMinigame()) {
                 PLUGIN.getPlayerManager().quitMinigame(mgPlayer, false);
             } else {
-                sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.quit.notPlaying"));
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_SELF);
             }
             return true;
         } else if (args.length > 0) {
             if (sender.hasPermission("minigame.quit.other")) {
                 if (args[0].equals("ALL")) {
                     if (args.length > 1) {
-                        if (PLUGIN.getMinigameManager().hasMinigame(args[1])) {
-                            Minigame mg = PLUGIN.getMinigameManager().getMinigame(args[1]);
-                            List<MinigamePlayer> pls = new ArrayList<>(mg.getPlayers());
+                        Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[1]);
+                        if (minigame != null) {
+                            List<MinigamePlayer> pls = new ArrayList<>(minigame.getPlayers());
                             for (MinigamePlayer pl : pls) {
                                 PLUGIN.getPlayerManager().quitMinigame(pl, true);
                             }
-                            sender.sendMessage(ChatColor.GRAY + MinigameMessageManager.getMinigamesMessage("command.quit.quitAllMinigame", mg.getName(true)));
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_QUIT_QUITALLMINIGAME,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                         } else {
-                            sender.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("minigame.error.noMinigameName", args[1]));
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[1]));
                         }
                     } else {
                         for (MinigamePlayer pl : PLUGIN.getPlayerManager().getAllMinigamePlayers()) {
@@ -80,30 +83,32 @@ public class QuitCommand extends ACommand {
                                 PLUGIN.getPlayerManager().quitMinigame(pl, true);
                             }
                         }
-                        sender.sendMessage(ChatColor.GRAY + MinigameUtils.getLang("command.quit.quitAll"));
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_QUIT_QUITALL);
                     }
                     return true;
                 } else {
-                    MinigamePlayer ply;
-                    List<Player> players = plugin.getServer().matchPlayer(args[0]);
+                    MinigamePlayer mgPlayer;
+                    List<Player> players = PLUGIN.getServer().matchPlayer(args[0]);
 
                     if (players.isEmpty()) {
-                        sender.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                         return true;
                     } else {
-                        ply = PLUGIN.getPlayerManager().getMinigamePlayer(players.get(0));
+                        mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(players.get(0));
                     }
 
-                    if (ply.isInMinigame()) {
-                        PLUGIN.getPlayerManager().quitMinigame(ply, false);
-                        sender.sendMessage(ChatColor.GRAY + MinigameMessageManager.getMinigamesMessage("command.quit.quitOther", ply.getName()));
+                    if (mgPlayer.isInMinigame()) {
+                        PLUGIN.getPlayerManager().quitMinigame(mgPlayer, false);
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_QUIT_QUITOTHER,
+                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                     } else {
-                        sender.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                     }
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.quit.noPermissionOther"));
-                sender.sendMessage(ChatColor.RED + "minigame.quit.other");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
             }
             return true;
         }
@@ -114,12 +119,12 @@ public class QuitCommand extends ACommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> plys = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 1);
-            for (Player ply : PLUGIN.getServer().getOnlinePlayers()) {
-                plys.add(ply.getName());
+            List<String> playerNames = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 1);
+            for (Player player : PLUGIN.getServer().getOnlinePlayers()) {
+                playerNames.add(player.getName());
             }
-            plys.add("ALL");
-            return MinigameUtils.tabCompleteMatch(plys, args[0]);
+            playerNames.add("ALL");
+            return MinigameUtils.tabCompleteMatch(playerNames, args[0]);
         } else if (args.length == 2) {
             List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[1]);

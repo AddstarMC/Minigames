@@ -8,30 +8,32 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class MenuItemRewardGroupAdd extends MenuItem {
-
     private final Rewards rewards;
 
-    public MenuItemRewardGroupAdd(Component name, Material displayItem, Rewards rewards) {
-        super(name, displayItem);
+    public MenuItemRewardGroupAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Rewards rewards) {
+        super(displayMat, name);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardGroupAdd(Component name, List<Component> description, Material displayItem, Rewards rewards) {
-        super(name, description, displayItem);
+    public MenuItemRewardGroupAdd(@Nullable Material displayMat, @Nullable Component name,
+                                  @Nullable List<@NotNull Component> description, @NotNull Rewards rewards) {
+        super(displayMat, name, description);
         this.rewards = rewards;
     }
 
     @Override
     public ItemStack onClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendInfoMessage("Enter reward group name into chat, the menu will automatically reopen in 30s if nothing is entered.");
-        ply.setManualEntry(this);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        mgPlayer.sendInfoMessage("Enter reward group name into chat, the menu will automatically reopen in 30s if nothing is entered.");
+        mgPlayer.setManualEntry(this);
 
         getContainer().startReopenTimer(30);
         return null;
@@ -51,7 +53,7 @@ public class MenuItemRewardGroupAdd extends MenuItem {
 
         RewardGroup group = rewards.addGroup(entry, RewardRarity.NORMAL);
 
-        MenuItemRewardGroup mrg = new MenuItemRewardGroup(entry + " Group", Material.CHEST, group, rewards);
+        MenuItemRewardGroup mrg = new MenuItemRewardGroup(Material.CHEST, entry + " Group", group, rewards);
         getContainer().addItem(mrg);
 
         getContainer().cancelReopenTimer();

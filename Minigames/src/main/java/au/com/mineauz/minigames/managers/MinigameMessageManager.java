@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -37,6 +38,7 @@ import java.util.zip.ZipInputStream;
 public class MinigameMessageManager { // todo cache unformatted // todo clean all the different sendMessages - there are to many similar
     private final static String BUNDLE_KEY = "minigames";
     private final static String BUNDLE_NAME = "messages";
+    private final static Pattern LIST_PATTERN = Pattern.compile("<newline>");
 
     /**
      * Stores each prop file with an identifier
@@ -214,6 +216,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * Register a new Bundle
      * To load the bundle use the {@link UTF8ResourceBundleControl instance as the resource control.
      * This loads the resource with UTF8
+     *
      * @param identifier Unique identifier for your resource bundle
      * @param bundle     the ResourceBundle
      * @return true on success.
@@ -268,6 +271,18 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
 
     public static String getUnformattedMgMessage(@NotNull LangKey key) throws MissingResourceException {
         return getUnformattedMessage(null, key);
+    }
+
+    public static @NotNull List<Component> getMgMessageList(@NotNull LangKey key, TagResolver... resolvers) {
+        return getMessageList(null, key, resolvers);
+    }
+
+    public static @NotNull List<Component> getMessageList(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
+        MiniMessage miniMessage = MiniMessage.miniMessage();
+
+        String unformatted = getUnformattedMessage(identifier, key);
+        //split at new line then deserialize to component
+        return Arrays.stream(LIST_PATTERN.split(unformatted)).map(str -> miniMessage.deserialize(str, resolvers)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -406,7 +421,9 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     }
 
     // This sends a message to every player which is not excluded from the exclude list
-    public static void sendBroadcastMessageUnchecked(@NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type, @Nullable List<@NotNull MinigamePlayer> exclude) {
+    public static void sendBroadcastMessageUnchecked(@NotNull Minigame minigame, final @NotNull Component message,
+                                                     @Nullable MinigameMessageType type,
+                                                     @Nullable List<@NotNull MinigamePlayer> exclude) {
         if (type == null) {
             type = MinigameMessageType.INFO;
         }

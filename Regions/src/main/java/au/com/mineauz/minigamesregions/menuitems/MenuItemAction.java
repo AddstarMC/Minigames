@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -16,11 +17,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class MenuItemAction extends MenuItem {
-    private final BaseExecutor exec;
-    private final ActionInterface act;
+    private final @NotNull BaseExecutor exec;
+    private final @NotNull ActionInterface act;
 
-    public MenuItemAction(Component name, Material displayItem, BaseExecutor exec, ActionInterface act) {
-        super(name, displayItem);
+    public MenuItemAction(@Nullable Material displayMat, @Nullable Component name,
+                          @NotNull BaseExecutor exec, @NotNull ActionInterface act) {
+        super(displayMat, name);
         this.exec = exec;
         this.act = act;
         updateDescription();
@@ -48,8 +50,8 @@ public class MenuItemAction extends MenuItem {
             String line = ChatColor.GRAY + entry.getKey() + ": ";
 
             // Translate the value
-            if (value instanceof Boolean) {
-                if (((Boolean) value)) {
+            if (value instanceof Boolean bool) {
+                if (bool) {
                     value = ChatColor.GREEN + "True";
                 } else {
                     value = ChatColor.RED + "False";
@@ -89,8 +91,7 @@ public class MenuItemAction extends MenuItem {
 
     @Override
     public ItemStack onRightClick() {
-        if (exec != null)
-            exec.removeAction(act);
+        exec.removeAction(act);
         getContainer().removeItem(getSlot());
         return null;
     }

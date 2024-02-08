@@ -61,7 +61,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new SelectCommand());
     }
 
-    public static @NotNull Collection<ACommand> getCommands(){
+    public static @NotNull Collection<ACommand> getCommands() {
         return commands.values();
     }
 
@@ -69,59 +69,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         commands.put(command.getName(), command);
     }
 
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player ply = null;
-        if (sender instanceof Player player) {
-            ply = player;
-        }
-
-        if (args != null && args.length > 0) {
-            ACommand cmd = getCommand(args[0]);
-
-            if (cmd != null) {
-                if (ply != null || cmd.canBeConsole()) {
-                    String[] shortArgs;
-                    if (args.length > 1) {
-                        shortArgs = new String[args.length - 1];
-                        System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
-                    } else {
-                        shortArgs = new String[]{};
-                    }
-
-                    if (ply == null || (cmd.getPermission() == null || ply.hasPermission(cmd.getPermission()))) {
-                        boolean returnValue = cmd.onCommand(sender, shortArgs);
-                        if (!returnValue) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_HEADER);
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_DESCRIPTION,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getDescription()));
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_USAGE,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getUsage()));
-                            if (cmd.getAliases() != null) {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_ALIASES,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", command.getAliases())));
-                            }
-                        }
-                    } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
-                    }
-                } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTAPLAYER);
-                }
-                return true;
-            }
-        } else {
-            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, Component.text(plugin.getPluginMeta().getName()));
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_AUTHORS,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", plugin.getPluginMeta().getAuthors())));
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_VERSION,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), plugin.getPluginMeta().getVersion()));
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_HELP);
-            return true;
-        }
-        return false;
-    }
-
-    public static @Nullable  ACommand getCommand(@NotNull String name) {
+    public static @Nullable ACommand getCommand(@NotNull String name) {
         ACommand comd = null;
         if (commands.containsKey(name.toLowerCase())) {
             comd = commands.get(name.toLowerCase());
@@ -139,6 +87,58 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
             }
         }
         return comd;
+    }
+
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        }
+
+        if (args != null && args.length > 0) {
+            ACommand cmd = getCommand(args[0]);
+
+            if (cmd != null) {
+                if (player != null || cmd.canBeConsole()) {
+                    String[] shortArgs;
+                    if (args.length > 1) {
+                        shortArgs = new String[args.length - 1];
+                        System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
+                    } else {
+                        shortArgs = new String[]{};
+                    }
+
+                    if (player == null || (cmd.getPermission() == null || player.hasPermission(cmd.getPermission()))) {
+                        boolean returnValue = cmd.onCommand(sender, shortArgs);
+                        if (!returnValue) {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_HEADER);
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_DESCRIPTION,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getDescription()));
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_USAGE,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getUsage()));
+                            if (cmd.getAliases() != null) {
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_ALIASES,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", command.getAliases())));
+                            }
+                        }
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
+                    }
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+                }
+                return true;
+            }
+        } else {
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, Component.text(plugin.getPluginMeta().getName()));
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_AUTHORS,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", plugin.getPluginMeta().getAuthors())));
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_VERSION,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), plugin.getPluginMeta().getVersion()));
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_HELP);
+            return true;
+        }
+        return false;
     }
 
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {

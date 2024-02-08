@@ -2,29 +2,35 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class PlayerXPRangeCondition extends ConditionInterface {
+public class PlayerXPRangeCondition extends ACondition {
     private final FloatFlag min = new FloatFlag(1.0f, "min");
     private final FloatFlag max = new FloatFlag(1.0f, "max");
 
-    @Override
-    public String getName() {
-        return "PLAYER_XP_RANGE";
+    protected PlayerXPRangeCondition(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Player Conditions";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERXPRANGE_NAME);
+    }
+
+    @Override
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -72,10 +78,12 @@ public class PlayerXPRangeCondition extends ConditionInterface {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "XP Range", player);
-        m.addItem(min.getMenuItem("Min XP", Material.STONE_SLAB, 0.5, 1, 0.0, null));
-        m.addItem(max.getMenuItem("Max XP", Material.STONE, 0.5, 1, 0.0, null));
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        Menu m = new Menu(3, getDisplayName(), player);
+        m.addItem(min.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_XP_MINIMUM_NAME)
+                , 0.5, 1, 0.0, null));
+        m.addItem(max.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_XP_MAXIMUM_NAME)
+                , 0.5, 1, 0.0, null));
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

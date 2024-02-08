@@ -6,6 +6,9 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -13,17 +16,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class SetEnabledAction extends AbstractAction {
+public class SetEnabledAction extends AAction {
     private final BooleanFlag state = new BooleanFlag(false, "state");
 
-    @Override
-    public @NotNull String getName() {
-        return "SET_ENABLED";
+    protected SetEnabledAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Region/Node Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETENABLED_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.REGION_NODE;
     }
 
     @Override
@@ -65,7 +72,7 @@ public class SetEnabledAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Set Enabled", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(state.getMenuItem("Set Enabled", Material.ENDER_PEARL));
         m.displayMenu(mgPlayer);

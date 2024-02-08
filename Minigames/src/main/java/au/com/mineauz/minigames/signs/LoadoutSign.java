@@ -80,10 +80,10 @@ public class LoadoutSign implements MinigameSign {
                                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN);
                                 } else if (sign.getSide(Side.FRONT).getLine(3).equalsIgnoreCase("temporary")) {
                                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_TEMPORARILY);
-                                    loadout.equiptLoadout(mgPlayer);
+                                    loadout.equipLoadout(mgPlayer);
                                     mgPlayer.setLoadout(mgPlayer.getDefaultLoadout());
                                 } else {
-                                    loadout.equiptLoadout(mgPlayer);
+                                    loadout.equipLoadout(mgPlayer);
                                 }
                             }
                         }

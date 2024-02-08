@@ -478,17 +478,17 @@ public class Events implements Listener {
                     }
                 }
             } else if (event.getDamager() instanceof Player) {
-                MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getDamager());
-                if (ply.isInMinigame() && !ply.canPvP())
+                MinigamePlayer mgPlayer = pdata.getMinigamePlayer((Player) event.getDamager());
+                if (mgPlayer.isInMinigame() && !mgPlayer.canPvP())
                     event.setCancelled(true);
-                else if (ply.isInMinigame() && ply.getMinigame().getState() == MinigameState.ENDED &&
-                        GameOverModule.getMinigameModule(ply.getMinigame()).isHumiliationMode() &&
-                        GameOverModule.getMinigameModule(ply.getMinigame()).getLosers().contains(ply)) {
+                else if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getState() == MinigameState.ENDED &&
+                        GameOverModule.getMinigameModule(mgPlayer.getMinigame()).isHumiliationMode() &&
+                        GameOverModule.getMinigameModule(mgPlayer.getMinigame()).getLosers().contains(mgPlayer)) {
                     event.setCancelled(true);
                 }
             } else if (event.getDamager() instanceof Arrow arrow) {
-                if (arrow.getShooter() instanceof Player ply) {
-                    MinigamePlayer mgpl = pdata.getMinigamePlayer(ply);
+                if (arrow.getShooter() instanceof Player player) {
+                    MinigamePlayer mgpl = pdata.getMinigamePlayer(player);
 
                     if (mgpl.isInMinigame() && !mgpl.canPvP())
                         event.setCancelled(true);
@@ -566,18 +566,18 @@ public class Events implements Listener {
         } else if (event.getEntityType() == EntityType.EGG) {
             Egg egg = (Egg) event.getEntity();
             if (egg.getShooter() != null && egg.getShooter() instanceof Player player) {
-                MinigamePlayer ply = pdata.getMinigamePlayer(player);
+                MinigamePlayer mgPlayer = pdata.getMinigamePlayer(player);
 
-                if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
+                if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().hasUnlimitedAmmo()) {
                     //wait for the inventory to update
                     Bukkit.getScheduler().runTaskLater(Minigames.getPlugin(), () -> {
-                        ItemStack itemInMainHand = ply.getPlayer().getInventory().getItemInMainHand();
+                        ItemStack itemInMainHand = mgPlayer.getPlayer().getInventory().getItemInMainHand();
 
                         if (itemInMainHand.getType() == Material.EGG) {
                             itemInMainHand.setAmount(16);
-                            ply.getPlayer().updateInventory();
+                            mgPlayer.getPlayer().updateInventory();
                         } else {
-                            ply.getPlayer().getInventory().addItem(new ItemStack(Material.EGG, 1));
+                            mgPlayer.getPlayer().getInventory().addItem(new ItemStack(Material.EGG, 1));
                         }
                     }, 1L);
                 }

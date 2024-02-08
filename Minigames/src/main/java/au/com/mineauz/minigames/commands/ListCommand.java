@@ -48,10 +48,10 @@ public class ListCommand extends ACommand {
         Component result = Component.join(JoinConfiguration.commas(true),
                 PLUGIN.getMinigameManager().getAllMinigames().values().stream().
                         //filter permission
-                        filter(mgm -> (!mgm.getUsePermissions() ||
+                                filter(mgm -> (!mgm.getUsePermissions() ||
                                 sender.hasPermission("minigame.join." + mgm.getName(true).toLowerCase()))).
                         // map to name
-                        map(mgm -> {
+                                map(mgm -> {
                             Component name = Component.text(mgm.getName(true));
 
                             // color indicates status of minigame

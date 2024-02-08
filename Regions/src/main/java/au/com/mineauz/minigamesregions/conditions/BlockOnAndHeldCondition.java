@@ -1,11 +1,13 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,16 +21,20 @@ import java.util.Map;
  * This class allows a check if the first solid block under a player is equal
  * to the block that player holds in his hand.
  */
-public class BlockOnAndHeldCondition extends ConditionInterface {
+public class BlockOnAndHeldCondition extends ACondition {
 
-    @Override
-    public String getName() {
-        return "BLOCK_ON_AND_HELD";
+    protected BlockOnAndHeldCondition(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "World Conditions";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_BLOCKONANDHELD_NAME);
+    }
+
+    @Override
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.WORLD;
     }
 
     @Override
@@ -57,9 +63,7 @@ public class BlockOnAndHeldCondition extends ConditionInterface {
     }
 
     private boolean check(MinigamePlayer player) {
-        if (player == null)
-            return false;
-
+        if (player == null) return false;
         ItemStack heldItem = player.getPlayer().getInventory().getItemInMainHand();
 
         Location plyLoc = player.getPlayer().getLocation();
@@ -89,8 +93,8 @@ public class BlockOnAndHeldCondition extends ConditionInterface {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Match Block", player);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        Menu m = new Menu(3, getDisplayName(), player);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

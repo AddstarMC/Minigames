@@ -1,16 +1,17 @@
 package au.com.mineauz.minigames.menu;
 
-import org.apache.commons.text.WordUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class MenuItemWhitelistBlock extends MenuItem {
-    private final List<Material> whitelist;
+    private final @NotNull List<Material> whitelist;
 
-    public MenuItemWhitelistBlock(Material displayItem, List<Material> whitelist) {
-        super(WordUtils.capitalizeFully(displayItem.toString().replace("_", " ")), displayItem);
+    public MenuItemWhitelistBlock(@NotNull Material displayMat, @NotNull List<@NotNull Material> whitelist) {
+        super(displayMat, Component.translatable(displayMat.translationKey()));
         setDescription(List.of("Right Click to remove"));
         this.whitelist = whitelist;
     }

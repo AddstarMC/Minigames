@@ -10,23 +10,28 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemRewardGroup extends MenuItem {
-    private final RewardGroup group;
-    private final Rewards rewards;
+    private final @NotNull RewardGroup group;
+    private final @NotNull Rewards rewards;
 
-    public MenuItemRewardGroup(Component name, Material displayItem, RewardGroup group, Rewards rewards) {
-        super(name, displayItem);
+    public MenuItemRewardGroup(@Nullable Material displayMat, @Nullable Component name, @NotNull RewardGroup group,
+                               @NotNull Rewards rewards) {
+        super(displayMat, name);
         this.group = group;
         this.rewards = rewards;
         updateDescription();
     }
 
-    public MenuItemRewardGroup(Component name, List<Component> description, Material displayItem, RewardGroup group, Rewards rewards) {
-        super(name, description, displayItem);
+    public MenuItemRewardGroup(@Nullable Material displayMat, @Nullable Component name,
+                               @Nullable List<@NotNull Component> description, @NotNull RewardGroup group,
+                               @NotNull Rewards rewards) {
+        super(displayMat, name, description);
         this.group = group;
         this.rewards = rewards;
         updateDescription();
@@ -128,14 +133,14 @@ public class MenuItemRewardGroup extends MenuItem {
 
     @Override
     public ItemStack onShiftRightClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
         String itemName = group.getName();
 
-        ply.sendInfoMessage("Delete the reward group \"" + itemName + "\"? Type \"Yes\" to confirm.");
-        ply.sendInfoMessage("The menu will automatically reopen in 10s if nothing is entered.");
-        ply.setManualEntry(this);
+        mgPlayer.sendInfoMessage("Delete the reward group \"" + itemName + "\"? Type \"Yes\" to confirm.");
+        mgPlayer.sendInfoMessage("The menu will automatically reopen in 10s if nothing is entered.");
+        mgPlayer.setManualEntry(this);
 
         getContainer().startReopenTimer(10);
         return null;

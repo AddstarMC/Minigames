@@ -12,6 +12,10 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -20,19 +24,23 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Set;
 
-public class BroadcastAction extends AbstractAction {
+public class BroadcastAction extends AAction {
     private final StringFlag message = new StringFlag("Hello World", "message");
     private final BooleanFlag excludeExecutor = new BooleanFlag(false, "exludeExecutor");
     private final BooleanFlag redText = new BooleanFlag(false, "redText");
 
-    @Override
-    public @NotNull String getName() {
-        return "BROADCAST";
+    protected BroadcastAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Minigame Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.MINIGAME;
     }
 
     @Override
@@ -131,8 +139,10 @@ public class BroadcastAction extends AbstractAction {
         }
         // New expression system
         message = ExpressionParser.stringResolve(message, base, true, true);
-        if (mgPlayer != null) {
-            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), message, type, exclude);
+        if (exclude != null) {
+            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), type, exclude);
+        } else {
+            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), type);
         }
 
     }
@@ -153,12 +163,12 @@ public class BroadcastAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Broadcast", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
-        m.addItem(message.getMenuItem("Message", Material.NAME_TAG));
-        m.addItem(excludeExecutor.getMenuItem("Don't Send to Executor", Material.ENDER_PEARL));
-        m.addItem(redText.getMenuItem("Red Message", Material.ENDER_PEARL));
+        m.addItem(message.getMenuItem(Material.NAME_TAG, "Message"));
+        m.addItem(excludeExecutor.getMenuItem(Material.ENDER_PEARL, "Don't Send to Executor"));
+        m.addItem(redText.getMenuItem(Material.ENDER_PEARL, "Red Message"));
 
         m.displayMenu(mgPlayer);
         return true;

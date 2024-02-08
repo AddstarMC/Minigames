@@ -1,13 +1,17 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -23,7 +27,18 @@ public class Menu {
     private int reopenTimerID = -1;
     private Inventory inv = null;
 
-    public Menu(int rows, Component name, MinigamePlayer viewer) {
+    public Menu(int rows, @NotNull LangKey langKey, @NotNull MinigamePlayer viewer) {
+        if (rows > 6)
+            rows = 6;
+        else if (rows < 2)
+            rows = 2;
+        this.rows = rows;
+        this.name = MinigameMessageManager.getMgMessage(langKey);
+        pageView = new ItemStack[rows * 9];
+        this.viewer = viewer;
+    }
+
+    public Menu(int rows, Component name, @NotNull MinigamePlayer viewer) {
         if (rows > 6)
             rows = 6;
         else if (rows < 2)
@@ -51,6 +66,10 @@ public class Menu {
         return false;
     }
 
+    private boolean isNewLine(@NotNull MenuItem menuItem) {
+        return menuItem.getName() != null && PlainTextComponentSerializer.plainText().serialize(menuItem.getName()).equalsIgnoreCase("NL");
+    }
+
     public void addItem(MenuItem item) {
         int inc = 0;
         Menu m = this;
@@ -67,7 +86,7 @@ public class Menu {
             if (m.getClicked(inc) == null) {
                 m.addItem(item, inc);
                 break;
-            } else if (m.getClicked(inc).getName() != null && ChatColor.stripColor(m.getClicked(inc).getName()).equals("NL")) {
+            } else if (isNewLine(m.getClicked(inc))) {
                 for (int i = 1; i < 10; i++) {
                     if ((inc + i) % 9 == 0) {
                         inc += i;
@@ -83,7 +102,7 @@ public class Menu {
         Menu curPage = this;
         int inc = 0;
         for (MenuItem it : items) {
-            if (it.getName() != null && ChatColor.stripColor(it.getName()).equals("NL")) {
+            if (isNewLine(it)) {
                 curPage.addItem(it, inc);
                 for (int i = 1; i < 10; i++) {
                     if ((inc + i) % 9 == 0) {
@@ -107,10 +126,10 @@ public class Menu {
 
     public void addPage() {
         Menu nextPage = new Menu(rows, name, viewer);
-        addItem(new MenuItemPage("Next Page", MenuUtility.getBackMaterial(), nextPage), 9 * (rows - 1) + 5);
+        addItem(new MenuItemPage(MenuUtility.getBackMaterial(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
         setNextPage(nextPage);
         nextPage.setPreviousPage(this);
-        nextPage.addItem(new MenuItemPage("Previous Page", MenuUtility.getBackMaterial(), this), 9 * (rows - 1) + 3);
+        nextPage.addItem(new MenuItemPage(MenuUtility.getBackMaterial(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
         for (int j = 9 * (rows - 1) + 6; j < 9 * rows; j++) {
             if (getClicked(j) != null)
                 nextPage.addItem(getClicked(j), j);
@@ -151,17 +170,17 @@ public class Menu {
         }
     }
 
-    public void displayMenu(MinigamePlayer ply) {
+    public void displayMenu(final @NotNull MinigamePlayer mgPlayer) {
         Menu t = this;
-        Player player = ply.getPlayer();
+        Player player = mgPlayer.getPlayer();
         updateAll();
         populateMenu();
         inv = Bukkit.createInventory(player, rows * 9, name);
         inv.setContents(pageView);
         // Some calls of displayMenu are async, which is not allowed.
         Minigames.getPlugin().getServer().getScheduler().runTask(Minigames.getPlugin(), () -> {
-            ply.getPlayer().openInventory(inv);
-            ply.setMenu(t);
+            mgPlayer.getPlayer().openInventory(inv);
+            mgPlayer.setMenu(t);
         });
     }
 

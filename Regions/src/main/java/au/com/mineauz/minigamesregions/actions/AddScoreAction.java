@@ -1,11 +1,17 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -16,14 +22,18 @@ import java.util.Map;
 public class AddScoreAction extends ScoreAction {
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
-    @Override
-    public @NotNull String getName() {
-        return "ADD_SCORE";
+    protected AddScoreAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Minigame Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SCOREADD_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.MINIGAME;
     }
 
     @Override
@@ -79,8 +89,8 @@ public class AddScoreAction extends ScoreAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Add Score", mgPlayer);
-        m.addItem(new MenuItemInteger("Add Score Amount", Material.ENDER_PEARL, new Callback<>() {
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
+        m.addItem(new MenuItemInteger(Material.ENDER_PEARL, "Add Score Amount", new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -92,7 +102,7 @@ public class AddScoreAction extends ScoreAction {
                 amount.setFlag(value);
             }
         }, null, null));
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.displayMenu(mgPlayer);
         return true;
     }

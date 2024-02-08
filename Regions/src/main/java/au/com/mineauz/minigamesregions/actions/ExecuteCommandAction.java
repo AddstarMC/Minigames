@@ -2,14 +2,20 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ExpressionParser;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.util.NullCommandSender;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,18 +26,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ExecuteCommandAction extends AbstractAction {
+public class ExecuteCommandAction extends AAction {
     private final StringFlag comd = new StringFlag("say Hello World!", "command");
     private final BooleanFlag silentExecute = new BooleanFlag(false, "silent");
 
-    @Override
-    public @NotNull String getName() {
-        return "EXECUTE_COMMAND";
+    protected ExecuteCommandAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Server Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXECUTECMD_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.SERVER;
     }
 
     @Override
@@ -176,10 +186,10 @@ public class ExecuteCommandAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Execute Command", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.addItem(new MenuItemString("Command", List.of("Do not include '/'", "If '//' command, start with './'"),
-                Material.COMMAND_BLOCK, new Callback<>() {
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+        m.addItem(new MenuItemString(Material.COMMAND_BLOCK, "Command", List.of("Do not include '/'", "If '//' command, start with './'"),
+                new Callback<>() {
 
             @Override
             public String getValue() {
@@ -193,7 +203,7 @@ public class ExecuteCommandAction extends AbstractAction {
                 comd.setFlag(value);
             }
         }));
-        m.addItem(silentExecute.getMenuItem("Is Silent", Material.NOTE_BLOCK, List.of("When on, console output", "for a command will be", "silenced.", "NOTE: Does not work with", "minecraft commands")));
+        m.addItem(silentExecute.getMenuItem(Material.NOTE_BLOCK, "Is Silent", List.of("When on, console output", "for a command will be", "silenced.", "NOTE: Does not work with", "minecraft commands")));
         m.displayMenu(mgPlayer);
         return true;
     }

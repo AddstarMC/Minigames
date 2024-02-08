@@ -12,10 +12,29 @@ import java.util.function.Function;
 public class RewardTypes {
     private static final Map<String, RewardTypeFactory> types = new HashMap<>();
 
-    public interface RewardTypeFactory {
-        @NotNull RewardType makeNewType(@NotNull Rewards rewards);
+    static {
+        for (MgRewardType factory : MgRewardType.values()) {
+            addRewardType(factory);
+        }
+    }
 
-        @NotNull String getName();
+    public static void addRewardType(RewardTypeFactory factory) {
+        if (types.containsKey(factory.getName())) {
+            throw new InvalidRewardTypeException("A reward type already exists by that name");
+        } else {
+            types.put(factory.getName(), factory);
+        }
+    }
+
+    public static @Nullable RewardType getRewardType(final @NotNull String name, @NotNull Rewards rewards) {
+        if (types.containsKey(name.toUpperCase())) {
+            return types.get(name.toUpperCase()).makeNewType(rewards);
+        }
+        return null;
+    }
+
+    public static List<String> getAllRewardTypeNames() {
+        return new ArrayList<>(types.keySet());
     }
 
     public enum MgRewardType implements RewardTypeFactory {
@@ -40,28 +59,9 @@ public class RewardTypes {
         }
     }
 
-    static {
-        for (MgRewardType factory : MgRewardType.values()) {
-            addRewardType(factory);
-        }
-    }
+    public interface RewardTypeFactory {
+        @NotNull RewardType makeNewType(@NotNull Rewards rewards);
 
-    public static void addRewardType(RewardTypeFactory factory) {
-        if (types.containsKey(factory.getName())) {
-            throw new InvalidRewardTypeException("A reward type already exists by that name");
-        } else {
-            types.put(factory.getName(), factory);
-        }
-    }
-
-    public static @Nullable RewardType getRewardType(final @NotNull String name, @NotNull Rewards rewards) {
-        if (types.containsKey(name.toUpperCase())) {
-            return types.get(name.toUpperCase()).makeNewType(rewards);
-        }
-        return null;
-    }
-
-    public static List<String> getAllRewardTypeNames() {
-        return new ArrayList<>(types.keySet());
+        @NotNull String getName();
     }
 }

@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class JoinSign implements MinigameSign {
-
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override

@@ -1,78 +1,78 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
 import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
-import au.com.mineauz.minigamesregions.conditions.Conditions;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.conditions.ACondition;
+import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
+import au.com.mineauz.minigamesregions.conditions.IConditionCategory;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
-import org.apache.commons.text.WordUtils;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class MenuItemConditionAdd extends MenuItem {
+    private final @Nullable RegionExecutor rexec;
+    private final @Nullable NodeExecutor nexec;
 
-    private RegionExecutor rexec;
-    private NodeExecutor nexec;
-
-    public MenuItemConditionAdd(String name, Material displayItem, RegionExecutor exec) {
-        super(name, displayItem);
+    public MenuItemConditionAdd(@Nullable Material displayMat, @NotNull Component name, @NotNull RegionExecutor exec) {
+        super(displayMat, name);
         this.rexec = exec;
+        this.nexec = null;
     }
 
-    public MenuItemConditionAdd(String name, Material displayItem, NodeExecutor exec) {
-        super(name, displayItem);
+    public MenuItemConditionAdd(@Nullable Material displayMat, @NotNull Component name, @NotNull NodeExecutor exec) {
+        super(displayMat, name);
+        this.rexec = null;
         this.nexec = exec;
     }
 
     @Override
     public ItemStack onClick() {
-        Menu m = new Menu(6, "Conditions", getContainer().getViewer());
-        m.setPreviousPage(getContainer());
-        Map<String, Menu> cats = new HashMap<>();
-        List<String> cons = new ArrayList<>(Conditions.getAllConditionNames());
-        Collections.sort(cons);
-        for (String con : cons) {
-            if ((Conditions.getConditionByName(con).useInNodes() && nexec != null) ||
-                    (Conditions.getConditionByName(con).useInRegions() && rexec != null)) {
-                if (!Objects.requireNonNullElseGet(rexec, () -> nexec).getTrigger().triggerOnPlayerAvailable()) {
-                    if (Conditions.getConditionByName(con).PlayerNeeded()) {
+        Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), getContainer().getViewer());
+        menu.setPreviousPage(getContainer());
+        Map<IConditionCategory, Menu> cats = new HashMap<>();
+        List<ACondition> cons = new ArrayList<>(ConditionRegistry.getAllConditions());
+        for (ACondition condition : cons) {
+            if ((condition.useInNodes() && nexec != null) || (condition.useInRegions() && rexec != null)) {
+                if (!Objects.requireNonNullElse(rexec, nexec).getTrigger().triggerOnPlayerAvailable()) {
+                    if (condition.onPlayerApplicable()) {
                         continue;
                     }
                 }
-                String catname = Conditions.getConditionByName(con).getCategory();
-                if (catname == null)
-                    catname = "misc conditions";
-                catname = catname.toLowerCase();
-                Menu cat;
-                if (!cats.containsKey(catname)) {
-                    cat = new Menu(6, WordUtils.capitalizeFully(catname), getContainer().getViewer());
-                    cats.put(catname, cat);
-                    m.addItem(new MenuItemPage(WordUtils.capitalizeFully(catname), Material.CHEST, cat));
-                    cat.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), m), cat.getSize() - 9);
+
+                IConditionCategory category = condition.getCategory();
+                Menu catMenu;
+                if (!cats.containsKey(category)) {
+                    catMenu = new Menu(6, category.getDisplayName(), getContainer().getViewer());
+                    cats.put(category, catMenu);
+                    menu.addItem(new MenuItemPage(Material.CHEST, category.getDisplayName(), catMenu));
+                    catMenu.addItem(new MenuItemBack(menu), catMenu.getSize() - 9);
                 } else
-                    cat = cats.get(catname);
-                MenuItemCustom c = new MenuItemCustom(WordUtils.capitalizeFully(con), Material.PAPER);
-                final String fcon = con;
-                c.setClick(object -> {
-                    ConditionInterface condition = Conditions.getConditionByName(fcon);
+                    catMenu = cats.get(category);
+                MenuItemCustom menuItemCustom = new MenuItemCustom(Material.PAPER, condition.getDisplayName());
+
+                menuItemCustom.setClick(object -> {
                     if (rexec != null) {
                         rexec.addCondition(condition);
-                        getContainer().addItem(new MenuItemCondition(WordUtils.capitalizeFully(fcon), Material.PAPER, rexec, condition));
+                        getContainer().addItem(new MenuItemCondition(Material.PAPER, condition.getDisplayName(), rexec, condition));
                     } else {
                         nexec.addCondition(condition);
-                        getContainer().addItem(new MenuItemCondition(WordUtils.capitalizeFully(fcon), Material.PAPER, nexec, condition));
+                        getContainer().addItem(new MenuItemCondition(Material.PAPER, condition.getDisplayName(), nexec, condition));
                     }
                     getContainer().displayMenu(getContainer().getViewer());
                     return null;
                 });
-                cat.addItem(c);
+                catMenu.addItem(menuItemCustom);
             }
         }
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), getContainer()), m.getSize() - 9);
-        m.displayMenu(getContainer().getViewer());
+        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
+        menu.displayMenu(getContainer().getViewer());
         return null;
     }
-
 }

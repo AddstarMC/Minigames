@@ -8,6 +8,9 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -22,14 +25,18 @@ public class AddTeamScoreAction extends ScoreAction {
     private final IntegerFlag score = new IntegerFlag(1, "amount");
     private final StringFlag team = new StringFlag("NONE", "team");
 
-    @Override
-    public @NotNull String getName() {
-        return "ADD_TEAM_SCORE";
+    protected AddTeamScoreAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Team Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TEAMADD_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.TEAM;
     }
 
     @Override
@@ -92,7 +99,7 @@ public class AddTeamScoreAction extends ScoreAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Add Team Score", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemInteger("Add Score Amount", Material.STONE, new Callback<>() {
 
             @Override

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+// this did not get the lang rework since the whole plugin needs checking before this command could get re-enabled maybe it will get removed all together
 public class ReloadCommand extends ACommand {
 
     @Override
@@ -28,12 +29,12 @@ public class ReloadCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Reloads the Minigames config files.";
+        return Component.text("Reloads the Minigames config files.");
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame reload"};
+    public Component getUsage() {
+        return Component.text("/minigame reload");
     }
 
     @Override

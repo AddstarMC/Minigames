@@ -8,6 +8,10 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
+import org.apache.commons.text.WordUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
@@ -26,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayerHasItemCondition extends ConditionInterface { //todo amount
+public class PlayerHasItemCondition extends ACondition { //todo amount
     private final ItemFlag itemToSearchFor = new ItemFlag(new ItemStack(Material.STONE), "item");
     private final IntegerFlag count = new IntegerFlag(1, "amount");
     private final EnumFlag<PositionType> where = new EnumFlag<>(PositionType.ANYWHERE, "where");
@@ -59,14 +63,18 @@ public class PlayerHasItemCondition extends ConditionInterface { //todo amount
         }
     }
 
-    @Override
-    public String getName() {
-        return "PLAYER_HAS_ITEM";
+    protected PlayerHasItemCondition(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Player Conditions";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_NAME);
+    }
+
+    @Override
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override

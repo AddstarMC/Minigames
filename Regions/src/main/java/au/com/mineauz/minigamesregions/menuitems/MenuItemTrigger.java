@@ -7,26 +7,26 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MenuItemTrigger extends MenuItem {
+    private final @NotNull Trigger trigger;
+    private final @NotNull Menu previous;
+    private @Nullable Region region;
+    private @Nullable Node node;
 
-    private final Trigger trigger;
-    private final Menu previous;
-    private Region region;
-    private Node node;
-
-    public MenuItemTrigger(Trigger trigger, Region region, Menu previous) {
-        super(WordUtils.capitalizeFully(trigger.getName().replace("_", " ")), Material.LEVER);
+    public MenuItemTrigger(@NotNull Trigger trigger, @NotNull Region region, @NotNull Menu previous) {
+        super(Material.LEVER, trigger.getDisplayName());
         this.trigger = trigger;
         this.region = region;
         this.previous = previous;
     }
 
-    public MenuItemTrigger(Trigger trigger, Node node, Menu previous) {
-        super(WordUtils.capitalizeFully(trigger.getName().replace("_", " ")), Material.LEVER);
+    public MenuItemTrigger(@NotNull Trigger trigger, @NotNull Node node, @NotNull Menu previous) {
+        super(Material.LEVER, trigger.getDisplayName());
         this.trigger = trigger;
         this.node = node;
         this.previous = previous;
@@ -47,5 +47,4 @@ public class MenuItemTrigger extends MenuItem {
         }
         return null;
     }
-
 }

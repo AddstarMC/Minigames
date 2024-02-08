@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,19 +31,23 @@ import java.util.Random;
  * or "replace selective" where blocks in the region are only replaced by the chosen block. 
  *
  */
-public class RandomFillingAction extends AbstractAction {
+public class RandomFillingAction extends AAction {
     private final StringFlag toType = new StringFlag("WOOL", "totype");
     private final IntegerFlag percentageChance = new IntegerFlag(50, "percentagechance");
     private final BooleanFlag replaceAll = new BooleanFlag(true, "replaceAll");
 
-    @Override
-    public @NotNull String getName() {
-        return "RANDOM_FILLING";
+    protected RandomFillingAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Block Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.BLOCK;
     }
 
     @Override
@@ -63,8 +68,7 @@ public class RandomFillingAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
-                                    @NotNull Region region) {
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
         Location temp = region.getFirstPoint();
         Random rndGen = new Random();
@@ -116,11 +120,12 @@ public class RandomFillingAction extends AbstractAction {
     @Override
     public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) {
 
-        Menu m = new Menu(4, "Random Filling", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        Menu m = new Menu(4, getDisplayname(), mgPlayer);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         //The menu entry for the block that will be placed
-        m.addItem(new MenuItemString("To Block", Material.COBBLESTONE, new Callback<>() {
+        m.addItem(new MenuItemString(Material.COBBLESTONE,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_RANDOMFILLING_TOBLOCK_NAME), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -147,11 +152,10 @@ public class RandomFillingAction extends AbstractAction {
             }
         });
 
-        //Percentage of blocks that will replaced
+        //Percentage of blocks that will get replaced
         m.addItem(new MenuItemNewLine());
-        m.addItem(
-                new MenuItemInteger("Chance in integer percentage (0-100)", List.of(""),
-                        Material.BOOK, new Callback<>() {
+        m.addItem(new MenuItemInteger(Material.BOOK, "Chance in integer percentage (0-100)", List.of(Component.empty()),
+                        new Callback<>() {
 
                     @Override
                     public Integer getValue() {
@@ -167,7 +171,7 @@ public class RandomFillingAction extends AbstractAction {
 
         //Replace all or replace selectively
         m.addItem(new MenuItemNewLine());
-        m.addItem(replaceAll.getMenuItem("Replace misses with air?", Material.ENDER_PEARL));
+        m.addItem(replaceAll.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_RANDOMFILLING_MISSES_NAME)));
 
         m.displayMenu(mgPlayer);
 

@@ -1,19 +1,26 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Duration;
 import java.util.List;
 
 public class MenuItemAddWhitelistBlock extends MenuItem {
     private final List<Material> whitelist;
 
     public MenuItemAddWhitelistBlock(Component name, List<Material> whitelist) {
-        super(name, MenuUtility.getCreateMaterial());
+        super(MenuUtility.getCreateMaterial(), name);
         setDescription(List.of("Left Click with item to", "add to whitelist/blacklist", "Click without item to", "manually add item."));
         this.whitelist = whitelist;
     }
@@ -24,20 +31,22 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
             whitelist.add(item.getType());
             getContainer().addItem(new MenuItemWhitelistBlock(item.getType(), whitelist));
         } else {
-            getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
         }
         return getDisplayItem();
     }
 
     @Override
     public ItemStack onClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter material name into chat to add to the whitelist/blacklist, the menu will automatically reopen in 30s if nothing is entered.", MinigameMessageType.INFO);
-        ply.setManualEntry(this);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        int reopenSeconds = 30;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_WHITELIST_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+        mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(30);
+        getContainer().startReopenTimer(reopenSeconds);
         return null;
     }
 
@@ -46,30 +55,31 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
         // try a direct match in case of a chat input
         Material mat = Material.matchMaterial(entry);
 
-        // didn't work, now try the input as a block data, as we get when a block was clicked
         if (mat == null) {
+            // didn't work, now try the input as a block data, as we get when a block was clicked
             try {
                 mat = Bukkit.createBlockData(entry).getMaterial();
-
             } catch (IllegalArgumentException ignored) {
             }
         }
 
-        if (mat == null) {
-            // still didn't work.
-            getContainer().getViewer().sendMessage("No material with BlockData \"" + entry + "\" was found!", MinigameMessageType.ERROR);
-        } else {
-            // nice we got a Material! try to add it!
+        if (mat != null) {
             if (!whitelist.contains(mat)) {
                 // intern
                 whitelist.add(mat);
 
                 // visual
                 getContainer().addItem(new MenuItemWhitelistBlock(mat, whitelist));
-
             } else {
-                getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
             }
+        } else {
+            // still didn't work.
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
+
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
         }
 
         /* cancel automatic reopening and reopen {@link MenuItemDisplayWhitelist}*/

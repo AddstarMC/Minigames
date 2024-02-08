@@ -1,37 +1,47 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemInteger extends MenuItem {
     private final Callback<Integer> value;
-    private Integer min = null;
-    private Integer max = null;
+    private final Integer min;
+    private final Integer max;
 
-    public MenuItemInteger(Component name, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
-        super(name, displayItem);
+    public MenuItemInteger(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Integer> value,
+                           @Nullable Integer min, @Nullable Integer max) {
+        super(displayMat, langKey);
         this.value = value;
-        if (min != null)
-            this.min = min;
-        if (max != null)
-            this.max = max;
+        this.min = min;
+        this.max = max;
         updateDescription();
     }
 
-    public MenuItemInteger(Component name, List<Component> description, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
-        super(name, description, displayItem);
+    public MenuItemInteger(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Integer> value,
+                           @Nullable Integer min, @Nullable Integer max) {
+        super(displayMat, name);
         this.value = value;
-        if (min != null)
-            this.min = min;
-        if (max != null)
-            this.max = max;
+        this.min = min;
+        this.max = max;
+        updateDescription();
+    }
+
+    public MenuItemInteger(@Nullable Material displayMat, @Nullable Component name, @Nullable List<Component> description,
+                           @NotNull Callback<Integer> value, @Nullable Integer min, @Nullable Integer max) {
+        super(displayMat, name, description);
+        this.value = value;
+        this.min = min;
+        this.max = max;
         updateDescription();
     }
 
@@ -41,10 +51,11 @@ public class MenuItemInteger extends MenuItem {
             description = getDescription();
             String desc = ChatColor.stripColor(getDescription().get(0));
 
-            if (desc.matches("-?[0-9]+"))
+            if (desc.matches("-?[0-9]+")) {
                 description.set(0, ChatColor.GREEN.toString() + value.getValue());
-            else
+            } else {
                 description.add(0, ChatColor.GREEN.toString() + value.getValue());
+            }
         } else {
             description = new ArrayList<>();
             description.add(ChatColor.GREEN.toString() + value.getValue());
@@ -91,10 +102,10 @@ public class MenuItemInteger extends MenuItem {
 
     @Override
     public ItemStack onDoubleClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter number value into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        mgPlayer.sendMessage("Enter number value into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
         String min = "N/A";
         String max = "N/A";
         if (this.min != null) {
@@ -103,8 +114,8 @@ public class MenuItemInteger extends MenuItem {
         if (this.max != null) {
             max = this.max.toString();
         }
-        ply.setManualEntry(this);
-        ply.sendInfoMessage("Min: " + min + ", Max: " + max);
+        mgPlayer.setManualEntry(this);
+        mgPlayer.sendInfoMessage("Min: " + min + ", Max: " + max);
         getContainer().startReopenTimer(10);
 
         return null;

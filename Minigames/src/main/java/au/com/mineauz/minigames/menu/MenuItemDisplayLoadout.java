@@ -1,149 +1,140 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemDisplayLoadout extends MenuItem {
     private final @NotNull PlayerLoadout loadout;
-    private Minigame mgm = null;
+    private @Nullable Minigame minigame = null;
     private boolean allowDelete = true;
-    private Menu altMenu = null;
 
-    public MenuItemDisplayLoadout(Component name, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
-        super(name, displayItem);
+    public MenuItemDisplayLoadout(@Nullable Material displayMat, @Nullable Component name, @NotNull PlayerLoadout loadout,
+                                  @Nullable Minigame minigame) {
+        super(displayMat, name);
         this.loadout = loadout;
-        mgm = minigame;
-        if (!loadout.isDeleteable())
+        this.minigame = minigame;
+        if (!loadout.isDeleteable()) {
             allowDelete = false;
+        }
     }
 
-    public MenuItemDisplayLoadout(Component name, Material displayItem, PlayerLoadout loadout) {
-        super(name, displayItem);
+    public MenuItemDisplayLoadout(@Nullable Component name, @Nullable Material displayMat, @NotNull PlayerLoadout loadout) {
+        super(displayMat, name);
         this.loadout = loadout;
-        if (!loadout.isDeleteable())
+        if (!loadout.isDeleteable()) {
             allowDelete = false;
+        }
     }
 
-    public MenuItemDisplayLoadout(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
-        super(name, description, displayItem);
+    public MenuItemDisplayLoadout(@Nullable Component name, @Nullable List<@NotNull Component> description,
+                                  @Nullable Material displayMat, @NotNull PlayerLoadout loadout, @NotNull Minigame minigame) {
+        super(displayMat, name, description);
         this.loadout = loadout;
-        mgm = minigame;
-        if (!loadout.isDeleteable())
+        this.minigame = minigame;
+        if (!loadout.isDeleteable()) {
             allowDelete = false;
+        }
     }
 
-    public MenuItemDisplayLoadout(Component name, List<Component> description, Material displayItem, PlayerLoadout loadout) {
-        super(name, description, displayItem);
+    public MenuItemDisplayLoadout(@Nullable Component name, @Nullable List<@NotNull Component> description,
+                                  @Nullable Material displayMat, @NotNull PlayerLoadout loadout) {
+        super(displayMat, name, description);
         this.loadout = loadout;
-        if (!loadout.isDeleteable())
+        if (!loadout.isDeleteable()) {
             allowDelete = false;
-    }
-
-    public void setAltMenu(Menu altMenu) {
-        this.altMenu = altMenu;
+        }
     }
 
     @Override
     public ItemStack onClick() {
-        Menu loadoutMenu = new Menu(5, loadout.getName(false), getContainer().getViewer());
-        Menu loadoutSettings = new Menu(6, loadout.getName(false), getContainer().getViewer());
-        loadoutSettings.setPreviousPage(loadoutMenu);
+        Menu loadoutMenu = new Menu(5, loadout.getName(), getContainer().getViewer());
+        Menu loadoutSettingsMenu = new Menu(6, loadout.getName(), getContainer().getViewer());
+        loadoutSettingsMenu.setPreviousPage(loadoutMenu);
 
-        List<MenuItem> mItems = new ArrayList<>();
-        if (!loadout.getName(false).equals("default"))
-            mItems.add(new MenuItemBoolean("Use Permissions", List.of("Permission:", "minigame.loadout." + loadout.getName(false).toLowerCase()),
+        List<MenuItem> menuItems = new ArrayList<>();
+        if (!loadout.getName().equals("default")) {
+            menuItems.add(new MenuItemBoolean("Use Permissions", List.of("Permission:", "minigame.loadout." + loadout.getName().toLowerCase()),
                     Material.GOLD_INGOT, loadout.getUsePermissionsCallback()));
+        }
         MenuItemString disName = new MenuItemString("Display Name", Material.PAPER, loadout.getDisplayNameCallback());
         disName.setAllowNull(true);
-        mItems.add(disName);
-        mItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
-        mItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
-        mItems.add(new MenuItemInteger("XP Level", List.of("Use -1 to not", "use loadout levels"), Material.EXPERIENCE_BOTTLE, loadout.getLevelCallback(), -1, null));
-        mItems.add(new MenuItemBoolean("Lock Inventory", Material.DIAMOND_SWORD, loadout.getInventoryLockedCallback()));
-        mItems.add(new MenuItemBoolean("Lock Armour", Material.DIAMOND_CHESTPLATE, loadout.getArmourLockedCallback()));
-        mItems.add(new MenuItemBoolean("Allow Offhand", Material.SHIELD, loadout.getAllowOffHandCallback()));
-        mItems.add(new MenuItemBoolean("Display in Loadout Menu", Material.WHITE_STAINED_GLASS_PANE, loadout.getDisplayInMenuCallback()));
-        List<String> teams = new ArrayList<>(TeamColor.colorNames());
-        mItems.add(new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams));
-        loadoutSettings.addItems(mItems);
-        MenuItemDisplayLoadout dl;
-        if (mgm == null) {
-            dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout);
-        } else {
-            dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout, mgm);
-        }
-        dl.setAltMenu(getContainer());
-        loadoutSettings.addItem(dl, getContainer().getSize() - 9);
+        menuItems.add(disName);
+        menuItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
+        menuItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
+        menuItems.add(new MenuItemInteger(Material.EXPERIENCE_BOTTLE, "XP Level", List.of("Use -1 to not", "use loadout levels"), loadout.getLevelCallback(), -1, null));
+        menuItems.add(new MenuItemBoolean("Lock Inventory", Material.DIAMOND_SWORD, loadout.getInventoryLockedCallback()));
+        menuItems.add(new MenuItemBoolean("Lock Armour", Material.DIAMOND_CHESTPLATE, loadout.getArmourLockedCallback()));
+        menuItems.add(new MenuItemBoolean("Allow Offhand", Material.SHIELD, loadout.getAllowOffHandCallback()));
+        menuItems.add(new MenuItemBoolean(Material.WHITE_STAINED_GLASS_PANE, MgMenuLangKey.MENU_DISPLAYLOADOUT_DISPLAYINMENU_NAME, loadout.getDisplayInMenuCallback()));
+        menuItems.add(new MenuItemList<>(Material.LEATHER_CHESTPLATE, MgMenuLangKey.MENU_DISPLAYLOADOUT_LOCKTOTEAM_NAME, loadout.getTeamColorCallback(), List.of(TeamColor.values())));
+        loadoutSettingsMenu.addItems(menuItems);
+        MenuItemBack menuItemBack = new MenuItemBack(loadoutMenu);
+        loadoutSettingsMenu.addItem(menuItemBack, getContainer().getSize() - 9);
 
-        LoadoutModule.addAddonMenuItems(loadoutSettings, loadout);
+        LoadoutModule.addAddonMenuItems(loadoutSettingsMenu, loadout);
 
         Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
 
         potionMenu.setPreviousPage(loadoutMenu);
-        potionMenu.addItem(new MenuItemPotionAdd("Add Potion", MenuUtility.getCreateMaterial(), loadout), 44);
+        potionMenu.addItem(new MenuItemPotionAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_POTIONADD_NAME, loadout), potionMenu.getSize() - 1);
+        potionMenu.addItem(menuItemBack, potionMenu.getSize() - 2);
 
-        if (mgm == null) {
-            dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout);
-        } else {
-            dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout, mgm);
-        }
-        dl.setAltMenu(getContainer());
-        potionMenu.addItem(dl, 45 - 9);
-
-        List<String> des = new ArrayList<>();
-        des.add("Shift + Right Click to Delete");
-        List<MenuItem> potions = new ArrayList<>();
+        List<Component> description = List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
+        List<MenuItem> potionMenuItems = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
-            potions.add(new MenuItemPotion(WordUtils.capitalizeFully(eff.getType().getName().replace("_", " ")), des, Material.POTION, eff, loadout));
+            potionMenuItems.add(new MenuItemPotion(Material.POTION, Component.translatable(eff.getType().translationKey()), description, eff, loadout));
         }
-        potionMenu.addItems(potions);
+        potionMenu.addItems(potionMenuItems);
 
         loadoutMenu.setAllowModify(true);
-        if (altMenu == null)
-            loadoutMenu.setPreviousPage(getContainer());
-        else
-            loadoutMenu.setPreviousPage(altMenu);
+        loadoutMenu.setPreviousPage(getContainer());
 
-        loadoutMenu.addItem(new MenuItemSaveLoadout("Loadout Settings", Material.CHEST, loadout, loadoutSettings), 42);
-        loadoutMenu.addItem(new MenuItemSaveLoadout("Edit Potion Effects", Material.POTION, loadout, potionMenu), 43);
-        loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", MenuUtility.getSaveMaterial(), loadout), 44);
-        int a = 40;
-        if (loadout.allowOffHand()) {
-            a = 41;
-        }
-        for (int i = a; i < 42; i++) {
-            loadoutMenu.addItem(new MenuItem(Component.empty(), (Material) null), i);
+        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(Material.CHEST, MgMenuLangKey.MENU_DISPLAYLOADOUT_SETTINGS_NAME, loadout, loadoutSettingsMenu), 42);
+        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(Material.POTION, MgMenuLangKey.MENU_DISPLAYLOADOUT_EFFECTS_NAME, loadout, potionMenu), 43);
+        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(MenuUtility.getSaveMaterial(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SAVE_NAME, loadout, getContainer()), 44);
+        final int numOfSlots = loadout.allowOffHand() ? 41 : 40;
+        for (int i = numOfSlots; i < 42; i++) {
+            loadoutMenu.addItem(new MenuItem(null, Component.empty()), i);
         }
         loadoutMenu.displayMenu(getContainer().getViewer());
 
-        for (Integer item : loadout.getItems()) {
-            if (item < 100 && item >= 0)
-                loadoutMenu.addItemStack(loadout.getItem(item), item);
-            else if (item == 100)
-                loadoutMenu.addItemStack(loadout.getItem(item), 39);
-            else if (item == 101)
-                loadoutMenu.addItemStack(loadout.getItem(item), 38);
-            else if (item == 102)
-                loadoutMenu.addItemStack(loadout.getItem(item), 37);
-            else if (item == 103)
-                loadoutMenu.addItemStack(loadout.getItem(item), 36);
-            else if (item == -106 && loadout.allowOffHand()) loadoutMenu.addItemStack(loadout.getItem(item), 40);
-
+        for (Integer slot : loadout.getItemSlots()) {
+            if (slot >= 0 && slot < 100) {
+                loadoutMenu.addItemStack(loadout.getItem(slot), slot);
+            } else {
+                switch (slot) {
+                    case 100 -> loadoutMenu.addItemStack(loadout.getItem(slot), 39);
+                    case 101 -> loadoutMenu.addItemStack(loadout.getItem(slot), 38);
+                    case 102 -> loadoutMenu.addItemStack(loadout.getItem(slot), 37);
+                    case 103 -> loadoutMenu.addItemStack(loadout.getItem(slot), 36);
+                    case -106 -> {
+                        if (loadout.allowOffHand()) {
+                            loadoutMenu.addItemStack(loadout.getItem(slot), 40);
+                        }
+                    }
+                }
+            }
         }
 
         return null;
@@ -152,13 +143,16 @@ public class MenuItemDisplayLoadout extends MenuItem {
     @Override
     public ItemStack onShiftRightClick() {
         if (allowDelete) {
-            MinigamePlayer ply = getContainer().getViewer();
-            ply.setNoClose(true);
-            ply.getPlayer().closeInventory();
-            ply.sendMessage("Delete the " + loadout.getName(false) + " loadout from " + getName() + "? Type \"Yes\" to confirm.", MinigameMessageType.INFO);
-            ply.sendInfoMessage("The menu will automatically reopen in 10s if nothing is entered.");
-            ply.setManualEntry(this);
-            getContainer().startReopenTimer(10);
+            MinigamePlayer mgPlayer = getContainer().getViewer();
+            mgPlayer.setNoClose(true);
+            mgPlayer.getPlayer().closeInventory();
+            final int reopenSeconds = 10;
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_DISPLAYLOADOUT_ENTERCHAT,
+                    Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), getName()),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName()),
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+            mgPlayer.setManualEntry(this);
+            getContainer().startReopenTimer(reopenSeconds);
             return null;
         }
 
@@ -167,22 +161,25 @@ public class MenuItemDisplayLoadout extends MenuItem {
 
     @Override
     public void checkValidEntry(String entry) {
+        String loadoutName = loadout.getName();
+
         if (entry.equalsIgnoreCase("yes")) {
-            String loadoutName = loadout.getName(false);
-            if (mgm != null) {
-                LoadoutModule.getMinigameModule(mgm).deleteLoadout(loadoutName);
+            if (minigame != null) {
+                LoadoutModule.getMinigameModule(minigame).deleteLoadout(loadoutName);
             } else {
                 Minigames.getPlugin().getMinigameManager().deleteGlobalLoadout(loadoutName);
             }
             getContainer().removeItem(getSlot());
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
-            getContainer().getViewer().sendMessage(loadoutName + " has been deleted.", MinigameMessageType.INFO);
-            return;
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.SUCCESS, MgMenuLangKey.MENU_DISPLAYLOADOUT_DELETE,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
+        } else {
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.WARNING, MgMenuLangKey.MENU_DISPLAYLOADOUT_NOTDELETE,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
         }
-        getContainer().getViewer().sendMessage(loadout.getName(false) + " was not deleted.", MinigameMessageType.ERROR);
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
     }
 
     public void setAllowDelete(boolean bool) {

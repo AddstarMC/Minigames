@@ -7,45 +7,51 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class MenuItemLoadoutAdd extends MenuItem {
+    private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts;
+    private @Nullable Minigame minigame = null;
 
-    private final Map<String, PlayerLoadout> loadouts;
-    private Minigame minigame = null;
-
-    public MenuItemLoadoutAdd(Component name, Material displayItem, Map<String, PlayerLoadout> loadouts, Minigame mgm) {
-        super(name, displayItem);
+    public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Map<@NotNull String,
+            @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
+        super(displayMat, name);
         this.loadouts = loadouts;
         this.minigame = mgm;
     }
 
-    public MenuItemLoadoutAdd(Component name, List<Component> description, Material displayItem, Map<String, PlayerLoadout> loadouts, Minigame mgm) {
-        super(name, description, displayItem);
+    public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name,
+                              @Nullable List<@NotNull Component> description,
+                              @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
+        super(displayMat, name, description);
         this.loadouts = loadouts;
         this.minigame = mgm;
     }
 
-    public MenuItemLoadoutAdd(Component name, Material displayItem, Map<String, PlayerLoadout> loadouts) {
-        super(name, displayItem);
+    public MenuItemLoadoutAdd(@Nullable Component name, @Nullable Material displayMat,
+                              @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
+        super(displayMat, name);
         this.loadouts = loadouts;
     }
 
-    public MenuItemLoadoutAdd(Component name, List<Component> description, Material displayItem, Map<String, PlayerLoadout> loadouts) {
-        super(name, description, displayItem);
+    public MenuItemLoadoutAdd(@Nullable Component name, @Nullable List<@NotNull Component> description,
+                              @Nullable Material displayMat, @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
+        super(displayMat, name, description);
         this.loadouts = loadouts;
     }
 
     @Override
     public ItemStack onClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendInfoMessage("Enter a name for the new Loadout, the menu will automatically reopen in 10s if nothing is entered.");
-        ply.setManualEntry(this);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        mgPlayer.sendInfoMessage("Enter a name for the new Loadout, the menu will automatically reopen in 10s if nothing is entered.");
+        mgPlayer.setManualEntry(this);
 
         getContainer().startReopenTimer(30);
         return null;

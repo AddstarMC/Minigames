@@ -46,8 +46,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 public class Minigames extends JavaPlugin {
-    private static ComponentLogger componentLogger = null;
     private static final Pattern COMPILE = Pattern.compile("-?[0-9]+");
+    private static ComponentLogger componentLogger = null;
     private static Minigames plugin;
     private static Economy econ;
     private static SignBase minigameSigns;
@@ -99,7 +99,7 @@ public class Minigames extends JavaPlugin {
         return placeHolderManager;
     }
 
-    public CommandDispatcher getCommandDispatcher(){
+    public CommandDispatcher getCommandDispatcher() {
         return disp;
     }
 
@@ -135,7 +135,7 @@ public class Minigames extends JavaPlugin {
         final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
         if (this.minigameManager.hasLoadouts()) {
             for (final String loadout : this.minigameManager.getLoadouts()) {
-                for (final Integer slot : this.minigameManager.getLoadout(loadout).getItems()) {
+                for (final Integer slot : this.minigameManager.getLoadout(loadout).getItemSlots()) {
                     globalLoadouts.getConfig().set(loadout + '.' + slot, this.minigameManager.getLoadout(loadout).getItem(slot));
                 }
                 if (!this.minigameManager.getLoadout(loadout).getAllPotionEffects().isEmpty()) {

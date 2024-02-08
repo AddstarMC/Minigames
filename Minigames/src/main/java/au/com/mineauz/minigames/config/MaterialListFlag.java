@@ -1,9 +1,12 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.MenuItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,13 +52,8 @@ public class MaterialListFlag extends Flag<List<Material>> {
     }
 
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
-        return null;
-    }
-
-    @Override
-    public MenuItem getMenuItem(String name, Material displayItem,
-                                List<String> description) {
+    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                @Nullable List<@NotNull Component> description) {
         return null;
     }
 

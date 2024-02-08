@@ -143,7 +143,7 @@ public final class MinigameStats {
         final Menu submenu = new Menu(6, "Select Statistic", parent.getViewer());
 
         for (final MinigameStat stat : getAllStats().values()) {
-            MenuItemCustom item = new MenuItemCustom(WordUtils.capitalizeFully(stat.getDisplayName()), Material.WRITABLE_BOOK);
+            MenuItemCustom item = new MenuItemCustom(Material.WRITABLE_BOOK, WordUtils.capitalizeFully(stat.getDisplayName()));
             item.setClick(object -> {
                 statCallback.setValue(stat);
                 parent.displayMenu(submenu.getViewer());
@@ -169,7 +169,7 @@ public final class MinigameStats {
         final Menu submenu = new Menu(6, "Select Statistic Field", parent.getViewer());
 
         for (final StatValueField field : format.getFields()) {
-            MenuItemCustom item = new MenuItemCustom(WordUtils.capitalizeFully(field.name()), Material.PAPER);
+            MenuItemCustom item = new MenuItemCustom(Material.PAPER, WordUtils.capitalizeFully(field.name()));
             item.setClick(object -> {
                 callback.setValue(field);
                 parent.displayMenu(submenu.getViewer());

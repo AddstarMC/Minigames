@@ -217,12 +217,12 @@ public class LoadoutModule extends MinigameModule {
 
         for (final PlayerLoadout loadout : extraLoadouts.values()) {
             if (loadout.isDisplayedInMenu()) {
-                if (!loadout.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())) {
+                if (!loadout.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + loadout.getName().toLowerCase())) {
                     if (!mgPlayer.getMinigame().isTeamGame() || loadout.getTeamColor() == null ||
                             mgPlayer.getTeam().getColor() == loadout.getTeamColor()) {
-                        MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
-                        if (!loadout.getItems().isEmpty()) {
-                            ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItems()).get(0));
+                        MenuItemCustom c = new MenuItemCustom(Material.GLASS, loadout.getDisplayName());
+                        if (!loadout.getItemSlots().isEmpty()) {
+                            ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItemSlots()).get(0));
                             c.setDisplayItem(item);
                         }
                         c.setClick(object -> {
@@ -232,8 +232,8 @@ public class LoadoutModule extends MinigameModule {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN);
                             } else {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_EQUIPPED,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName(true)));
-                                loadout.equiptLoadout(mgPlayer);
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
+                                loadout.equipLoadout(mgPlayer);
                             }
                             return null;
                         });

@@ -1,9 +1,14 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,12 +35,12 @@ public class SaveCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Saves a Minigame to disk.";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SAVE_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame save <Minigame>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SAVE_USAGE);
     }
 
     @Override
@@ -46,13 +51,15 @@ public class SaveCommand extends ACommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender,
                              @NotNull String @NotNull [] args) {
-        if (args != null) {
-            if (PLUGIN.getMinigameManager().hasMinigame(args[0])) {
-                Minigame mg = PLUGIN.getMinigameManager().getMinigame(args[0]);
-                mg.saveMinigame();
-                sender.sendMessage(ChatColor.GRAY + mg.getName(false) + " has been saved.");
+        if (args.length > 0) {
+            Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
+            if (minigame != null) {
+                minigame.saveMinigame();
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MinigameLangKey.MINIGAME_SAVED,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
             } else {
-                sender.sendMessage(ChatColor.RED + "There is no Minigame by the name: " + args[0]);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;
         }

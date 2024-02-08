@@ -4,11 +4,12 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.LongFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.config.TimeFlag;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
@@ -16,14 +17,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
-
 public class WeatherTimeModule extends MinigameModule {
-
-    private final LongFlag time = new LongFlag(0L, "customTime.value");
+    private final TimeFlag time = new TimeFlag(0L, "customTime.value");
     private final BooleanFlag useCustomTime = new BooleanFlag(false, "customTime.enabled");
     private final BooleanFlag useCustomWeather = new BooleanFlag(false, "customWeather.enabled");
     private final EnumFlag<WeatherType> weather = new EnumFlag<>(WeatherType.CLEAR, "customWeather.type");
@@ -53,64 +50,12 @@ public class WeatherTimeModule extends MinigameModule {
     @Override
     public void addEditMenuOptions(Menu menu) {
         Menu m = new Menu(6, "Time and Weather", menu.getViewer());
-        m.addItem(new MenuItemBoolean("Use Custom Time", Material.CLOCK, new Callback<>() {
 
-            @Override
-            public Boolean getValue() {
-                return useCustomTime.getFlag();
-            }
-
-            @Override
-            public void setValue(Boolean value) {
-                useCustomTime.setFlag(value);
-            }
-
-
-        }));
-        m.addItem(new MenuItemInteger("Time of Day", Material.CLOCK, new Callback<>() {
-
-            @Override
-            public Integer getValue() {
-                return time.getFlag().intValue();
-            }
-
-            @Override
-            public void setValue(Integer value) {
-                time.setFlag(value.longValue());
-            }
-
-
-        }, 0, 24000));
-        m.addItem(new MenuItemBoolean("Use Custom Weather", Material.WATER_BUCKET, new Callback<>() {
-
-            @Override
-            public Boolean getValue() {
-                return useCustomWeather.getFlag();
-            }
-
-            @Override
-            public void setValue(Boolean value) {
-                useCustomWeather.setFlag(value);
-            }
-
-
-        }));
-        m.addItem(new MenuItemList("Weather Type", Material.WATER_BUCKET, new Callback<>() {
-
-            @Override
-            public String getValue() {
-                return WordUtils.capitalizeFully(weather.getFlag().toString());
-            }
-
-            @Override
-            public void setValue(String value) {
-                weather.setFlag(WeatherType.valueOf(value.toUpperCase()));
-            }
-
-
-        }, List.of("Clear", "Downfall")));
-
-        m.addItem(new MenuItemPage("Back", getBackMaterial(), menu), m.getSize() - 9);
+        m.addItem(useCustomTime.getMenuItem("Use Custom Time", Material.CLOCK));
+        m.addItem(time.getMenuItem(Material.CLOCK, "Time of Day", 0L, 24000L));
+        m.addItem(useCustomWeather.getMenuItem("Use Custom Weather", Material.WATER_BUCKET));
+        m.addItem(weather.getMenuItem("Weather Type", Material.WATER_BUCKET));
+        m.addItem(new MenuItemBack(menu), m.getSize() - 9);
 
         menu.addItem(new MenuItemPage("Time and Weather Settings", Material.CHEST, m));
     }

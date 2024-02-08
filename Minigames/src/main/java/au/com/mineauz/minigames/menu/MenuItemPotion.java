@@ -6,24 +6,27 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemPotion extends MenuItem {
+    private final @NotNull PotionEffect eff;
+    private final @NotNull PlayerLoadout loadout;
 
-    private final PotionEffect eff;
-    private final PlayerLoadout loadout;
-
-    public MenuItemPotion(Component name, Material displayItem, PotionEffect eff, PlayerLoadout loadout) {
-        super(name, displayItem);
+    public MenuItemPotion(@Nullable Material displayMat, @Nullable Component name, @NotNull PotionEffect eff,
+                          @NotNull PlayerLoadout loadout) {
+        super(displayMat, name);
         this.eff = eff;
         this.loadout = loadout;
         updateDescription();
     }
 
-    public MenuItemPotion(Component name, List<Component> description, Material displayItem, PotionEffect eff, PlayerLoadout loadout) {
-        super(name, description, displayItem);
+    public MenuItemPotion(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description,
+                          @NotNull PotionEffect eff, @NotNull PlayerLoadout loadout) {
+        super(displayMat, name, description);
         this.eff = eff;
         this.loadout = loadout;
         updateDescription();

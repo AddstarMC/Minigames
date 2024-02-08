@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MgRegion;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -74,13 +75,16 @@ public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
         setFlag(regions);
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
-        return null;
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem, List<String> description) {
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                          @Nullable List<@NotNull Component> description) {
         return null;
     }
 }

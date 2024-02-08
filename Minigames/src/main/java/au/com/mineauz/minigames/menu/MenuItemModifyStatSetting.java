@@ -6,16 +6,18 @@ import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatFormat;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class MenuItemModifyStatSetting extends MenuItem {
-    private final Minigame minigame;
-    private final MinigameStat stat;
+    private final @NotNull Minigame minigame;
+    private final @NotNull MinigameStat stat;
 
-    public MenuItemModifyStatSetting(Minigame minigame, MinigameStat stat, Material material) {
-        super(stat.getDisplayName(), material);
+    public MenuItemModifyStatSetting(@Nullable Material displayMat, @NotNull Minigame minigame, @NotNull MinigameStat stat) {
+        super(displayMat, stat.getDisplayName());
 
         this.minigame = minigame;
         this.stat = stat;
@@ -39,7 +41,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
 
         }));
         if (stat != MinigameStats.Losses) {
-            subMenu.addItem(new MenuItemList("Storage Format", Material.ENDER_CHEST, new Callback<>() {
+            subMenu.addItem(new MenuItemList(Material.ENDER_CHEST, "Storage Format", new Callback<>() {
                 @Override
                 public String getValue() {
                     return minigame.getSettings(stat).getFormat().toString();

@@ -5,6 +5,8 @@ import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,19 +15,22 @@ import java.util.List;
 
 public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
     private final List<Component> baseDescription;
-    private final List<T> enumList;
-    private final Callback<T> callback;
+    private final @NotNull List<T> enumList;
+    private final @NotNull Callback<T> callback;
 
-    public MenuItemEnum(Component name, List<Component> description, Material displayItem, Callback<T> callback, Class<T> enumClass) {
-        super(name, description, displayItem);
+    public MenuItemEnum(@Nullable Material displayMat, @Nullable Component name,
+                        @Nullable List<@NotNull Component> description, @NotNull Callback<T> callback,
+                        @NotNull Class<T> enumClass) {
+        super(displayMat, name, description);
         this.callback = callback;
         enumList = new ArrayList<>(EnumSet.allOf(enumClass));
         baseDescription = description;
         updateDescription();
     }
 
-    public MenuItemEnum(Component name, Material displayItem, Callback<T> callback, Class<T> enumClass) {
-        super(name, displayItem);
+    public MenuItemEnum(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<T> callback,
+                        @NotNull Class<T> enumClass) {
+        super(displayMat, name);
         this.callback = callback;
         enumList = new ArrayList<>(EnumSet.allOf(enumClass));
         baseDescription = Collections.emptyList();

@@ -66,13 +66,13 @@ public class MinigameTimer {
                     level = timeLeft;
                 }
 
-                for (MinigamePlayer ply : minigame.getPlayers()) {
+                for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
                     if (timeLeftpercent < 0) {
-                        ply.getPlayer().setExp(0);
-                        ply.getPlayer().setLevel(0);
+                        mgPlayer.getPlayer().setExp(0);
+                        mgPlayer.getPlayer().setLevel(0);
                     } else {
-                        ply.getPlayer().setExp(timeLeftpercent);
-                        ply.getPlayer().setLevel(level);
+                        mgPlayer.getPlayer().setExp(timeLeftpercent);
+                        mgPlayer.getPlayer().setLevel(level);
                     }
                 }
             }

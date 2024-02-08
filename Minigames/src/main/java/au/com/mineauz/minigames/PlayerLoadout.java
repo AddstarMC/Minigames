@@ -5,12 +5,13 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule.LoadoutAddon;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -55,7 +56,11 @@ public class PlayerLoadout {
     }
 
     public String getDisplayName() {
-        return displayname;
+        if (displayname == null) {
+            return loadoutName;
+        } else {
+            return displayname;
+        }
     }
 
     public void setDisplayName(String name) {
@@ -87,10 +92,8 @@ public class PlayerLoadout {
         };
     }
 
-    public String getName(boolean useDisplay) {
-        if (!useDisplay || getDisplayName() == null)
-            return loadoutName;
-        return getDisplayName();
+    public String getName() {
+        return loadoutName;
     }
 
     public void addItem(ItemStack item, int slot) {
@@ -125,45 +128,46 @@ public class PlayerLoadout {
     }
 
     @SuppressWarnings("unchecked")
-    public void equiptLoadout(MinigamePlayer player) {
-        player.getPlayer().getInventory().clear();
-        player.getPlayer().getInventory().setHelmet(null);
-        player.getPlayer().getInventory().setChestplate(null);
-        player.getPlayer().getInventory().setLeggings(null);
-        player.getPlayer().getInventory().setBoots(null);
-        for (PotionEffect potion : player.getPlayer().getActivePotionEffects()) {
-            player.getPlayer().removePotionEffect(potion.getType());
+    public void equipLoadout(@NotNull MinigamePlayer mgPlayer) {
+        mgPlayer.getPlayer().getInventory().clear();
+        mgPlayer.getPlayer().getInventory().setHelmet(null);
+        mgPlayer.getPlayer().getInventory().setChestplate(null);
+        mgPlayer.getPlayer().getInventory().setLeggings(null);
+        mgPlayer.getPlayer().getInventory().setBoots(null);
+        for (PotionEffect potion : mgPlayer.getPlayer().getActivePotionEffects()) {
+            mgPlayer.getPlayer().removePotionEffect(potion.getType());
         }
         if (!itemSlot.isEmpty()) {
-            for (Integer slot : itemSlot.keySet()) {
-                if (slot < 100 && slot >= 0)
-                    player.getPlayer().getInventory().setItem(slot, getItem(slot));
-                else if (slot == 100)
-                    player.getPlayer().getInventory().setBoots(getItem(slot));
-                else if (slot == 101)
-                    player.getPlayer().getInventory().setLeggings(getItem(slot));
-                else if (slot == 102)
-                    player.getPlayer().getInventory().setChestplate(getItem(slot));
-                else if (slot == 103)
-                    player.getPlayer().getInventory().setHelmet(getItem(slot));
-                else if (slot == -106)
-                    player.getPlayer().getInventory().setItemInOffHand(getItem(slot));
+            Player player = mgPlayer.getPlayer();
+
+            for (Map.Entry<Integer, ItemStack> slotItem : itemSlot.entrySet()) {
+                if (slotItem.getKey() >= 0 && slotItem.getKey() < 100) {
+                    player.getInventory().setItem(slotItem.getKey(), slotItem.getValue());
+                } else {
+                    switch (slotItem.getKey()) {
+                        case 100 -> player.getInventory().setBoots(slotItem.getValue());
+                        case 101 -> player.getInventory().setLeggings(slotItem.getValue());
+                        case 102 -> player.getInventory().setChestplate(slotItem.getValue());
+                        case 103 -> player.getInventory().setHelmet(slotItem.getValue());
+                        case -106 -> player.getInventory().setItemInOffHand(slotItem.getValue());
+                    }
+                }
             }
-            player.updateInventory();
+            mgPlayer.updateInventory();
         }
 
-        final MinigamePlayer fplayer = player;
+        final MinigamePlayer fplayer = mgPlayer;
         Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> fplayer.getPlayer().addPotionEffects(potions));
 
         for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
             LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
             if (addon != null) {
-                addon.applyLoadout(player, addonValue.getValue());
+                addon.applyLoadout(mgPlayer, addonValue.getValue());
             }
         }
 
         if (level != -1)
-            player.getPlayer().setLevel(level);
+            mgPlayer.getPlayer().setLevel(level);
     }
 
     @SuppressWarnings("unchecked")
@@ -176,7 +180,7 @@ public class PlayerLoadout {
         }
     }
 
-    public Set<Integer> getItems() {
+    public Set<Integer> getItemSlots() {
         return itemSlot.keySet();
     }
 
@@ -354,22 +358,21 @@ public class PlayerLoadout {
         team = color;
     }
 
-    public Callback<String> getTeamColorCallback() {
+    public Callback<TeamColor> getTeamColorCallback() {
         return new Callback<>() {
 
             @Override
-            public String getValue() {
-                if (getTeamColor() == null)
-                    return "None";
-                return WordUtils.capitalizeFully(getTeamColor().toString());
+            public TeamColor getValue() {
+                if (getTeamColor() == null) {
+                    return TeamColor.NONE;
+                }
+                return getTeamColor();
             }
 
             @Override
-            public void setValue(String value) {
-                setTeamColor(TeamColor.matchColor(value.toUpperCase()));
+            public void setValue(TeamColor value) {
+                setTeamColor(value);
             }
-
-
         };
     }
 
@@ -421,7 +424,7 @@ public class PlayerLoadout {
 
     @SuppressWarnings("unchecked")
     public void save(ConfigurationSection section) {
-        for (Integer slot : getItems())
+        for (Integer slot : getItemSlots())
             section.set("items." + slot, getItem(slot));
 
         for (PotionEffect eff : getAllPotionEffects()) {

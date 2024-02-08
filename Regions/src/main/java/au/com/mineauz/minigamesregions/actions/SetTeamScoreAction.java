@@ -2,12 +2,18 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -22,14 +28,18 @@ public class SetTeamScoreAction extends ScoreAction {
     private final IntegerFlag score = new IntegerFlag(1, "amount");
     private final StringFlag team = new StringFlag("NONE", "team");
 
-    @Override
-    public @NotNull String getName() {
-        return "SET_TEAM_SCORE";
+    protected SetTeamScoreAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Team Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETTEAMSCORE_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.TEAM;
     }
 
     @Override
@@ -92,12 +102,12 @@ public class SetTeamScoreAction extends ScoreAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Set Team Score", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.addItem(score.getMenuItem("Set Score Amount", Material.STONE, null, null));
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+        m.addItem(score.getMenuItem(Material.STONE, "Set Score Amount", null, null));
 
         List<String> teams = new ArrayList<>(TeamColor.colorNames());
-        m.addItem(new MenuItemList("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemList<String>("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {

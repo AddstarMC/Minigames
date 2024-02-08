@@ -15,16 +15,12 @@ import java.util.Map;
 
 public abstract class MinigameModule {
     private static ComparableVersion minRequired = null;
-    private final @NotNull Minigame mgm;
     protected final @NotNull String name;
+    private final @NotNull Minigame mgm;
 
     protected MinigameModule(@NotNull Minigame mgm, @NotNull String name) {
         this.mgm = mgm;
         this.name = name;
-    }
-
-    public @NotNull String getName() {
-        return name;
     }
 
     public static void setVersion(ComparableVersion version) {
@@ -48,6 +44,10 @@ public abstract class MinigameModule {
 
     public static ComparableVersion getMinRequired() {
         return minRequired;
+    }
+
+    public @NotNull String getName() {
+        return name;
     }
 
     public Minigame getMinigame() {

@@ -1,27 +1,40 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MenuItemDecimal extends MenuItem {
-    protected final Callback<Double> value;
+    final static Pattern DOUBLE_PATTERN = Pattern.compile("[+-]?[0-9]+(.[0-9]+)?");
+
+    protected final @NotNull Callback<Double> value;
     private final double lowerInc;
     private final double upperInc;
-    private final Double min;
-    private final Double max;
+    private final @Nullable Double min;
+    private final @Nullable Double max;
     protected DecimalFormat form = new DecimalFormat("#.##");
 
-    public MenuItemDecimal(Component name, Material displayItem, Callback<Double> value,
-                           double lowerInc, double upperInc, Double min, Double max) {
-        super(name, displayItem);
+    public MenuItemDecimal(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Double> value,
+                           double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
+        super(displayMat, langKey);
         this.value = value;
         this.lowerInc = lowerInc;
         this.upperInc = upperInc;
@@ -30,9 +43,21 @@ public class MenuItemDecimal extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemDecimal(Component name, List<Component> description, Material displayItem, Callback<Double> value,
-                           double lowerInc, double upperInc, Double min, Double max) {
-        super(name, description, displayItem);
+    public MenuItemDecimal(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Double> value,
+                           double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
+        super(displayMat, name);
+        this.value = value;
+        this.lowerInc = lowerInc;
+        this.upperInc = upperInc;
+        this.min = min;
+        this.max = max;
+        updateDescription();
+    }
+
+    public MenuItemDecimal(@Nullable Material displayMat, @Nullable Component name,
+                           @Nullable List<@NotNull Component> description, @NotNull Callback<Double> value,
+                           double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
+        super(displayMat, name, description);
         this.value = value;
         this.lowerInc = lowerInc;
         this.upperInc = upperInc;
@@ -112,50 +137,45 @@ public class MenuItemDecimal extends MenuItem {
 
     @Override
     public ItemStack onDoubleClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter decimal value into chat for " + getName() + ", the menu will automatically reopen in 15s if nothing is entered.", MinigameMessageType.INFO);
-        String min = "N/A";
-        String max = "N/A";
-        if (this.min != null) {
-            min = this.min.toString();
-        }
-        if (this.max != null) {
-            max = this.max.toString();
-        }
-        ply.setManualEntry(this);
-        ply.sendInfoMessage("Min: " + min + ", Max: " + max);
-        getContainer().startReopenTimer(15);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+
+        final int reopenSeconds = 15;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_DECIMAL_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))),
+                Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
+                Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
+        mgPlayer.setManualEntry(this);
+        getContainer().startReopenTimer(reopenSeconds);
 
         return null;
     }
 
     @Override
-    public void checkValidEntry(String entry) {
-        if (entry.matches("-?[0-9]+(.[0-9]+)?")) {
+    public void checkValidEntry(@NotNull String entry) {
+        getContainer().cancelReopenTimer();
+        getContainer().displayMenu(getContainer().getViewer());
+
+        if (DOUBLE_PATTERN.matcher(entry).matches()) {
             double entryValue = Double.parseDouble(entry);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
                 value.setValue(entryValue);
                 updateDescription();
-
-                getContainer().cancelReopenTimer();
-                getContainer().displayMenu(getContainer().getViewer());
-                return;
+            } else {
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(min)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(max)));
             }
-        }
-        if (entry.equals("INFINITE")) {
+        } else if (entry.equals("INFINITE")) {
             double entryValue = Double.POSITIVE_INFINITY;
             value.setValue(entryValue);
             updateDescription();
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
-            return;
+        } else {
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
         }
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
-
-        getContainer().getViewer().sendMessage("Invalid value entry!", MinigameMessageType.ERROR);
     }
 
 }

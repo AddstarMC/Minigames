@@ -1,8 +1,13 @@
 package au.com.mineauz.minigamesregions.triggers;
 
+import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+
 public interface Trigger {
 
-    String getName();
+    @NotNull String getName();
+
+    @NotNull Component getDisplayName();
 
     boolean useInRegions();
 

@@ -145,14 +145,14 @@ public class MultiplayerTimer {
     }
 
     private void reclearInventories(Minigame minigame) {
-        for (MinigamePlayer ply : minigame.getPlayers()) {
-            ply.getPlayer().getInventory().clear();
+        for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
+            mgPlayer.getPlayer().getInventory().clear();
         }
     }
 
     private void freezePlayers(boolean freeze) {
-        for (MinigamePlayer ply : minigame.getPlayers()) {
-            ply.setFrozen(freeze);
+        for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
+            mgPlayer.setFrozen(freeze);
         }
     }
 

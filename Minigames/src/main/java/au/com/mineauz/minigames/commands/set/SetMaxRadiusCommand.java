@@ -31,6 +31,7 @@ public class SetMaxRadiusCommand extends ASetCommand { //todo it isn't intuitive
     public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_MAXRADIUS_DESCRIPTION);
     }
+
     @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_MAXRADIUS_USAGE);

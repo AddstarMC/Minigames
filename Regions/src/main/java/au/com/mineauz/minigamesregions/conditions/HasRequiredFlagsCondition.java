@@ -2,26 +2,32 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class HasRequiredFlagsCondition extends ConditionInterface {
+public class HasRequiredFlagsCondition extends ACondition {
 
-    @Override
-    public String getName() {
-        return "HAS_REQUIRED_FLAGS";
+    protected HasRequiredFlagsCondition(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Player Conditions";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASREQUIREDFLAGS_NAME);
+    }
+
+    @Override
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -62,9 +68,9 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Required Flags", player);
+        Menu m = new Menu(3, getDisplayName(), player);
         addInvertMenuItem(m);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.displayMenu(player);
         return true;
     }

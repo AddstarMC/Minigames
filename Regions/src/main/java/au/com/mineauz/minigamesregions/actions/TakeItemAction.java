@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class TakeItemAction extends AbstractAction {
+public class TakeItemAction extends AAction {
     private final ItemFlag itemToSearchFor = new ItemFlag(new ItemStack(Material.STONE), "item");
     private final IntegerFlag count = new IntegerFlag(1, "amount");
 
@@ -32,14 +33,18 @@ public class TakeItemAction extends AbstractAction {
     private final BooleanFlag matchEnchantments = new BooleanFlag(false, "matchEnchantments");
     private final BooleanFlag matchExact = new BooleanFlag(false, "matchExact");
 
-    @Override
-    public @NotNull String getName() {
-        return "TAKE_ITEM";
+    protected TakeItemAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "Player Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.PLAYER;
     }
 
     @Override
@@ -171,7 +176,7 @@ public class TakeItemAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) {
-        final Menu menu = new Menu(3, "Player Has Item", mgPlayer);
+        final Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), menu.getSize() - 9);
 
         // we need a reference for two object we will create soon down the line

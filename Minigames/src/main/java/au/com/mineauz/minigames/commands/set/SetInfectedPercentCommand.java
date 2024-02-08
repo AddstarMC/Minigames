@@ -36,6 +36,7 @@ public class SetInfectedPercentCommand extends ASetCommand {
     public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_INFECTEDPERCENT_DESCRIPTION);
     }
+
     @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_INFECTEDPERCENT_USAGE);
@@ -61,7 +62,7 @@ public class SetInfectedPercentCommand extends ASetCommand {
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(val)));
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_ERROR_RANGE,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), "1"),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), "99"));
                     }

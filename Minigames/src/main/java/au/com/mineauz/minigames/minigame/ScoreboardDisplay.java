@@ -205,10 +205,10 @@ public class ScoreboardDisplay {
         final Menu setupMenu = new Menu(3, "Setup Scoreboard", player);
 
         StatSettings settings = minigame.getSettings(stat);
-        final MenuItemCustom statisticChoice = new MenuItemCustom("Statistic", Material.WRITABLE_BOOK);
+        final MenuItemCustom statisticChoice = new MenuItemCustom(Material.WRITABLE_BOOK, "Statistic");
         statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings.getDisplayName()));
 
-        final MenuItemCustom fieldChoice = new MenuItemCustom("Statistic Field", Material.PAPER);
+        final MenuItemCustom fieldChoice = new MenuItemCustom(Material.PAPER, "Statistic Field");
         fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
 
         statisticChoice.setClick(object -> {
@@ -290,7 +290,7 @@ public class ScoreboardDisplay {
 
 
         }, sbotypes));
-        setupMenu.addItem(new MenuItemScoreboardSave("Create Scoreboard", MenuUtility.getCreateMaterial(), this), setupMenu.getSize() - 1);
+        setupMenu.addItem(new MenuItemScoreboardSave(MenuUtility.getCreateMaterial(), "Create Scoreboard", this), setupMenu.getSize() - 1);
         setupMenu.displayMenu(player);
     }
 

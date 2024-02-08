@@ -1,10 +1,13 @@
 package au.com.mineauz.minigames.config;
 
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -31,8 +34,8 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(Component name, Material displayItem) {
-        return new MenuItemBoolean(name, displayItem, new Callback<>() {
+    public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull LangKey langKey) {
+        return new MenuItemBoolean(displayMaterial, langKey, new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -43,14 +46,13 @@ public class BooleanFlag extends Flag<Boolean> {
             public void setValue(Boolean value) {
                 setFlag(value);
             }
-
-
         });
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(Component name, Material displayItem, List<Component> description) {
-        return new MenuItemBoolean(name, description, displayItem, new Callback<>() {
+    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemBoolean(name, description, displayMat, new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -61,9 +63,6 @@ public class BooleanFlag extends Flag<Boolean> {
             public void setValue(Boolean value) {
                 setFlag(value);
             }
-
-
         });
     }
-
 }
