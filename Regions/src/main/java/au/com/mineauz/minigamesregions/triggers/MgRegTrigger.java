@@ -7,7 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum MgRegTrigger implements Trigger {
-    GAME_END(false, true, true, RegionLangKey.TRIGGER_GAME_END_NAME),
+    GAME_ENDPHASE(false, true, true, RegionLangKey.TRIGGER_GAME_ENDPHASE_NAME, "GAME_END"),
+    GAME_ENDED(false, true, true, RegionLangKey.TRIGGER_GAME_ENDED_NAME),
     GAME_START(false, true, true, RegionLangKey.TRIGGER_GAME_START_NAME),
     PLAYER_BLOCK_BREAK(true, true, true, RegionLangKey.TRIGGER_PLAYER_BLOCK_BREAK_NAME, "BLOCK_BREAK"),
     PLAYER_BLOCK_CLICK_LEFT(false, true, true, RegionLangKey.TRIGGER_PLAYER_BLOCK_CLICK_LEFT_NAME, "LEFT_CLICK_BLOCK"),
@@ -34,7 +35,7 @@ public enum MgRegTrigger implements Trigger {
     PLAYER_XP_CHANGE(true, true, true, RegionLangKey.TRIGGER_PLAYER_XP_CHANGE_NAME, "XP_CHANGE"),
     RANDOM(true, true, true, RegionLangKey.TRIGGER_RANDOM_NAME),
     REMOTE(true, true, true, RegionLangKey.TRIGGER_REMOTE_NAME),
-    REMOTE_TIMED(true, true, false, RegionLangKey.TRIGGER_REMOTE_TIMED_NAME, "TIMED_REMOTE"),
+    REMOTE_TIMED(true, true, true, RegionLangKey.TRIGGER_REMOTE_TIMED_NAME, "TIMED_REMOTE"),
     TIME_GAMETICK(true, false, false, RegionLangKey.TRIGGER_TIME_GAMETICK_NAME, "GAME_TICK"), // todo is it the same as tick?
     TIME_MINIGAMETIMER(false, true, true, RegionLangKey.TRIGGER_TIME_TIMER_NAME, "MINIGAME_TIMER"),
     TIME_TICK(true, false, true, RegionLangKey.TRIGGER_TIME_TICK_NAME, "TICK"); // todo is it the same as gametick?

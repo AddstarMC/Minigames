@@ -119,7 +119,7 @@ public enum RegionLangKey implements LangKey {
     TOOL_REGION_DESELECTED("tool.region.deselected"),
     TOOL_REGION_EDIT("tool.region.edit"),
     TOOL_REGION_SELECTED("tool.region.selected"),
-    TRIGGER_GAME_END_NAME("trigger.gameEnd.name"),
+    TRIGGER_GAME_ENDPHASE_NAME("trigger.gameEndPhase.name"),
     TRIGGER_GAME_JOIN_NAME("trigger.player.gameJoin.name"),
     TRIGGER_GAME_QUIT_NAME("trigger.player.gameQuit.name"),
     TRIGGER_GAME_START_NAME("trigger.gameStart.name"),
@@ -153,7 +153,8 @@ public enum RegionLangKey implements LangKey {
     TRIGGER_TIME_TIMER_NAME("trigger.time.timer.name"),
     MENU_RNDCHANCE_SETPERCENT_NAME("menu.condition.randomChance.percentage"),
     MENU_HEALTH_MINIMUM_NAME("menu.health.minimum.name"),
-    MENU_HEALTH_MAXIMUM_NAME("menu.health.maximum.name");
+    MENU_HEALTH_MAXIMUM_NAME("menu.health.maximum.name"),
+    TRIGGER_GAME_ENDED_NAME("trigger.game.ended.name");
 
     private final @NotNull String path;
 

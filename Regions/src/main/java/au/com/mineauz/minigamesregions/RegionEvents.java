@@ -220,7 +220,7 @@ public class RegionEvents implements Listener {
         }
 
         for (Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()) {
-            node.execute(Triggers.getTrigger("GAME_ENDPHASE"), null);
+            node.execute(MgRegTrigger.GAME_ENDPHASE, null);
         }
     }
 
