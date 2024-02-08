@@ -28,8 +28,15 @@ public class MenuItemBoolean extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemBoolean(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                           @Nullable Material displayMat, @NotNull Callback<@NotNull Boolean> toggle) {
+    public MenuItemBoolean(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<@NotNull Component> description,
+                           @NotNull Callback<@NotNull Boolean> toggle) {
+        super(displayMat, langKey, description);
+        this.toggle = toggle;
+        updateDescription();
+    }
+
+    public MenuItemBoolean(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description,
+                           @NotNull Callback<@NotNull Boolean> toggle) {
         super(displayMat, name, description);
         this.toggle = toggle;
         updateDescription();

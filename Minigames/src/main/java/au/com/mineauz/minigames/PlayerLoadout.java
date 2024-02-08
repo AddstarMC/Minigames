@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule.LoadoutAddon;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -26,7 +28,7 @@ public class PlayerLoadout {
     private boolean hunger = false;
     private int level = -1;
     private boolean deleteable = true;
-    private String displayname = null;
+    private Component displayname = null;
     private boolean lockInventory = false;
     private boolean lockArmour = false;
     private boolean allowOffHand = true;
@@ -38,16 +40,16 @@ public class PlayerLoadout {
         team = TeamColor.matchColor(name);
     }
 
-    public Callback<String> getDisplayNameCallback() {
+    public Callback<Component> getDisplayNameCallback() {
         return new Callback<>() {
 
             @Override
-            public String getValue() {
+            public Component getValue() {
                 return displayname;
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(Component value) {
                 displayname = value;
             }
 
@@ -55,15 +57,11 @@ public class PlayerLoadout {
         };
     }
 
-    public String getDisplayName() {
-        if (displayname == null) {
-            return loadoutName;
-        } else {
-            return displayname;
-        }
+    public @NotNull Component getDisplayName() {
+        return Objects.requireNonNullElseGet(displayname, () -> Component.text(loadoutName));
     }
 
-    public void setDisplayName(String name) {
+    public void setDisplayName(Component name) {
         displayname = name;
     }
 
@@ -493,32 +491,41 @@ public class PlayerLoadout {
             }
         }
 
-        if (section.contains("usepermissions"))
+        if (section.contains("usepermissions")) {
             setUsePermissions(section.getBoolean("usepermissions"));
+        }
 
-        if (section.contains("falldamage"))
+        if (section.contains("falldamage")) {
             setHasFallDamage(section.getBoolean("falldamage"));
+        }
 
-        if (section.contains("hunger"))
+        if (section.contains("hunger")) {
             setHasHunger(section.getBoolean("hunger"));
+        }
 
-        if (section.contains("displayName"))
-            setDisplayName(section.getString("displayName"));
+        if (section.contains("displayName")) {
+            setDisplayName(MiniMessage.miniMessage().deserialize(section.getString("displayName")));
+        }
 
-        if (section.contains("inventoryLocked"))
+        if (section.contains("inventoryLocked")) {
             setInventoryLocked(section.getBoolean("inventoryLocked"));
+        }
 
-        if (section.contains("armourLocked"))
+        if (section.contains("armourLocked")) {
             setArmourLocked(section.getBoolean("armourLocked"));
+        }
 
-        if (section.contains("team"))
+        if (section.contains("team")) {
             setTeamColor(TeamColor.matchColor(section.getString("team")));
+        }
 
-        if (section.contains("displayInMenu"))
+        if (section.contains("displayInMenu")) {
             setDisplayInMenu(section.getBoolean("displayInMenu"));
+        }
 
-        if (section.contains("allowOffhand"))
+        if (section.contains("allowOffhand")) {
             setAllowOffHand(section.getBoolean("allowOffhand"));
+        }
 
         if (section.contains("addons")) {
             ConfigurationSection addonSection = section.getConfigurationSection("addons");

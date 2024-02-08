@@ -82,12 +82,12 @@ public class RegenAreaMode implements ToolMode {
                 MenuItemCustom item = new MenuItemCustom(Material.CHEST, region.getName());
 
                 // Set the node and go back to the main menu
-                item.setClick(object -> {
+                item.setClick(() -> {
                     tool.changeSetting("Region", region.getName());
 
                     menu.displayMenu(mgPlayer);
 
-                    return object;
+                    return null;
                 });
 
                 items.add(item);

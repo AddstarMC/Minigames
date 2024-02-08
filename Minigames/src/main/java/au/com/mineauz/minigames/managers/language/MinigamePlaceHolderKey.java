@@ -32,6 +32,7 @@ public enum MinigamePlaceHolderKey implements PlaceHolderKey {
     REGION("region"),
     REVERTS("reverts"),
     SCORE("score"),
+    STAT("stat"),
     STATE("state"),
     TEAM("team"),
     TEXT("text"),

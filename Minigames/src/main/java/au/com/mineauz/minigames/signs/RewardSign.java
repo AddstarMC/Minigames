@@ -92,7 +92,7 @@ public class RewardSign implements MinigameSign {
             rewardMenu.addItem(new MenuItemRewardAdd("Add Item", MenuUtility.getCreateMaterial(), rew), 43);
             final MenuItemCustom mic = new MenuItemCustom(MenuUtility.getSaveMaterial(), "Save Rewards");
             final Location floc = loc;
-            mic.setClick(object -> {
+            mic.setClick(() -> {
                 mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
                 MinigameMessageManager.sendMgMessage(mic.getContainer().getViewer(), MinigameMessageType.INFO, MinigameLangKey.SIGN_REWARD_SAVED);
                 mic.getContainer().getViewer().getPlayer().closeInventory();

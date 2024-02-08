@@ -38,7 +38,7 @@ public class MenuItemRegionExecutor extends MenuItem {
 
         MenuItemCustom ca = new MenuItemCustom(Material.CHEST,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME));
-        ca.setClick(object -> {
+        ca.setClick(() -> {
             ActionRegistry.displayMenu(fviewer, ex, menu);
             return null;
         });
@@ -46,7 +46,7 @@ public class MenuItemRegionExecutor extends MenuItem {
 
         MenuItemCustom c2 = new MenuItemCustom(Material.CHEST,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME));
-        c2.setClick(object -> {
+        c2.setClick(() -> {
             ConditionRegistry.displayMenu(fviewer, ex, menu);
             return null;
         });
@@ -60,9 +60,8 @@ public class MenuItemRegionExecutor extends MenuItem {
                     ex.getTriggerCountCallback(), 0, null));
         }
         if (ex.getTrigger().triggerOnPlayerAvailable()) {
-            menu.addItem(new MenuItemBoolean(Material.PLAYER_HEAD,
+            menu.addItem(new MenuItemBoolean(List.of("Whether this executor", "is triggered per player", "or just on count"), Material.PLAYER_HEAD,
                     RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
-                    List.of("Whether this executor", "is triggered per player", "or just on count"),
                     ex.getIsTriggerPerPlayerCallback()));
         }
         menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);

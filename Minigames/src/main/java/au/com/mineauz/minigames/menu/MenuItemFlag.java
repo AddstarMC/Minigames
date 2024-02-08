@@ -1,7 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +32,8 @@ public class MenuItemFlag extends MenuItem {
 
     @Override
     public ItemStack onShiftRightClick() {
-        getContainer().getViewer().sendMessage("Removed " + flag + " flag.", MinigameMessageType.ERROR);
+        MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_FLAG_REMOVED,
+                Placeholder.unparsed(MinigamePlaceHolderKey.FLAG.getKey(), flag));
         flags.remove(flag);
 
         getContainer().removeItem(getSlot());

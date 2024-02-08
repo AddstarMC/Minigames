@@ -48,7 +48,7 @@ public class MenuItemActionAdd extends MenuItem {
                 }
 
                 MenuItemCustom menuItemCustom = new MenuItemCustom(Material.PAPER, action.getDisplayname());
-                menuItemCustom.setClick(object -> {
+                menuItemCustom.setClick(() -> {
                     exec.addAction(action);
                     getContainer().addItem(new MenuItemAction(Material.PAPER, action.getDisplayname(), exec, action));
                     getContainer().displayMenu(getContainer().getViewer());

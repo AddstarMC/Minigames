@@ -144,7 +144,7 @@ public final class MinigameStats {
 
         for (final MinigameStat stat : getAllStats().values()) {
             MenuItemCustom item = new MenuItemCustom(Material.WRITABLE_BOOK, WordUtils.capitalizeFully(stat.getDisplayName()));
-            item.setClick(object -> {
+            item.setClick(() -> {
                 statCallback.setValue(stat);
                 parent.displayMenu(submenu.getViewer());
                 return null;
@@ -170,7 +170,7 @@ public final class MinigameStats {
 
         for (final StatValueField field : format.getFields()) {
             MenuItemCustom item = new MenuItemCustom(Material.PAPER, WordUtils.capitalizeFully(field.name()));
-            item.setClick(object -> {
+            item.setClick(() -> {
                 callback.setValue(field);
                 parent.displayMenu(submenu.getViewer());
                 return null;

@@ -66,7 +66,7 @@ public class SetLoadoutCommand extends ASetCommand {
             if (!mod.getLoadout(ld).getItemSlots().isEmpty()) {
                 item = mod.getLoadout(ld).getItem((Integer) mod.getLoadout(ld).getItemSlots().toArray()[0]).getType();
             }
-            MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(ld, des, item, mod.getLoadout(ld), minigame);
+            MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(item, ld, des, mod.getLoadout(ld), minigame);
             mil.setAllowDelete(mod.getLoadout(ld).isDeleteable());
             mi.add(mil);
         }

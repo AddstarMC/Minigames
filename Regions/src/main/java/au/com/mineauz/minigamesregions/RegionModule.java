@@ -393,7 +393,7 @@ public class RegionModule extends MinigameModule {
     public void addEditMenuOptions(Menu menu) {
         final MenuItemCustom c = new MenuItemCustom(Material.DIAMOND_BLOCK, "Regions and Nodes");
         final Menu fmenu = menu;
-        c.setClick(object -> {
+        c.setClick(() -> {
             displayMenu(c.getContainer().getViewer(), fmenu);
             return null;
         });

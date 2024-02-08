@@ -78,12 +78,12 @@ public class RegionToolMode implements ToolMode {
                 MenuItemCustom item = new MenuItemCustom(Material.CHEST, region.getName());
 
                 // Set the node and go back to the main menu
-                item.setClick(object -> {
+                item.setClick(() -> {
                     ftool.changeSetting("Region", region.getName());
 
                     m.displayMenu(player);
 
-                    return object;
+                    return null;
                 });
 
                 items.add(item);

@@ -48,11 +48,10 @@ public class SetRegenDelayCommand extends ASetCommand {
         if (args != null) {
             Long millis = MinigameUtils.parsePeriod(args[0]);
             if (millis != null) {
-                int time = Integer.parseInt(args[0]);
-                minigame.setRegenDelay(time);
+                minigame.setRegenDelay(TimeUnit.MILLISECONDS.toSeconds(millis));
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_REGENDELAY_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(TimeUnit.MILLISECONDS.toSeconds(time))));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(TimeUnit.MILLISECONDS.toSeconds(millis))));
                 return true;
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
@@ -64,7 +63,7 @@ public class SetRegenDelayCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @Nullable [] args) {
         return List.of("s", "m", "h");
     }
 

@@ -217,7 +217,7 @@ public class ScoreboardDisplay {
         final MenuItemCustom fieldChoice = new MenuItemCustom(Material.PAPER, "Statistic Field");
         fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
 
-        statisticChoice.setClick(object -> {
+        statisticChoice.setClick(() -> {
             Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<>() {
                 @Override
                 public MinigameStat getValue() {
@@ -256,7 +256,7 @@ public class ScoreboardDisplay {
             return null;
         });
 
-        fieldChoice.setClick(object -> {
+        fieldChoice.setClick(() -> {
             StatSettings settings1 = minigame.getSettings(stat);
             Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<>() {
                 @Override

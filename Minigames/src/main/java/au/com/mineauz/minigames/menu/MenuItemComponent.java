@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,26 +18,27 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemString extends MenuItem {
-    protected final Callback<String> str;
+public class MenuItemComponent extends MenuItem {
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    protected final Callback<Component> component;
     private boolean allowNull = false;
 
-    public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<String> str) {
+    public MenuItemComponent(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Component> component) {
         super(displayMat, langKey);
-        this.str = str;
+        this.component = component;
         updateDescription();
     }
 
-    public MenuItemString(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<String> str) {
+    public MenuItemComponent(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Component> component) {
         super(displayMat, name);
-        this.str = str;
+        this.component = component;
         updateDescription();
     }
 
-    public MenuItemString(@Nullable Material displayMat, @Nullable Component name,
-                          @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
+    public MenuItemComponent(@Nullable Material displayMat, @Nullable Component name,
+                             @Nullable List<@NotNull Component> description, @NotNull Callback<Component> component) {
         super(displayMat, name, description);
-        this.str = str;
+        this.component = component;
         updateDescription();
     }
 
@@ -46,7 +48,7 @@ public class MenuItemString extends MenuItem {
 
     public void updateDescription() {
         List<Component> description;
-        String setting = str.getValue();
+        Component setting = component.getValue();
         if (setting == null)
             setting = "Not Set";
         if (setting.length() > 20) {
@@ -90,9 +92,9 @@ public class MenuItemString extends MenuItem {
     @Override
     public void checkValidEntry(String entry) {
         if (entry.equals("null") && allowNull) {
-            str.setValue(null);
+            component.setValue(null);
         } else {
-            str.setValue(entry);
+            component.setValue(miniMessage.deserialize(entry));
         }
 
         updateDescription();

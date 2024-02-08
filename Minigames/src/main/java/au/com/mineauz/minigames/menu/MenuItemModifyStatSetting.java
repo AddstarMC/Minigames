@@ -1,17 +1,20 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatFormat;
-import com.google.common.base.Functions;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class MenuItemModifyStatSetting extends MenuItem {
     private final @NotNull Minigame minigame;
@@ -26,36 +29,35 @@ public class MenuItemModifyStatSetting extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        Menu subMenu = new Menu(6, "Edit " + stat.getDisplayName(), getContainer().getViewer());
+        ;
+        Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_EDIT_NAME,
+                Placeholder.component(MinigamePlaceHolderKey.STAT.getKey(), stat.getDisplayName())), getContainer().getViewer());
 
-        subMenu.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<>() {
+        subMenu.addItem(new MenuItemComponent(Material.NAME_TAG,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_DISPLAYNAME), new Callback<>() {
             @Override
-            public String getValue() {
+            public Component getValue() {
                 return minigame.getSettings(stat).getDisplayName();
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(Component value) {
                 minigame.getSettings(stat).setDisplayName(value);
             }
-
-
         }));
+
         if (stat != MinigameStats.Losses) {
-            subMenu.addItem(new MenuItemList(Material.ENDER_CHEST, "Storage Format", new Callback<>() {
+            subMenu.addItem(new MenuItemList<>(Material.ENDER_CHEST, MgMenuLangKey.MENU_STAT_STORAGEFORMAT, new Callback<>() {
                 @Override
-                public String getValue() {
-                    return minigame.getSettings(stat).getFormat().toString();
+                public StatFormat getValue() {
+                    return minigame.getSettings(stat).getFormat();
                 }
 
                 @Override
-                public void setValue(String value) {
-                    StatFormat format = StatFormat.valueOf(value);
-                    minigame.getSettings(stat).setFormat(format);
+                public void setValue(StatFormat value) {
+                    minigame.getSettings(stat).setFormat(value);
                 }
-
-
-            }, Arrays.stream(StatFormat.values()).map(Functions.toStringFunction()).collect(Collectors.toList())));
+            }, Arrays.asList(StatFormat.values())));
         }
 
         subMenu.addItem(new MenuItemBack(getContainer()), subMenu.getSize() - 9);

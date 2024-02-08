@@ -80,11 +80,11 @@ public class NodeToolMode implements ToolMode {
                 MenuItemCustom item = new MenuItemCustom(Material.STONE_BUTTON, node.getName());
 
                 // Set the node and go back to the main menu
-                item.setClick(object -> {
+                item.setClick(() -> {
                     ftool.changeSetting("Node", node.getName());
                     m.displayMenu(player);
 
-                    return object;
+                    return null;
                 });
 
                 items.add(item);

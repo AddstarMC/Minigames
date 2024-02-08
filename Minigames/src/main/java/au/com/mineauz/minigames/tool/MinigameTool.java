@@ -138,14 +138,13 @@ public class MinigameTool {
         final MenuItemCustom miselect = new MenuItemCustom(Material.DIAMOND_BLOCK, "Select", List.of("Selects and area", "or points visually"));
         final MenuItemCustom mideselect = new MenuItemCustom(Material.GLASS, "Deselect", List.of("Deselects an", "area or points"));
         final MinigamePlayer fply = player;
-        miselect.setClick(object -> {
+        miselect.setClick(() -> {
             if (mode != null) {
-
                 mode.select(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
             }
             return miselect.getItem();
         });
-        mideselect.setClick(object -> {
+        mideselect.setClick(() -> {
             if (mode != null) {
                 mode.deselect(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
             }

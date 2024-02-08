@@ -142,7 +142,7 @@ public class MenuItemDecimal extends MenuItem {
         mgPlayer.getPlayer().closeInventory();
 
         final int reopenSeconds = 15;
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_DECIMAL_ENTERCHAT,
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))),
                 Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
@@ -164,7 +164,8 @@ public class MenuItemDecimal extends MenuItem {
                 value.setValue(entryValue);
                 updateDescription();
             } else {
-                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+                        MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(min)),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(max)));
             }
@@ -173,7 +174,8 @@ public class MenuItemDecimal extends MenuItem {
             value.setValue(entryValue);
             updateDescription();
         } else {
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+                    MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
         }
     }

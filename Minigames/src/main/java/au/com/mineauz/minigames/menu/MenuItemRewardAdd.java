@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardTypes;
@@ -42,7 +44,7 @@ public class MenuItemRewardAdd extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        Menu m = new Menu(6, "Select Reward Type", getContainer().getViewer());
+        Menu m = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SELECTTYPE_NAME), getContainer().getViewer());
         final Menu orig = getContainer();
         for (String type : RewardTypes.getAllRewardTypeNames()) {
             final MenuItemCustom custom = new MenuItemCustom(Material.STONE, "TYPE");
@@ -52,7 +54,7 @@ public class MenuItemRewardAdd extends MenuItem {
                 meta.setDisplayName(ChatColor.RESET + type);
                 custom.getItem().setItemMeta(meta);
                 custom.setItem(rewType.getMenuItem().getItem());
-                custom.setClick(object -> {
+                custom.setClick(() -> {
                     if (rewards != null) {
                         rewards.addReward(rewType);
                     } else {

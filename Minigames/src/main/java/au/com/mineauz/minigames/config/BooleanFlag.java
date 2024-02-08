@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -34,7 +33,7 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull LangKey langKey) {
+    public MenuItemBoolean getMenuItem(@Nullable Material displayMaterial, @NotNull LangKey langKey) {
         return new MenuItemBoolean(displayMaterial, langKey, new Callback<>() {
 
             @Override
@@ -50,9 +49,9 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
-        return new MenuItemBoolean(name, description, displayMat, new Callback<>() {
+        return new MenuItemBoolean(displayMat, name, description, new Callback<>() {
 
             @Override
             public Boolean getValue() {

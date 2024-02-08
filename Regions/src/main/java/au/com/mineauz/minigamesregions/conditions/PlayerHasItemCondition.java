@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayerHasItemCondition extends ACondition {
+public class PlayerHasItemCondition extends ACondition { // will get fixed when merged with features
     private final MaterialFlag type = new MaterialFlag(Material.STONE, "type");
     private final StringFlag where = new StringFlag("ANYWHERE", "where");
     private final IntegerFlag slot = new IntegerFlag(0, "slot");

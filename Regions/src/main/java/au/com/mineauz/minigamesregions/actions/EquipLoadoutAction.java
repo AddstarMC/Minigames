@@ -110,7 +110,7 @@ public class EquipLoadoutAction extends AAction {
         }));
         List<String> equipDesc = new ArrayList<>();
         equipDesc.add("This will force the loadout to equip as soon as the Action is triggered...");
-        m.addItem(new MenuItemBoolean(Material.PAPER, "Equip on Trigger", equipDesc, new Callback<>() {
+        m.addItem(new MenuItemBoolean(equipDesc, Material.PAPER, "Equip on Trigger", new Callback<>() {
             @Override
             public Boolean getValue() {
                 return equipOnTrigger.getFlag();

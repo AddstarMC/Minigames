@@ -67,13 +67,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         menu.addItem(new MenuItemNewLine());
 
         MenuItemCustom primary = new MenuItemCustom(Material.CHEST, "Primary Rewards");
-        primary.setClick(object -> {
+        primary.setClick(() -> {
             showRewardsMenu(primaryRewards, menu.getViewer(), menu);
             return null;
         });
 
         MenuItemCustom secondary = new MenuItemCustom(Material.CHEST, "Secondary Rewards");
-        secondary.setClick(object -> {
+        secondary.setClick(() -> {
             showRewardsMenu(secondaryRewards, menu.getViewer(), menu);
             return null;
         });

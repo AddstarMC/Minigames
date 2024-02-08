@@ -2,6 +2,8 @@ package au.com.mineauz.minigames.stats;
 
 import net.kyori.adventure.text.Component;
 
+import java.util.Objects;
+
 public abstract class MinigameStat {
     private final String name;
     private final StatFormat format;
@@ -31,11 +33,7 @@ public abstract class MinigameStat {
      * This will be the display name if set, otherwise it will be the actual name
      */
     public Component getDisplayName() {
-        if (displayName != null) {
-            return displayName;
-        } else {
-            return Component.text(name);
-        }
+        return Objects.requireNonNullElseGet(displayName, () -> Component.text(name));
     }
 
     /**

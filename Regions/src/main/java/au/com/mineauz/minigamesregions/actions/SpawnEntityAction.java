@@ -192,7 +192,7 @@ public class SpawnEntityAction extends AAction {
         final MenuItemBack backButton = new MenuItemBack(m);
         final MenuItemCustom cus = new MenuItemCustom(Material.CHEST, "Entity Settings");
         final MinigamePlayer fply = mgPlayer;
-        cus.setClick(object -> {
+        cus.setClick(() -> {
             if (type.getFlag().equals("ZOMBIE")) {
                 eSet.clearMenu();
                 eSet.addItem(backButton, eSet.getSize() - 9);

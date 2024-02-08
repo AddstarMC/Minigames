@@ -630,10 +630,11 @@ public class Events implements Listener {
                     ItemStack disItem = null;
                     switch (event.getClick()) {
                         case LEFT -> {
-                            if (event.getCursor().getType() != Material.AIR)
+                            if (event.getCursor().getType() != Material.AIR) {
                                 disItem = item.onClickWithItem(event.getCursor());
-                            else
+                            } else {
                                 disItem = item.onClick();
+                            }
                         }
                         case RIGHT -> disItem = item.onRightClick();
                         case SHIFT_LEFT -> disItem = item.onShiftClick();
