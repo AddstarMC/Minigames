@@ -52,7 +52,7 @@ public class WeatherTimeModule extends MinigameModule {
         Menu m = new Menu(6, "Time and Weather", menu.getViewer());
 
         m.addItem(useCustomTime.getMenuItem("Use Custom Time", Material.CLOCK));
-        m.addItem(time.getMenuItem("Time of Day", Material.CLOCK, 0L, 24000L));
+        m.addItem(time.getMenuItem(Material.CLOCK, "Time of Day", 0L, 24000L));
         m.addItem(useCustomWeather.getMenuItem("Use Custom Weather", Material.WATER_BUCKET));
         m.addItem(weather.getMenuItem("Weather Type", Material.WATER_BUCKET));
         m.addItem(new MenuItemBack(menu), m.getSize() - 9);

@@ -7,11 +7,18 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractAction implements ActionInterface {
+public abstract class AAction implements ActionInterface {
+    protected final @NotNull String name;
+
+    protected AAction(@NotNull String name) {
+        this.name = name;
+    }
+
     /**
      * Logs Debug re these 2 items.
      *
@@ -24,6 +31,11 @@ public abstract class AbstractAction implements ActionInterface {
                     + scriptObject.getAsString() + " as Action: " + this + " Player: "
                     + mgPlayer.getAsString());
         }
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return name;
     }
 
     /**

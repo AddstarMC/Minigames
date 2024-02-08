@@ -11,7 +11,10 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,18 +24,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Set;
 
-public class MessageAction extends AbstractAction {
-
+public class MessageAction extends AAction {
     private final StringFlag msg = new StringFlag("Hello World", "message");
 
-    @Override
-    public String getName() {
-        return "MESSAGE";
+    protected MessageAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Minigame Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.MINIGAME;
     }
 
     @Override
@@ -145,7 +151,7 @@ public class MessageAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Options", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.setPreviousPage(previous);
         m.addItem(msg.getMenuItem("Message", Material.PAPER));
         m.addItem(new MenuItemBack(m.getPreviousPage()), m.getSize() - 9);

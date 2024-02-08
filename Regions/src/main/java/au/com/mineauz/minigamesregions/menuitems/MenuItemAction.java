@@ -50,8 +50,8 @@ public class MenuItemAction extends MenuItem {
             String line = ChatColor.GRAY + entry.getKey() + ": ";
 
             // Translate the value
-            if (value instanceof Boolean) {
-                if (((Boolean) value)) {
+            if (value instanceof Boolean bool) {
+                if (bool) {
                     value = ChatColor.GREEN + "True";
                 } else {
                     value = ChatColor.RED + "False";
@@ -91,8 +91,7 @@ public class MenuItemAction extends MenuItem {
 
     @Override
     public ItemStack onRightClick() {
-        if (exec != null)
-            exec.removeAction(act);
+        exec.removeAction(act);
         getContainer().removeItem(getSlot());
         return null;
     }

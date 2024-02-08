@@ -6,6 +6,9 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -16,14 +19,18 @@ import java.util.Map;
 public class SetScoreAction extends ScoreAction {
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
-    @Override
-    public String getName() {
-        return "SET_SCORE";
+    protected SetScoreAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Minigame Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETSCORE_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.MINIGAME;
     }
 
     @Override
@@ -73,10 +80,10 @@ public class SetScoreAction extends ScoreAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Set Score", mgPlayer);
-        m.addItem(amount.getMenuItem("Set Score Amount", Material.ENDER_PEARL, null, null));
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.displayMenu(mgPlayer);
+        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+        menu.addItem(amount.getMenuItem(Material.ENDER_PEARL, "Set Score Amount", null, null));
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.displayMenu(mgPlayer);
         return true;
     }
 

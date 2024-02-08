@@ -80,10 +80,10 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
-        Menu m = new Menu(3, "Teams", menu.getViewer());
-        m.setPreviousPage(menu);
-        m.addItem(enabled.getMenuItem("Enable Resource Pack", Material.MAP));
+    public void addEditMenuOptions(Menu previousMenu) {
+        Menu teamsMenu = new Menu(3, "Teams", previousMenu.getViewer());
+        teamsMenu.setPreviousPage(previousMenu);
+        teamsMenu.addItem(enabled.getMenuItem("Enable Resource Pack", Material.MAP));
         MenuItem item = new MenuItemString(Material.PAPER, "Resource Pack Name", new Callback<>() {
             @Override
             public String getValue() {
@@ -112,11 +112,11 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
                 }
             }
         };
-        m.addItem(item);
-        m.addItem(forced.getMenuItem("Force Resource Pack", Material.SKELETON_SKULL));
-        MenuItemPage p = new MenuItemPage("Resource Pack Options", Material.MAP, m);
-        m.addItem(new MenuItemBack(menu), m.getSize() - 9);
-        menu.addItem(p);
+        teamsMenu.addItem(item);
+        teamsMenu.addItem(forced.getMenuItem(Material.SKELETON_SKULL, "Force Resource Pack"));
+        MenuItemPage p = new MenuItemPage(Material.MAP, "Resource Pack Options", teamsMenu);
+        teamsMenu.addItem(new MenuItemBack(previousMenu), teamsMenu.getSize() - 9);
+        previousMenu.addItem(p);
     }
 
     @Override

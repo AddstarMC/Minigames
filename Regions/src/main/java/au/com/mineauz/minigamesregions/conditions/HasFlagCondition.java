@@ -28,8 +28,8 @@ public class HasFlagCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Player ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -78,9 +78,9 @@ public class HasFlagCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Has Flag", player);
+        Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(flagName.getMenuItem("Flag Name", Material.NAME_TAG));
+        m.addItem(flagName.getMenuItem(Material.NAME_TAG, "Flag Name"));
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

@@ -29,8 +29,8 @@ public class PlayerHealthRangeCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Player ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -79,10 +79,9 @@ public class PlayerHealthRangeCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Health Range", player);
-        m.addItem(minHealth.getMenuItem("Min Health", Material.STONE_SLAB, 0, 20));
-
-        m.addItem(maxHealth.getMenuItem("Max Health", Material.STONE, 0, 20));
+        Menu m = new Menu(3, getDisplayName(), player);
+        m.addItem(minHealth.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_HEALTH_MINIMUM_NAME), 0, 20));
+        m.addItem(maxHealth.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_HEALTH_MAXIMUM_NAME), 0, 20));
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);

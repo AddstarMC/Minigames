@@ -43,8 +43,8 @@ public class ContainsEntityCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "World ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.WORLD;
     }
 
     @Override
@@ -120,13 +120,13 @@ public class ContainsEntityCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu menu = new Menu(3, "Contains Entity", player);
+        Menu menu = new Menu(3, getDisplayName(), player);
 
         menu.addItem(entityType.getMenuItem("Entity Type", Material.CHICKEN_SPAWN_EGG));
         menu.addItem(new MenuItemNewLine());
 
         menu.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        MenuItemString menuItem = (MenuItemString) customName.getMenuItem("Display Name", Material.NAME_TAG, List.of("The name to match.", "Use % to do a wildcard match"));
+        MenuItemString menuItem = (MenuItemString) customName.getMenuItem(Material.NAME_TAG, "Display Name", List.of("The name to match.", "Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         menu.addItem(menuItem);
 

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import net.kyori.adventure.text.Component;
@@ -32,14 +31,8 @@ public class RewardsFlag extends Flag<Rewards> {
     }
 
     @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return new MenuItemDisplayRewards(displayMat, name, getFlag());
-    }
-
-    @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemDisplayRewards getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
         return new MenuItemDisplayRewards(displayMat, name, description, getFlag());
     }
-
 }

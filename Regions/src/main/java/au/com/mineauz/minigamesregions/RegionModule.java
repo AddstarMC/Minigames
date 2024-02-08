@@ -9,7 +9,7 @@ import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
-import au.com.mineauz.minigamesregions.actions.Actions;
+import au.com.mineauz.minigamesregions.actions.ActionRegistry;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
@@ -183,7 +183,7 @@ public class RegionModule extends MinigameModule {
 
                             if (config.contains(path + ".actions")) {
                                 for (String a : config.getConfigurationSection(path + ".actions").getKeys(false)) {
-                                    ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
+                                    ActionInterface ai = ActionRegistry.getActionByName(config.getString(path + ".actions." + a + ".type"));
                                     if (ai != null) {
                                         ai.loadArguments(config, path + ".actions." + a + ".arguments");
                                         rex.addAction(ai);
@@ -241,7 +241,7 @@ public class RegionModule extends MinigameModule {
 
                         if (config.contains(path + ".actions")) {
                             for (String a : config.getConfigurationSection(path + ".actions").getKeys(false)) {
-                                ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
+                                ActionInterface ai = ActionRegistry.getActionByName(config.getString(path + ".actions." + a + ".type"));
                                 ai.loadArguments(config, path + ".actions." + a + ".arguments");
                                 rex.addAction(ai);
                             }

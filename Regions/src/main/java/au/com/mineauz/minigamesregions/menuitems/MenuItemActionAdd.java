@@ -1,17 +1,23 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.actions.ActionFactory;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
-import au.com.mineauz.minigamesregions.actions.Actions;
+import au.com.mineauz.minigamesregions.actions.ActionRegistry;
+import au.com.mineauz.minigamesregions.actions.IActionCategory;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MenuItemActionAdd extends MenuItem {
     private final @NotNull BaseExecutor exec;
@@ -22,35 +28,33 @@ public class MenuItemActionAdd extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
-        Menu m = new Menu(6, "Actions", getContainer().getViewer());
+    public ItemStack onClick() { // miau
+        Menu m = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), getContainer().getViewer());
         m.setPreviousPage(getContainer());
-        Map<String, Menu> cats = new HashMap<>();
-        List<String> acts = new ArrayList<>(Actions.getAllActionNames());
-        Collections.sort(acts);
-        for (String act : acts) {
-            if (Actions.getActionByName(act).useInNodes() || Actions.getActionByName(act).useInRegions()) {
-                String catname = Actions.getActionByName(act).getCategory();
-                if (catname == null) catname = "misc actions";
-                catname = catname.toLowerCase();
-                Menu cat;
-                if (!cats.containsKey(catname)) {
-                    cat = new Menu(6, WordUtils.capitalize(catname), getContainer().getViewer());
-                    cats.put(catname, cat);
-                    m.addItem(new MenuItemPage(WordUtils.capitalize(catname), Material.CHEST, cat));
-                    cat.addItem(new MenuItemBack(m), cat.getSize() - 9);
-                } else
-                    cat = cats.get(catname);
-                MenuItemCustom c = new MenuItemCustom(Material.PAPER, WordUtils.capitalize(act));
-                final String fact = act;
-                c.setClick(object -> {
-                    ActionInterface action = Actions.getActionByName(fact);
+        Map<IActionCategory, Menu> cats = new HashMap<>();
+        List<ActionFactory> acts = new ArrayList<>(ActionRegistry.getAllActionFactorys());
+        for (ActionFactory factory : acts) {
+            final ActionInterface action = factory.makeNewAction();
+            if (action.useInNodes() || action.useInRegions()) {
+                IActionCategory category = action.getCategory();
+                Menu menuCat;
+                if (!cats.containsKey(category)) {
+                    menuCat = new Menu(6, category.getDisplayName(), getContainer().getViewer());
+                    cats.put(category, menuCat);
+                    m.addItem(new MenuItemPage(Material.CHEST, category.getDisplayName(), menuCat));
+                    menuCat.addItem(new MenuItemBack(m), menuCat.getSize() - 9);
+                } else {
+                    menuCat = cats.get(category);
+                }
+
+                MenuItemCustom menuItemCustom = new MenuItemCustom(Material.PAPER, action.getDisplayname());
+                menuItemCustom.setClick(object -> {
                     exec.addAction(action);
-                    getContainer().addItem(new MenuItemAction(Material.PAPER, WordUtils.capitalize(fact), exec, action));
+                    getContainer().addItem(new MenuItemAction(Material.PAPER, action.getDisplayname(), exec, action));
                     getContainer().displayMenu(getContainer().getViewer());
                     return null;
                 });
-                cat.addItem(c);
+                menuCat.addItem(menuItemCustom);
             }
         }
         m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);

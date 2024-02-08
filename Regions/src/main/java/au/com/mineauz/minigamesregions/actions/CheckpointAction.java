@@ -4,22 +4,29 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class CheckpointAction extends AbstractAction {
+public class CheckpointAction extends AAction {
 
-    @Override
-    public String getName() {
-        return "CHECKPOINT";
+    protected CheckpointAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Minigame Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_CHECKPOINT_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.MINIGAME;
     }
 
     @Override

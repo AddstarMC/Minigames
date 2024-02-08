@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 public class Node implements ExecutableScriptObject {
-
     private final String name;
     private final List<NodeExecutor> executors = new ArrayList<>();
     private Location loc;

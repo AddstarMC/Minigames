@@ -7,9 +7,12 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -20,19 +23,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class TriggerRandomAction extends AbstractAction {
-
+public class TriggerRandomAction extends AAction {
     private final IntegerFlag timesTriggered = new IntegerFlag(1, "timesTriggered");
     private final BooleanFlag randomPerTrigger = new BooleanFlag(false, "randomPerTrigger");
 
-    @Override
-    public String getName() {
-        return "TRIGGER_RANDOM";
+    protected TriggerRandomAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Region/Node Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.REGION_NODE;
     }
 
     @Override
@@ -80,7 +86,7 @@ public class TriggerRandomAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) { //todo regions and nodes need another interface, so this can be one methode.
         debug(mgPlayer, node);
         List<NodeExecutor> exs = new ArrayList<>();
         for (NodeExecutor ex : node.getExecutors()) {
@@ -121,10 +127,10 @@ public class TriggerRandomAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Trigger Random", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(timesTriggered.getMenuItem("Times to Trigger Random", Material.COMMAND_BLOCK, 1, null));
-        m.addItem(randomPerTrigger.getMenuItem("Allow Same Executor", Material.ENDER_PEARL,
+        m.addItem(timesTriggered.getMenuItem(Material.COMMAND_BLOCK, "Times to Trigger Random", 1, null));
+        m.addItem(randomPerTrigger.getMenuItem(Material.ENDER_PEARL, "Allow Same Executor",
                 List.of("Should there be a chance", "that the same executor", "can be triggered more?")));
         m.displayMenu(mgPlayer);
         return true;

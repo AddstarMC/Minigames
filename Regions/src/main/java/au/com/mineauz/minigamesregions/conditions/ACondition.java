@@ -17,12 +17,11 @@ import java.util.Map;
 
 public abstract class ACondition {
     protected @NotNull String name;
+    private final BooleanFlag invert = new BooleanFlag(false, "invert");
 
     protected ACondition(@NotNull String name) {
         this.name = name;
     }
-
-    private final BooleanFlag invert = new BooleanFlag(false, "invert");
 
     protected void addInvertMenuItem(Menu m) {
         m.addItem(invert.getMenuItem("Invert", Material.ENDER_PEARL), m.getSize() - 1);
@@ -46,7 +45,7 @@ public abstract class ACondition {
 
     public abstract @NotNull Component getDisplayName();
 
-    public abstract String getCategory();
+    public abstract @NotNull IConditionCategory getCategory();
 
     public abstract boolean useInRegions();
 

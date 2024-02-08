@@ -36,8 +36,8 @@ public class MatchTeamCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Team ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.TEAM;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class MatchTeamCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Match Team", player);
+        Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
 
         List<String> teams = new ArrayList<>(TeamColor.validColorNames());

@@ -48,8 +48,8 @@ public class PlayerHasItemCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Player ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -180,7 +180,6 @@ public class PlayerHasItemCondition extends ACondition {
 
         StringBuffer buffer = new StringBuffer();
         int start = 0;
-        int index = 0;
 
         createPattern(name, buffer, start);
 
@@ -251,7 +250,7 @@ public class PlayerHasItemCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Player Has Item", player);
+        Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.addItem(type.getMenuItem("Item"));
         m.addItem(new MenuItemList<String>("Search Where", Material.COMPASS, new Callback<>() {
@@ -265,16 +264,17 @@ public class PlayerHasItemCondition extends ACondition {
                 where.setFlag(value.toUpperCase());
             }
         }, Arrays.asList("Anywhere", "Hotbar", "Main", "Armor", "Slot")));
-        m.addItem(slot.getMenuItem("Slot", Material.DIAMOND, 0, 35));
+
+        m.addItem(slot.getMenuItem(Material.DIAMOND, "Slot", 0, 35));
         m.addItem(new MenuItemNewLine());
 
         m.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        MenuItemString menuItem = (MenuItemString) name.getMenuItem("Display Name", Material.NAME_TAG, List.of("The name to match.", "Use % to do a wildcard match"));
+        MenuItemString menuItem = name.getMenuItem(Material.NAME_TAG, "Display Name", List.of("The name to match.", "Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         m.addItem(menuItem);
 
-        m.addItem(matchLore.getMenuItem("Match Lore", Material.BOOK));
-        menuItem = (MenuItemString) lore.getMenuItem("Lore", Material.BOOK, List.of("The lore to match. Separate", "with semi-colons", "for new lines.", "Use % to do a wildcard match"));
+        m.addItem(matchLore.getMenuItem(Material.BOOK, "Match Lore"));
+        menuItem = lore.getMenuItem(Material.WRITTEN_BOOK, "Lore", List.of("The lore to match. Separate", "with semi-colons", "for new lines.", "Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         m.addItem(menuItem);
 

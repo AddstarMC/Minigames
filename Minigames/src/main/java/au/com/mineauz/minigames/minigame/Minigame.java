@@ -1093,20 +1093,20 @@ public class Minigame implements ScriptObject {
         obj.setAllowNull(true);
         itemsMain.add(obj);
         itemsMain.add(new MenuItemNewLine());
-        itemsMain.add(minScore.getMenuItem("Min. Score", Material.STONE_SLAB, List.of("Multiplayer Only")));
-        itemsMain.add(maxScore.getMenuItem("Max. Score", Material.STONE, List.of("Multiplayer Only")));
-        itemsMain.add(minPlayers.getMenuItem("Min. Players", Material.STONE_SLAB, List.of("Multiplayer Only")));
-        itemsMain.add(maxPlayers.getMenuItem("Max. Players", Material.STONE, List.of("Multiplayer Only")));
+        itemsMain.add(minScore.getMenuItem(Material.STONE_SLAB, "Min. Score", List.of("Multiplayer Only")));
+        itemsMain.add(maxScore.getMenuItem(Material.STONE, "Max. Score", List.of("Multiplayer Only")));
+        itemsMain.add(minPlayers.getMenuItem(Material.STONE_SLAB, "Min. Players", List.of("Multiplayer Only")));
+        itemsMain.add(maxPlayers.getMenuItem(Material.STONE, "Max. Players", List.of("Multiplayer Only")));
         itemsMain.add(spMaxPlayers.getMenuItem("Enable Singleplayer Max Players", Material.IRON_BARS));
         itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.OAK_SIGN));
         itemsMain.add(new MenuItemPage("Lobby Settings", List.of("Multiplayer Only"), Material.OAK_DOOR, lobby));
         itemsMain.add(new MenuItemNewLine());
-        itemsMain.add(timer.getMenuItem("Time Length", List.of("Multiplayer Only"), Material.CLOCK, 0, null));
+        itemsMain.add(timer.getMenuItem(List.of("Multiplayer Only"), "Time Length", Material.CLOCK, 0, null));
         itemsMain.add(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
-        itemsMain.add(startWaitTime.getMenuItem("Start Wait Time", List.of("Multiplayer Only"), Material.CLOCK, 3, null));
+        itemsMain.add(startWaitTime.getMenuItem(List.of("Multiplayer Only"), "Start Wait Time", Material.CLOCK, 3, null));
         itemsMain.add(showCompletionTime.getMenuItem("Show completion time", Material.PAPER));
-        itemsMain.add(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH, List.of("Multiplayer Only")));
-        itemsMain.add(randomizeStart.getMenuItem("Randomize Start Point", Material.LIGHT_BLUE_GLAZED_TERRACOTTA, List.of("The location will be", "chosen at random", "from global or team lists.")));
+        itemsMain.add(lateJoin.getMenuItem(Material.DEAD_BUSH, "Allow Late Join", List.of("Multiplayer Only")));
+        itemsMain.add(randomizeStart.getMenuItem(Material.LIGHT_BLUE_GLAZED_TERRACOTTA, "Randomize Start Point", List.of("The location will be", "chosen at random", "from global or team lists.")));
         itemsMain.add(new MenuItemDisplayWhitelist(Material.CHEST, "Block Whitelist/Blacklist", List.of("Blocks that can/can't", "be broken"),
                 getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(), List.of("If whitelist mode only", "added items can be", "broken.")));
         itemsMain.add(new MenuItemNewLine());
@@ -1134,10 +1134,10 @@ public class Minigame implements ScriptObject {
         degenRandDes.add("Chance of block being");
         degenRandDes.add("removed on random");
         degenRandDes.add("degeneration.");
-        itemsMain.add(degenRandomChance.getMenuItem("Random Floor Degen Chance", Material.SNOW, degenRandDes, 1, 100));
-        itemsMain.add(floorDegenTime.getMenuItem("Floor Degenerator Delay", Material.CLOCK, 1L, null));
-        itemsMain.add(regenDelay.getMenuItem("Regeneration Delay",
-                List.of("Time in seconds before", "Minigame regeneration starts"), Material.CLOCK, 0, null));
+        itemsMain.add(degenRandomChance.getMenuItem(Material.SNOW, "Random Floor Degen Chance", degenRandDes, 1, 100));
+        itemsMain.add(floorDegenTime.getMenuItem(Material.CLOCK, "Floor Degenerator Delay", 1L, null));
+        itemsMain.add(regenDelay.getMenuItem(List.of("Time in seconds before", "Minigame regeneration starts"), "Regeneration Delay",
+                Material.CLOCK, 0, null));
         itemsMain.add(new MenuItemNewLine());
         itemsMain.add(new MenuItemPage("Player Settings", Material.SKELETON_SKULL, playerMenu));
 //      List<String> thDes = new ArrayList<>();
@@ -1152,13 +1152,13 @@ public class Minigame implements ScriptObject {
         List<String> rndChstDes = new ArrayList<>();
         rndChstDes.add("Randomize items in");
         rndChstDes.add("chest upon first opening");
-        itemsMain.add(randomizeChests.getMenuItem("Randomize Chests", Material.CHEST, rndChstDes));
+        itemsMain.add(randomizeChests.getMenuItem(Material.CHEST, "Randomize Chests", rndChstDes));
         rndChstDes.clear();
         rndChstDes.add("Min. item randomization");
-        itemsMain.add(minChestRandom.getMenuItem("Min. Chest Random", Material.OAK_STAIRS, rndChstDes, 0, null));
+        itemsMain.add(minChestRandom.getMenuItem(Material.OAK_STAIRS, "Min. Chest Random", rndChstDes, 0, null));
         rndChstDes.clear();
         rndChstDes.add("Max. item randomization");
-        itemsMain.add(maxChestRandom.getMenuItem("Max. Chest Random", Material.STONE, rndChstDes, 0, null));
+        itemsMain.add(maxChestRandom.getMenuItem(Material.STONE, "Max. Chest Random", rndChstDes, 0, null));
         itemsMain.add(new MenuItemStatisticsSettings(Material.WRITABLE_BOOK, "Stat Settings", this));
         itemsMain.add(new MenuItemNewLine());
 
@@ -1206,19 +1206,19 @@ public class Minigame implements ScriptObject {
         itemsPlayer.add(blockBreak.getMenuItem("Allow Block Break", Material.DIAMOND_PICKAXE));
         itemsPlayer.add(blockPlace.getMenuItem("Allow Block Place", Material.STONE));
         itemsPlayer.add(blocksDrop.getMenuItem("Allow Block Drops", Material.COBBLESTONE));
-        itemsPlayer.add(lives.getMenuItem("Lives", Material.APPLE, null));
+        itemsPlayer.add(lives.getMenuItem(Material.APPLE, "Lives", null));
         itemsPlayer.add(paintBallMode.getMenuItem("Paintball Mode", Material.SNOWBALL));
-        itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, null));
+        itemsPlayer.add(paintBallDamage.getMenuItem(Material.ARROW, "Paintball Damage", 1, null));
         itemsPlayer.add(unlimitedAmmo.getMenuItem("Unlimited Ammo", Material.SNOW_BLOCK));
         itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.OAK_SIGN));
-        itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", Material.OAK_SIGN, List.of("Singleplayer Only")));
+        itemsPlayer.add(saveCheckpoints.getMenuItem(Material.OAK_SIGN, "Save Checkpoints", List.of("Singleplayer Only")));
         itemsPlayer.add(new MenuItemPage("Flags", List.of("Singleplayer flags"), Material.OAK_SIGN, flags));
-        itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, List.of("Allow flight to", "be toggled")));
-        itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, List.of("Start players", "in flight", "(Must have Allow", "Flight)")));
+        itemsPlayer.add(allowFlight.getMenuItem(Material.FEATHER, "Allow Flight", List.of("Allow flight to", "be toggled")));
+        itemsPlayer.add(enableFlight.getMenuItem(Material.FEATHER, "Enable Flight", List.of("Start players", "in flight", "(Must have Allow", "Flight)")));
         itemsPlayer.add(allowDragonEggTeleport.getMenuItem("Allow Dragon Egg Teleport", Material.DRAGON_EGG));
-        itemsPlayer.add(usePlayerDisplayNames.getMenuItem("Use Players Display Names", Material.POTATO, List.of("Use Player Nicks or Real Names")));
-        itemsPlayer.add(showPlayerBroadcasts.getMenuItem("Show Join/Exit Broadcasts", Material.PAPER, List.of("Show Join and Exit broadcasts", "Plus other Player broadcasts")));
-        itemsPlayer.add(showCTFBroadcasts.getMenuItem("Show CTF Broadcasts", Material.PAPER, List.of("Show Flag captures and home returns")));
+        itemsPlayer.add(usePlayerDisplayNames.getMenuItem(Material.POTATO, "Use Players Display Names", List.of("Use Player Nicks or Real Names")));
+        itemsPlayer.add(showPlayerBroadcasts.getMenuItem(Material.PAPER, "Show Join/Exit Broadcasts", List.of("Show Join and Exit broadcasts", "Plus other Player broadcasts")));
+        itemsPlayer.add(showCTFBroadcasts.getMenuItem(Material.PAPER, "Show CTF Broadcasts", List.of("Show Flag captures and home returns")));
         itemsPlayer.add(keepInventory.getMenuItem("Keep Inventory", Material.ZOMBIE_HEAD));
         itemsPlayer.add(friendlyFireSplashPotions.getMenuItem("Allow friendly fire with splash potions", Material.SPLASH_POTION));
         itemsPlayer.add(friendlyFireLingeringPotions.getMenuItem("Allow friendly fire with lingering potions", Material.LINGERING_POTION));

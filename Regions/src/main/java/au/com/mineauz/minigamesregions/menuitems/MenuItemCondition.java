@@ -58,7 +58,7 @@ public class MenuItemCondition extends MenuItem {
         int lineLimit = 35;
 
         // Convert the description
-        List<String> description = Lists.newArrayList();
+        List<Component> description = Lists.newArrayList();
         for (Entry<String, Object> entry : out.entrySet()) {
             Object value = entry.getValue();
             String line = ChatColor.GRAY + entry.getKey() + ": ";

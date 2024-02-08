@@ -13,6 +13,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -21,19 +22,22 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class TakeItemAction extends AbstractAction {
-
+public class TakeItemAction extends AAction {
     private final StringFlag type = new StringFlag("STONE", "type");
     private final IntegerFlag count = new IntegerFlag(1, "count");
 
-    @Override
-    public String getName() {
-        return "TAKE_ITEM";
+    protected TakeItemAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Player Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.PLAYER;
     }
 
     @Override
@@ -111,10 +115,10 @@ public class TakeItemAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Take Item", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
 
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemString("Type", Material.STONE, new Callback<>() {
+        m.addItem(new MenuItemString(Material.STONE, "Type", new Callback<>() {
 
             @Override
             public String getValue() {
@@ -131,7 +135,7 @@ public class TakeItemAction extends AbstractAction {
                 }
             }
         }));
-        m.addItem(count.getMenuItem("Count", Material.STONE_SLAB, 1, 64));
+        m.addItem(count.getMenuItem(Material.STONE_SLAB, "Count", 1, 64));
         m.displayMenu(mgPlayer);
         return true;
     }

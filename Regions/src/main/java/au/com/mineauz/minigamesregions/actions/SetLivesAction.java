@@ -5,6 +5,9 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,17 +18,21 @@ import java.util.Map;
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 6/11/2017.
  */
-public class SetLives extends AbstractAction { //todo unused!
+public class SetLivesAction extends AAction { //todo unused!
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
-    @Override
-    public String getName() {
-        return "SET_LIVES";
+    protected SetLivesAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Minigame Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETLIVES_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.MINIGAME;
     }
 
     @Override

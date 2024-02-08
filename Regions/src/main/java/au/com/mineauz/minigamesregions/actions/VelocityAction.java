@@ -7,6 +7,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,20 +19,23 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class VelocityAction extends AbstractAction {
-
+public class VelocityAction extends AAction {
     private final FloatFlag x = new FloatFlag(0f, "xv");
     private final FloatFlag y = new FloatFlag(5f, "yv");
     private final FloatFlag z = new FloatFlag(0f, "zv");
 
-    @Override
-    public String getName() {
-        return "VELOCITY";
+    protected VelocityAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Player Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.PLAYER;
     }
 
     @Override
@@ -80,11 +86,11 @@ public class VelocityAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Velocity", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(x.getMenuItem("X Velocity", Material.STONE, 0.5d, 1d, null, null));
-        m.addItem(y.getMenuItem("Y Velocity", Material.STONE, 0.5d, 1d, null, null));
-        m.addItem(z.getMenuItem("Z Velocity", Material.STONE, 0.5d, 1d, null, null));
+        m.addItem(x.getMenuItem(Material.STONE, "X Velocity", 0.5d, 1d, null, null));
+        m.addItem(y.getMenuItem(Material.STONE, "Y Velocity", 0.5d, 1d, null, null));
+        m.addItem(z.getMenuItem(Material.STONE, "Z Velocity", 0.5d, 1d, null, null));
         m.displayMenu(mgPlayer);
         return true;
     }

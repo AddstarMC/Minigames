@@ -7,8 +7,11 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.RegionModule;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -16,18 +19,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class TriggerNodeAction extends AbstractAction {
-
+public class TriggerNodeAction extends AAction { // todo merge with TriggerRegion
     private final StringFlag node = new StringFlag("None", "node");
 
-    @Override
-    public String getName() {
-        return "TRIGGER_NODE";
+    protected TriggerNodeAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Remote Trigger Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERNODE_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.REMOTE;
     }
 
     @Override
@@ -84,9 +90,9 @@ public class TriggerNodeAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Trigger Node", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(node.getMenuItem("Node Name", Material.ENDER_EYE));
+        m.addItem(node.getMenuItem(Material.NAME_TAG, "Node Name"));
         m.displayMenu(mgPlayer);
         return true;
     }

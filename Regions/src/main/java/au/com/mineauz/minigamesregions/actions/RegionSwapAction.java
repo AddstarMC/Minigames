@@ -16,6 +16,7 @@ import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -34,19 +35,23 @@ import java.util.Map;
  * <p>
  * It allows to have template regions that can be copied into game or two switch two regions.
  */
-public class RegionSwapAction extends AbstractAction {
+public class RegionSwapAction extends AAction {
     private final StringFlag fromRegion = new StringFlag("", "fromRegion");
     private final StringFlag toRegion = new StringFlag("", "toRegion");
     private final BooleanFlag swapRegion = new BooleanFlag(true, "swapRegion");
 
-    @Override
-    public String getName() {
-        return "REGION_SWAP_ACTION";
+    protected RegionSwapAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Block Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.BLOCK;
     }
 
     @Override
@@ -179,7 +184,7 @@ public class RegionSwapAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Trigger Node", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(fromRegion.getMenuItem("From Region Name", Material.ENDER_EYE));
         m.addItem(swapRegion.getMenuItem("Swap Regions?", Material.ENDER_PEARL));

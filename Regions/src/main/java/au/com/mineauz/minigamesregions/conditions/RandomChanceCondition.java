@@ -29,8 +29,8 @@ public class RandomChanceCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Misc ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.MISC;
     }
 
     @Override
@@ -78,9 +78,9 @@ public class RandomChanceCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Random Chance", player);
+        Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(chance.getMenuItem("Percentage Chance", Material.ENDER_EYE, 1, 99));
+        m.addItem(chance.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_RNDCHANCE_SETPERCENT_NAME), 1, 99));
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

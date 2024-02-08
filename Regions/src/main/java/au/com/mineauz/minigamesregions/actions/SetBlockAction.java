@@ -10,6 +10,9 @@ import au.com.mineauz.minigames.menu.MenuItemBlockData;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -21,19 +24,23 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 //todo
-public class SetBlockAction extends AbstractAction {
+public class SetBlockAction extends AAction {
     private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
     private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");//todo rename flag
     private final IntegerFlag dur = new IntegerFlag(0, "dur");
 
-    @Override
-    public String getName() {
-        return "SET_BLOCK";
+    protected SetBlockAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Block Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.BLOCK;
     }
 
     @Override
@@ -108,7 +115,7 @@ public class SetBlockAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Set Block", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemBlockData(Material.STONE, "Type", new Callback<>() {
             @Override

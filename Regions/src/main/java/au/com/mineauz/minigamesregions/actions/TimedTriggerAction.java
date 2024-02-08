@@ -9,7 +9,9 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.*;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,19 +26,23 @@ import java.util.Map;
  *
  * @author <a href="https://github.com/Turidus/Minigames">Turidus</a>
  */
-public class TimedTriggerAction extends AbstractAction {
+public class TimedTriggerAction extends AAction {
     private final StringFlag toTrigger = new StringFlag("None", "toTrigger");
     private final BooleanFlag isRegion = new BooleanFlag(false, "isRegion");
     private final IntegerFlag delay = new IntegerFlag(20, "delay");
 
-    @Override
-    public String getName() {
-        return "TIMED_TRIGGER";
+    protected TimedTriggerAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Remote Trigger Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.REMOTE;
     }
 
     @Override
@@ -100,7 +106,7 @@ public class TimedTriggerAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Timed Trigger", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(toTrigger.getMenuItem("Object Name", Material.ENDER_EYE));
         m.addItem(isRegion.getMenuItem("Is Region?", Material.ENDER_PEARL));

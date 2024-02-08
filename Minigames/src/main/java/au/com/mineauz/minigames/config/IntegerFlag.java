@@ -30,23 +30,23 @@ public class IntegerFlag extends Flag<Integer> {
 
     @Deprecated
     @Override
-    public MenuItemInteger getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return getMenuItem(name, displayMat, 0, null);
+    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, 0, null);
     }
 
-    public MenuItemInteger getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                        @Nullable Integer min, @Nullable Integer max) {
-        return getMenuItem(name, displayMat, null, min, max);
+        return getMenuItem(displayMat, name, null, min, max);
     }
 
     @Deprecated
     @Override
-    public MenuItemInteger getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                        @Nullable List<@NotNull Component> description) {
-        return getMenuItem(name, displayMat, description, 0, null);
+        return getMenuItem(displayMat, name, description, 0, null);
     }
 
-    public MenuItemInteger getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                        @Nullable List<@NotNull Component> description, @Nullable Integer min, @Nullable Integer max) {
         return new MenuItemInteger(displayMat, name, description, new Callback<>() {
 

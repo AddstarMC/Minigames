@@ -8,7 +8,6 @@ import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemConditionAdd;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,42 +30,34 @@ public class ConditionRegistry {
         conditions.put(conditionFactory.getName(), conditionFactory);
     }
 
-    public static boolean hasCondition(String condition) {
-        return conditions.containsKey(condition.toUpperCase());
-    }
-
     public static @Nullable ACondition getConditionByName(@NotNull String name) {
-        if (hasCondition(name.toUpperCase())) {
-            return conditions.get(name.toUpperCase()).makeNewCondition();
-        }
-        return null;
+        ConditionFactory factory = conditions.get(name.toUpperCase());
+        return factory != null ? factory.makeNewCondition() : null;
     }
 
     public static Set<ACondition> getAllConditions() {
         return conditions.values().stream().map(ConditionFactory::makeNewCondition).collect(Collectors.toSet());
     }
 
-    public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev) {
-        Menu m = new Menu(3, "ConditionRegistry", player);
+    public static void displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull RegionExecutor exec, @NotNull Menu prev) {
+        Menu m = new Menu(3, "Conditions", mgPlayer);
         m.setPreviousPage(prev);
         for (ACondition con : exec.getConditions()) {
-            m.addItem(new MenuItemCondition(WordUtils.capitalize(con.getName()), Material.PAPER, exec, con));
+            m.addItem(new MenuItemCondition(Material.PAPER, con.getDisplayName(), exec, con));
         }
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(new MenuItemConditionAdd("Add Condition", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);
-        m.displayMenu(player);
+        m.addItem(new MenuItemConditionAdd(MenuUtility.getCreateMaterial(), "Add Condition", exec), m.getSize() - 1);
+        m.displayMenu(mgPlayer);
     }
 
-    public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev) {
-        Menu m = new Menu(3, "ConditionRegistry", player);
+    public static void displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull NodeExecutor exec, @NotNull Menu prev) {
+        Menu m = new Menu(3, "Conditions", mgPlayer);
         m.setPreviousPage(prev);
         for (ACondition con : exec.getConditions()) {
-            m.addItem(new MenuItemCondition(WordUtils.capitalize(con.getName()), Material.PAPER, exec, con));
+            m.addItem(new MenuItemCondition(Material.PAPER, con.getDisplayName(), exec, con));
         }
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(new MenuItemConditionAdd("Add Condition", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);
-        m.displayMenu(player);
+        m.addItem(new MenuItemConditionAdd(MenuUtility.getCreateMaterial(), "Add Condition", exec), m.getSize() - 1);
+        m.displayMenu(mgPlayer);
     }
-
-
 }

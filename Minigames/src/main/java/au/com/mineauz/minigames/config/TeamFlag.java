@@ -65,13 +65,13 @@ public class TeamFlag extends Flag<Team> {
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return null; //TODO: Menu Item
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                           @Nullable List<@NotNull Component> description) {
         return null;
     }

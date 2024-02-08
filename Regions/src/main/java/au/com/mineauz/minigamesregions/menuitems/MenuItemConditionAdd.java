@@ -1,12 +1,14 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
+import au.com.mineauz.minigamesregions.conditions.IConditionCategory;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -32,9 +34,9 @@ public class MenuItemConditionAdd extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        Menu m = new Menu(6, "ConditionRegistry", getContainer().getViewer());
-        m.setPreviousPage(getContainer());
-        Map<String, Menu> cats = new HashMap<>();
+        Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), getContainer().getViewer());
+        menu.setPreviousPage(getContainer());
+        Map<IConditionCategory, Menu> cats = new HashMap<>();
         List<ACondition> cons = new ArrayList<>(ConditionRegistry.getAllConditions());
         for (ACondition condition : cons) {
             if ((condition.useInNodes() && nexec != null) || (condition.useInRegions() && rexec != null)) {
@@ -43,19 +45,16 @@ public class MenuItemConditionAdd extends MenuItem {
                         continue;
                     }
                 }
-                String catname = condition.getCategory();
-                if (catname == null) {
-                    catname = "misc conditions";
-                }
-                catname = catname.toLowerCase();
-                Menu cat;
-                if (!cats.containsKey(catname)) {
-                    cat = new Menu(6, WordUtils.capitalize(catname), getContainer().getViewer());
-                    cats.put(catname, cat);
-                    m.addItem(new MenuItemPage(Material.CHEST, WordUtils.capitalize(catname), cat));
-                    cat.addItem(new MenuItemBack(m), cat.getSize() - 9);
+
+                IConditionCategory category = condition.getCategory();
+                Menu catMenu;
+                if (!cats.containsKey(category)) {
+                    catMenu = new Menu(6, category.getDisplayName(), getContainer().getViewer());
+                    cats.put(category, catMenu);
+                    menu.addItem(new MenuItemPage(Material.CHEST, category.getDisplayName(), catMenu));
+                    catMenu.addItem(new MenuItemBack(menu), catMenu.getSize() - 9);
                 } else
-                    cat = cats.get(catname);
+                    catMenu = cats.get(category);
                 MenuItemCustom menuItemCustom = new MenuItemCustom(Material.PAPER, condition.getDisplayName());
 
                 menuItemCustom.setClick(object -> {
@@ -69,12 +68,11 @@ public class MenuItemConditionAdd extends MenuItem {
                     getContainer().displayMenu(getContainer().getViewer());
                     return null;
                 });
-                cat.addItem(menuItemCustom);
+                catMenu.addItem(menuItemCustom);
             }
         }
-        m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
-        m.displayMenu(getContainer().getViewer());
+        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
+        menu.displayMenu(getContainer().getViewer());
         return null;
     }
-
 }

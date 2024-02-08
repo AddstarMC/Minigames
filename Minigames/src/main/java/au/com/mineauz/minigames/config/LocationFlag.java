@@ -42,13 +42,13 @@ public class LocationFlag extends Flag<Location> {
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return getMenuItem(name, displayMat, null);
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                           @Nullable List<@Nullable Component> description) {
         return null;
     }

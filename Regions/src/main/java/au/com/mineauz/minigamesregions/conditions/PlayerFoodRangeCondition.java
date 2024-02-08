@@ -29,8 +29,8 @@ public class PlayerFoodRangeCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Player ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -78,9 +78,9 @@ public class PlayerFoodRangeCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "XP Range", player);
-        m.addItem(min.getMenuItem("Min Food", Material.STONE_SLAB, 0, 20));
-        m.addItem(max.getMenuItem("Max Food", Material.STONE, 0, 20));
+        Menu m = new Menu(3, getDisplayName(), player);
+        m.addItem(min.getMenuItem(Material.STONE_SLAB, "Min Food", 0, 20));
+        m.addItem(max.getMenuItem(Material.STONE, "Max Food", 0, 20));
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);

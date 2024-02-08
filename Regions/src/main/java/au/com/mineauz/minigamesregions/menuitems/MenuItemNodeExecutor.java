@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
-import au.com.mineauz.minigamesregions.actions.Actions;
+import au.com.mineauz.minigamesregions.actions.ActionRegistry;
 import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
@@ -20,7 +20,7 @@ public class MenuItemNodeExecutor extends MenuItem {
     private final @NotNull NodeExecutor ex;
 
     public MenuItemNodeExecutor(@NotNull Node node, @NotNull NodeExecutor ex) {
-        super(Material.ENDER_PEARL, "Node Executor:");
+        super(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_NODEEXECUTOR_NAME));
         this.node = node;
         this.ex = ex;
         setDescription(List.of(
@@ -36,14 +36,14 @@ public class MenuItemNodeExecutor extends MenuItem {
         Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_NAME), fviewer);
         final Menu ffm = m;
 
-        MenuItemCustom ca = new MenuItemCustom(Material.CHEST, "Actions");
+        MenuItemCustom ca = new MenuItemCustom(Material.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME));
         ca.setClick(object -> {
-            Actions.displayMenu(fviewer, ex, ffm);
+            ActionRegistry.displayMenu(fviewer, ex, ffm);
             return null;
         });
         m.addItem(ca);
 
-        MenuItemCustom c2 = new MenuItemCustom(Material.CHEST, "ConditionRegistry");
+        MenuItemCustom c2 = new MenuItemCustom(Material.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME));
         c2.setClick(object -> {
             ConditionRegistry.displayMenu(fviewer, ex, ffm);
             return null;
@@ -52,13 +52,15 @@ public class MenuItemNodeExecutor extends MenuItem {
 
         m.addItem(new MenuItemNewLine());
 
-        m.addItem(new MenuItemInteger(Material.STONE, "Trigger Count",
-                List.of("Number of times this", "node can be", "triggered"),
+        m.addItem(new MenuItemInteger(Material.STONE,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_NAME),
+                List.of("Number of times this", "executor can be", "triggered"),
                 ex.getTriggerCountCallback(), 0, null));
 
-        m.addItem(new MenuItemBoolean("Trigger Per Player",
-                List.of("Whether this node", "is triggered per player", "or just on count"),
-                Material.ENDER_PEARL, ex.getIsTriggerPerPlayerCallback()));
+        m.addItem(new MenuItemBoolean(Material.ENDER_PEARL,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
+                List.of("Whether this executor", "is triggered per player", "or just on count"),
+                ex.getIsTriggerPerPlayerCallback()));
         m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
         m.displayMenu(fviewer);
         return null;

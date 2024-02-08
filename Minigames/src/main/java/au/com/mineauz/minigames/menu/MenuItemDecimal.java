@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class MenuItemDecimal extends MenuItem {
-    final static Pattern DOUBLE_PATTERN = Pattern.compile("-?[0-9]+(.[0-9]+)?");
+    final static Pattern DOUBLE_PATTERN = Pattern.compile("[+-]?[0-9]+(.[0-9]+)?");
 
     protected final @NotNull Callback<Double> value;
     private final double lowerInc;

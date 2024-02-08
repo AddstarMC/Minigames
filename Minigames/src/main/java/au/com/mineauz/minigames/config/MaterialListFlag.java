@@ -52,7 +52,7 @@ public class MaterialListFlag extends Flag<List<Material>> {
     }
 
     @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
         return null;
     }

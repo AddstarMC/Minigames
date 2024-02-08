@@ -36,8 +36,8 @@ public class MatchBlockCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "World ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.WORLD;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class MatchBlockCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Match Block", player);
+        Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         final MenuItemCustom autoSetBlockMenuItem = new MenuItemCustom(Material.ITEM_FRAME, "Auto Set Block",
                 List.of("Click here with a", "block you wish to", "match to."));

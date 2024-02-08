@@ -26,8 +26,8 @@ public class ContainsEntireTeamCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Team ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.TEAM;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ContainsEntireTeamCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu menu = new Menu(3, "Contains Entire Team", player);
+        Menu menu = new Menu(3, getDisplayName(), player);
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
         menu.displayMenu(player);

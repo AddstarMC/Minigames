@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,9 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public interface ActionInterface {
-    String getName();
+    @NotNull String getName();
 
-    String getCategory();
+    @NotNull Component getDisplayname();
+
+    @NotNull IActionCategory getCategory();
 
     void describe(Map<String, Object> out);
 

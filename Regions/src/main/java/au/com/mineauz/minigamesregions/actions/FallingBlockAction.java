@@ -4,6 +4,9 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,16 +15,20 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class FallingBlockAction extends AbstractAction {
+public class FallingBlockAction extends AAction {
 
-    @Override
-    public String getName() {
-        return "FALLING_BLOCK";
+    protected FallingBlockAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "World Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_FALLINGBLOCK_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.WORLD;
     }
 
     @Override

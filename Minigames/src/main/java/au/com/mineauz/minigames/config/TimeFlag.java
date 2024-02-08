@@ -30,23 +30,23 @@ public class TimeFlag extends Flag<Long> {
 
     @Deprecated
     @Override
-    public MenuItemTime getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return getMenuItem(name, displayMat, null);
+    public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
-    public MenuItemTime getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                     @Nullable Long min, @Nullable Long max) {
-        return getMenuItem(name, displayMat, null, min, max);
+        return getMenuItem(displayMat, name, null, min, max);
     }
 
     @Deprecated
     @Override
-    public MenuItemTime getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                     @Nullable List<@NotNull Component> description) {
-        return getMenuItem(name, displayMat, description, 0L, null);
+        return getMenuItem(displayMat, name, description, 0L, null);
     }
 
-    public MenuItemTime getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                     @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
         return new MenuItemTime(displayMat, name, description, new Callback<>() {
 

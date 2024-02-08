@@ -74,13 +74,13 @@ public class RegionFlag extends Flag<MgRegion> {
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return null;
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                           @Nullable List<@NotNull Component> description) {
         return null;
     }

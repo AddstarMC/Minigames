@@ -7,6 +7,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,21 +22,23 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class SwapBlockAction extends AbstractAction {
-
+public class SwapBlockAction extends AAction {
     private final BlockDataFlag matchType = new BlockDataFlag(Material.STONE.createBlockData(), "matchtype");
     private final BlockDataFlag toType = new BlockDataFlag(Material.COBBLESTONE.createBlockData(), "totype");
     private final BooleanFlag keepAttachment = new BooleanFlag(false, "keepattachment");
 
-
-    @Override
-    public String getName() {
-        return "SWAP_BLOCK";
+    protected SwapBlockAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Block Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.BLOCK;
     }
 
     @Override
@@ -116,7 +121,7 @@ public class SwapBlockAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Swap Block", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemBlockData(Material.COBBLESTONE, "Match Block", new Callback<>() {
 
@@ -147,7 +152,7 @@ public class SwapBlockAction extends AbstractAction {
 
 
         }));
-        m.addItem(keepAttachment.getMenuItem("Keep Attachment", Material.PISTON, List.of("When on, and To Block Use Data is off", "If the source and target block", "types are both blocks that", "attach to surfaces, this", "attachment will be preserved")));
+        m.addItem(keepAttachment.getMenuItem(Material.PISTON, "Keep Attachment", List.of("When on, and To Block Use Data is off", "If the source and target block", "types are both blocks that", "attach to surfaces, this", "attachment will be preserved")));
         m.displayMenu(mgPlayer);
         return true;
     }

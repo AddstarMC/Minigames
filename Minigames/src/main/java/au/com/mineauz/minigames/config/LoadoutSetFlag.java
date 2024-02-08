@@ -43,13 +43,13 @@ public class LoadoutSetFlag extends Flag<Map<String, PlayerLoadout>> {
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return getMenuItem(name, displayMat, null);
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                           @Nullable List<@NotNull Component> description) {
         return null; //todo
     }

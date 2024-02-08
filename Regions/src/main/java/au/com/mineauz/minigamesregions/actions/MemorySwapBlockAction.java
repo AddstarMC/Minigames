@@ -13,6 +13,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  * blocks from the given blockPool to provide a free choice in gameboard design. Removed blocks will
  * not appear on the game board.
  */
-public class MemorySwapBlockAction extends AbstractAction {
+public class MemorySwapBlockAction extends AAction {
     /*
      * Building a blockPool to provide the blocks that could be used in the game.
      */
@@ -195,6 +196,10 @@ public class MemorySwapBlockAction extends AbstractAction {
     // is it a white or a blacklist?
     private final BooleanFlag whitelistMode = new BooleanFlag(false, "whitelistmode");
 
+    protected MemorySwapBlockAction(@NotNull String name) {
+        super(name);
+    }
+
     /**
      * Returns an array of Material that will consist of all blocks of the block pool minus the
      * ones on the blacklist. The blacklist string format is block1,block2,block4.
@@ -218,13 +223,18 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "MEMORY_SWAP_BLOCK";
     }
 
     @Override
-    public String getCategory() {
-        return "Block Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.BLOCK;
     }
 
     @Override
@@ -347,7 +357,7 @@ public class MemorySwapBlockAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Memory Swap Block", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced

@@ -7,6 +7,9 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,19 +19,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Random;
 
-public class ExplodeAction extends AbstractAction {
-
+public class ExplodeAction extends AAction {
     private final FloatFlag power = new FloatFlag(4f, "power");
     private final BooleanFlag fire = new BooleanFlag(false, "fire");
 
-    @Override
-    public String getName() {
-        return "EXPLODE";
+    protected ExplodeAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "World Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.WORLD;
     }
 
     @Override
@@ -92,7 +98,7 @@ public class ExplodeAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Explode", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(power.getMenuItem("Explosion Power", Material.TNT));
         m.addItem(fire.getMenuItem("Cause Fire", Material.FLINT_AND_STEEL));

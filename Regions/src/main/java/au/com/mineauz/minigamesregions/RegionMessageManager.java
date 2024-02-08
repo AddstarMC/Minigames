@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -15,10 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class RegionMessageManager {
     private final static String BUNDLE_KEY = "minigames-regions";
@@ -64,6 +62,10 @@ public class RegionMessageManager {
 
     public static Component getMessage(RegionLangKey key, TagResolver... resolvers) {
         return MinigameMessageManager.getMessage(BUNDLE_KEY, key, resolvers);
+    }
+
+    public static @NotNull List<Component> getMessageList(@NotNull LangKey key, TagResolver... resolvers) {
+        return MinigameMessageManager.getMessageList(BUNDLE_KEY, key, resolvers);
     }
 
     public static String getBundleKey() {

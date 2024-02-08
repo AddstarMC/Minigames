@@ -9,6 +9,9 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -20,20 +23,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class PlaySoundAction extends AbstractAction {
+public class PlaySoundAction extends AAction {
     private final StringFlag sound = new StringFlag("ENTITY_PLAYER_LEVELUP", "sound");
     private final BooleanFlag priv = new BooleanFlag(true, "private");
     private final FloatFlag vol = new FloatFlag(1f, "volume");
     private final FloatFlag pit = new FloatFlag(1f, "pitch");
 
-    @Override
-    public String getName() {
-        return "PLAY_SOUND";
+    protected PlaySoundAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "World Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLAYSOUND_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.WORLD;
     }
 
     @Override
@@ -124,7 +131,7 @@ public class PlaySoundAction extends AbstractAction {
 
 
         }, sounds));
-        m.addItem(priv.getMenuItem(MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME, Material.ENDER_PEARL));
+        m.addItem(priv.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME));
         m.addItem(new MenuItemDecimal(Material.JUKEBOX, MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, new Callback<>() {
 
             @Override

@@ -26,8 +26,8 @@ public class ContainsOneTeamCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Team ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.TEAM;
     }
 
     @Override

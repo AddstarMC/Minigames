@@ -60,14 +60,14 @@ public abstract class Flag<T> {
 
     public abstract void loadValue(String path, FileConfiguration config);
 
-    public MenuItem getMenuItem(@NotNull LangKey langKey, @Nullable Material displayMaterial) {
-        return getMenuItem(MinigameMessageManager.getMgMessage(langKey), displayMaterial);
+    public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull LangKey langKey) {
+        return getMenuItem(displayMaterial, MinigameMessageManager.getMgMessage(langKey));
     }
 
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMaterial) {
-        return getMenuItem(name, displayMaterial, null);
+    public MenuItem getMenuItem(@Nullable Material displayMaterial, @Nullable Component name) {
+        return getMenuItem(displayMaterial, name, null);
     }
 
-    public abstract MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public abstract MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                          @Nullable List<@NotNull Component> description);
 }

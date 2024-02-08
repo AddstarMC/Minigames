@@ -44,7 +44,7 @@ public class BlockDataFlag extends Flag<BlockData> {
      * @param description ignored and replaced with a description of the data
      */
     @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
         return new MenuItemBlockData(displayMat, name, new Callback<>() {
             @Override

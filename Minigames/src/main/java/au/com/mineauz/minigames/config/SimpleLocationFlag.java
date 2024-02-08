@@ -39,13 +39,13 @@ public class SimpleLocationFlag extends Flag<Location> {
 
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return null;
+    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
         return null;
     }

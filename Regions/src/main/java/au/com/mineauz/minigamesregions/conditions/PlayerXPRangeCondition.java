@@ -29,8 +29,8 @@ public class PlayerXPRangeCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Player ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -78,9 +78,11 @@ public class PlayerXPRangeCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "XP Range", player);
-        m.addItem(min.getMenuItem("Min XP", Material.STONE_SLAB, 0.5, 1, 0.0, null));
-        m.addItem(max.getMenuItem("Max XP", Material.STONE, 0.5, 1, 0.0, null));
+        Menu m = new Menu(3, getDisplayName(), player);
+        m.addItem(min.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_XP_MINIMUM_NAME)
+                , 0.5, 1, 0.0, null));
+        m.addItem(max.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_XP_MAXIMUM_NAME)
+                , 0.5, 1, 0.0, null));
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);

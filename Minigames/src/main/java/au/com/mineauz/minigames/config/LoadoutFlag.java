@@ -30,13 +30,13 @@ public class LoadoutFlag extends Flag<PlayerLoadout> {
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return null; //TODO: Menu item easy access for loadouts.
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null); //TODO: Menu item easy access for loadouts.
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                           @Nullable List<@NotNull Component> description) {
         return null;
     }

@@ -15,7 +15,6 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -33,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements RewardScheme {
     private final EnumFlag<Comparison> comparisonType;
@@ -63,9 +61,9 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
     @Override
     public void addMenuItems(final Menu menu) {
-        menu.addItem(new MenuItemList("Comparison Type", Material.COMPARATOR, getConfigurationTypeCallback(), Arrays.stream(Comparison.values()).map(Functions.toStringFunction()).collect(Collectors.toList())));
-        menu.addItem(enableRewardsOnLoss.getMenuItem("Award On Loss", Material.LEVER, List.of("When on, awards will still", "be given to losing", "players")));
-        menu.addItem(lossUsesSecondary.getMenuItem("Losers Get Secondary", Material.LEVER, List.of("When on, the losers", "will only get the", "secondary reward")));
+        menu.addItem(new MenuItemEnum<Comparison>(Material.COMPARATOR, "Comparison Type", getConfigurationTypeCallback(), Comparison.class));
+        menu.addItem(enableRewardsOnLoss.getMenuItem(Material.LEVER, "Award On Loss", List.of("When on, awards will still", "be given to losing", "players")));
+        menu.addItem(lossUsesSecondary.getMenuItem(Material.LEVER, "Losers Get Secondary", List.of("When on, the losers", "will only get the", "secondary reward")));
         menu.addItem(new MenuItemNewLine());
 
         MenuItemCustom primary = new MenuItemCustom(Material.CHEST, "Primary Rewards");
@@ -188,16 +186,16 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         }
     }
 
-    private Callback<String> getConfigurationTypeCallback() {
+    private Callback<Comparison> getConfigurationTypeCallback() {
         return new Callback<>() {
             @Override
-            public String getValue() {
-                return comparisonType.getFlag().name();
+            public Comparison getValue() {
+                return comparisonType.getFlag();
             }
 
             @Override
-            public void setValue(String value) {
-                comparisonType.setFlag(Comparison.valueOf(value));
+            public void setValue(Comparison value) {
+                comparisonType.setFlag(value);
             }
         };
     }
@@ -245,7 +243,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             ItemStack item = getItem();
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(getMenuItemName(value));
+                meta.displayName(getMenuItemName(value));
                 item.setItemMeta(meta);
             }
 

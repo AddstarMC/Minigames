@@ -35,7 +35,7 @@ public class MenuItemDisplayPotions extends MenuItem {
         potionMenu.setAllowModify(true);
         potionMenu.setPreviousPage(getContainer());
         potionMenu.addItem(new MenuItemPotionAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_POTIONADD_NAME, loadout), 43);
-        potionMenu.addItem(new MenuItemPage("Save Potions", MenuUtility.getSaveMaterial(), getContainer().getPreviousPage()), 44);
+        potionMenu.addItem(new MenuItemPage(MenuUtility.getSaveMaterial(), "Save Potions", getContainer().getPreviousPage()), 44);
 
         List<String> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");

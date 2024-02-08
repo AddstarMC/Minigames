@@ -8,6 +8,9 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,19 +23,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ApplyPotionAction extends AbstractAction {
+public class ApplyEffectAction extends AAction {
     private final StringFlag type = new StringFlag("SPEED", "type");
     private final TimeFlag dur = new TimeFlag(60L, "duration");
     private final IntegerFlag amp = new IntegerFlag(1, "amplifier");
 
-    @Override
-    public String getName() {
-        return "APPLY_POTION";
+    protected ApplyEffectAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "Player Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.PLAYER;
     }
 
     @Override
@@ -89,13 +96,13 @@ public class ApplyPotionAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Apply Potion", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         List<String> pots = new ArrayList<>(PotionEffectType.values().length);
         for (PotionEffectType type : PotionEffectType.values()) {
             pots.add(WordUtils.capitalize(type.getName().replace("_", " ")));
         }
-        m.addItem(new MenuItemList<PotionEffectType>("Potion Type", Material.POTION, new Callback<>() {
+        m.addItem(new MenuItemList<PotionEffectType>(Material.POTION, "Potion Type", new Callback<>() {
 
             @Override
             public PotionEffectType getValue() {
@@ -104,13 +111,13 @@ public class ApplyPotionAction extends AbstractAction {
 
             @Override
             public void setValue(PotionEffectType value) {
-                type.setFlag(value.toUpperCase().replace(" ", "_"));
+                type.setFlag(value.getName().toUpperCase().replace(" ", "_"));
             }
 
 
         }, pots));
-        m.addItem(dur.getMenuItem("Duration", Material.CLOCK, 0L, 86400));
-        m.addItem(new MenuItemInteger("Level", Material.STONE, new Callback<>() {
+        m.addItem(dur.getMenuItem(Material.CLOCK, "Duration", 0L, 86400));
+        m.addItem(new MenuItemInteger(Material.EXPERIENCE_BOTTLE, "Level", new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -121,7 +128,6 @@ public class ApplyPotionAction extends AbstractAction {
             public void setValue(Integer value) {
                 amp.setFlag(value);
             }
-
 
         }, 0, 100));
         m.displayMenu(mgPlayer);

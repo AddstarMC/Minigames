@@ -136,7 +136,7 @@ public class InfectionModule extends MinigameModule {
         Menu m = new Menu(6, "Infection Settings", previous.getViewer());
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
-        m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.ZOMBIE_HEAD,
+        m.addItem(infectedPercent.getMenuItem(Material.ZOMBIE_HEAD, "Infected Percent",
                 List.of("The percentage of players", "chosen to start as", "infected"), 1, 99));
 
         TeamsModule teamsModule = TeamsModule.getMinigameModule(getMinigame());

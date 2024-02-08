@@ -6,6 +6,9 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -13,17 +16,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class HealAction extends AbstractAction {
+public class HealAction extends AAction {
     private final IntegerFlag heal = new IntegerFlag(1, "amount");
 
-    @Override
-    public String getName() {
-        return "HEAL";
+    protected HealAction(@NotNull String name) {
+        super(name);
     }
 
     @Override
-    public String getCategory() {
-        return "World Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_HEAL_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.WORLD;
     }
 
     @Override
@@ -81,9 +88,9 @@ public class HealAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Heal", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(heal.getMenuItem("Heal Amount", Material.GOLDEN_APPLE, null, null));
+        m.addItem(heal.getMenuItem(Material.GOLDEN_APPLE, "Heal Amount", null, null));
         m.displayMenu(mgPlayer);
         return true;
     }

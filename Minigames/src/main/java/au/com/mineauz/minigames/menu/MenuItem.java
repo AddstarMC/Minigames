@@ -25,7 +25,7 @@ public class MenuItem {
         this(displayMat, langKey, null);
     }
 
-    public MenuItem(@Nullable Material displayMat, @Nullable LangKey langKey, @Nullable List<Component> description) {
+    public MenuItem(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<Component> description) {
         this(displayMat, MinigameMessageManager.getMgMessage(langKey), description);
     }
 

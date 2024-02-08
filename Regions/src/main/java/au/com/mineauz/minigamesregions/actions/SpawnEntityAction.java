@@ -7,6 +7,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,12 +27,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpawnEntityAction extends AbstractAction {
-
+public class SpawnEntityAction extends AAction {
     private final StringFlag type = new StringFlag("ZOMBIE", "type");
     private final Map<String, String> settings = new HashMap<>();
 
-    public SpawnEntityAction() {
+    protected SpawnEntityAction(@NotNull String name) {
+        super(name);
         addBaseSettings();
     }
 
@@ -40,13 +43,18 @@ public class SpawnEntityAction extends AbstractAction {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SPAWN_ENTITY";
     }
 
     @Override
-    public String getCategory() {
-        return "World Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.WORLD;
     }
 
     @Override
@@ -109,7 +117,7 @@ public class SpawnEntityAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Spawn Entity", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         List<String> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
@@ -135,7 +143,7 @@ public class SpawnEntityAction extends AbstractAction {
 
         }, options));
 
-        m.addItem(new MenuItemDecimal("X Velocity", Material.ARROW, new Callback<>() {
+        m.addItem(new MenuItemDecimal(Material.ARROW, "X Velocity", new Callback<>() {
 
             @Override
             public Double getValue() {
@@ -149,7 +157,7 @@ public class SpawnEntityAction extends AbstractAction {
 
 
         }, 0.5, 1, null, null));
-        m.addItem(new MenuItemDecimal("Y Velocity", Material.ARROW, new Callback<>() {
+        m.addItem(new MenuItemDecimal(Material.ARROW, "Y Velocity", new Callback<>() {
 
             @Override
             public Double getValue() {
@@ -163,7 +171,7 @@ public class SpawnEntityAction extends AbstractAction {
 
 
         }, 0.5, 1, null, null));
-        m.addItem(new MenuItemDecimal("Z Velocity", Material.ARROW, new Callback<>() {
+        m.addItem(new MenuItemDecimal(Material.ARROW, "Z Velocity", new Callback<>() {
 
             @Override
             public Double getValue() {
@@ -204,7 +212,7 @@ public class SpawnEntityAction extends AbstractAction {
         settings.put("displayname", "");
         settings.put("displaynamevisible", "false");
 
-        eSet.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<>() {
+        eSet.addItem(new MenuItemString(Material.NAME_TAG, "Display Name", new Callback<>() {
 
             @Override
             public String getValue() {
@@ -218,7 +226,7 @@ public class SpawnEntityAction extends AbstractAction {
 
 
         }));
-        eSet.addItem(new MenuItemBoolean("Display Name Visible", Material.ENDER_PEARL, new Callback<>() {
+        eSet.addItem(new MenuItemBoolean(Material.ENDER_PEARL, "Display Name Visible", new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -232,9 +240,5 @@ public class SpawnEntityAction extends AbstractAction {
 
 
         }));
-    }
-
-    public void zombieSettings(Menu eSet) {
-
     }
 }

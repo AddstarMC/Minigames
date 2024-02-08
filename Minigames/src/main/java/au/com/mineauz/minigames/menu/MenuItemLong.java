@@ -123,7 +123,7 @@ public class MenuItemLong extends MenuItem {
     @Override
     public void checkValidEntry(String entry) {
         if (entry.matches("-?[0-9]+")) {
-            int entryValue = Integer.parseInt(entry);
+            long entryValue = Long.parseLong(entry);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
                 value.setValue(entryValue);
                 updateDescription();

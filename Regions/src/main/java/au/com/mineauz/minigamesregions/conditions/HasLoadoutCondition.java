@@ -31,8 +31,8 @@ public class HasLoadoutCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Player ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -77,14 +77,13 @@ public class HasLoadoutCondition extends ACondition {
     public void loadArguments(FileConfiguration config, String path) {
         loadOutName.loadValue(path, config);
         loadInvert(config, path);
-
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Equip Loadout", player);
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(new MenuItemString("Loadout Name", Material.DIAMOND_SWORD, new Callback<>() {
+    public boolean displayMenu(MinigamePlayer mgPlayer, Menu prev) {
+        Menu menu = new Menu(3, getDisplayName(), mgPlayer);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.addItem(new MenuItemString(Material.DIAMOND_SWORD, "Loadout Name", new Callback<>() { //todo this to list and use loadouts of minigame
 
             @Override
             public String getValue() {
@@ -96,8 +95,8 @@ public class HasLoadoutCondition extends ACondition {
                 loadOutName.setFlag(value);
             }
         }));
-        addInvertMenuItem(m);
-        m.displayMenu(player);
+        addInvertMenuItem(menu);
+        menu.displayMenu(mgPlayer);
         return true;
     }
 

@@ -29,8 +29,8 @@ public class PlayerScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Player ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -76,9 +76,9 @@ public class PlayerScoreRangeCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Score Range", player);
-        m.addItem(min.getMenuItem("Min Score", Material.STONE_SLAB));
-        m.addItem(max.getMenuItem("Max Score", Material.STONE));
+        Menu m = new Menu(3, getDisplayName(), player);
+        m.addItem(min.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_SCORE_MINIMUM_NAME), 0, null));
+        m.addItem(max.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_SCORE_MAXIMUM_NAME), 0, null));
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);

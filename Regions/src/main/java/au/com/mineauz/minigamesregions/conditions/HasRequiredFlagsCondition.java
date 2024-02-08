@@ -26,8 +26,8 @@ public class HasRequiredFlagsCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Player ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class HasRequiredFlagsCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Required Flags", player);
+        Menu m = new Menu(3, getDisplayName(), player);
         addInvertMenuItem(m);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.displayMenu(player);

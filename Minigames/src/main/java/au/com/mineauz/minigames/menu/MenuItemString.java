@@ -53,10 +53,11 @@ public class MenuItemString extends MenuItem {
             description = getDescription();
             Component desc = getDescription().get(0);
 
-            if (desc.startsWith(ChatColor.GREEN.toString()))
+            if (desc.startsWith(ChatColor.GREEN.toString())) {
                 description.set(0, ChatColor.GREEN + setting);
-            else
+            } else {
                 description.add(0, ChatColor.GREEN + setting);
+            }
         } else {
             description = new ArrayList<>();
             description.add(ChatColor.GREEN + setting);

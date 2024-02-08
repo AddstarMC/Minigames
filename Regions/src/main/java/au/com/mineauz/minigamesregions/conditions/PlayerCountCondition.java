@@ -29,8 +29,8 @@ public class PlayerCountCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Player ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -74,10 +74,10 @@ public class PlayerCountCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Player Count", player);
+        Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(min.getMenuItem("Min Player Count", Material.STONE_SLAB, 1, null));
-        m.addItem(max.getMenuItem("Max Player Count", Material.STONE, 1, null));
+        m.addItem(min.getMenuItem(Material.STONE_SLAB, "Min Player Count", 1, null));
+        m.addItem(max.getMenuItem(Material.STONE, "Max Player Count", 1, null));
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

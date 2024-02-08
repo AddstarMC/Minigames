@@ -88,13 +88,13 @@ public class MenuItemTeam extends MenuItem {
 
         for (Flag<?> flag : team.getFlags()) {
             switch (flag.getName()) {
-                case "assignMsg" -> m.addItem(flag.getMenuItem("Join Team Message", Material.PAPER,
+                case "assignMsg" -> m.addItem(flag.getMenuItem(Material.PAPER, "Join Team Message",
                         List.of("Message sent to player", "when they join", "the team.", "Use <team> for team name")));
-                case "gameAssignMsg" -> m.addItem(flag.getMenuItem("Join Team Broadcast Message", Material.PAPER,
+                case "gameAssignMsg" -> m.addItem(flag.getMenuItem(Material.PAPER, "Join Team Broadcast Message",
                         List.of("Message sent to all players", "when someone joins", "a team.", "Use <team>/<player> for team/player name")));
-                case "autobalanceMsg" -> m.addItem(flag.getMenuItem("Autobalance Message", Material.PAPER,
+                case "autobalanceMsg" -> m.addItem(flag.getMenuItem(Material.PAPER, "Autobalance Message",
                         List.of("Message sent to player", "when they are", "auto-balanced.", "Use <team> for team name")));
-                case "gameAutobalanceMsg" -> m.addItem(flag.getMenuItem("Autobalance Broadcast Message", Material.PAPER,
+                case "gameAutobalanceMsg" -> m.addItem(flag.getMenuItem(Material.PAPER, "Autobalance Broadcast Message",
                         List.of("Message sent to all players", "when someone is", "auto-balanced.", "Use <team>/<player> for team/player name")));
             }
         }

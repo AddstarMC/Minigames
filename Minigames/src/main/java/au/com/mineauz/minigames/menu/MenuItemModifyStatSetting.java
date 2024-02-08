@@ -42,7 +42,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
 
         }));
         if (stat != MinigameStats.Losses) {
-            subMenu.addItem(new MenuItemList("Storage Format", Material.ENDER_CHEST, new Callback<>() {
+            subMenu.addItem(new MenuItemList(Material.ENDER_CHEST, "Storage Format", new Callback<>() {
                 @Override
                 public String getValue() {
                     return minigame.getSettings(stat).getFormat().toString();

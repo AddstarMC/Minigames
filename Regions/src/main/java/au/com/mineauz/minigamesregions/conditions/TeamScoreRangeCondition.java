@@ -16,7 +16,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -40,8 +39,8 @@ public class TeamScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Team ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.TEAM;
     }
 
     @Override
@@ -110,20 +109,22 @@ public class TeamScoreRangeCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Team Score Range", player);
-        m.addItem(min.getMenuItem("Minimum Score", Material.STONE_SLAB, 0, null));
-        m.addItem(max.getMenuItem("Maximum Score", Material.STONE, 0, null));
-        List<String> teams = new ArrayList<>(TeamColor.validColorNames());
-        m.addItem(new MenuItemList<String>("Team Color", getTeamMaterial(), new Callback<String>() {
+        Menu m = new Menu(3, getDisplayName(), player);
+        m.addItem(min.getMenuItem(Material.STONE_SLAB,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_XP_MINIMUM_NAME), 0, null));
+        m.addItem(max.getMenuItem(Material.STONE,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_PLAYERCOUNT_MAXIMUM_NAME), 0, null));
+        List<TeamColor> teams = new ArrayList<>(TeamColor.validColors());
+        m.addItem(new MenuItemList<>(getTeamMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<>() {
 
             @Override
-            public String getValue() {
-                return WordUtils.capitalize(team.getFlag().replace("_", " "));
+            public TeamColor getValue() {
+                return TeamColor.matchColor(team.getFlag());
             }
 
             @Override
-            public void setValue(String value) {
-                team.setFlag(value.toUpperCase().replace(" ", "_"));
+            public void setValue(TeamColor value) {
+                team.setFlag(value.toString());
             }
         }, teams));
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
@@ -142,7 +143,6 @@ public class TeamScoreRangeCondition extends ACondition {
             return TeamColor.NONE.getDisplaMaterial();
         }
     }
-
 
     @Override
     public boolean onPlayerApplicable() {

@@ -36,7 +36,7 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
      * @param description will get ignored
      */
     @Override
-    public MenuItem getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
         return new MenuItemEnum<>(displayMat, name, new Callback<>() {
 
