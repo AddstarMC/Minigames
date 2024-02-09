@@ -4,16 +4,16 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemLong extends MenuItem {
+    private final static String DESCRIPTION_TOKEN = "Long_description";
     protected final Callback<Long> value;
     protected final @Nullable Long min;
     protected final @Nullable Long max;
@@ -46,21 +46,7 @@ public class MenuItemLong extends MenuItem {
     }
 
     public void updateDescription() {
-        List<Component> description;
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = ChatColor.stripColor(getDescription().get(0));
-
-            if (desc.matches("-?[0-9]+"))
-                description.set(0, ChatColor.GREEN.toString() + value.getValue());
-            else
-                description.add(0, ChatColor.GREEN.toString() + value.getValue());
-        } else {
-            description = new ArrayList<>();
-            description.add(ChatColor.GREEN.toString() + value.getValue());
-        }
-
-        setDescription(description);
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(Component.text(value.getValue(), NamedTextColor.GREEN)));
     }
 
     @Override
@@ -69,7 +55,7 @@ public class MenuItemLong extends MenuItem {
         if (max != null && value.getValue() > max)
             value.setValue(max);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -78,7 +64,7 @@ public class MenuItemLong extends MenuItem {
         if (min != null && value.getValue() < min)
             value.setValue(min);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -87,7 +73,7 @@ public class MenuItemLong extends MenuItem {
         if (max != null && value.getValue() > max)
             value.setValue(max);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -96,7 +82,7 @@ public class MenuItemLong extends MenuItem {
         if (min != null && value.getValue() < min)
             value.setValue(min);
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

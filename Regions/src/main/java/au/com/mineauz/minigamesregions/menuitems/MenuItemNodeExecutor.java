@@ -1,5 +1,8 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
@@ -8,7 +11,8 @@ import au.com.mineauz.minigamesregions.actions.ActionRegistry;
 import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class MenuItemNodeExecutor extends MenuItem {
+    private final static String DESCRIPTION_TOKEN = "Executor_description";
     private final @NotNull Node node;
     private final @NotNull NodeExecutor ex;
 
@@ -23,11 +28,14 @@ public class MenuItemNodeExecutor extends MenuItem {
         super(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_NODEEXECUTOR_NAME));
         this.node = node;
         this.ex = ex;
-        setDescription(List.of(
-                ChatColor.GREEN + "Trigger: " + ChatColor.GRAY + ex.getTrigger().getDisplayName(),
-                ChatColor.GREEN + "Actions: " + ChatColor.GRAY + ex.getActions().size(),
-                ChatColor.DARK_PURPLE + "(Right click to delete)",
-                "(Left click to edit)"));
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(
+                RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_TRIGGER,
+                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), ex.getTrigger().getDisplayName())),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_ACTION,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(ex.getActions().size()))),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).
+                        color(NamedTextColor.DARK_PURPLE),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_EDIT)));
     }
 
     @Override
@@ -54,12 +62,12 @@ public class MenuItemNodeExecutor extends MenuItem {
 
         m.addItem(new MenuItemInteger(Material.STONE,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_NAME),
-                List.of("Number of times this", "executor can be", "triggered"),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_DESCRIPTION),
                 ex.getTriggerCountCallback(), 0, null));
 
         m.addItem(new MenuItemBoolean(Material.ENDER_PEARL,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
-                List.of("Whether this executor", "is triggered per player", "or just on count"),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_PERPLAYER_DESCRIPTION),
                 ex.getIsTriggerPerPlayerCallback()));
         m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
         m.displayMenu(fviewer);

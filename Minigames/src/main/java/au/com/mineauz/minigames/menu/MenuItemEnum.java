@@ -1,20 +1,21 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
 public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
-    private final List<Component> baseDescription;
+    private final static String DESCRIPTION_VALUE_TOKEN = "EnumValue_description";
     private final @NotNull List<T> enumList;
     private final @NotNull Callback<T> callback;
 
@@ -24,7 +25,6 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
         super(displayMat, name, description);
         this.callback = callback;
         enumList = new ArrayList<>(EnumSet.allOf(enumClass));
-        baseDescription = description;
         updateDescription();
     }
 
@@ -33,30 +33,18 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
         super(displayMat, name);
         this.callback = callback;
         enumList = new ArrayList<>(EnumSet.allOf(enumClass));
-        baseDescription = Collections.emptyList();
         updateDescription();
     }
 
     protected final void updateDescription() {
-        List<Component> valueDesc = getValueDescription(callback.getValue());
-        valueDesc.addAll(baseDescription);
-
-        super.setDescription(valueDesc);
-    }
-
-    protected List<Component> getValueDescription(T value) {
-        // For the initial update
-        if (enumList == null) {
-            return Collections.emptyList();
-        }
-
         if (enumList.isEmpty()) {
-            return Collections.emptyList();
+            return;
         }
 
-        int position = enumList.indexOf(value);
+        int position = enumList.indexOf(callback.getValue());
         if (position == -1) {
-            return List.of(ChatColor.RED + "*ERROR*");
+            setDescriptionPartAtEnd(DESCRIPTION_VALUE_TOKEN,
+                    List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ENUM_ERROR)));
         }
 
         int last = position - 1;
@@ -69,11 +57,11 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
         }
 
         List<Component> options = new ArrayList<>(3);
-        options.add(ChatColor.GRAY + getEnumName(enumList.get(last)));
-        options.add(ChatColor.GREEN + getEnumName(enumList.get(position)));
-        options.add(ChatColor.GRAY + getEnumName(enumList.get(next)));
+        options.add(Component.text(getEnumName(enumList.get(last)), NamedTextColor.GRAY));
+        options.add(Component.text(getEnumName(enumList.get(position)), NamedTextColor.GREEN));
+        options.add(Component.text(getEnumName(enumList.get(next)), NamedTextColor.GRAY));
 
-        return options;
+        setDescriptionPartAtEnd(DESCRIPTION_VALUE_TOKEN, options);
     }
 
     private String getEnumName(T val) {

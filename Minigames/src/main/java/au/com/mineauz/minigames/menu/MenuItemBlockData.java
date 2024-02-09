@@ -7,10 +7,10 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
@@ -22,18 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemBlockData extends MenuItem {
+    private static final @NotNull String DESCRIPTION_TOKEN = "BlockData_description";
     private final @NotNull Callback<BlockData> dataCallback;
 
     public MenuItemBlockData(@NotNull Material displayMat, @Nullable Component name,
                              @NotNull Callback<BlockData> callback) {
         super(displayMat, name);
         this.dataCallback = callback;
-        setDescription(createDescription(dataCallback.getValue()));
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
     }
 
     @Override
     public void update() {
-        setDescription(createDescription(this.dataCallback.getValue()));
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, createDescription(this.dataCallback.getValue()));
     }
 
     /**
@@ -41,21 +42,33 @@ public class MenuItemBlockData extends MenuItem {
      */
     private List<Component> createDescription(BlockData data) {
         List<Component> result = new ArrayList<>();
-        result.add("Material: " + data.getMaterial().name());
+        result.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MATERIAL_DESCRIOPTION,
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(data.getMaterial().translationKey()))));
         String dataString = data.getAsString();
-        int firstbracket = StringUtils.indexOf(dataString, "[", 0);
-        String minecraftname = StringUtils.left(dataString, firstbracket - 1);
-        result.add("Minecraft Name: " + minecraftname);
-        int secondbracket = StringUtils.indexOf(dataString, "]", 0);
-        String meta = StringUtils.mid(dataString, firstbracket + 1, secondbracket - 1);
-        String[] vals = StringUtils.split(meta, ",");
-        for (String val : vals) {
-            result.add(ChatColor.GOLD + val.replace("=", ": " + ChatColor.GREEN) +
-                    ChatColor.RESET);
-        }
-        if (secondbracket < dataString.length()) {
-            result.add(ChatColor.GOLD + "Extra:" + ChatColor.GREEN + " " + StringUtils.mid(dataString,
-                    secondbracket + 1, dataString.length()) + ChatColor.RESET);
+
+        int firstBracket = dataString.indexOf('[');
+        int secondBracket = dataString.indexOf(']');
+
+        if (secondBracket > 0) {
+            String meta = dataString.substring(firstBracket + 1, secondBracket);
+            // using StringUtils should be faster than String#slit, since it's optimized for one char scenarios;
+            // May break down, if Mojang ever returns UTF16 Strings
+            for (String val : StringUtils.split(meta, ",")) {
+                String[] pair = StringUtils.split(meta, "=", 2);
+                if (pair.length == 2) {
+                    result.add(Component.text(pair[0], NamedTextColor.GOLD).
+                            append(Component.text(" : ")).
+                            append(Component.text(pair[1], NamedTextColor.DARK_GREEN)));
+                } else {
+                    result.add(Component.text(val, NamedTextColor.GOLD));
+                }
+            }
+
+            int extraStart = dataString.indexOf('{', secondBracket);
+            if (extraStart > 0) {
+                result.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_BLOCKDATA_DESCRIOPTION_EXTRA,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), dataString.substring(extraStart))));
+            }
         }
         return result;
     }
@@ -68,7 +81,7 @@ public class MenuItemBlockData extends MenuItem {
             // update the display item
             ItemStack stackUpdate = getDisplayItem();
             stackUpdate.setType(item.getType());
-            setItem(stackUpdate);
+            setDisplayItem(stackUpdate);
         } else {
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_BLOCKDATA_ERROR_INVALID,
                     Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item != null ? Component.translatable(item.getType().translationKey()) : Component.text("?")));
@@ -82,7 +95,7 @@ public class MenuItemBlockData extends MenuItem {
         try {
             BlockData d = Bukkit.createBlockData(entry);
             dataCallback.setValue(d);
-            setDescription(createDescription(dataCallback.getValue()));
+            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
 
             // update the display item
             if (d.getMaterial().isItem()) {

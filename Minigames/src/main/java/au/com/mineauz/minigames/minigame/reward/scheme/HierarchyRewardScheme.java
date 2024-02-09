@@ -16,8 +16,8 @@ import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -200,7 +199,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
     protected abstract Component getMenuItemName(T value);
 
-    protected abstract String getMenuItemDescName(T value);
+    protected abstract Component getMenuItemDescName(T value);
 
     protected abstract T increment(T value);
 
@@ -213,6 +212,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     }
 
     private class MenuItemRewardPair extends MenuItem {
+        private final static String DESCRIPTION_TOKEN = "RewardPair_description";
         private final @NotNull Rewards reward;
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
         private @NotNull T value;
@@ -230,12 +230,12 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
         private void updateDescription() {
             List<Component> description = List.of(
-                    ChatColor.GREEN + getMenuItemDescName(value),
-                    "Shift + Left click to edit rewards",
-                    "Shift + Right click to remove"
+                    getMenuItemDescName(value).color(NamedTextColor.GREEN),
+                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARDPAIR_EDIT),
+                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK)
             );
 
-            setDescription(description);
+            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
 
             // Update name
             ItemStack item = getDisplayItem();

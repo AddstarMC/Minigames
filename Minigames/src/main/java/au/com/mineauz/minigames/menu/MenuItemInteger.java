@@ -4,16 +4,16 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemInteger extends MenuItem {
+    private final static String DESCRIPTION_TOKEN = "Integer_description";
     private final Callback<Integer> value;
     private final Integer min;
     private final Integer max;
@@ -46,22 +46,7 @@ public class MenuItemInteger extends MenuItem {
     }
 
     public void updateDescription() {
-        List<Component> description;
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = ChatColor.stripColor(getDescription().get(0));
-
-            if (desc.matches("-?[0-9]+")) {
-                description.set(0, ChatColor.GREEN.toString() + value.getValue());
-            } else {
-                description.add(0, ChatColor.GREEN.toString() + value.getValue());
-            }
-        } else {
-            description = new ArrayList<>();
-            description.add(ChatColor.GREEN.toString() + value.getValue());
-        }
-
-        setDescription(description);
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(Component.text(value.getValue(), NamedTextColor.GREEN)));
     }
 
     @Override

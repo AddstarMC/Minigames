@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.objects.IndexedMap;
-import au.com.mineauz.minigames.objects.StrIntMapPersistentDataType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.objects.IndexedMap;
+import au.com.mineauz.minigames.objects.StrIntMapPersistentDataType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -14,13 +14,15 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class MenuItem {
-    public static final StrIntMapPersistentDataType STR_INT_MAP_TYPE = new StrIntMapPersistentDataType();
+    private static final StrIntMapPersistentDataType STR_INT_MAP_TYPE = new StrIntMapPersistentDataType();
+    private final static String BASE_DESCRIPTION_TOKEN = "Base_description";
     private final static NamespacedKey DESCRIPTION_KEY = new NamespacedKey(Minigames.getPlugin(), "DescriptionOrder");
     private @NotNull ItemStack displayItem;
     private @Nullable Menu container = null;
@@ -48,8 +50,16 @@ public class MenuItem {
         this.displayItem = new ItemStack(displayMat);
         ItemMeta meta = this.displayItem.getItemMeta();
         meta.displayName(name);
-        if (description != null) meta.lore(description);
-        this.displayItem.setItemMeta(meta);
+
+        if (description == null) {
+            this.displayItem.setItemMeta(meta);
+        } else {
+            // clear automatically generated lore in case there was one
+            meta.lore(List.of());
+            this.displayItem.setItemMeta(meta);
+
+            setDescriptionPartAtIndex(BASE_DESCRIPTION_TOKEN, 0, description);
+        }
     }
 
     public MenuItem(@NotNull Component name, @NotNull ItemStack displayItem) {
@@ -67,7 +77,7 @@ public class MenuItem {
      * @param descriptionPart the part of description to get written. If null the part will get removed.
      */
     public void setDescriptionPartAtEnd(@NotNull String typeStr,
-                                        @Nullable List<@NotNull Component> descriptionPart) {
+                                        @Nullable List<@NotNull Component> descriptionPart) { // todo maybe instead of Persistent data container just use a map here; the menu will not get saved anyways
         ItemMeta itemMeta = displayItem.getItemMeta();
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
         IndexedMap<String, Integer> descriptionRegistry = container.get(DESCRIPTION_KEY, STR_INT_MAP_TYPE);
@@ -215,15 +225,19 @@ public class MenuItem {
         return displayItem.getItemMeta().lore();
     }
 
-    public void setDescription(List<Component> description) {
-        ItemMeta meta = displayItem.getItemMeta();
-
-        meta.lore(description);
-        displayItem.setItemMeta(meta);
+    /**
+     * Sets the description unter the base description token.
+     *
+     * @param description
+     * @see #setDescriptionPartAtEnd(String, List)
+     * @see #setDescriptionPartAtIndex(String, int, List)
+     */
+    public void setBaseDescriptionPart(List<Component> description) {
+        setDescriptionPartAtIndex(BASE_DESCRIPTION_TOKEN, 0, description);
     }
 
     public @NotNull Component getName() {
-        return displayItem.getItemMeta().displayName();
+        return displayItem.displayName();
     }
 
     public @NotNull ItemStack getDisplayItem() {
@@ -236,6 +250,11 @@ public class MenuItem {
         ItemMeta nmeta = displayItem.getItemMeta();
         nmeta.displayName(ometa.displayName());
         nmeta.lore(nmeta.lore());
+        try {
+            nmeta.getPersistentDataContainer().readFromBytes(ometa.getPersistentDataContainer().serializeToBytes());
+        } catch (IOException e) {
+            Minigames.getCmpnntLogger().error("Could not carry over persistent data from one menuItem to another. Description Data might got lost!", e);
+        }
         displayItem.setItemMeta(nmeta);
     }
 

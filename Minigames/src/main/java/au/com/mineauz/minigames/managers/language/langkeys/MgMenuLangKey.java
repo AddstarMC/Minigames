@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public enum MgMenuLangKey implements LangKey {
     MENU_BLOCKDATA_CLICKBLOCK("menu.blockData.clickBlock"),
+    MENU_BLOCKDATA_DESCRIOPTION_EXTRA("menu.blockData.description.extra"),
     MENU_BLOCKDATA_ERROR_INVALID("menu.blockData.error.invalid"),
     MENU_DECIMAL_ENTERCHAT("menu.decimal.enterChat"),
     MENU_DEFAULTWINNINGTEAM_NAME("menu.defaultWinningTeam.name"),
@@ -17,12 +18,16 @@ public enum MgMenuLangKey implements LangKey {
     MENU_DISPLAYLOADOUT_NOTDELETE("menu.displayLoadout.notDelete"),
     MENU_DISPLAYLOADOUT_SAVE_NAME("menu.displayLoadout.save.name"),
     MENU_DISPLAYLOADOUT_SETTINGS_NAME("menu.displayLoadout.settings.name"),
+    MENU_ELEMENTNOTSET("menu.elementNotSet"),
+    MENU_ENUM_ERROR("menu.enum.error"),
     MENU_FLAGADD_ENTERCHAT("menu.flagAdd.enterChat"),
     MENU_FLAGADD_NAME("menu.flagAdd.name"),
     MENU_HIERARCHY_ENTERCHAT("menu.hierarchy.enterChat"),
     MENU_LOADOUT_SAVE("menu.displayLoadout.save.success"),
+    MENU_MATERIAL_DESCRIOPTION("menu.material.description"),
     MENU_MONEYREWARD_ITEM_NAME("menu.moneyReward.item.name"),
     MENU_MONEYREWARD_MENU_NAME("menu.moneyReward.menu.name"),
+    MENU_NUMBER_INFINITE("menu.number.infinite"),
     MENU_PAGE_BACK("menu.page.back"),
     MENU_PAGE_NEXT("menu.page.next"),
     MENU_PAGE_PREVIOUS("menu.page.previous"),
@@ -34,6 +39,9 @@ public enum MgMenuLangKey implements LangKey {
     MENU_POTIONADD_ENTERCHAT("menu.potionAdd.enterChat"),
     MENU_POTIONADD_ERROR_SYNTAX("menu.potionAdd.error.syntax"),
     MENU_POTIONADD_NAME("menu.potionAdd.name"),
+    MENU_POTION_DURATION("menu.potion.duration"),
+    MENU_POTION_LEVEL("menu.potion.level"),
+    MENU_REWARDPAIR_EDIT("menu.rewardPair.edit"),
     MENU_TEAMADD_NAME("menu.teamAdd.name"),
     MENU_TEAM_AUTOBALANCE("menu.team.autobalance"),
     MENU_TEAM_DISPLAYNAME("menu.team.displayName"),
@@ -44,7 +52,8 @@ public enum MgMenuLangKey implements LangKey {
     MENU_TEAM_NAMEVISIBILITY_NAME("menu.team.nameVisibility.name"),
     MENU_TEAM_NAMEVISIBILITY_NEVERVISIBLE("menu.team.nameVisibility.neverVisible"),
     MENU_WHITELIST_ENTERCHAT("menu.whitelist.enterChat"),
-    MENU_WHITELIST_ERROR_CONTAINS("menu.whitelist.error.contains");
+    MENU_WHITELIST_ERROR_CONTAINS("menu.whitelist.error.contains"),
+    MENU_WHITELIST_INTERACT("menu.whitelist.interact");
 
     private final @NotNull String path;
 

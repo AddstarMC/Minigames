@@ -1,13 +1,15 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +19,7 @@ import java.util.List;
  * Created by benjamincharlton on 15/11/2018.
  */
 public class MenuItemMaterial extends MenuItem {
+    private final static String DESCRIPTION_TOKEN = "Material_description";
     private final @NotNull Callback<Material> materialCallback;
 
     public MenuItemMaterial(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Material> c) {
@@ -43,29 +46,12 @@ public class MenuItemMaterial extends MenuItem {
         return super.onShiftRightClick();
     }
 
-    private List<String> createDescription(Material data) {
-        List<String> result = new ArrayList<>();
-        result.add("Material: " + data.name());
-        return result;
-    }
-
     public void updateDescription() {
-        List<Component> description;
-        Material setting = materialCallback.getValue();
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MATERIAL_DESCRIOPTION,
+                        Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(),
+                                Component.translatable(materialCallback.getValue().translationKey())))));
 
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = getDescription().get(0);
-
-            if (desc.startsWith(ChatColor.GREEN.toString()))
-                description.set(0, ChatColor.GREEN.toString() + createDescription(setting));
-            else
-                description.add(0, ChatColor.GREEN.toString() + createDescription(setting));
-        } else {
-            description = new ArrayList<>();
-            description.add(ChatColor.GREEN.toString() + createDescription(setting));
-        }
-        setDescription(description);
         setDisplayItem(new ItemStack(materialCallback.getValue(), 1));
     }
 }

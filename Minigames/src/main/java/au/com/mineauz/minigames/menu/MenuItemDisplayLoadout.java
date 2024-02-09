@@ -73,8 +73,8 @@ public class MenuItemDisplayLoadout extends MenuItem {
 
         List<MenuItem> menuItems = new ArrayList<>();
         if (!loadout.getName().equals("default")) {
-            menuItems.add(new MenuItemBoolean("Use Permissions", List.of("Permission:", "minigame.loadout." + loadout.getName().toLowerCase()),
-                    Material.GOLD_INGOT, loadout.getUsePermissionsCallback()));
+            menuItems.add(new MenuItemBoolean(Material.GOLD_INGOT, "Use Permissions", List.of("Permission:", "minigame.loadout." + loadout.getName().toLowerCase()),
+                    loadout.getUsePermissionsCallback()));
         }
         MenuItemString disName = new MenuItemString("Display Name", Material.PAPER, loadout.getDisplayNameCallback());
         disName.setAllowNull(true);

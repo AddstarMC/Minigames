@@ -1,20 +1,26 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum RewardRarity {
-    VERY_COMMON(0.5),
-    COMMON(0.25),
-    NORMAL(0.1),
-    RARE(0.02),
-    VERY_RARE(0);
+    VERY_COMMON(0.5, MinigameLangKey.REWARDRARITY_VERYCOMMON),
+    COMMON(0.25, MinigameLangKey.REWARDRARITY_COMMON),
+    NORMAL(0.1, MinigameLangKey.REWARDRARITY_NORMAL),
+    RARE(0.02, MinigameLangKey.REWARDRARITY_RARE),
+    VERY_RARE(0, MinigameLangKey.REWARDRARITY_VERYRARE);
 
     private final double rarity;
+    private final Component displayName;
 
-    RewardRarity(double r) {
+    RewardRarity(double r, LangKey langKey) {
         rarity = r;
+        displayName = MinigameMessageManager.getMgMessage(langKey);
     }
 
     @Contract("null -> null")
@@ -49,5 +55,9 @@ public enum RewardRarity {
             case NORMAL -> COMMON;
             default -> VERY_COMMON;
         };
+    }
+
+    public Component getDisplayName() {
+        return displayName;
     }
 }

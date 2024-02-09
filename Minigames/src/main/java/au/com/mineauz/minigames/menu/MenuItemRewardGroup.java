@@ -7,16 +7,18 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MenuItemRewardGroup extends MenuItem {
+    private final static String DESCRIPTION_TOKEN = "RewardGroup_description";
     private final @NotNull RewardGroup group;
     private final @NotNull Rewards rewards;
 
@@ -37,65 +39,31 @@ public class MenuItemRewardGroup extends MenuItem {
         updateDescription();
     }
 
-    public List<String> getOptions() {
-        List<String> options = new ArrayList<>();
-        for (RewardRarity r : RewardRarity.values()) {
-            options.add(r.toString());
-        }
-        return options;
-    }
-
     public void updateDescription() {
-        List<Component> description;
-        List<String> options = getOptions();
+        List<RewardRarity> options = Arrays.asList(RewardRarity.values());
 
-        int pos = options.indexOf(group.getRarity().toString());
+        int pos = options.indexOf(group.getRarity());
         int before = pos - 1;
         int after = pos + 1;
-        if (before == -1)
+        if (before == -1) {
             before = options.size() - 1;
-        if (after == options.size())
+        }
+        if (after == options.size()) {
             after = 0;
-
-        if (getDescription() != null) {
-            description = getDescription();
-            if (getDescription().size() >= 3) {
-                String desc = ChatColor.stripColor(getDescription().get(1));
-
-                if (options.contains(desc)) {
-                    description.set(0, ChatColor.GRAY + options.get(before));
-                    description.set(1, ChatColor.GREEN + group.getRarity().toString());
-                    description.set(2, ChatColor.GRAY + options.get(after));
-                } else {
-                    description.add(0, ChatColor.GRAY + options.get(before));
-                    description.add(1, ChatColor.GREEN + group.getRarity().toString());
-                    description.add(2, ChatColor.GRAY + options.get(after));
-                }
-            } else {
-                description.add(0, ChatColor.GRAY + options.get(before));
-                description.add(1, ChatColor.GREEN + group.getRarity().toString());
-                description.add(2, ChatColor.GRAY + options.get(after));
-            }
-        } else {
-            description = new ArrayList<>();
-            description.add(ChatColor.GRAY + options.get(before));
-            description.add(ChatColor.GREEN + group.getRarity().toString());
-            description.add(ChatColor.GRAY + options.get(after));
         }
 
-        setDescription(description);
+        List<Component> description = new ArrayList<>();
+        description.add(Component.text(options.get(before).toString(), NamedTextColor.GRAY));
+        description.add(Component.text(group.getRarity().toString(), NamedTextColor.GREEN));
+        description.add(Component.text(options.get(after).toString(), NamedTextColor.GRAY));
+
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
     }
 
 
     @Override
     public ItemStack onClick() {
-        List<String> options = getOptions();
-        int ind = options.lastIndexOf(group.getRarity().toString());
-        ind++;
-        if (ind == options.size())
-            ind = 0;
-
-        group.setRarity(RewardRarity.valueOf(options.get(ind)));
+        group.setRarity(group.getRarity().getNextRarity());
         updateDescription();
 
         return getDisplayItem();
@@ -103,13 +71,7 @@ public class MenuItemRewardGroup extends MenuItem {
 
     @Override
     public ItemStack onRightClick() {
-        List<String> options = getOptions();
-        int ind = options.lastIndexOf(group.getRarity().toString());
-        ind--;
-        if (ind == -1)
-            ind = options.size() - 1;
-
-        group.setRarity(RewardRarity.valueOf(options.get(ind)));
+        group.setRarity(group.getRarity().getPreviousRarity());
         updateDescription();
 
         return getDisplayItem();
@@ -151,7 +113,7 @@ public class MenuItemRewardGroup extends MenuItem {
         Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
         rewardMenu.setPreviousPage(getContainer());
 
-        List<String> des = new ArrayList<>();
+        List<Component> des = new ArrayList<>();
         des.add("Click this with an item");
         des.add("to add it to rewards.");
         des.add("Click without an item");
@@ -159,10 +121,6 @@ public class MenuItemRewardGroup extends MenuItem {
 
         rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, MenuUtility.getCreateMaterial(), group), 43);
         rewardMenu.addItem(new MenuItemPage("Save " + getName(), MenuUtility.getSaveMaterial(), rewardMenu.getPreviousPage()), 44);
-        //List<String> list = new ArrayList<>();
-        //for(RewardRarity r : RewardRarity.values()){
-        //    list.add(r.toString());
-        //}
 
         List<MenuItem> mi = new ArrayList<>();
         for (RewardType item : group.getItems()) {

@@ -29,6 +29,7 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     MINIGAME_ERROR_NOTELEPORTALLOWED("minigame.error.noTeleportAllowed"),
     MINIGAME_ERROR_NOTENABLED("minigame.error.notEnabled"),
     MINIGAME_ERROR_NOTSTARTED("minigame.error.notStarted"),
+    MINIGAME_ERROR_NOTTEAMGAME("minigame.error.notTeamGame"),
     MINIGAME_ERROR_REGENERATING("minigame.error.regenerating"),
     MINIGAME_ERROR_STARTED("minigame.error.started"),
     MINIGAME_FLAG_RETURNEDNEUTRAL("minigame.flag.returnedNeutral"),
@@ -153,6 +154,11 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     REGION_REGENREGION_REMOVED("region.regenregion.removed"),
     REGION_REGENREGION_UPDATED("region.regenRegion.updated"),
     REGION_SELECT_POINT("region.select.point"),
+    REWARDRARITY_COMMON("rewardRarity.common"),
+    REWARDRARITY_NORMAL("rewardRarity.normal"),
+    REWARDRARITY_RARE("rewardRarity.rare"),
+    REWARDRARITY_VERYCOMMON("rewardRarity.veryCommon"),
+    REWARDRARITY_VERYRARE("rewardRarity.veryRare"),
     REWARDSCHEME_ERROR_DUPLICATE("rewardscheme.error.duplicate"),
     REWARDSCHEME_ERROR_INVALID("rewardscheme.error.invalid"),
     REWARD_ERROR_NOVAULT("reward.error.noVault"),
@@ -178,6 +184,9 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     SIGN_SCORE_ERROR_ALREADYUSEDTEAM("sign.score.error.alreadyUsedTeam"),
     SIGN_TEAM_ERROR_UNBALANCE("sign.team.error.unbalance"),
     SIGN_TELEPORT_INVALID("sign.teleport.invalid"),
+    TEAM_ADD("team.add"),
+    TEAM_ERROR_COLOR_INVALID("team.error.color.invalid"),
+    TEAM_ERROR_COLOR_TAKEN("team.error.color.taken"),
     TIME_AND("time.and"),
     TIME_DAYS_LONG("time.days.long"),
     TIME_DAYS_SHORT("time.days.short"),
@@ -228,11 +237,7 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     TOOL_SET_ENDLOCATION("tool.set.endLocation"),
     TOOL_SET_LOBBYLOCATION("tool.set.lobbyLocation"),
     TOOL_SET_QUITLOCATION("tool.set.quitLocation"),
-    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation"),
-    MINIGAME_ERROR_NOTTEAMGAME("minigame.error.notTeamGame"),
-    TEAM_ADD("team.add"),
-    TEAM_ERROR_COLOR_TAKEN("team.error.color.taken"),
-    TEAM_ERROR_COLOR_INVALID("team.error.color.invalid");
+    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation");
 
     private final @NotNull String path;
 

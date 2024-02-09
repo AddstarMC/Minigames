@@ -1,27 +1,29 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemComponent extends MenuItem {
-    protected Callback<String> stringCallback; // todo I'm not happy having String as callback here. I need it since the SerializeableBridge can't use Components, but this doesn't feel right.
-    private boolean allowNull = false;
+    protected final static String DESCRIPTION_VALUE_TOKEN = "COMPONENT_VALUE_DESCRIPTION";
+    protected @NotNull Callback<Component> stringCallback;
+    protected boolean allowNull = false;
 
-    public MenuItemComponent(Component name, Material displayItem, Callback<String> stringCallback) {
-        super(name, displayItem);
+    public MenuItemComponent(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Component> stringCallback) {
+        super(displayMat, name);
         this.stringCallback = stringCallback;
         updateDescription();
     }
 
-    public MenuItemComponent(Component name, List<Component> description, Material displayItem, Callback<String> stringCallback) {
-        super(name, description, displayItem);
+    public MenuItemComponent(@Nullable Material displayMat, @Nullable Component name,
+                             @Nullable List<@NotNull Component> description, @NotNull Callback<Component> stringCallback) {
+        super(displayMat, name, description);
         this.stringCallback = stringCallback;
         updateDescription();
     }
@@ -31,35 +33,15 @@ public class MenuItemComponent extends MenuItem {
     }
 
     public void updateDescription() {
-        List<Component> description;
-        String setting = stringCallback.getValue();
-        if (setting == null) {
-            setting = "<red>Not Set</red>";
-
+        Component settingComp = stringCallback.getValue();
+        if (settingComp == null) {
+            settingComp = "<red>Not Set</red>";
         }
 
-        Component settingComp = MiniMessage.miniMessage().deserialize(setting);
-        //todo find a way to effective limit the length without messing with styles
-        //if (setting.length() > 20) {
-        //    setting = setting.substring(0, 17) + "...";
-        //}
+        // limit to a still readable size
+        settingComp = MinigameUtils.limitIgnoreFormat(settingComp, 20);
 
-        description = getDescription();
-        if (description != null) {
-            //todo find a way to not overwrite other descriptions
-            //Component desc = description.get(0);
-
-            // if (desc.color() == NamedTextColor.GREEN) {
-            description.set(0, settingComp);
-            //  } else {
-            //     description.add(0, setting.color(NamedTextColor.GREEN));
-            // }
-        } else {
-            description = new ArrayList<>();
-            description.add(settingComp);
-        }
-
-        setDescription(description);
+        setDescriptionPartAtEnd(DESCRIPTION_VALUE_TOKEN, List.of(settingComp));
     }
 
     @Override

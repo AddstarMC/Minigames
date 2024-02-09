@@ -1,38 +1,40 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemString extends MenuItem {
-    protected final Callback<String> str;
+    protected final static String DESCRIPTION_TOKEN = "String_description";
+    protected final Callback<String> stringCallback;
     private boolean allowNull = false;
 
-    public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<String> str) {
+    public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<String> stringCallback) {
         super(displayMat, langKey);
-        this.str = str;
+        this.stringCallback = stringCallback;
         updateDescription();
     }
 
-    public MenuItemString(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<String> str) {
+    public MenuItemString(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<String> stringCallback) {
         super(displayMat, name);
-        this.str = str;
+        this.stringCallback = stringCallback;
         updateDescription();
     }
 
     public MenuItemString(@Nullable Material displayMat, @Nullable Component name,
-                          @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
+                          @Nullable List<@NotNull Component> description, @NotNull Callback<String> stringCallback) {
         super(displayMat, name, description);
-        this.str = str;
+        this.stringCallback = stringCallback;
         updateDescription();
     }
 
@@ -41,29 +43,14 @@ public class MenuItemString extends MenuItem {
     }
 
     public void updateDescription() {
-        List<Component> description;
-        String setting = str.getValue();
-        if (setting == null)
-            setting = "Not Set";
-        if (setting.length() > 20) {
+        String setting = stringCallback.getValue();
+        if (setting == null) {
+            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(
+                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).color(NamedTextColor.GRAY)));
+        } else if (setting.length() > 20) {
             setting = setting.substring(0, 17) + "...";
+            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(Component.text(setting, NamedTextColor.GREEN)));
         }
-
-        if (getDescription() != null) {
-            description = getDescription();
-            Component desc = getDescription().get(0);
-
-            if (desc.startsWith(ChatColor.GREEN.toString())) {
-                description.set(0, ChatColor.GREEN + setting);
-            } else {
-                description.add(0, ChatColor.GREEN + setting);
-            }
-        } else {
-            description = new ArrayList<>();
-            description.add(ChatColor.GREEN + setting);
-        }
-
-        setDescription(description);
     }
 
     @Override
@@ -84,9 +71,9 @@ public class MenuItemString extends MenuItem {
     @Override
     public void checkValidEntry(String entry) {
         if (entry.equals("null") && allowNull) {
-            str.setValue(null);
+            stringCallback.setValue(null);
         } else {
-            str.setValue(entry);
+            stringCallback.setValue(entry);
         }
 
         updateDescription();

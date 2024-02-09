@@ -1,8 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemPotion extends MenuItem {
+    private final static String DESCRIPTION_TOKEN = "Potion_description";
     private final @NotNull PotionEffect eff;
     private final @NotNull PlayerLoadout loadout;
 
@@ -33,30 +37,20 @@ public class MenuItemPotion extends MenuItem {
     }
 
     public void updateDescription() {
-        List<Component> description;
-        if (getDescription() != null) {
-            description = getDescription();
-            if (getDescription().size() >= 2) {
-                String desc = ChatColor.stripColor(getDescription().get(0));
+        List<Component> description = new ArrayList<>();
+        description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_POTION_LEVEL,
+                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(eff.getAmplifier() + 1))));
 
-                if (desc.equals("Level: " + (eff.getAmplifier() + 1))) {
-                    description.set(0, ChatColor.GREEN + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
-                    description.set(1, ChatColor.GREEN + "Duration: " + ChatColor.GRAY + eff.getDuration());
-                } else {
-                    description.add(0, ChatColor.GREEN + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
-                    description.add(1, ChatColor.GREEN + "Duration: " + ChatColor.GRAY + eff.getDuration());
-                }
-            } else {
-                description.add(0, ChatColor.GREEN + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
-                description.add(1, ChatColor.GREEN + "Duration: " + ChatColor.GRAY + eff.getDuration());
-            }
+        if (eff.isInfinite()) {
+            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_POTION_DURATION,
+                    Placeholder.component(MinigamePlaceHolderKey.NUMBER.getKey(),
+                            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_NUMBER_INFINITE))));
         } else {
-            description = new ArrayList<>();
-            description.add(0, ChatColor.GREEN + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
-            description.add(1, ChatColor.GREEN + "Duration: " + ChatColor.GRAY + eff.getDuration());
+            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_POTION_DURATION,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(eff.getDuration()))));
         }
 
-        setDescription(description);
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
     }
 
     @Override

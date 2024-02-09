@@ -19,7 +19,7 @@ public interface ActionInterface {
 
     @NotNull IActionCategory getCategory();
 
-    void describe(@NotNull Map<@NotNull String, @NotNull Object> out);
+    void describe(@NotNull Map<@NotNull Component, @NotNull Component> out);
 
     boolean useInRegions();
 

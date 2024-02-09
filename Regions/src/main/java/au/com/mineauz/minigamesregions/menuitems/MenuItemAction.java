@@ -1,10 +1,14 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class MenuItemAction extends MenuItem {
+    private final static String DESCRIPTION_TOKEN = "Action_description";
     private final @NotNull BaseExecutor exec;
     private final @NotNull ActionInterface act;
 
@@ -34,51 +39,34 @@ public class MenuItemAction extends MenuItem {
     }
 
     private void updateDescription() {
-        Map<String, Object> out = new HashMap<>();
+        Map<Component, Component> out = new HashMap<>();
         act.describe(out);
 
         if (out.isEmpty()) {
             return;
         }
 
-        int lineLimit = 35;
-
         // Convert the description
         List<Component> description = new ArrayList<>();
-        for (Entry<String, Object> entry : out.entrySet()) {
-            Object value = entry.getValue();
-            String line = ChatColor.GRAY + entry.getKey() + ": ";
+        for (Entry<Component, Component> entry : out.entrySet()) {
+            Component value = entry.getValue();
+            TextComponent.Builder lineBuilder = Component.text();
+            lineBuilder.append(entry.getKey().color(NamedTextColor.GRAY));
+            lineBuilder.append(Component.text(": "));
 
-            // Translate the value
-            if (value instanceof Boolean bool) {
-                if (bool) {
-                    value = ChatColor.GREEN + "True";
-                } else {
-                    value = ChatColor.RED + "False";
-                }
-            } else if (value == null) {
-                value = ChatColor.YELLOW.toString() + ChatColor.ITALIC + "Not Set";
+            if (value == null) {
+                lineBuilder.append(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).
+                        color(NamedTextColor.YELLOW));
+
+                description.add(lineBuilder.build());
+                // no need to trim
             } else {
-                value = ChatColor.GREEN + String.valueOf(value);
-            }
-
-            line += value;
-
-            // Trim
-            String lastColor = "";
-            while (line.length() > lineLimit) {
-                String part = lastColor + line.substring(0, lineLimit + 1);
-                line = line.substring(lineLimit + 1);
-                description.add(part);
-                lastColor = ChatColor.getLastColors(part);
-            }
-
-            if (!line.isEmpty()) {
-                description.add(lastColor + line);
+                lineBuilder.append(value);
+                description.add(MinigameUtils.limitIgnoreFormat(lineBuilder.build(), 35));
             }
         }
 
-        setDescription(description);
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
     }
 
     @Override

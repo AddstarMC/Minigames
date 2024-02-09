@@ -1,5 +1,9 @@
 package au.com.mineauz.minigames.stats;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import net.kyori.adventure.text.Component;
+
 /**
  * These are the components of {@link StatFormat} indicating what
  * fields are available
@@ -10,15 +14,15 @@ public enum StatValueField {
     Max("_max", "Maximum"),
     Total("_total", "Total");
 
-    private final String title;
+    private final Component title;
     private final String suffix;
 
-    StatValueField(String suffix, String title) {
+    StatValueField(String suffix, LangKey titleLangKey) {
         this.suffix = suffix;
-        this.title = title;
+        this.title = MinigameMessageManager.getMgMessage(titleLangKey);
     }
 
-    public String getTitle() {
+    public Component getTitle() {
         return title;
     }
 

@@ -1240,14 +1240,14 @@ public class Minigame implements ScriptObject {
         LobbySettingsModule lobbySettingsModule = LobbySettingsModule.getMinigameModule(this);
         if (lobbySettingsModule != null) {
             List<MenuItem> itemsLobby = new ArrayList<>(4);
-            itemsLobby.add(new MenuItemBoolean("Can Interact on Player Wait", Material.STONE_BUTTON, lobbySettingsModule.getCanInteractPlayerWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean("Can Interact on Start Wait", Material.STONE_BUTTON, lobbySettingsModule.getCanInteractStartWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean("Can Move on Player Wait", Material.ICE, lobbySettingsModule.getCanMovePlayerWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean("Can Move on Start Wait", Material.ICE, lobbySettingsModule.getCanMoveStartWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean("Teleport After Player Wait", List.of("Should players be teleported", "after player wait time?"),
-                    Material.ENDER_PEARL, lobbySettingsModule.getTeleportOnPlayerWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean("Teleport on Start", List.of("Should players teleport", "to the start position", "after lobby?"),
-                    Material.ENDER_PEARL, lobbySettingsModule.getTeleportOnStartCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.STONE_BUTTON, "Can Interact on Player Wait", lobbySettingsModule.getCanInteractPlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.STONE_BUTTON, "Can Interact on Start Wait", lobbySettingsModule.getCanInteractStartWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.ICE, "Can Move on Player Wait", lobbySettingsModule.getCanMovePlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.ICE, "Can Move on Start Wait", lobbySettingsModule.getCanMoveStartWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.ENDER_PEARL, "Teleport After Player Wait", List.of("Should players be teleported", "after player wait time?"),
+                    lobbySettingsModule.getTeleportOnPlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.ENDER_PEARL, "Teleport on Start", List.of("Should players teleport", "to the start position", "after lobby?"),
+                    lobbySettingsModule.getTeleportOnStartCallback()));
             itemsLobby.add(new MenuItemTime(Material.CLOCK, "Waiting for Players Time", List.of("The time in seconds", "the game will wait for", "more players to join.", "A value of 0 will use", "the config setting"),
                     lobbySettingsModule.getPlayerWaitTimeCallback(), 0, Long.MAX_VALUE));
             lobby.addItems(itemsLobby);

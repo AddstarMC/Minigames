@@ -9,8 +9,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -18,19 +18,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class MenuItemDecimal extends MenuItem {
-    final static Pattern DOUBLE_PATTERN = Pattern.compile("[+-]?[0-9]+(.[0-9]+)?");
+    private final static String DESCRIPTION_TOKEN = "Decimal_description";
+    private final static Pattern DOUBLE_PATTERN = Pattern.compile("[+-]?[0-9]+(.[0-9]+)?");
 
-    protected final @NotNull Callback<Double> value;
+    private final @NotNull Callback<Double> value;
     private final double lowerInc;
     private final double upperInc;
     private final @Nullable Double min;
     private final @Nullable Double max;
-    protected DecimalFormat form = new DecimalFormat("#.##");
+    private @NotNull DecimalFormat form = new DecimalFormat("#.##");
 
     public MenuItemDecimal(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Double> value,
                            double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
@@ -66,33 +66,19 @@ public class MenuItemDecimal extends MenuItem {
         updateDescription();
     }
 
-    public void setFormat(DecimalFormat format) {
+    public void setFormat(@NotNull DecimalFormat format) {
         form = format;
     }
 
     public void updateDescription() {
-        List<Component> description;
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = ChatColor.stripColor(getDescription().get(0));
-
-            if (desc.matches("-?[0-9]+(?:.[0-9]+)?")) {
-                description.set(0, ChatColor.GREEN + form.format(value.getValue()));
-            } else if (value.getValue().isInfinite()) {
-                description.add(0, ChatColor.GREEN + "INFINITE");
-            } else {
-                description.add(0, ChatColor.GREEN + form.format(value.getValue()));
-            }
+        Component description;
+        if (value.getValue().isInfinite()) {
+            description = MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_NUMBER_INFINITE).color(NamedTextColor.GREEN);
         } else {
-            description = new ArrayList<>();
-            if (value.getValue().isInfinite()) {
-                description.add(0, ChatColor.GREEN + "INFINITE");
-            } else {
-                description.add(0, ChatColor.GREEN + form.format(value.getValue()));
-            }
+            description = Component.text(form.format(value.getValue()), NamedTextColor.GREEN);
         }
 
-        setDescription(description);
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(description));
     }
 
     @Override

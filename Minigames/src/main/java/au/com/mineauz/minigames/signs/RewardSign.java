@@ -11,6 +11,7 @@ import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -108,7 +109,7 @@ public class RewardSign implements MinigameSign {
             for (RewardType item : rew.getRewards()) {
                 mi.add(item.getMenuItem());
             }
-            List<String> des = new ArrayList<>();
+            List<Component> des = new ArrayList<>();
             des.add("Double Click to edit");
             for (RewardGroup group : rew.getGroups()) {
                 MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST, group.getName() + " Group", des, group, rew);

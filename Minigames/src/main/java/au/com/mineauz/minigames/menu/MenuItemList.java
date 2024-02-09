@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemList<T> extends MenuItem {
+    private final static String DESCRIPTION_TOKEN = "List_description";
     private final Callback<T> value;
     private final List<T> options;
 
@@ -28,7 +29,7 @@ public class MenuItemList<T> extends MenuItem {
 
     public MenuItemList(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
-        this(name, null, displayMat, value, options);
+        this(displayMat, name, null, value, options);
     }
 
     public MenuItemList(@Nullable Material displayMat, @Nullable Component name,
@@ -45,38 +46,19 @@ public class MenuItemList<T> extends MenuItem {
         int pos = options.indexOf(value.getValue());
         int before = pos - 1;
         int after = pos + 1;
-        if (before < 0)
+        if (before < 0) {
             before = options.size() - 1;
-        if (after == options.size())
+        }
+        if (after == options.size()) {
             after = 0;
-
-        if (getDescription() != null) {
-            description = getDescription();
-            if (getDescription().size() >= 3) {
-                String desc = ChatColor.stripColor(getDescription().get(1));
-
-                if (options.contains(desc)) {
-                    description.set(0, ChatColor.GRAY + options.get(before));
-                    description.set(1, ChatColor.GREEN + value.getValue());
-                    description.set(2, ChatColor.GRAY + options.get(after));
-                } else {
-                    description.add(0, ChatColor.GRAY + options.get(before));
-                    description.add(1, ChatColor.GREEN + value.getValue());
-                    description.add(2, ChatColor.GRAY + options.get(after));
-                }
-            } else {
-                description.add(0, ChatColor.GRAY + options.get(before));
-                description.add(1, ChatColor.GREEN + value.getValue());
-                description.add(2, ChatColor.GRAY + options.get(after));
-            }
-        } else {
-            description = new ArrayList<>();
-            description.add(ChatColor.GRAY + options.get(before));
-            description.add(ChatColor.GREEN + value.getValue());
-            description.add(ChatColor.GRAY + options.get(after));
         }
 
-        setDescription(description);
+        description = new ArrayList<>();
+        description.add(Component.text(options.get(before).toString(), NamedTextColor.GRAY));
+        description.add(Component.text(options.get(pos).toString(), NamedTextColor.GREEN));
+        description.add(Component.text(options.get(after).toString(), NamedTextColor.GRAY));
+
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
     }
 
     @Override
@@ -124,8 +106,8 @@ public class MenuItemList<T> extends MenuItem {
 
     @Override
     public void checkValidEntry(String entry) {
-        for (String opt : options) {
-            if (opt.equalsIgnoreCase(entry)) {
+        for (T opt : options) {
+            if (opt.toString().equalsIgnoreCase(entry)) {
                 value.setValue(opt);
                 updateDescription();
 

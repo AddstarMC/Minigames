@@ -2,16 +2,16 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemTime extends MenuItemLong {
+    private final static String DESCRIPTION_TOKEN = "Time_description";
 
     public MenuItemTime(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Long> value,
                         @Nullable Long min, @Nullable Long max) {
@@ -25,23 +25,7 @@ public class MenuItemTime extends MenuItemLong {
 
     @Override
     public void updateDescription() {
-        Component timeComponent = MinigameUtils.convertTime(Duration.ofMillis(value.getValue()), true);
-
-        List<Component> description;
-        if (getDescription() != null) {
-            description = getDescription();
-            String desc = ChatColor.stripColor(getDescription().get(0));
-
-            if (desc.matches("([0-9]+[dhms]:?)+")) {
-                description.set(0, ChatColor.GREEN + timeComponent);
-            } else {
-                description.add(0, ChatColor.GREEN + timeComponent);
-            }
-        } else {
-            description = new ArrayList<>();
-            description.add(ChatColor.GREEN + timeComponent);
-        }
-
-        setDescription(description);
+        Component timeComponent = MinigameUtils.convertTime(Duration.ofMillis(value.getValue()), true).color(NamedTextColor.GREEN);
+        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(timeComponent));
     }
 }

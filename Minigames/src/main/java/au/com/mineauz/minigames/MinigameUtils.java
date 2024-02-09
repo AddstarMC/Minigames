@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -286,39 +287,39 @@ public class MinigameUtils {
     }
 
     /**
-     * Limits the length of a string ignoring all colour codes within it
+     * Limits the length of a Component ignoring all default formats and styles within it
      *
-     * @param string    The string to limit
+     * @param component    The string to limit
      * @param maxLength The maximum number of characters to allow
-     * @return The string that is never longer than maxLength with chat colours stripped out
+     * @return The Component, where it's plain text part is never longer than maxLength
      */
-    public static String limitIgnoreCodes(String string, int maxLength) {
-        if (string.length() <= maxLength) {
-            return string;
+    public static Component limitIgnoreFormat(Component component, int maxLength) {
+        String formatted = MiniMessage.miniMessage().serialize(component);
+        String unformatted = MiniMessage.miniMessage().stripTags(formatted);
+
+        if (maxLength >= unformatted.length()) {
+            return component;
         }
 
-        int size = 0;
-        int chompStart = -1;
-        for (int i = 0; i < string.length(); ++i) {
-            char c = string.charAt(i);
+        StringBuilder result = new StringBuilder();
 
-            if (c == ChatColor.COLOR_CHAR) {
-                ++i;
-                continue;
+        int unformattedIndex = 0;
+        for (int formattedIndex = 0; formattedIndex < formatted.length(); formattedIndex++) {
+            char formattedChar = formatted.charAt(formattedIndex);
+
+            if (formattedChar == unformatted.charAt(unformattedIndex)) {
+                unformattedIndex++;
+
+                if (unformattedIndex > maxLength) {
+                    break;
+                }
             }
 
-            ++size;
-            if (size > maxLength) {
-                chompStart = i;
-                break;
-            }
+            result.append(formattedChar);
         }
 
-        if (chompStart != -1) {
-            return string.substring(0, chompStart);
-        } else {
-            return string;
-        }
+        // reassemble to component
+        return MiniMessage.miniMessage().deserialize(result.toString());
     }
 
     public static String sanitizeYamlString(String input) {

@@ -17,11 +17,11 @@ import java.time.Duration;
 import java.util.List;
 
 public class MenuItemAddWhitelistBlock extends MenuItem {
-    private final List<Material> whitelist;
+    protected final List<Material> whitelist;
 
     public MenuItemAddWhitelistBlock(Component name, List<Material> whitelist) {
-        super(MenuUtility.getCreateMaterial(), name);
-        setDescription(List.of("Left Click with item to", "add to whitelist/blacklist", "Click without item to", "manually add item."));
+        super(MenuUtility.getCreateMaterial(), name,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_WHITELIST_INTERACT));
         this.whitelist = whitelist;
     }
 

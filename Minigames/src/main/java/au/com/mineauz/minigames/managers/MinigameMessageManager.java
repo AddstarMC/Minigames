@@ -277,8 +277,15 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         return getMessageList(null, key, resolvers);
     }
 
+    /**
+     * Reads a String from the ressource bundle, splits it at "{@code <newline>}" and then deserializes it via MiniMessage.
+     * This was first and formost written for Lore of ItemStacks, where newlines don't exist in the common way,
+     * but every line is an element of a list.
+     * This way a Component read by getMessage would look the same as getMessageList in different scenarios.
+     * And be hopefully intuitive how to make multiline lore in the translation files.
+     */
     public static @NotNull List<Component> getMessageList(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
-        MiniMessage miniMessage = MiniMessage.miniMessage();
+        MiniMessage miniMessage = MiniMessage.miniMessage(); // cached to use multiple times in stream
 
         String unformatted = getUnformattedMessage(identifier, key);
         //split at new line then deserialize to component

@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -11,8 +13,8 @@ public class MenuItemWhitelistBlock extends MenuItem {
     private final @NotNull List<Material> whitelist;
 
     public MenuItemWhitelistBlock(@NotNull Material displayMat, @NotNull List<@NotNull Material> whitelist) {
-        super(displayMat, Component.translatable(displayMat.translationKey()));
-        setDescription(List.of("Right Click to remove"));
+        super(displayMat, Component.translatable(displayMat.translationKey()),
+                List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK)));
         this.whitelist = whitelist;
     }
 

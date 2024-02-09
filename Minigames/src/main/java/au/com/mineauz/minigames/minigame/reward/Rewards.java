@@ -124,7 +124,7 @@ public class Rewards {
         for (RewardType item : items) {
             mi.add(item.getMenuItem());
         }
-        List<String> des = new ArrayList<>();
+        List<Component> des = new ArrayList<>();
         des.add("Double Click to edit");
         for (RewardGroup group : groups) {
             MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST, group.getName() + " Group", des, group, this);

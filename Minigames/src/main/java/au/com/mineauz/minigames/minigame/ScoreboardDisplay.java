@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.base.Preconditions;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -186,13 +187,13 @@ public class ScoreboardDisplay {
         Preconditions.checkArgument(stats.length >= 1 && stats.length <= 2);
 
         Sign sign = (Sign) block.getState();
-        sign.getSide(Side.FRONT).setLine(0, MinigameUtils.limitIgnoreCodes(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[0].getPlayerDisplayName(), 15));
-        sign.getSide(Side.FRONT).setLine(1, MinigameUtils.limitIgnoreCodes(ChatColor.BLUE + stat.displayValueSign(stats[0].getValue(), settings), 15));
+        sign.getSide(Side.FRONT).line(0, MinigameUtils.limitIgnoreFormat(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[0].getPlayerDisplayName(), 15));
+        sign.getSide(Side.FRONT).line(1, MinigameUtils.limitIgnoreFormat(ChatColor.BLUE + stat.displayValueSign(stats[0].getValue(), settings), 15));
 
         if (stats.length == 2) {
             ++place;
-            sign.getSide(Side.FRONT).setLine(2, MinigameUtils.limitIgnoreCodes(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[1].getPlayerDisplayName(), 15));
-            sign.getSide(Side.FRONT).setLine(3, MinigameUtils.limitIgnoreCodes(ChatColor.BLUE + stat.displayValueSign(stats[1].getValue(), settings), 15));
+            sign.getSide(Side.FRONT).line(2, MinigameUtils.limitIgnoreFormat(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[1].getPlayerDisplayName(), 15));
+            sign.getSide(Side.FRONT).line(3, MinigameUtils.limitIgnoreFormat(ChatColor.BLUE + stat.displayValueSign(stats[1].getValue(), settings), 15));
         } else {
             sign.getSide(Side.FRONT).setLine(2, "");
             sign.getSide(Side.FRONT).setLine(3, "");
@@ -205,11 +206,11 @@ public class ScoreboardDisplay {
         final Menu setupMenu = new Menu(3, "Setup Scoreboard", player);
 
         StatSettings settings = minigame.getSettings(stat);
-        final MenuItemCustom statisticChoice = new MenuItemCustom(Material.WRITABLE_BOOK, "Statistic");
-        statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings.getDisplayName()));
+        final MenuItemCustom statisticChoice = new MenuItemCustom(Material.WRITABLE_BOOK, "Statistic",
+                List.of(settings.getDisplayName()));
 
-        final MenuItemCustom fieldChoice = new MenuItemCustom(Material.PAPER, "Statistic Field");
-        fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
+        final MenuItemCustom fieldChoice = new MenuItemCustom(Material.PAPER, "Statistic Field",
+                List.of(field.getTitle().color(NamedTextColor.GREEN)));
 
         statisticChoice.setClick(object -> {
             Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<>() {
@@ -222,7 +223,7 @@ public class ScoreboardDisplay {
                 public void setValue(MinigameStat value) {
                     stat = value;
                     StatSettings settings12 = minigame.getSettings(stat);
-                    statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings12.getDisplayName()));
+                    statisticChoice.setBaseDescriptionPart(List.of(settings12.getDisplayName().color(NamedTextColor.GREEN)));
 
                     // Check that the field is valid
                     StatValueField first = null;
@@ -241,7 +242,7 @@ public class ScoreboardDisplay {
                     // Update the field
                     if (!valid) {
                         field = first;
-                        fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.toString()));
+                        fieldChoice.setBaseDescriptionPart(List.of(ChatColor.GREEN + value.toString()));
                     }
                 }
             });
@@ -261,7 +262,7 @@ public class ScoreboardDisplay {
                 @Override
                 public void setValue(StatValueField value) {
                     field = value;
-                    fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.getTitle()));
+                    fieldChoice.setBaseDescriptionPart(Collections.singletonList(ChatColor.GREEN + value.getTitle()));
                 }
             });
 

@@ -37,8 +37,8 @@ public class MenuItemDisplayWhitelist extends MenuItem {
         }
         menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
         menu.addItem(new MenuItemAddWhitelistBlock("Add Material", whitelist), menu.getSize() - 1);
-        menu.addItem(new MenuItemBoolean("Whitelist Mode", modeDescription,
-                Material.ENDER_PEARL, whitelistMode), menu.getSize() - 2);
+        menu.addItem(new MenuItemBoolean(Material.ENDER_PEARL, "Whitelist Mode", modeDescription,
+                whitelistMode), menu.getSize() - 2);
         menu.addItems(items);
         menu.displayMenu(getContainer().getViewer());
         return null;

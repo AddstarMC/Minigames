@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -62,17 +61,8 @@ public class SetBlockWhitelistCommand extends ASetCommand {
                 if (mat != null && mat.isBlock()) {
                     minigame.getRecorderData().addWBBlock(mat);
 
-                    Component addedMat;
-                    if (mat.getBlockTranslationKey() != null) {
-                        addedMat = Component.translatable(mat.getBlockTranslationKey());
-                    } else if (mat.getItemTranslationKey() != null) {
-                        addedMat = Component.translatable(mat.getItemTranslationKey());
-                    } else {
-                        addedMat = Component.text(WordUtils.capitalize(mat.toString().replace("_", " ").toLowerCase()));
-                    }
-
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_ADDED,
-                            Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), addedMat),
+                            Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), Component.translatable(mat.translationKey())),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
@@ -84,17 +74,8 @@ public class SetBlockWhitelistCommand extends ASetCommand {
                 if (mat != null) {
                     minigame.getRecorderData().removeWBBlock(mat);
 
-                    Component removedMat;
-                    if (mat.getBlockTranslationKey() != null) {
-                        removedMat = Component.translatable(mat.getBlockTranslationKey());
-                    } else if (mat.getItemTranslationKey() != null) {
-                        removedMat = Component.translatable(mat.getItemTranslationKey());
-                    } else {
-                        removedMat = Component.text(WordUtils.capitalize(mat.toString().replace("_", " ").toLowerCase()));
-                    }
-
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_REMOVE,
-                            Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), removedMat),
+                            Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), Component.translatable(mat.translationKey())),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
