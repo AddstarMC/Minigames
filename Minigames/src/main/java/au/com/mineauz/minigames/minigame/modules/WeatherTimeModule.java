@@ -66,7 +66,7 @@ public class WeatherTimeModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> map = new HashMap<>();
         map.put(time.getName(), time);
         map.put(useCustomTime.getName(), useCustomTime);

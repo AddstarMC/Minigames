@@ -73,7 +73,7 @@ public class SetBlockWhitelistCommand extends ASetCommand {
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_ADDED,
                             Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), addedMat),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
@@ -95,7 +95,7 @@ public class SetBlockWhitelistCommand extends ASetCommand {
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_REMOVE,
                             Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), removedMat),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
@@ -106,7 +106,7 @@ public class SetBlockWhitelistCommand extends ASetCommand {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_CLEAR,
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
                                 minigame.getRecorderData().getWhitelistMode() ? MinigameLangKey.CONFIG_WHITELIST : MinigameLangKey.CONFIG_BLACKLIST)),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else if (args[0].equalsIgnoreCase("list")) { //todo set list doesn't feel right
                 String whiteListedBlocks = minigame.getRecorderData().getWBBlocks().stream().map(Material::toString).collect(Collectors.joining("<gray>, </gray>"));
 
@@ -121,7 +121,7 @@ public class SetBlockWhitelistCommand extends ASetCommand {
                     minigame.getRecorderData().setWhitelistMode(bool);
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_MODE,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
                                     bool ? MinigameLangKey.CONFIG_WHITELIST : MinigameLangKey.CONFIG_BLACKLIST)));
                 } else {
@@ -136,7 +136,7 @@ public class SetBlockWhitelistCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false", "add", "remove", "list", "clear"), args[0]);
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {

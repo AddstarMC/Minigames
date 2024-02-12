@@ -60,6 +60,6 @@ public class StoredGameStats {
 
     @Override
     public String toString() {
-        return String.format("%s in %s", player.getName(), minigame.getName(false));
+        return String.format("%s in %s", player.getName(), minigame.getName());
     }
 }

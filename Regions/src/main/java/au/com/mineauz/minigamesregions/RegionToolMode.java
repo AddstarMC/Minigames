@@ -48,7 +48,7 @@ public class RegionToolMode implements ToolMode {
 
     @Override
     public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
-        tool.addSetting("Region", "None");
+        tool.setSetting("Region", "None");
         final Menu m = new Menu(2, "Region Selection", player);
         if (player.isInMenu()) {
             m.addItem(new MenuItemBack(player.getMenu()), m.getSize() - 9);
@@ -63,7 +63,7 @@ public class RegionToolMode implements ToolMode {
 
             @Override
             public void setValue(String value) {
-                ftool.changeSetting("Region", value);
+                ftool.setSetting("Region", value);
             }
         }));
 
@@ -79,7 +79,7 @@ public class RegionToolMode implements ToolMode {
 
                 // Set the node and go back to the main menu
                 item.setClick(() -> {
-                    ftool.changeSetting("Region", region.getName());
+                    ftool.setSetting("Region", region.getName());
 
                     m.displayMenu(player);
 
@@ -92,7 +92,7 @@ public class RegionToolMode implements ToolMode {
             regionMenu.addItems(items);
             regionMenu.addItem(new MenuItemBack(m), regionMenu.getSize() - 9);
 
-            m.addItem(new MenuItemPage("Edit Region", Material.CHEST, regionMenu));
+            m.addItem(new MenuItemPage(Material.CHEST, "Edit Region", regionMenu));
         }
         m.displayMenu(player);
     }
@@ -114,7 +114,7 @@ public class RegionToolMode implements ToolMode {
                 module.addRegion(name, new Region(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                         RegionLangKey.REGION_CREATED,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name));
                 mgPlayer.clearSelection();
             } else {
@@ -122,7 +122,7 @@ public class RegionToolMode implements ToolMode {
                 Main.getPlugin().getDisplayManager().update(region);
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                         RegionLangKey.REGION_EDITED,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name));
             }
         } else {
@@ -151,12 +151,12 @@ public class RegionToolMode implements ToolMode {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.TOOL_REGION_SELECTED,
                     Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name),
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
                     RegionLangKey.REGION_ERROR_NOREGION,
                     Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name),
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         }
     }
 
@@ -173,7 +173,7 @@ public class RegionToolMode implements ToolMode {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
                     RegionLangKey.REGION_ERROR_NOREGION,
                     Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name),
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         }
     }
 

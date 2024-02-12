@@ -45,7 +45,7 @@ public class GameOverModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> map = new HashMap<>();
         map.put(timer.getName(), timer);
         map.put(invincible.getName(), invincible);

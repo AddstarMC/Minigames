@@ -56,7 +56,7 @@ public class SaveCommand extends ACommand {
             if (minigame != null) {
                 minigame.saveMinigame();
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MinigameLangKey.MINIGAME_SAVED,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));

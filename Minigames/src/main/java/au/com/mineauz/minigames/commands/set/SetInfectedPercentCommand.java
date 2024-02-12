@@ -59,7 +59,7 @@ public class SetInfectedPercentCommand extends ASetCommand {
                     if (val > 0 && val < 100) {
                         infectionModule.setInfectedPercent(val);
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_INFECTEDPERCENT_SUCCESS,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(val)));
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
@@ -73,7 +73,7 @@ public class SetInfectedPercentCommand extends ASetCommand {
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.INFECTION.getName()));
             }
         }
@@ -82,8 +82,7 @@ public class SetInfectedPercentCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
-
 }

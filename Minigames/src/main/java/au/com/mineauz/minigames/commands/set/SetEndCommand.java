@@ -45,13 +45,13 @@ public class SetEndCommand extends ASetCommand {
                              @NotNull String @Nullable [] args) {
         minigame.setEndLocation(((Player) sender).getLocation());
         MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_END_SUCCESS,
-                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         return true;
     }
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 }

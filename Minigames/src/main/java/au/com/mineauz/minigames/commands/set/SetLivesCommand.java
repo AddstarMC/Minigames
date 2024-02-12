@@ -49,7 +49,7 @@ public class SetLivesCommand extends ASetCommand {
                 minigame.setLives(lives);
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LIVES_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(lives)));
                 return true;
             }
@@ -59,8 +59,7 @@ public class SetLivesCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
-
 }

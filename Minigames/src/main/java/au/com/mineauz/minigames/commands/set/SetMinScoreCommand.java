@@ -49,7 +49,7 @@ public class SetMinScoreCommand extends ASetCommand {
                 minigame.setMinScore(minscore);
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_MINSCORE_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(minscore)));
                 return true;
             } else {
@@ -62,7 +62,7 @@ public class SetMinScoreCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

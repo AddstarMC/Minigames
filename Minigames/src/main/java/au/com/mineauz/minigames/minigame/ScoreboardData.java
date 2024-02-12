@@ -71,7 +71,7 @@ public class ScoreboardData {
 
     public void loadDisplays(MinigameSave save, Minigame mgm) {
         FileConfiguration con = save.getConfig();
-        ConfigurationSection root = con.getConfigurationSection(mgm.getName(false) + ".scoreboards");
+        ConfigurationSection root = con.getConfigurationSection(mgm.getName() + ".scoreboards");
 
         if (root == null) {
             return;

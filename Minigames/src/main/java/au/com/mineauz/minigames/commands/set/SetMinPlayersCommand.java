@@ -49,7 +49,7 @@ public class SetMinPlayersCommand extends ASetCommand {
                 minigame.setMinPlayers(min);
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_MINPLAYERS_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(min)));
                 return true;
             } else {
@@ -62,8 +62,7 @@ public class SetMinPlayersCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
-
 }

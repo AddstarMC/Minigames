@@ -14,5 +14,6 @@ public abstract class ASetCommand implements ICommandInfo {
 
     abstract boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String @Nullable [] args);
 
-    abstract @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String @Nullable [] args);
+    abstract @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                           @NotNull String @NotNull [] args);
 }

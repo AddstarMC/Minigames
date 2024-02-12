@@ -4,12 +4,14 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
@@ -20,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScoreSign implements MinigameSign {
+public class ScoreSign extends AMinigameSign {
 
     @Override
-    public @NotNull String getName() {
-        return "score";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_SCORE);
     }
 
     @Override
@@ -40,12 +42,14 @@ public class ScoreSign implements MinigameSign {
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
         if (event.getLine(2).matches("[0-9]+")) {
-            event.setLine(1, ChatColor.GREEN + "Score");
-            if (TeamColor.matchColor(event.getLine(3)) != null) {
-                TeamColor col = TeamColor.matchColor(event.getLine(3));
+            event.line(1, getName());
+
+            TeamColor col = TeamColor.matchColor(event.getLine(3));
+            if (col != null) {
                 event.setLine(3, col.getColor() + WordUtils.capitalize(col.toString()));
-            } else
+            } else {
                 event.setLine(3, "");
+            }
             return true;
         }
         return false;

@@ -5,12 +5,12 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -18,12 +18,12 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class JoinSign implements MinigameSign {
+public class JoinSign extends AMinigameSign {
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public @NotNull String getName() {
-        return "Join";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_JOIN);
     }
 
     @Override
@@ -38,14 +38,20 @@ public class JoinSign implements MinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
-            event.setLine(1, ChatColor.GREEN + "Join");
-            event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
+        final Sign sign = (Sign) event.getBlock().getState();
+        final Minigame minigame = getMinigame(sign, event.line(2));
+
+        if (minigame != null) {
+            event.line(1, getName());
+
+            event.line(2, minigame.getDisplayName());
+            setPersistentMinigame(sign, minigame);
+
             if (Minigames.getPlugin().hasEconomy()) {
                 if (!event.getLine(3).isEmpty() && !event.getLine(3).matches("\\$?[0-9]+(.[0-9]{2})?")) {
                     MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_JOIN_ERROR_INVALIDMONEY);
                     return false;
-                } else if (event.getLine(3).matches("[0-9]+(.[0-9]{2})?")) {
+                } else if (event.getLine(3).matches("[0-9]+(?:.[0-9]{2})?")) {
                     event.setLine(3, "$" + event.getLine(3));
                 }
             } else if (plugin.getConfig().getBoolean("warnings")) {
@@ -89,9 +95,9 @@ public class JoinSign implements MinigameSign {
             invOk = mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR;
         }
         if (invOk) {
-            Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getSide(Side.FRONT).getLine(2));
+            Minigame mgm = getMinigame(sign);
             if (mgm != null && (!mgm.getUsePermissions() ||
-                    mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
+                    mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                 if (mgm.isEnabled()) {
                     if (!sign.getLine(3).isEmpty() && Minigames.getPlugin().hasEconomy()) {
                         double amount = Double.parseDouble(sign.getLine(3).replace("$", ""));

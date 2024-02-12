@@ -50,7 +50,7 @@ public class InfectionMechanic extends GameMechanicBase {
             if (caller != null) {
                 MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOINFECTION);
             } else {
-                Minigames.getCmpnntLogger().warn("The Infection Minigame \"" + minigame.getName(false) + "\"is not properly configured! Visit the wiki for help configuring an Infection Minigame.");
+                Minigames.getCmpnntLogger().warn("The Infection Minigame \"" + minigame.getName() + "\"is not properly configured! Visit the wiki for help configuring an Infection Minigame.");
             }
             return false;
         }

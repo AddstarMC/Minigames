@@ -106,7 +106,7 @@ public class SetRegenAreaCommand extends ASetCommand {
         //back button or none
         if (PAGE > 1) {
             listBuilder.append(LegacyComponentSerializer.legacySection().deserialize(String.format("&6<<( &e%s&6 ) ", PAGE - 1)).
-                    clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName(false) + " regenarea list " + (PAGE - 1))));
+                    clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName() + " regenarea list " + (PAGE - 1))));
         } else {
             listBuilder.append(Component.text("-------"));
         }
@@ -117,7 +117,7 @@ public class SetRegenAreaCommand extends ASetCommand {
         //next button
         if (PAGE < NUM_OF_PAGES) {
             listBuilder.append(LegacyComponentSerializer.legacySection().deserialize(String.format("&6 ( &e%s&6 )>>", PAGE + 1)).
-                    clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName(false) + " regenarea list " + (PAGE + 1))));
+                    clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName() + " regenarea list " + (PAGE + 1))));
         } else {
             listBuilder.append(Component.text("-------"));
         }
@@ -172,13 +172,13 @@ public class SetRegenAreaCommand extends ASetCommand {
                                 if (result.success()) {
                                     if (region == null) {
                                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_REGENREGION_CREATED,
-                                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                                     } else {
                                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_REGENREGION_UPDATED,
-                                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                                                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
@@ -211,7 +211,7 @@ public class SetRegenAreaCommand extends ASetCommand {
 
                             if (result.success()) {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_REGENREGION_REMOVED,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), args[1]),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
@@ -235,7 +235,7 @@ public class SetRegenAreaCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();

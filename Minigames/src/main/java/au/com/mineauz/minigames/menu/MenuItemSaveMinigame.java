@@ -1,8 +1,12 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +31,9 @@ public class MenuItemSaveMinigame extends MenuItem {
     @Override
     public ItemStack onClick() {
         mgm.saveMinigame();
-        getContainer().getViewer().sendMessage("Saved the '" + mgm.getName(false) + "' Minigame.", MinigameMessageType.INFO);
+        MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.SUCCESS,
+                MinigameLangKey.MINIGAME_SAVED,
+                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
         return getItem();
     }
-
 }

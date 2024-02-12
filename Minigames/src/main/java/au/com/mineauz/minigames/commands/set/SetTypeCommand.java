@@ -64,7 +64,7 @@ public class SetTypeCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> types = new ArrayList<>();
             for (MinigameType t : MinigameType.values()) {
@@ -74,5 +74,4 @@ public class SetTypeCommand extends ASetCommand {
         }
         return null;
     }
-
 }

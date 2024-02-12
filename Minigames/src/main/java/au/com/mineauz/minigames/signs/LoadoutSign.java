@@ -6,10 +6,12 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,13 +20,12 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class LoadoutSign implements MinigameSign {
-
+public class LoadoutSign extends AMinigameSign {
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public @NotNull String getName() {
-        return "Loadout";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_LOADOUT);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class LoadoutSign implements MinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        event.setLine(1, ChatColor.GREEN + "Loadout");
+        event.line(1, getName());
         if (event.getLine(2).equalsIgnoreCase("menu"))
             event.setLine(2, ChatColor.GREEN + "Menu");
         return true;

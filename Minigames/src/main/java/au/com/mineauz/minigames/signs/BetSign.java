@@ -4,9 +4,11 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,13 +18,12 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class BetSign implements MinigameSign {
-
+public class BetSign extends AMinigameSign {
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public @NotNull String getName() {
-        return "Bet";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_BET);
     }
 
     @Override
@@ -37,23 +38,29 @@ public class BetSign implements MinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
+        Sign sign = (Sign) event.getBlock().getState();
+        Minigame minigame = getMinigame(sign, event.line(2));
+
+        if (minigame != null) {
             event.setLine(1, ChatColor.GREEN + "Bet");
-            event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
+            event.line(2, minigame.getDisplayName());
+            setPersistentMinigame(sign, minigame);
+
             if (event.getLine(3).matches("[0-9]+")) {
                 //todo use plugin.getEconomy().currencyNamePlural()
                 event.setLine(3, "$" + event.getLine(3));
             }
             return true;
+        } else {
+            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
+            return false;
         }
-        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
-                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
-        return false;
     }
 
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getSide(Side.FRONT).getLine(2));
+        Minigame mgm = getMinigame(sign);
         if (mgm != null) {
             boolean invOk = true;
             boolean fullInv;
@@ -86,7 +93,7 @@ public class BetSign implements MinigameSign {
             }
 
             if (invOk) {
-                if (mgm.isEnabled() && (!mgm.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
+                if (mgm.isEnabled() && (!mgm.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                     if (mgm.isSpectator(mgPlayer)) {
                         return false;
                     }
@@ -130,7 +137,5 @@ public class BetSign implements MinigameSign {
 
     @Override
     public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
-
     }
-
 }

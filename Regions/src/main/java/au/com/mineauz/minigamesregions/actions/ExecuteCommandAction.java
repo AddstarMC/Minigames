@@ -2,6 +2,8 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -17,13 +19,13 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.util.NullCommandSender;
 import com.google.common.collect.ImmutableSet;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -74,8 +76,8 @@ public class ExecuteCommandAction extends AAction {
                 .replace("{pz}", String.valueOf(player.getLocation().getZ()))
                 .replace("{yaw}", String.valueOf(player.getLocation().getYaw()))
                 .replace("{pitch}", String.valueOf(player.getLocation().getPitch()))
-                .replace("{minigame}", player.getMinigame().getName(false))
-                .replace("{dispminigame}", player.getMinigame().getName(true))
+                .replace("{minigame}", player.getMinigame().getName())
+                .replace("{dispminigame}", PlainTextComponentSerializer.plainText().serialize(player.getMinigame().getDisplayName()))
                 .replace("{deaths}", String.valueOf(player.getDeaths()))
                 .replace("{kills}", String.valueOf(player.getKills()))
                 .replace("{reverts}", String.valueOf(player.getReverts()))
@@ -189,8 +191,9 @@ public class ExecuteCommandAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemString(Material.COMMAND_BLOCK, "Command", List.of("Do not include '/'", "If '//' command, start with './'"),
-                new Callback<>() {
+
+        m.addItem(new MenuItemString(Material.COMMAND_BLOCK, MgMenuLangKey.MENU_COMMANDACTION_COMMAND_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_COMMANDACTION_COMMAND_DESCRIPTION), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -199,12 +202,15 @@ public class ExecuteCommandAction extends AAction {
 
             @Override
             public void setValue(String value) {
-                if (value.startsWith("./"))
+                if (value.startsWith("./")) {
                     value = value.replaceFirst("./", "/");
+                }
                 comd.setFlag(value);
             }
         }));
-        m.addItem(silentExecute.getMenuItem(Material.NOTE_BLOCK, "Is Silent", List.of("When on, console output", "for a command will be", "silenced.", "NOTE: Does not work with", "minecraft commands")));
+
+        m.addItem(silentExecute.getMenuItem(Material.NOTE_BLOCK, MgMenuLangKey.MENU_COMMANDACTION_SILENT_NAME,
+                MgMenuLangKey.MENU_COMMANDACTION_SILENT_DESCRIPTION));
         m.displayMenu(mgPlayer);
         return true;
     }

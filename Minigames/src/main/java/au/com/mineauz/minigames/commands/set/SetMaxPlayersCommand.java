@@ -48,7 +48,7 @@ public class SetMaxPlayersCommand extends ASetCommand {
                 int max = Integer.parseInt(args[0]);
                 minigame.setMaxPlayers(max);
                 MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_MAXPLAYERS_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(max)));
                 return true;
             } else {
@@ -61,8 +61,7 @@ public class SetMaxPlayersCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
-
 }

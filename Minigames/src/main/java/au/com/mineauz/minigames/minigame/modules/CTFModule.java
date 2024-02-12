@@ -42,7 +42,7 @@ public class CTFModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> flags = new HashMap<>();
         flags.put("useFlagAsCapturePoint", useFlagAsCapturePoint);
         flags.put("bringFlagBackManual", bringFlagBackManual);

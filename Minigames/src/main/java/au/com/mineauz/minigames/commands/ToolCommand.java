@@ -74,7 +74,7 @@ public class ToolCommand extends ACommand {
 
                     if (tool.getMinigame() != null && tool.getMode() != null) {
                         tool.getMode().select(mgPlayer, tool.getMinigame(),
-                                TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeam()));
+                                TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeamColor()));
                     } else {
                         if (tool.getMode() == null) {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_NOMODE);
@@ -87,7 +87,7 @@ public class ToolCommand extends ACommand {
 
                     if (tool.getMinigame() != null && tool.getMode() != null) {
                         tool.getMode().deselect(mgPlayer, tool.getMinigame(),
-                                TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeam()));
+                                TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeamColor()));
                     } else {
                         if (tool.getMode() == null) {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_NOMODE);
@@ -99,7 +99,7 @@ public class ToolCommand extends ACommand {
                     if (TeamColor.matchColor(args[1]) != null || args[1].equalsIgnoreCase("none")) {
                         MinigameTool tool = MinigameUtils.hasMinigameTool(mgPlayer) ? MinigameUtils.getMinigameTool(mgPlayer) : MinigameUtils.giveMinigameTool(mgPlayer);
 
-                        tool.setTeam(args[1].equalsIgnoreCase("none") ? null : TeamColor.matchColor(args[1]));
+                        tool.setTeamColor(args[1].equalsIgnoreCase("none") ? null : TeamColor.matchColor(args[1]));
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_TOOL_SETTEAM,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), args[1]));
                     } else {

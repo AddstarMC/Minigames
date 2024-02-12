@@ -45,11 +45,11 @@ public class SetPresetCommand extends ASetCommand {
                              @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
-                MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, PresetLoader.loadPreset(args[0], minigame));
+                PresetLoader.loadPreset(args[0], minigame, sender);
                 return true;
             } else if (args.length >= 2) {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_PRESET_HEADER);
-                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, PresetLoader.getPresetInfo(args[0]));
+                PresetLoader.getPresetInfo(args[0], sender);
                 return true;
             }
         }
@@ -58,11 +58,10 @@ public class SetPresetCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 2) {
             return MinigameUtils.tabCompleteMatch(List.of("info"), args[1]);
         }
         return null;
     }
-
 }

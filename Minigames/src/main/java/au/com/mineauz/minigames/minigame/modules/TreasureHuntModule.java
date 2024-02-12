@@ -50,7 +50,7 @@ public class TreasureHuntModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> flags = new HashMap<>();
         flags.put(location.getName(), location);
         flags.put(maxRadius.getName(), maxRadius);
@@ -82,22 +82,22 @@ public class TreasureHuntModule extends MinigameModule {
 
     @Override
     public boolean displayMechanicSettings(Menu previous) {
-        Menu treasureHunt = new Menu(6, getMinigame().getName(false), previous.getViewer());
+        Menu treasureHunt = new Menu(6, getMinigame().getDisplayName(), previous.getViewer());
 
         List<MenuItem> itemsTreasureHunt = new ArrayList<>(5);
         itemsTreasureHunt.add(location.getMenuItem(Material.WHITE_BED, "Location Name", List.of("Name to appear when", "treasure spawns")));
         itemsTreasureHunt.add(maxRadius.getMenuItem(Material.ENDER_PEARL, "Max. Radius", 10, null));
-        List<String> maxHeightDes = new ArrayList<>();
+        List<Component> maxHeightDes = new ArrayList<>();
         maxHeightDes.add("Max. height of where a");
         maxHeightDes.add("chest can generate.");
         maxHeightDes.add("Can still move above to");
         maxHeightDes.add("avoid terrain");
         itemsTreasureHunt.add(maxHeight.getMenuItem(Material.BEACON, "Max. Height", maxHeightDes, 1, 256));
-        List<String> minDes = new ArrayList<>();
+        List<Component> minDes = new ArrayList<>();
         minDes.add("Minimum items to");
         minDes.add("spawn in chest.");
         itemsTreasureHunt.add(minTreasure.getMenuItem(Material.STONE_SLAB, "Min. Items", minDes, 0, 27));
-        List<String> maxDes = new ArrayList<>();
+        List<Component> maxDes = new ArrayList<>();
         maxDes.add("Maximum items to");
         maxDes.add("spawn in chest.");
         itemsTreasureHunt.add(maxTreasure.getMenuItem(Material.STONE, "Max. Items", maxDes, 0, 27));
@@ -250,7 +250,7 @@ public class TreasureHuntModule extends MinigameModule {
                 int nextUse = (300000 - (int) (System.currentTimeMillis() - getLastHintUse(mgPlayer))) / 1000;
 
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_NOUSE,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), getMinigame().getName(true)),
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), getMinigame().getDisplayName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(nextUse)));
 
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_TIMELEFT,

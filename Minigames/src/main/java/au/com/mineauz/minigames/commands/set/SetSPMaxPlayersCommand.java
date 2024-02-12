@@ -51,7 +51,7 @@ public class SetSPMaxPlayersCommand extends ASetCommand {
                 minigame.setSpMaxPlayers(bool);
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_SPMAXPLAYERS_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
                                 MinigameMessageManager.getMgMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
 
@@ -67,11 +67,10 @@ public class SetSPMaxPlayersCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         }
         return null;
     }
-
 }

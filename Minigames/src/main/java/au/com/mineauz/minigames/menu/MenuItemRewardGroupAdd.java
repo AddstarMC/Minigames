@@ -1,11 +1,15 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -32,20 +36,24 @@ public class MenuItemRewardGroupAdd extends MenuItem {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        mgPlayer.sendInfoMessage("Enter reward group name into chat, the menu will automatically reopen in 30s if nothing is entered.");
+        final int reopenSeconds = 30;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_ENTERCHAT);
         mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(30);
+        getContainer().startReopenTimer(reopenSeconds);
         return null;
     }
 
     @Override
     public void checkValidEntry(String entry) {
+        getContainer().cancelReopenTimer();
+
         entry = entry.replace(" ", "_");
         for (RewardGroup group : rewards.getGroups()) {
             if (group.getName().equals(entry)) {
-                getContainer().getViewer().sendMessage("A reward group already exists by the name \"" + entry + "\"!", MinigameMessageType.ERROR);
-                getContainer().cancelReopenTimer();
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+                        MgMenuLangKey.MENU_REWARD_ERROR_GROUPEXISTS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
                 getContainer().displayMenu(getContainer().getViewer());
                 return;
             }
@@ -53,11 +61,11 @@ public class MenuItemRewardGroupAdd extends MenuItem {
 
         RewardGroup group = rewards.addGroup(entry, RewardRarity.NORMAL);
 
-        MenuItemRewardGroup mrg = new MenuItemRewardGroup(Material.CHEST, entry + " Group", group, rewards);
+        MenuItemRewardGroup mrg = new MenuItemRewardGroup(Material.CHEST,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry)), group, rewards);
         getContainer().addItem(mrg);
 
-        getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
     }
-
 }

@@ -7,7 +7,6 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardTypes;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -46,12 +45,13 @@ public class MenuItemRewardAdd extends MenuItem {
     public ItemStack onClick() {
         Menu m = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SELECTTYPE_NAME), getContainer().getViewer());
         final Menu orig = getContainer();
-        for (String type : RewardTypes.getAllRewardTypeNames()) {
-            final MenuItemCustom custom = new MenuItemCustom(Material.STONE, "TYPE");
-            final RewardType rewType = RewardTypes.getRewardType(type, rewards);
+        for (RewardTypes.RewardTypeFactory factory : RewardTypes.getRewardTypeFactories()) {
+            final MenuItemCustom custom = new MenuItemCustom(Material.STONE, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TYPE_NAME));
+            final RewardType rewType = factory.makeNewType(rewards);
+
             if (rewType.isUsable()) {
                 ItemMeta meta = custom.getItem().getItemMeta();
-                meta.setDisplayName(ChatColor.RESET + type);
+                meta.displayName(Component.text(factory.getName()));
                 custom.getItem().setItemMeta(meta);
                 custom.setItem(rewType.getMenuItem().getItem());
                 custom.setClick(() -> {

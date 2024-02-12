@@ -81,7 +81,7 @@ public class LoadoutModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> flags = new HashMap<>();
         flags.put(loadoutsFlag.getName(), loadoutsFlag);
         return flags;

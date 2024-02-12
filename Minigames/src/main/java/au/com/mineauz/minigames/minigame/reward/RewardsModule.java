@@ -1,6 +1,8 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -53,7 +55,7 @@ public class RewardsModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         return scheme.getFlags();
     }
 
@@ -66,7 +68,7 @@ public class RewardsModule extends MinigameModule {
     public void save(FileConfiguration config) {
         String name = RewardSchemes.getName(scheme.getClass());
 
-        ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
+        ConfigurationSection root = config.getConfigurationSection(getMinigame().getName());
         if (root != null) {
             root.set("reward-scheme", name);
             ConfigurationSection rewards = root.createSection("rewards");
@@ -76,7 +78,7 @@ public class RewardsModule extends MinigameModule {
 
     @Override
     public void load(FileConfiguration config) {
-        ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
+        ConfigurationSection root = config.getConfigurationSection(getMinigame().getName());
         if (root != null) {
             String name = root.getString("reward-scheme", "standard");
             scheme = RewardSchemes.createScheme(name);
@@ -90,7 +92,8 @@ public class RewardsModule extends MinigameModule {
 
     @Override
     public void addEditMenuOptions(final Menu menu) {
-        MenuItemCustom launcher = new MenuItemCustom(Material.DIAMOND, "Reward Settings");
+        MenuItemCustom launcher = new MenuItemCustom(Material.DIAMOND,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME));
         launcher.setClick(() -> {
             Menu submenu = createSubMenu(menu);
             submenu.displayMenu(menu.getViewer());
@@ -101,10 +104,12 @@ public class RewardsModule extends MinigameModule {
     }
 
     private Menu createSubMenu(final Menu parent) {
-        final Menu submenu = new Menu(6, "Reward Settings", parent.getViewer());
+        final Menu submenu = new Menu(6,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME), parent.getViewer());
         scheme.addMenuItems(submenu);
 
-        submenu.addItem(RewardSchemes.newMenuItem("Reward Scheme", Material.PAPER, new Callback<>() {
+        submenu.addItem(RewardSchemes.newMenuItem(Material.PAPER,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SCHEME_NAME), new Callback<>() {
             @Override
             public Class<? extends RewardScheme> getValue() {
                 return scheme.getClass();

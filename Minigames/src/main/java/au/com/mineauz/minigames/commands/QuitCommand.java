@@ -72,7 +72,7 @@ public class QuitCommand extends ACommand {
                                 PLUGIN.getPlayerManager().quitMinigame(pl, true);
                             }
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_QUIT_QUITALLMINIGAME,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                         } else {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[1]));

@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
@@ -19,7 +21,8 @@ public class MenuItemStatisticsSettings extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        Menu subMenu = new Menu(6, "Statistics Settings", getContainer().getViewer());
+        Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_SETTINGS_NAME),
+                getContainer().getViewer());
 
         for (MinigameStat stat : MinigameStats.getAllStats().values()) {
             subMenu.addItem(new MenuItemModifyStatSetting(Material.WRITABLE_BOOK, minigame, stat));

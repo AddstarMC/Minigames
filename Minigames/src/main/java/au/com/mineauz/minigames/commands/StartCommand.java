@@ -57,7 +57,7 @@ public class StartCommand extends ACommand {
                 if (mgm.getType() == MinigameType.GLOBAL) {
                     if (mgm.isEnabled()) {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_START_ERROR_GLOBALISRUNNING,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(false)));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
                     } else {
                         MinigamePlayer caller = null;
                         if (sender instanceof Player player) {
@@ -93,5 +93,4 @@ public class StartCommand extends ACommand {
         List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }
-
 }

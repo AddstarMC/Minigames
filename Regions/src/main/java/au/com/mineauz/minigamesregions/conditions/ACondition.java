@@ -2,6 +2,8 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -24,7 +26,7 @@ public abstract class ACondition {
     }
 
     protected void addInvertMenuItem(Menu m) {
-        m.addItem(invert.getMenuItem("Invert", Material.ENDER_PEARL), m.getSize() - 1);
+        m.addItem(invert.getMenuItem(Material.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_INVERT_NAME)), m.getSize() - 1);
     }
 
     protected void saveInvert(FileConfiguration config, String path) {
@@ -68,7 +70,7 @@ public abstract class ACondition {
     public void debug(Minigame mg) {
         if (Minigames.getPlugin().isDebugging()) {
             Main.getPlugin().getComponentLogger().info("Cat " + this.getCategory() + " : " + this.getName() +
-                    " Check:" + mg.getName(false) + " mech: " + mg.getMechanicName() + "Condition:                     " + this);
+                    " Check:" + mg.getName() + " mech: " + mg.getMechanicName() + "Condition:                     " + this);
         }
     }
 }

@@ -53,7 +53,7 @@ public class SetLobbyCommand extends ASetCommand {
             if (sender instanceof Entity entity) {
                 minigame.setLobbyLocation(entity.getLocation());
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_LOCATION,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else { // not a player
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             }
@@ -168,8 +168,8 @@ public class SetLobbyCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
-        if (args != null && args.length > 0) {
+                                                         @NotNull String @NotNull [] args) {
+        if (args.length > 0) {
             return switch (args.length) {
                 case 1 ->
                         MinigameUtils.tabCompleteMatch(List.of("canmove", "caninteract", "teleport", "playerWait"), args[args.length - 1]);

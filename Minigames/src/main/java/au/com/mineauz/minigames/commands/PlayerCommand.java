@@ -71,11 +71,11 @@ public class PlayerCommand extends ACommand {
                     for (MinigamePlayer mgPlayer : mgPlayers) {
                         //todo don't send x trillion messages. merge to list and send as pages
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_PLAYER_LIST_ENTRY,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName(false)), //  mgPlayer.getMinigame() is never null, we only add player in Minigame to list
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName()), //  mgPlayer.getMinigame() is never null, we only add player in Minigame to list
                                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_PLAYERS_NONE);
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.QUANTIFIER_NONE);
                 }
             } else {
                 List<Player> playerMatch = Bukkit.matchPlayer(args[0]);
@@ -87,7 +87,7 @@ public class PlayerCommand extends ACommand {
                         Duration playTime = Duration.ofMillis(Calendar.getInstance().getTimeInMillis() - mgPlayer.getStartTime() + mgPlayer.getStoredTime());
 
                         MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_MINIGAME,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName(false)));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName()));
                         MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_SCORE,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())));
                         MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_KILLS,

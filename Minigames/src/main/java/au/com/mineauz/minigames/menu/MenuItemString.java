@@ -33,6 +33,13 @@ public class MenuItemString extends MenuItem {
         updateDescription();
     }
 
+    public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey,
+                          @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
+        super(displayMat, langKey, description);
+        this.str = str;
+        updateDescription();
+    }
+
     public MenuItemString(@Nullable Material displayMat, @Nullable Component name,
                           @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
         super(displayMat, name, description);

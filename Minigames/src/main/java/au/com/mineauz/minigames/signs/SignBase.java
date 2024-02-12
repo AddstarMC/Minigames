@@ -4,10 +4,12 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.TakeFlagEvent;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.CTFFlag;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -21,13 +23,16 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class SignBase implements Listener {
-    private static final Map<String, MinigameSign> minigameSigns = new HashMap<>();
+    private static final List<AMinigameSign> minigameSigns = new ArrayList<>();
+    private static final Pattern alternativeMgmPattern = Pattern.compile("(?:\\[mgm])|(?:\\[mg])", Pattern.CASE_INSENSITIVE);
     private final HashSet<CTFFlag> takenFlags = new HashSet<>();
 
     static {
@@ -50,8 +55,19 @@ public class SignBase implements Listener {
         Minigames.getPlugin().getServer().getPluginManager().registerEvents(this, Minigames.getPlugin());
     }
 
-    public static void registerMinigameSign(MinigameSign mgSign) {
-        minigameSigns.put(mgSign.getName().toLowerCase(), mgSign);
+    public static void registerMinigameSign(AMinigameSign mgSign) {
+        minigameSigns.add(mgSign);
+    }
+
+    private @Nullable AMinigameSign getMgSign(@NotNull Component secondLine) {
+        // don't use a map here, with names as keys since it might be possible to reload messages via command
+        for (AMinigameSign mgSign : minigameSigns) {
+            if (mgSign.isType(secondLine)) {
+                return mgSign;
+            }
+        }
+
+        return null;
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -63,16 +79,15 @@ public class SignBase implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void signPlace(SignChangeEvent event) {
-        String[] signinfo = new String[4];
-        for (int i = 0; i < 4; i++) {
-            signinfo[i] = ChatColor.stripColor(event.getLine(i));
-        }
-        if ("[minigame]".equalsIgnoreCase(signinfo[0]) || "[mgm]".equalsIgnoreCase(signinfo[0]) || "[mg]".equals(signinfo[0])) {
-            if (event.getSide() == Side.FRONT) {
-                if (minigameSigns.containsKey(signinfo[1].toLowerCase())) {
-                    event.setLine(0, ChatColor.DARK_BLUE + "[Minigame]");
-                    MinigameSign mgSign = minigameSigns.get(signinfo[1].toLowerCase());
+        String firstLine = PlainTextComponentSerializer.plainText().serialize(event.line(0));
 
+        if (MinigameMessageManager.getUnformattedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLine) ||
+                alternativeMgmPattern.matcher(firstLine).matches()) {
+            if (event.getSide() == Side.FRONT) {
+                AMinigameSign mgSign = getMgSign(event.line(2));
+
+                if (mgSign != null) {
+                    event.line(0, MinigameMessageManager.getMgMessage(MgSignLangKey.MINIGAME));
                     ((Sign) event.getBlock().getState()).setWaxed(true);
 
                     if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
@@ -103,10 +118,10 @@ public class SignBase implements Listener {
     private void signUse(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block cblock = event.getClickedBlock();
-            if (cblock.getState() instanceof Sign sign) {
-                if (sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") &&
-                        minigameSigns.containsKey(ChatColor.stripColor(sign.getLine(1).toLowerCase()))) {
-                    MinigameSign mgSign = minigameSigns.get(ChatColor.stripColor(sign.getLine(1).toLowerCase()));
+            if (cblock != null && cblock.getState() instanceof Sign sign) {
+                String firstLine = PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(0));
+                AMinigameSign mgSign = getMgSign(sign.getSide(Side.FRONT).line(2));
+                if (MinigameMessageManager.getUnformattedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLine) && mgSign != null) {
 
                     if (mgSign.getUsePermission() != null && !event.getPlayer().hasPermission(mgSign.getUsePermission())) {
                         event.setCancelled(true);
@@ -126,9 +141,9 @@ public class SignBase implements Listener {
     private void signBreak(BlockBreakEvent event) {
         if (Tag.ALL_SIGNS.isTagged(event.getBlock().getType())) {
             Sign sign = (Sign) event.getBlock().getState();
-            if (sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") &&
-                    minigameSigns.containsKey(ChatColor.stripColor(sign.getLine(1).toLowerCase()))) {
-                MinigameSign mgSign = minigameSigns.get(ChatColor.stripColor(sign.getLine(1).toLowerCase()));
+            String firstLine = PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(0));
+            AMinigameSign mgSign = getMgSign(sign.getSide(Side.FRONT).line(2));
+            if (MinigameMessageManager.getUnformattedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLine) && mgSign != null) {
 
                 if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                     event.setCancelled(true);

@@ -50,7 +50,7 @@ public class SetFlagCommand extends ASetCommand {
                 minigame.addFlag(args[1]);
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLAG_ADD,
                         Placeholder.parsed(MinigamePlaceHolderKey.FLAG.getKey(), args[1]),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 return true;
             } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
                 if (minigame.removeFlag(args[1])) {
@@ -64,22 +64,22 @@ public class SetFlagCommand extends ASetCommand {
             } else if (args[0].equalsIgnoreCase("list")) {
                 if (minigame.hasFlags()) {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_FLAG_LIST_HEADER,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
                             MiniMessage.miniMessage().deserialize(String.join("<gray>, </gray>", minigame.getFlags())));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_FLAG_NOFLAGS,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("clear")) {
                 if (minigame.hasFlags()) {
                     minigame.getFlags().clear();
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLAG_CLEAR,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_FLAG_NOFLAGS,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 }
                 return true;
             }
@@ -89,10 +89,9 @@ public class SetFlagCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("add", "remove", "clear", "list"), args[0]);
         return null;
     }
-
 }

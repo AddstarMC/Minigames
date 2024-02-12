@@ -64,11 +64,11 @@ public class SetDisplayScoreboardCommand extends ASetCommand { //todo allow side
                 if (bool) {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
                             MgCommandLangKey.COMMAND_SET_DISPLAYSCOREBOARD_SUCCESS,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
                             MgCommandLangKey.COMMAND_SET_DISPLAYSCOREBOARD_REMOVED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 }
                 return true;
             } else {
@@ -81,11 +81,9 @@ public class SetDisplayScoreboardCommand extends ASetCommand { //todo allow side
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
-        if (args != null) {
-            if (args.length == 1) {
-                return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
-            }
+                                                         @NotNull String @NotNull [] args) {
+        if (args.length == 1) {
+            return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         }
         return null;
     }

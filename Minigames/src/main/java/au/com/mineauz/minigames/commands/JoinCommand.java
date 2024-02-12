@@ -48,11 +48,11 @@ public class JoinCommand extends ACommand {
         Player player = (Player) sender;
         if (args.length > 0) {
             Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
-            if (mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
+            if (mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                 if (!PLUGIN.getPlayerManager().getMinigamePlayer(player).isInMinigame()) {
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MinigameLangKey.PLAYER_JOIN_JOINING,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(true)));
+                            Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
                     PLUGIN.getPlayerManager().joinMinigame(PLUGIN.getPlayerManager().getMinigamePlayer(player), mgm, false, 0.0);
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_JOIN_ERROR_ALREADYPLAYING);
@@ -75,8 +75,8 @@ public class JoinCommand extends ACommand {
             // filter all minigames by permission
             List<String> mgs = PLUGIN.getMinigameManager().getAllMinigames().values().stream().
                     filter(mgm -> (!mgm.getUsePermissions() ||
-                            sender.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))).
-                    map(mgm -> mgm.getName(false)).toList();
+                            sender.hasPermission("minigame.join." + mgm.getName().toLowerCase()))).
+                    map(Minigame::getName).toList();
 
             return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
         }

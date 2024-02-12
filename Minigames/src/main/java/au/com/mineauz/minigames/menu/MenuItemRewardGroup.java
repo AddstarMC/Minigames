@@ -1,6 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
@@ -117,18 +119,18 @@ public class MenuItemRewardGroup extends MenuItem {
 
     @Override
     public void checkValidEntry(String entry) {
-        if (entry.equalsIgnoreCase("yes")) {
+        getContainer().cancelReopenTimer();
+
+        if (entry.equalsIgnoreCase("yes")) { // todo?
             rewards.removeGroup(group);
             getContainer().removeItem(this.getSlot());
 
-            getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
-            return;
-        }
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        } else {
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_REWARD_NOTREMOVED);
 
-        getContainer().getViewer().sendMessage("The selected group will not be removed from the rewards.", MinigameMessageType.ERROR);
+            getContainer().displayMenu(getContainer().getViewer());
+        }
     }
 
     @Override

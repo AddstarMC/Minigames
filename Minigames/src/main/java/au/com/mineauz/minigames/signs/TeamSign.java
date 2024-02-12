@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -20,13 +20,11 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class TeamSign implements MinigameSign {
-
-    private final Minigames plugin = Minigames.getPlugin();
+public class TeamSign extends AMinigameSign {
 
     @Override
-    public @NotNull String getName() {
-        return "Team";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_TEAM);
     }
 
     @Override
@@ -41,8 +39,7 @@ public class TeamSign implements MinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        event.setLine(1, ChatColor.GREEN + "Team");
-
+        event.line(1, getName());
 
         if (event.getLine(2).equalsIgnoreCase("neutral")) {
             event.setLine(2, ChatColor.GRAY + "Neutral");

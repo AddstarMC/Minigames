@@ -6,8 +6,6 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.objects.CTFFlag;
@@ -26,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -36,15 +35,13 @@ import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-import java.util.List;
 import java.util.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Minigame implements ScriptObject {
     private final String name; //todo maybe component
     private final Map<String, Flag<?>> configFlags = new HashMap<>();
-    private final StringFlag displayName = new StringFlag(null, "displayName");
+    private final ComponentFlag displayName = new ComponentFlag(null, "displayName");
     private final StringFlag objective = new StringFlag(null, "objective");
     private final StringFlag gameTypeName = new StringFlag(null, "gametypeName");
     private final EnumFlag<MinigameType> type = new EnumFlag<>(MinigameType.SINGLEPLAYER, "type");
@@ -467,13 +464,18 @@ public class Minigame implements ScriptObject {
         this.lobbyLocation.setFlag(lobbyLocation);
     }
 
-    public String getName(boolean useDisplay) {
-        if (useDisplay && displayName.getFlag() != null)
-            return displayName.getFlag();
+    public String getName() {
         return name;
     }
 
-    public void setDisplayName(String displayName) {
+    public Component getDisplayName() {
+        if (displayName.getFlag() != null) {
+            return displayName.getFlag();
+        }
+        return Component.text(name);
+    }
+
+    public void setDisplayName(Component displayName) {
         this.displayName.setFlag(displayName);
     }
 
@@ -588,7 +590,7 @@ public class Minigame implements ScriptObject {
             sbManager = s.getNewScoreboard();
             Minigames.getCmpnntLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name);
         }
-        Objective o = sbManager.getObjective(getName(false));
+        Objective o = sbManager.getObjective(getName());
         if (o != null) {
             o.getScore(mgPlayer.getName()).setScore(amount);
         }
@@ -1047,11 +1049,11 @@ public class Minigame implements ScriptObject {
     }
 
     public void displayMenu(MinigamePlayer player) {
-        Menu main = new Menu(6, getName(false), player);
-        Menu playerMenu = new Menu(6, getName(false), player);
-        Menu loadouts = new Menu(6, getName(false), player);
-        Menu flags = new Menu(6, getName(false), player);
-        Menu lobby = new Menu(6, getName(false), player);
+        Menu main = new Menu(6, getDisplayName(), player);
+        Menu playerMenu = new Menu(6, getDisplayName(), player);
+        Menu loadouts = new Menu(6, getDisplayName(), player);
+        Menu flags = new Menu(6, getDisplayName(), player);
+        Menu lobby = new Menu(6, getDisplayName(), player);
 
         List<MenuItem> itemsMain = new ArrayList<>();
         itemsMain.add(enabled.getMenuItem("Enabled", Material.PAPER));
@@ -1193,7 +1195,7 @@ public class Minigame implements ScriptObject {
         }
 
         main.addItems(itemsMain);
-        main.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(), "Save " + getName(false), this), main.getSize() - 1);
+        main.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(), "Save " + getDisplayName(), this), main.getSize() - 1);
 
         //----------------------//
         //Minigame Player Settings
@@ -1280,8 +1282,8 @@ public class Minigame implements ScriptObject {
             if (!module.useSeparateConfig()) {
                 module.save(cfg);
 
-                if (module.getFlags() != null) {
-                    for (Flag<?> flag : module.getFlags().values()) {
+                if (module.getConfigFlags() != null) {
+                    for (Flag<?> flag : module.getConfigFlags().values()) {
                         if (flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
                             flag.saveValue(name, cfg);
                     }
@@ -1292,8 +1294,8 @@ public class Minigame implements ScriptObject {
                 modsave.getConfig().createSection(name);
                 module.save(modsave.getConfig());
 
-                if (module.getFlags() != null) {
-                    for (Flag<?> flag : module.getFlags().values()) {
+                if (module.getConfigFlags() != null) {
+                    for (Flag<?> flag : module.getConfigFlags().values()) {
                         if (flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
                             flag.saveValue(name, modsave.getConfig());
                     }
@@ -1336,20 +1338,20 @@ public class Minigame implements ScriptObject {
             if (!module.useSeparateConfig()) {
                 module.load(cfg);
 
-                if (module.getFlags() != null) {
-                    for (String flag : module.getFlags().keySet()) {
+                if (module.getConfigFlags() != null) {
+                    for (String flag : module.getConfigFlags().keySet()) {
                         if (cfg.contains(name + "." + flag))
-                            module.getFlags().get(flag).loadValue(name, cfg);
+                            module.getConfigFlags().get(flag).loadValue(name, cfg);
                     }
                 }
             } else {
                 MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
                 module.load(modsave.getConfig());
 
-                if (module.getFlags() != null) {
-                    for (String flag : module.getFlags().keySet()) {
+                if (module.getConfigFlags() != null) {
+                    for (String flag : module.getConfigFlags().keySet()) {
                         if (modsave.getConfig().contains(name + "." + flag))
-                            module.getFlags().get(flag).loadValue(name, modsave.getConfig());
+                            module.getConfigFlags().get(flag).loadValue(name, modsave.getConfig());
                     }
                 }
             }
@@ -1411,8 +1413,9 @@ public class Minigame implements ScriptObject {
     }
 
     @Override
+    @Deprecated(forRemoval = true)
     public String toString() {
-        return getName(false);
+        return getName();
     }
 
     @Override
@@ -1425,9 +1428,9 @@ public class Minigame implements ScriptObject {
                 return ScriptCollection.of(module.getTeamsNameMap());
             }
         } else if (name.equalsIgnoreCase("name")) {
-            return ScriptValue.of(getName(false));
+            return ScriptValue.of(getName());
         } else if (name.equalsIgnoreCase("displayname")) {
-            return ScriptValue.of(getName(true));
+            return ScriptValue.of(getName());
         }
 
         return null;
@@ -1440,6 +1443,6 @@ public class Minigame implements ScriptObject {
 
     @Override
     public String getAsString() {
-        return getName(false);
+        return getName();
     }
 }

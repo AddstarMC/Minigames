@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -349,10 +350,10 @@ public class ScoreboardDisplay {
             BlockState state = root.getState();
             if (state instanceof Sign sign) {
 
-                sign.getSide(Side.FRONT).setLine(0, ChatColor.BLUE + minigame.getName(true));
-                sign.getSide(Side.FRONT).setLine(1, ChatColor.GREEN + settings.getDisplayName());
-                sign.getSide(Side.FRONT).setLine(2, ChatColor.GREEN + field.getTitle());
-                sign.getSide(Side.FRONT).setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
+                sign.getSide(Side.FRONT).line(0, minigame.getDisplayName().color(NamedTextColor.BLUE));
+                sign.getSide(Side.FRONT).line(1, settings.getDisplayName().color(NamedTextColor.GREEN));
+                sign.getSide(Side.FRONT).line(2, ChatColor.GREEN + field.getTitle());
+                sign.getSide(Side.FRONT).line(3, "(" + WordUtils.capitalize(order.toString()) + ")");
                 sign.update();
 
                 sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
