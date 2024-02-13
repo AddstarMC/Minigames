@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Team;
@@ -61,8 +60,8 @@ public class MenuItemTeam extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        Menu m = new Menu(3, getName(), getContainer().getViewer());
-        m.addItem(new MenuItemString(Material.NAME_TAG, MgMenuLangKey.MENU_TEAM_DISPLAYNAME, new Callback<>() {
+        Menu menu = new Menu(3, getName(), getContainer().getViewer());
+        menu.addItem(new MenuItemString(Material.NAME_TAG, MgMenuLangKey.MENU_DISPLAYNAME_NAME, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -74,7 +73,7 @@ public class MenuItemTeam extends MenuItem {
                 team.setDisplayName(value);
             }
         }));
-        m.addItem(new MenuItemInteger(Material.STONE, MgMenuLangKey.MENU_TEAM_MAXPLAYERS, new Callback<>() {
+        menu.addItem(new MenuItemInteger(Material.STONE, MgMenuLangKey.MENU_TEAM_MAXPLAYERS, new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -87,24 +86,20 @@ public class MenuItemTeam extends MenuItem {
             }
         }, 0, null));
 
-        for (Flag<?> flag : team.getFlags()) {
-            switch (flag.getName()) {
-                case "assignMsg" -> m.addItem(flag.getMenuItem(Material.PAPER, "Join Team Message",
-                        List.of("Message sent to player", "when they join", "the team.", "Use <team> for team name")));
-                case "gameAssignMsg" -> m.addItem(flag.getMenuItem(Material.PAPER, "Join Team Broadcast Message",
-                        List.of("Message sent to all players", "when someone joins", "a team.", "Use <team>/<player> for team/player name")));
-                case "autobalanceMsg" -> m.addItem(flag.getMenuItem(Material.PAPER, "Autobalance Message",
-                        List.of("Message sent to player", "when they are", "auto-balanced.", "Use <team> for team name")));
-                case "gameAutobalanceMsg" -> m.addItem(flag.getMenuItem(Material.PAPER, "Autobalance Broadcast Message",
-                        List.of("Message sent to all players", "when someone is", "auto-balanced.", "Use <team>/<player> for team/player name")));
-            }
-        }
-        m.addItem(new MenuItemList<>(Material.NAME_TAG, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NAME, team.getNameTagVisibilityCallback(),
-                Arrays.asList(Team.VisibilityMapper.values())));
-        m.addItem(new MenuItemBoolean(Material.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCE, team.getAutoBalanceCallBack()));
 
-        m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
-        m.displayMenu(getContainer().getViewer());
+        menu.addItem(team.getPlayerAssignMessageFlag().getMenuItem(Material.PAPER, MgMenuLangKey.MENU_TEAM_ASSIGNMSG_NAME,
+                MgMenuLangKey.MENU_TEAM_ASSIGNMSG_DESCRIPTION));
+        menu.addItem(team.getAutoBalanceMsgFlag().getMenuItem(Material.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCEMSG_NAME,
+                MgMenuLangKey.MENU_TEAM_AUTOBALANCEMSG_DESCRIPTION));
+        menu.addItem(team.getGameAutoBalanceMsgFlag().getMenuItem(Material.PAPER, MgMenuLangKey.MENU_TEAM_GAMEAUTOBALANCEMSG_NAME,
+                MgMenuLangKey.MENU_TEAM_GAMEAUTOBALANCEMSG_DESCRIPTION));
+
+        menu.addItem(new MenuItemList<>(Material.NAME_TAG, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NAME, team.getNameTagVisibilityCallback(),
+                Arrays.asList(Team.VisibilityMapper.values())));
+        menu.addItem(new MenuItemBoolean(Material.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCE, team.getAutoBalanceCallBack()));
+
+        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
+        menu.displayMenu(getContainer().getViewer());
         return null;
     }
 

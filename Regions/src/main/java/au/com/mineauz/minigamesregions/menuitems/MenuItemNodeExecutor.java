@@ -45,14 +45,14 @@ public class MenuItemNodeExecutor extends MenuItem {
         final Menu ffm = m;
 
         MenuItemCustom ca = new MenuItemCustom(Material.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME));
-        ca.setClick(object -> {
+        ca.setClick(() -> {
             ActionRegistry.displayMenu(fviewer, ex, ffm);
             return null;
         });
         m.addItem(ca);
 
         MenuItemCustom c2 = new MenuItemCustom(Material.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME));
-        c2.setClick(object -> {
+        c2.setClick(() -> {
             ConditionRegistry.displayMenu(fviewer, ex, ffm);
             return null;
         });

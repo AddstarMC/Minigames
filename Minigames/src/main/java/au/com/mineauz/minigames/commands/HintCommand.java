@@ -11,6 +11,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -61,7 +62,7 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
                     thm.getHints(player);
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTSTARTED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
                 }
             } else if (mgm == null || mgm.getType() != MinigameType.GLOBAL) {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NOTTREASUREHUNT,
@@ -77,7 +78,8 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
             if (!mgs.isEmpty()) {
                 if (mgs.size() > 1) {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_HINT_LISTHUNTS,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", mgs.stream().map(th -> th.getName(true)).toList())));
+                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
+                                    Component.join(JoinConfiguration.commas(true), mgs.stream().map(Minigame::getDisplayName).toList())));
 
                 } else {
                     TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.get(0));
@@ -85,7 +87,7 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
                         thm.getHints(player);
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTSTARTED,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgs.get(0).getName(false)));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgs.get(0).getName()));
                     }
                 }
             } else {
@@ -102,7 +104,7 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
             List<String> mgs = new ArrayList<>();
             for (Minigame mg : PLUGIN.getMinigameManager().getAllMinigames().values()) {
                 if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt"))
-                    mgs.add(mg.getName(false));
+                    mgs.add(mg.getName());
             }
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);
         }

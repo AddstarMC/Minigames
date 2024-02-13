@@ -64,13 +64,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         menu.addItem(new MenuItemNewLine());
 
         MenuItemCustom primary = new MenuItemCustom(Material.CHEST, "Primary Rewards");
-        primary.setClick(object -> {
+        primary.setClick(() -> {
             showRewardsMenu(primaryRewards, menu.getViewer(), menu);
             return null;
         });
 
         MenuItemCustom secondary = new MenuItemCustom(Material.CHEST, "Secondary Rewards");
-        secondary.setClick(object -> {
+        secondary.setClick(() -> {
             showRewardsMenu(secondaryRewards, menu.getViewer(), menu);
             return null;
         });
@@ -80,7 +80,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     }
 
     private void showRewardsMenu(TreeMap<T, Rewards> rewards, MinigamePlayer player, Menu parent) {
-        Menu submenu = new Menu(6, "Rewards", player);
+        Menu submenu = new Menu(6, MgMenuLangKey.MENU_REWARD_NAME, player);
 
         for (T key : rewards.keySet()) {
             submenu.addItem(new MenuItemRewardPair(Material.CHEST, rewards, key));

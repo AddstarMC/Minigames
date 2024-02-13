@@ -53,7 +53,7 @@ public class SetSecondaryRewardCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 3 || (args.length == 2 && args[0].startsWith("$"))) {
             List<String> ls = new ArrayList<>();
             for (RewardRarity r : RewardRarity.values()) {

@@ -54,7 +54,7 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> map = new HashMap<>();
         addConfigFlag(enabled, map);
         addConfigFlag(resourcePackName, map);

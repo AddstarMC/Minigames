@@ -23,7 +23,7 @@ public class RollbackScheduler implements Runnable {
         iterator = blocks.iterator();
         this.minigame = minigame;
         this.modifier = modifier;
-        int delay = minigame.getRegenDelay() * 20 + 1;
+        long delay = minigame.getRegenDelay() * 20 + 1;
         task = Bukkit.getScheduler().runTaskTimer(Minigames.getPlugin(), this, delay, 1);
     }
 

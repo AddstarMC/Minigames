@@ -45,7 +45,7 @@ public class MenuItemRegionExecutor extends MenuItem {
 
         MenuItemCustom ca = new MenuItemCustom(Material.CHEST,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME));
-        ca.setClick(object -> {
+        ca.setClick(() -> {
             ActionRegistry.displayMenu(fviewer, ex, menu);
             return null;
         });
@@ -53,7 +53,7 @@ public class MenuItemRegionExecutor extends MenuItem {
 
         MenuItemCustom c2 = new MenuItemCustom(Material.CHEST,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME));
-        c2.setClick(object -> {
+        c2.setClick(() -> {
             ConditionRegistry.displayMenu(fviewer, ex, menu);
             return null;
         });

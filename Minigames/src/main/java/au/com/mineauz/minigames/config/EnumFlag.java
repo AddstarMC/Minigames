@@ -29,7 +29,15 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        setFlag(T.valueOf(enumClass, config.getString(path + "." + getName())));
+        String configStr = config.getString(path + "." + getName());
+
+        // case-insensitive loading
+        for (T value : enumClass.getEnumConstants()) {
+            if (value.name().equalsIgnoreCase(configStr)) {
+                setFlag(value);
+                break;
+            }
+        }
     }
 
     /**

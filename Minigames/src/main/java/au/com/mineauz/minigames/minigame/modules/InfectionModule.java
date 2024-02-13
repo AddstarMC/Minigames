@@ -38,7 +38,7 @@ public class InfectionModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> flags = new HashMap<>();
         flags.put(infectedPercent.getName(), infectedPercent);
         flags.put(infectedTeam.getName(), infectedTeam);

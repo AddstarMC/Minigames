@@ -6,19 +6,21 @@ import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class Menu {
     private final int rows;
     private final ItemStack[] pageView;
-    private final Map<Integer, MenuItem> pageMap = new HashMap<>();
+    private final TreeMap<Integer, MenuItem> pageMap = new TreeMap<>(); // sorts by index
     private final Component name;
     private final MinigamePlayer viewer;
     private boolean allowModify = false;
@@ -39,10 +41,11 @@ public class Menu {
     }
 
     public Menu(int rows, Component name, @NotNull MinigamePlayer viewer) {
-        if (rows > 6)
+        if (rows > 6) {
             rows = 6;
-        else if (rows < 2)
+        } else if (rows < 2) {
             rows = 2;
+        }
         this.rows = rows;
         this.name = name;
         pageView = new ItemStack[rows * 9];
@@ -67,49 +70,46 @@ public class Menu {
     }
 
     private boolean isNewLine(@NotNull MenuItem menuItem) {
-        return menuItem.getName() != null && PlainTextComponentSerializer.plainText().serialize(menuItem.getName()).equalsIgnoreCase("NL");
+        return menuItem instanceof MenuItemNewLine;
     }
 
     public void addItem(MenuItem item) {
         int inc = 0;
-        Menu m = this;
+        Menu menu = this;
         int maxItems = 9 * (rows - 1);
+
         while (true) {
             if (inc >= maxItems) {
-                if (m.getNextPage() == null)
-                    m.addPage();
+                if (menu.getNextPage() == null)
+                    menu.addPage();
 
-                m = m.getNextPage();
+                menu = menu.getNextPage();
                 inc = 0;
             }
 
-            if (m.getClicked(inc) == null) {
-                m.addItem(item, inc);
+            if (menu.getMenuItem(inc) == null) {
+                menu.addItem(item, inc);
                 break;
-            } else if (isNewLine(m.getClicked(inc))) {
-                for (int i = 1; i < 10; i++) {
-                    if ((inc + i) % 9 == 0) {
-                        inc += i;
-                        break;
-                    }
-                }
-            } else
+            } else if (isNewLine(menu.getMenuItem(inc))) {
+                // jump to next line, aka where inc % 9 == 0
+                inc += 9 - inc % 9;
+            } else {
                 inc++;
+            }
         }
     }
 
-    public void addItems(List<MenuItem> items) {
+    /**
+     * Danger! if this Menu already contains items some of the new ones might not get added! <-- todo solve this!
+     */
+    public void addItems(@NotNull List<@NotNull MenuItem> items) {
         Menu curPage = this;
         int inc = 0;
         for (MenuItem it : items) {
             if (isNewLine(it)) {
                 curPage.addItem(it, inc);
-                for (int i = 1; i < 10; i++) {
-                    if ((inc + i) % 9 == 0) {
-                        inc += i;
-                        break;
-                    }
-                }
+                // jump to next line, aka where inc % 9 == 0
+                inc += 9 - inc % 9;
             } else {
                 curPage.addItem(it, inc);
                 inc++;
@@ -124,15 +124,15 @@ public class Menu {
         }
     }
 
-    public void addPage() {
+    protected void addPage() {
         Menu nextPage = new Menu(rows, name, viewer);
         addItem(new MenuItemPage(MenuUtility.getBackMaterial(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
         setNextPage(nextPage);
         nextPage.setPreviousPage(this);
         nextPage.addItem(new MenuItemPage(MenuUtility.getBackMaterial(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
         for (int j = 9 * (rows - 1) + 6; j < 9 * rows; j++) {
-            if (getClicked(j) != null)
-                nextPage.addItem(getClicked(j), j);
+            if (getMenuItem(j) != null)
+                nextPage.addItem(getMenuItem(j), j);
         }
     }
 
@@ -192,7 +192,7 @@ public class Menu {
         allowModify = canModify;
     }
 
-    public MenuItem getClicked(int slot) {
+    public MenuItem getMenuItem(int slot) {
         return pageMap.get(slot);
     }
 
@@ -260,7 +260,7 @@ public class Menu {
         return inv;
     }
 
-    public Set<Integer> getSlotMap() {
+    public Set<Integer> getUsedSlots() {
         return pageMap.keySet();
     }
 }

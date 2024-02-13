@@ -38,7 +38,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         }
     }
 
-    public MenuItemDisplayLoadout(@Nullable Component name, @Nullable Material displayMat, @NotNull PlayerLoadout loadout) {
+    public MenuItemDisplayLoadout(@Nullable Material displayMat, @Nullable Component name, @NotNull PlayerLoadout loadout) {
         super(displayMat, name);
         this.loadout = loadout;
         if (!loadout.isDeleteable()) {
@@ -46,8 +46,9 @@ public class MenuItemDisplayLoadout extends MenuItem {
         }
     }
 
-    public MenuItemDisplayLoadout(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                                  @Nullable Material displayMat, @NotNull PlayerLoadout loadout, @NotNull Minigame minigame) {
+    public MenuItemDisplayLoadout(@Nullable Material displayMat, @Nullable Component name,
+                                  @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout,
+                                  @NotNull Minigame minigame) {
         super(displayMat, name, description);
         this.loadout = loadout;
         this.minigame = minigame;
@@ -56,8 +57,8 @@ public class MenuItemDisplayLoadout extends MenuItem {
         }
     }
 
-    public MenuItemDisplayLoadout(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                                  @Nullable Material displayMat, @NotNull PlayerLoadout loadout) {
+    public MenuItemDisplayLoadout(@Nullable Material displayMat, @Nullable Component name,
+                                  @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout) {
         super(displayMat, name, description);
         this.loadout = loadout;
         if (!loadout.isDeleteable()) {
@@ -67,26 +68,44 @@ public class MenuItemDisplayLoadout extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        Menu loadoutMenu = new Menu(5, loadout.getName(), getContainer().getViewer());
-        Menu loadoutSettingsMenu = new Menu(6, loadout.getName(), getContainer().getViewer());
+        Menu loadoutMenu = new Menu(5, loadout.getDisplayName(), getContainer().getViewer());
+        Menu loadoutSettingsMenu = new Menu(6, loadout.getDisplayName(), getContainer().getViewer());
         loadoutSettingsMenu.setPreviousPage(loadoutMenu);
 
         List<MenuItem> menuItems = new ArrayList<>();
         if (!loadout.getName().equals("default")) {
-            menuItems.add(new MenuItemBoolean(Material.GOLD_INGOT, "Use Permissions", List.of("Permission:", "minigame.loadout." + loadout.getName().toLowerCase()),
+            menuItems.add(new MenuItemBoolean(Material.GOLD_INGOT,
+                    MgMenuLangKey.MENU_DISPLAYLOADOUT_USEPERMISSIONS_NAME,
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DISPLAYLOADOUT_USEPERMISSIONS_DESCRIPTION,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName().toLowerCase())),
                     loadout.getUsePermissionsCallback()));
         }
-        MenuItemString disName = new MenuItemString("Display Name", Material.PAPER, loadout.getDisplayNameCallback());
+        MenuItemComponent disName = new MenuItemComponent(Material.PAPER, MgMenuLangKey.MENU_DISPLAYNAME_NAME, loadout.getDisplayNameCallback());
         disName.setAllowNull(true);
         menuItems.add(disName);
-        menuItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
-        menuItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
-        menuItems.add(new MenuItemInteger(Material.EXPERIENCE_BOTTLE, "XP Level", List.of("Use -1 to not", "use loadout levels"), loadout.getLevelCallback(), -1, null));
-        menuItems.add(new MenuItemBoolean("Lock Inventory", Material.DIAMOND_SWORD, loadout.getInventoryLockedCallback()));
-        menuItems.add(new MenuItemBoolean("Lock Armour", Material.DIAMOND_CHESTPLATE, loadout.getArmourLockedCallback()));
-        menuItems.add(new MenuItemBoolean("Allow Offhand", Material.SHIELD, loadout.getAllowOffHandCallback()));
-        menuItems.add(new MenuItemBoolean(Material.WHITE_STAINED_GLASS_PANE, MgMenuLangKey.MENU_DISPLAYLOADOUT_DISPLAYINMENU_NAME, loadout.getDisplayInMenuCallback()));
-        menuItems.add(new MenuItemList<>(Material.LEATHER_CHESTPLATE, MgMenuLangKey.MENU_DISPLAYLOADOUT_LOCKTOTEAM_NAME, loadout.getTeamColorCallback(), List.of(TeamColor.values())));
+        menuItems.add(new MenuItemBoolean(Material.LEATHER_BOOTS,
+                MgMenuLangKey.MENU_DISPLAYLOADOUT_ALLOWFALLDAMAGE_NAME, loadout.getFallDamageCallback()));
+        menuItems.add(new MenuItemBoolean(Material.APPLE,
+                MgMenuLangKey.MENU_DISPLAYLOADOUT_ALLOWHUNGER_NAME, loadout.getHungerCallback()));
+        menuItems.add(new MenuItemInteger(Material.EXPERIENCE_BOTTLE,
+                MgMenuLangKey.MENU_DISPLAYLOADOUT_XPLEVEL_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DISPLAYLOADOUT_XPLEVEL_DESCRIPTION),
+                loadout.getLevelCallback(), -1, null));
+        menuItems.add(new MenuItemBoolean(Material.DIAMOND_SWORD,
+                MgMenuLangKey.MENU_DISPLAYLOADOUT_LOCKINVENTORY_NAME,
+                loadout.getInventoryLockedCallback()));
+        menuItems.add(new MenuItemBoolean(Material.DIAMOND_CHESTPLATE,
+                MgMenuLangKey.MENU_DISPLAYLOADOUT_LOCKARMOR_NAME,
+                loadout.getArmourLockedCallback()));
+        menuItems.add(new MenuItemBoolean(Material.SHIELD,
+                MgMenuLangKey.MENU_DISPLAYLOADOUT_ALLOWOFFHAND_NAME,
+                loadout.getAllowOffHandCallback()));
+        menuItems.add(new MenuItemBoolean(Material.WHITE_STAINED_GLASS_PANE,
+                MgMenuLangKey.MENU_DISPLAYLOADOUT_DISPLAYINMENU_NAME,
+                loadout.getDisplayInMenuCallback()));
+        menuItems.add(new MenuItemList<>(Material.LEATHER_CHESTPLATE,
+                MgMenuLangKey.MENU_DISPLAYLOADOUT_LOCKTOTEAM_NAME,
+                loadout.getTeamColorCallback(), List.of(TeamColor.values())));
         loadoutSettingsMenu.addItems(menuItems);
         MenuItemBack menuItemBack = new MenuItemBack(loadoutMenu);
         loadoutSettingsMenu.addItem(menuItemBack, getContainer().getSize() - 9);

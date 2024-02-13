@@ -68,12 +68,12 @@ public class ResourcePackManager { //todo work with multiple ressource packs
 
     public ResourcePack addResourcePack(ResourcePack pack) {
         if (!enabled) return null;
-        return resources.put(pack.getName(), pack);
+        return resources.put(pack.getDisplayName(), pack);
     }
 
     public void removeResourcePack(ResourcePack pack) {
         if (!enabled) return;
-        resources.remove(pack.getName());
+        resources.remove(pack.getDisplayName());
         saveResources();
     }
 
@@ -90,7 +90,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
             }
         }
         for (final ResourcePack pack : resources) {
-            if (pack.getName().equals("empty")) {
+            if (pack.getDisplayName().equals("empty")) {
                 emptyPresent = true;
                 enabled = true;
             }

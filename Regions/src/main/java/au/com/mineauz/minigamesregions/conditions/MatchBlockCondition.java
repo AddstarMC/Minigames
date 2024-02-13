@@ -16,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -72,8 +71,7 @@ public class MatchBlockCondition extends ACondition {
     private boolean check(Location location) {
         Block block = location.getBlock();
         return block.getType() == type.getFlag().getMaterial() &&
-                (!useBlockData.getFlag() ||
-                        block.getBlockData() == type.getFlag());
+                (!useBlockData.getFlag() || block.getBlockData().matches(type.getFlag()));
     }
 
     @Override
@@ -111,11 +109,9 @@ public class MatchBlockCondition extends ACondition {
             }
         });
         m.addItem(btype);
-        final MenuItemBoolean busedur = useBlockData.getMenuItem("Use Data Values", Material.ENDER_PEARL);
-        m.addItem(busedur);
-        autoSetBlockMenuItem.setClickItem(object -> {
-            ItemStack itemStack = (ItemStack) object;
-
+        final MenuItemBoolean menuItemUseData = useBlockData.getMenuItem(Material.ENDER_PEARL, "Use Data Values");
+        m.addItem(menuItemUseData);
+        autoSetBlockMenuItem.setClickItem(itemStack -> {
             if (itemStack.getType().isBlock()) {
                 type.setFlag(itemStack.getType().createBlockData());
                 useBlockData.setFlag(true);
@@ -124,7 +120,7 @@ public class MatchBlockCondition extends ACondition {
                         RegionLangKey.ITEM_ERROR_NOTBLOCK);
             }
             useBlockData.setFlag(true);
-            busedur.updateDescription();
+            menuItemUseData.updateDescription();
             btype.update();
             return autoSetBlockMenuItem.getDisplayItem();
         });

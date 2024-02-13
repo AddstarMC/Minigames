@@ -6,9 +6,11 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -17,7 +19,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
     private final List<ModulePlaceHolderProvider> providers;
     private final Map<String, String> identifiers;
 
-    public PlaceHolderManager(Minigames plugin) {
+    public PlaceHolderManager(@NotNull Minigames plugin) {
         this.plugin = plugin;
         providers = new ArrayList<>();
         identifiers = new HashMap<>();
@@ -31,8 +33,8 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
     }
 
     @Override
-    public String onRequest(OfflinePlayer p, @NotNull String params) {
-        return super.onRequest(p, params);
+    public String onRequest(@Nullable OfflinePlayer offlinePlayer, @NotNull String params) {
+        return super.onRequest(offlinePlayer, params);
     }
 
     @Override
@@ -61,19 +63,19 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
     }
 
     @Override
-    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
+    public @Nullable String onPlaceholderRequest(Player player, @NotNull String identifier) {
         if (player == null) {
             return "";
         }
         if (!identifiers.containsKey(identifier)) {
             return null;
         }
-        Set<String> games = plugin.getMinigameManager().getAllMinigames().keySet();
+
         if (identifier.contains("_")) {
             String[] parts = identifier.split("_");
             String gameName = parts[0];
-            if (games.contains(gameName)) {
-                Minigame minigame = plugin.getMinigameManager().getMinigame(gameName);
+            Minigame minigame = plugin.getMinigameManager().getMinigame(gameName);
+            if (minigame != null) {
                 try {
                     switch (parts[1]) {
                         case "enabled" -> {
@@ -95,16 +97,16 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
                             return minigame.getState().name();
                         }
                         case "objective" -> {
-                            return minigame.getObjective();
+                            return minigame.getObjective() == null ? null : PlainTextComponentSerializer.plainText().serialize(minigame.getObjective());
                         }
                         case "gameType" -> {
-                            return minigame.getGameTypeName();
+                            return minigame.getGameTypeName() == null ? null : PlainTextComponentSerializer.plainText().serialize(minigame.getGameTypeName());
                         }
                         case "timeLeft" -> {
                             return Long.toString(minigame.getMinigameTimer().getTimeLeft());
                         }
                         case "name" -> {
-                            return minigame.getName(true);
+                            return minigame.getName();
                         }
                         default -> {
                             for (ModulePlaceHolderProvider provider : providers) {
@@ -139,21 +141,21 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
         }
     }
 
-    public void addGameIdentifiers(Minigame game) {
-        String name = game.getName(false);
+    public void addGameIdentifiers(@NotNull Minigame game) {
+        String name = game.getName();
         for (GameOptions o : GameOptions.values()) {
             identifiers.put(name + "_" + o.name, "GAME_" + name);
         }
         for (MinigameModule module : game.getModules()) {
             ModulePlaceHolderProvider provider = module.getModulePlaceHolders();
             if (provider != null) {
-                registerModulePlaceholders(game.getName(false), provider);
+                registerModulePlaceholders(game.getName(), provider);
             }
         }
-        plugin.getLogger().info("PAPI hooked for " + game.getName(true));
+        plugin.getLogger().info("PAPI hooked for " + game.getName());
     }
 
-    public void registerModulePlaceholders(String gameName, ModulePlaceHolderProvider provider) {
+    public void registerModulePlaceholders(@NotNull String gameName, @NotNull ModulePlaceHolderProvider provider) {
         providers.add(provider);
         for (String id : provider.getIdentifiers()) {
             if (identifiers.containsKey(gameName + "_" + id)) {

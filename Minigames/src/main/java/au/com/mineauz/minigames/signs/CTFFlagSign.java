@@ -3,10 +3,12 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.events.TakeCTFFlagEvent;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,11 +17,11 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class CTFFlagSign implements MinigameSign {
+public class CTFFlagSign extends AMinigameSign {
 
     @Override
-    public @NotNull String getName() {
-        return "Flag";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_CTFFLAG);
     }
 
     @Override
@@ -34,7 +36,7 @@ public class CTFFlagSign implements MinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        event.setLine(1, ChatColor.GREEN + "Flag");
+        event.line(1, getName());
         if (TeamColor.matchColor(event.getLine(2)) != null) {
             TeamColor col = TeamColor.matchColor(event.getLine(2));
             event.setLine(2, col.getColor() + WordUtils.capitalizeFully(col.toString()));

@@ -54,7 +54,7 @@ public abstract class MinigameModule {
         return mgm;
     }
 
-    public abstract Map<String, Flag<?>> getFlags();
+    public abstract Map<String, Flag<?>> getConfigFlags();
 
     public abstract boolean useSeparateConfig();
 

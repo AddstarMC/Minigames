@@ -9,7 +9,9 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.sql.ResultSet;
@@ -176,7 +178,7 @@ public class MySQLBackend extends Backend {
 
     public int getMinigameId(ConnectionHandler handler, Minigame minigame) throws SQLException {
 
-        try (ResultSet rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName(false))) {
+        try (ResultSet rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName())) {
             if (rs.next()) {
                 return rs.getInt(1);
             } else {
@@ -204,7 +206,7 @@ public class MySQLBackend extends Backend {
                 while (rs.next()) {
                     String statName = rs.getString("stat");
                     String rawFormat = rs.getString("format");
-                    String displayName = rs.getString("display_name");
+                    Component displayName = MiniMessage.miniMessage().deserialize(rs.getString("display_name"));
 
                     MinigameStat stat = MinigameStats.getStat(statName);
                     if (stat == null) {
@@ -250,7 +252,9 @@ public class MySQLBackend extends Backend {
 
             int minigameId = getMinigameId(handler, minigame);
             for (StatSettings setting : settings) {
-                handler.batchUpdate(saveStatSettings, minigameId, setting.getStat().getName(), setting.getDisplayName(), setting.getFormat().name().toUpperCase());
+                handler.batchUpdate(saveStatSettings, minigameId, setting.getStat().getName(),
+                        MiniMessage.miniMessage().serialize(setting.getDisplayName()),
+                        setting.getFormat().name().toUpperCase());
             }
 
             handler.executeBatch(saveStatSettings);

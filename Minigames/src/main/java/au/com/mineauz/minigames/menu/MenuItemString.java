@@ -2,10 +2,12 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -28,6 +30,13 @@ public class MenuItemString extends MenuItem {
     public MenuItemString(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<String> stringCallback) {
         super(displayMat, name);
         this.stringCallback = stringCallback;
+        updateDescription();
+    }
+
+    public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey,
+                          @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
+        super(displayMat, langKey, description);
+        this.str = str;
         updateDescription();
     }
 
@@ -58,9 +67,11 @@ public class MenuItemString extends MenuItem {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        mgPlayer.sendMessage("Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", MinigameMessageType.INFO);
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         if (allowNull) {
-            mgPlayer.sendInfoMessage("Enter \"null\" to remove the string value");
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
+                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         }
         mgPlayer.setManualEntry(this);
         getContainer().startReopenTimer(20);

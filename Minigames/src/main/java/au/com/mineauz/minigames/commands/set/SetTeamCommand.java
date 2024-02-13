@@ -71,7 +71,7 @@ public class SetTeamCommand extends ASetCommand {
 
                                 Team team = tmod.addTeam(teamColor, name.toString());
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TEAM_ADD,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), team.getColor().getCompName()),
                                         Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), team.getColoredDisplayName()));
 
@@ -92,7 +92,7 @@ public class SetTeamCommand extends ASetCommand {
                         }
 
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TEAM_LIST,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), Component.join(JoinConfiguration.commas(true), teamsList)));
                         return true;
                     }
@@ -103,7 +103,7 @@ public class SetTeamCommand extends ASetCommand {
                                 if (tmod.hasTeam(teamColor)) {
                                     tmod.removeTeam(teamColor);
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TEAM_REMOVE,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                                 } else {
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
@@ -132,7 +132,7 @@ public class SetTeamCommand extends ASetCommand {
                                 if (team != null) {
                                     team.setDisplayName(name.toString());
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TEAM_RENAME,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()),
                                             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), team.getColoredDisplayName()));
                                 } else {
@@ -183,7 +183,7 @@ public class SetTeamCommand extends ASetCommand {
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
             }
         }
@@ -192,7 +192,7 @@ public class SetTeamCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("add", "rename", "remove", "list", "maxplayers"), args[0]);
         } else if (args.length == 2) {

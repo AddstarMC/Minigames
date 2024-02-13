@@ -1,30 +1,46 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemComponent extends MenuItem {
     protected final static String DESCRIPTION_VALUE_TOKEN = "COMPONENT_VALUE_DESCRIPTION";
-    protected @NotNull Callback<Component> stringCallback;
-    protected boolean allowNull = false;
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    protected final @NotNull Callback<Component> component;
+    private boolean allowNull = false;
 
-    public MenuItemComponent(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Component> stringCallback) {
+    public MenuItemComponent(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Component> component) {
+        super(displayMat, langKey);
+        this.component = component;
+        updateDescription();
+    }
+
+    public MenuItemComponent(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Component> component) {
         super(displayMat, name);
-        this.stringCallback = stringCallback;
+        this.component = component;
         updateDescription();
     }
 
     public MenuItemComponent(@Nullable Material displayMat, @Nullable Component name,
-                             @Nullable List<@NotNull Component> description, @NotNull Callback<Component> stringCallback) {
+                             @Nullable List<@NotNull Component> description, @NotNull Callback<Component> component) {
         super(displayMat, name, description);
-        this.stringCallback = stringCallback;
+        this.component = component;
         updateDescription();
     }
 
@@ -46,14 +62,16 @@ public class MenuItemComponent extends MenuItem {
 
     @Override
     public ItemStack onDoubleClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter mini message value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", MinigameMessageType.INFO);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         if (allowNull) {
-            ply.sendInfoMessage("Enter \"null\" to remove the string value");
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
+                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         }
-        ply.setManualEntry(this);
+        mgPlayer.setManualEntry(this);
         getContainer().startReopenTimer(20);
 
         return null;
@@ -62,9 +80,9 @@ public class MenuItemComponent extends MenuItem {
     @Override
     public void checkValidEntry(String entry) {
         if (entry.equals("null") && allowNull) {
-            stringCallback.setValue(null);
+            component.setValue(null);
         } else {
-            stringCallback.setValue(entry);
+            component.setValue(miniMessage.deserialize(entry));
         }
 
         updateDescription();

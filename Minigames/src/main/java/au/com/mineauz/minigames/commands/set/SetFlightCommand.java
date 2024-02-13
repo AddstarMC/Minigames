@@ -59,7 +59,7 @@ public class SetFlightCommand extends ASetCommand {
                         minigame.setAllowedFlight(bool);
 
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLIGHT_ALLOWED,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                         bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                     } else {
@@ -74,7 +74,7 @@ public class SetFlightCommand extends ASetCommand {
                         minigame.setFlightEnabled(bool);
 
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLIGHT_START,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                         bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                     } else {
@@ -95,13 +95,11 @@ public class SetFlightCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
-        if (args != null) {
-            if (args.length == 1) {
-                return MinigameUtils.tabCompleteMatch(List.of("enabled", "startflying"), args[0]);
-            } else if (args.length == 2) {
-                return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[1]);
-            }
+                                                         @NotNull String @NotNull [] args) {
+        if (args.length == 1) {
+            return MinigameUtils.tabCompleteMatch(List.of("enabled", "startflying"), args[0]);
+        } else if (args.length == 2) {
+            return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[1]);
         }
 
         return null;

@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -212,7 +213,7 @@ public class ScoreboardDisplay {
         final MenuItemCustom fieldChoice = new MenuItemCustom(Material.PAPER, "Statistic Field",
                 List.of(field.getTitle().color(NamedTextColor.GREEN)));
 
-        statisticChoice.setClick(object -> {
+        statisticChoice.setClick(() -> {
             Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<>() {
                 @Override
                 public MinigameStat getValue() {
@@ -251,7 +252,7 @@ public class ScoreboardDisplay {
             return null;
         });
 
-        fieldChoice.setClick(object -> {
+        fieldChoice.setClick(() -> {
             StatSettings settings1 = minigame.getSettings(stat);
             Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<>() {
                 @Override
@@ -344,10 +345,10 @@ public class ScoreboardDisplay {
             BlockState state = root.getState();
             if (state instanceof Sign sign) {
 
-                sign.getSide(Side.FRONT).setLine(0, ChatColor.BLUE + minigame.getName(true));
-                sign.getSide(Side.FRONT).setLine(1, ChatColor.GREEN + settings.getDisplayName());
-                sign.getSide(Side.FRONT).setLine(2, ChatColor.GREEN + field.getTitle());
-                sign.getSide(Side.FRONT).setLine(3, "(" + WordUtils.capitalizeFully(order.toString()) + ")");
+                sign.getSide(Side.FRONT).line(0, minigame.getDisplayName().color(NamedTextColor.BLUE));
+                sign.getSide(Side.FRONT).line(1, settings.getDisplayName().color(NamedTextColor.GREEN));
+                sign.getSide(Side.FRONT).line(2, ChatColor.GREEN + field.getTitle());
+                sign.getSide(Side.FRONT).line(3, "(" + WordUtils.capitalizeFully(order.toString()) + ")");
                 sign.update();
 
                 sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));

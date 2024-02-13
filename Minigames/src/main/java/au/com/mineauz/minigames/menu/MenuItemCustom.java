@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -7,17 +8,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class MenuItemCustom extends MenuItem {
-    private InteractionInterface click = null;
-    private InteractionInterface clickItem = null;
-    private InteractionInterface rightClick = null;
-    private InteractionInterface shiftClick = null;
-    private InteractionInterface shiftRightClick = null;
-    private InteractionInterface doubleClick = null;
+    private Supplier<@Nullable ItemStack> click = null;
+    private Function<ItemStack, @Nullable ItemStack> clickItem = null;
+    private Supplier<@Nullable ItemStack> rightClick = null;
+    private Supplier<@Nullable ItemStack> shiftClick = null;
+    private Supplier<@Nullable ItemStack> shiftRightClick = null;
+    private Supplier<@Nullable ItemStack> doubleClick = null;
 
     public MenuItemCustom(@Nullable Material displayMat, @Nullable Component name) {
         super(displayMat, name);
+    }
+
+    public MenuItemCustom(@Nullable Material displayMat, @NotNull LangKey langKey) {
+        super(displayMat, langKey);
+    }
+
+    public MenuItemCustom(@Nullable Material displayMat, @NotNull LangKey langKey,
+                          @Nullable List<@NotNull Component> description) {
+        super(displayMat, langKey, description);
     }
 
     public MenuItemCustom(@Nullable Material displayMat, @Nullable Component name,
@@ -27,67 +39,72 @@ public class MenuItemCustom extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        if (click != null)
-            return (ItemStack) click.interact(null);
+        if (click != null) {
+            return click.get();
+        }
         return getDisplayItem();
     }
 
-    public void setClick(InteractionInterface ii) {
-        click = ii;
+    public void setClick(Supplier<@Nullable ItemStack> sup) {
+        click = sup;
     }
 
     @Override
     public ItemStack onClickWithItem(ItemStack item) {
         if (clickItem != null)
-            return (ItemStack) clickItem.interact(item);
+            return clickItem.apply(item);
         return getDisplayItem();
     }
 
-    public void setClickItem(InteractionInterface ii) {
-        clickItem = ii;
+    public void setClickItem(Function<ItemStack, @Nullable ItemStack> func) {
+        clickItem = func;
     }
 
     @Override
     public ItemStack onRightClick() {
-        if (rightClick != null)
-            return (ItemStack) rightClick.interact(null);
+        if (rightClick != null) {
+            return rightClick.get();
+        }
         return getDisplayItem();
     }
 
-    public void setRightClick(InteractionInterface ii) {
-        rightClick = ii;
+    public void setRightClick(Supplier<@Nullable ItemStack> sup) {
+        rightClick = sup;
     }
 
     @Override
     public ItemStack onShiftClick() {
-        if (shiftClick != null)
-            return (ItemStack) shiftClick.interact(null);
+        if (shiftClick != null) {
+            return shiftClick.get();
+        }
         return getDisplayItem();
     }
 
-    public void setShiftClick(InteractionInterface ii) {
-        shiftClick = ii;
+    public void setShiftClick(Supplier<@Nullable ItemStack> sup) {
+        shiftClick = sup;
     }
 
     @Override
     public ItemStack onShiftRightClick() {
-        if (shiftRightClick != null)
-            return (ItemStack) shiftRightClick.interact(null);
+        if (shiftRightClick != null) {
+            return shiftRightClick.get();
+        }
         return getDisplayItem();
     }
 
-    public void setShiftRightClick(InteractionInterface ii) {
-        shiftRightClick = ii;
+    public void setShiftRightClick(Supplier<@Nullable ItemStack> sup) {
+        shiftRightClick = sup;
     }
 
     @Override
     public ItemStack onDoubleClick() {
-        if (doubleClick != null)
-            return (ItemStack) doubleClick.interact(null);
+        if (doubleClick != null) {
+            return doubleClick.get();
+        }
         return getDisplayItem();
     }
 
-    public void setDoubleClick(InteractionInterface ii) {
-        doubleClick = ii;
+    public void setDoubleClick(Supplier<@Nullable ItemStack> sup) {
+        doubleClick = sup;
     }
 }

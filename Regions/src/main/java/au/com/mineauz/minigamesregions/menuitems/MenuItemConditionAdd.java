@@ -57,7 +57,7 @@ public class MenuItemConditionAdd extends MenuItem {
                     catMenu = cats.get(category);
                 MenuItemCustom menuItemCustom = new MenuItemCustom(Material.PAPER, condition.getDisplayName());
 
-                menuItemCustom.setClick(object -> {
+                menuItemCustom.setClick(() -> {
                     if (rexec != null) {
                         rexec.addCondition(condition);
                         getContainer().addItem(new MenuItemCondition(Material.PAPER, condition.getDisplayName(), rexec, condition));

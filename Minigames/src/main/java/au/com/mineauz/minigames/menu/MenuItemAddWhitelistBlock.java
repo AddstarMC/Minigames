@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -18,6 +19,10 @@ import java.util.List;
 
 public class MenuItemAddWhitelistBlock extends MenuItem {
     protected final List<Material> whitelist;
+
+    public MenuItemAddWhitelistBlock(LangKey langKey, List<Material> whitelist) {
+        this(MinigameMessageManager.getMgMessage(langKey), whitelist);
+    }
 
     public MenuItemAddWhitelistBlock(Component name, List<Material> whitelist) {
         super(MenuUtility.getCreateMaterial(), name,

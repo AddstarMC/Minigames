@@ -368,7 +368,7 @@ public class RecorderData implements Listener {
             return;
         }
 
-        File file = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
+        File file = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName() + "/backup.json");
 
         // register custom serializer for Position.
         // this is purely for backwards compatibility.
@@ -398,10 +398,10 @@ public class RecorderData implements Listener {
     public boolean restoreBlockData() { //todo load entity data as well
         if (covertOldFormat()) {
             saveAllBlockData();
-            Minigames.getCmpnntLogger().info("Converted backup for: " + minigame.getName(false));
+            Minigames.getCmpnntLogger().info("Converted backup for: " + minigame.getName());
             return true;
         } else {
-            File file = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
+            File file = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName() + "/backup.json");
 
             if (file.exists() && file.isFile() && file.canRead()) {
                 // register custom deserializer for Position.
@@ -441,7 +441,7 @@ public class RecorderData implements Listener {
     }
 
     private boolean covertOldFormat() {
-        File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.dat");
+        File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName() + "/backup.dat");
 
         if (!f.exists()) {
             return false;

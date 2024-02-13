@@ -22,10 +22,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class LoadoutModule extends MinigameModule {
     private static final Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = new HashMap<>();
@@ -80,7 +77,7 @@ public class LoadoutModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> flags = new HashMap<>();
         flags.put(loadoutsFlag.getName(), loadoutsFlag);
         return flags;
@@ -169,8 +166,12 @@ public class LoadoutModule extends MinigameModule {
         extraLoadouts.remove(name);
     }
 
-    public Set<String> getLoadouts() {
+    public Set<String> getLoadoutNames() {
         return extraLoadouts.keySet();
+    }
+
+    public Set<PlayerLoadout> getLoadouts() {
+        return new HashSet<>(extraLoadouts.values());
     }
 
     public Map<String, PlayerLoadout> getLoadoutMap() {
@@ -225,14 +226,14 @@ public class LoadoutModule extends MinigameModule {
                             ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItemSlots()).get(0));
                             c.setDisplayItem(item);
                         }
-                        c.setClick(object -> {
+                        c.setClick(() -> {
                             mgPlayer.setLoadout(loadout);
                             mgPlayer.getPlayer().closeInventory();
                             if (!equip) {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN);
                             } else {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_EQUIPPED,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
+                                        Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                                 loadout.equipLoadout(mgPlayer);
                             }
                             return null;

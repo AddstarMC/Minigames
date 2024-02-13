@@ -42,7 +42,7 @@ public abstract class GameMechanicBase implements Listener {
      *
      * @return The name of the Mechanic
      */
-    public abstract String getMechanic();
+    public abstract String getMechanicName();
 
     /**
      * Gives the valid types for this game mechanic

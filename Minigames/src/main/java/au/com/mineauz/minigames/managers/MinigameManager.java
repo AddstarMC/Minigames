@@ -133,7 +133,7 @@ public class MinigameManager {
     }
 
     public void addMinigame(final Minigame game) {
-        this.minigames.put(game.getName(false), game);
+        this.minigames.put(game.getName(), game);
         if (Minigames.getPlugin().includesPapi()) {
             Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
         }
@@ -209,7 +209,7 @@ public class MinigameManager {
             }
 
             recorderData.setCreatedRegenBlocks(true);
-            MinigameMessageManager.debugMessage("Block Regen Data has been created for " + minigame.getName(false));
+            MinigameMessageManager.debugMessage("Block Regen Data has been created for " + minigame.getName());
         }
     }
 
@@ -403,7 +403,7 @@ public class MinigameManager {
 
     public boolean teleportPlayerOnJoin(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
         if (this.minigameType(minigame.getType()) == null) {
-            Minigames.getCmpnntLogger().warn("The Minigame \"" + minigame.getName(true) + "\" failed the start-up checks for its Type");
+            Minigames.getCmpnntLogger().warn("The Minigame \"" + minigame.getName() + "\" failed the start-up checks for its Type");
         }
         return this.minigameType(minigame.getType()).teleportOnJoin(mgPlayer, minigame);
     }

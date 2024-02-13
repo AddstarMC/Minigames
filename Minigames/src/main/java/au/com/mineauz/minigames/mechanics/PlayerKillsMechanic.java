@@ -22,7 +22,7 @@ import java.util.List;
 public class PlayerKillsMechanic extends GameMechanicBase {
 
     @Override
-    public String getMechanic() {
+    public String getMechanicName() {
         return GameMechanics.MG_MECHANICS.KILLS.toString();
     }
 

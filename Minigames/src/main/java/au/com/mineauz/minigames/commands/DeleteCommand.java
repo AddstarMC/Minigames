@@ -53,7 +53,7 @@ public class DeleteCommand extends ACommand {
             Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null) {
-                File save = new File(PLUGIN.getDataFolder() + "/minigames/" + mgm.getName(false));
+                File save = new File(PLUGIN.getDataFolder() + "/minigames/" + mgm.getName());
                 if (save.exists() && save.isDirectory()) {
                     try {
                         FileUtils.deleteDirectory(save);
@@ -62,12 +62,12 @@ public class DeleteCommand extends ACommand {
                     }
 
                     List<String> ls = PLUGIN.getConfig().getStringList("minigames");
-                    ls.remove(mgm.getName(false));
+                    ls.remove(mgm.getName());
                     PLUGIN.getConfig().set("minigames", ls);
-                    PLUGIN.getMinigameManager().removeMinigame(mgm.getName(false));
+                    PLUGIN.getMinigameManager().removeMinigame(mgm.getName());
                     PLUGIN.saveConfig();
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DELETE_SUCCESS,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName(false)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
                 }
             }
             return true;

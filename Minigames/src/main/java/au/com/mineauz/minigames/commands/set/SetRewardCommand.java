@@ -34,7 +34,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                       @NotNull ItemStack item, @NotNull RewardRarity rarity, boolean isPrimary) {
         if (item.getType().isAir()) {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_AIR,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             return;
         }
 
@@ -47,7 +47,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                 isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_ITEM_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_ITEM_SUCCESS,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item.displayName()),
-                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                 Placeholder.unparsed(MinigamePlaceHolderKey.RARITY.getKey(), rarity.toString().toLowerCase().replace("_", " ")));
     }
 
@@ -95,7 +95,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
                                         isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_MONEY_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_MONEY_SUCCESS,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), economy.format(money)),
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.RARITY.getKey(), rarity.toString().toLowerCase().replace("_", " ")));
                             } else {
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
@@ -212,12 +212,11 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 3 || (args.length == 2 && args[0].startsWith("$"))) {
             List<String> ls = Arrays.stream(RewardRarity.values()).map(RewardRarity::toString).toList();
             return MinigameUtils.tabCompleteMatch(ls, args[args.length - 1]);
         }
         return null;
     }
-
 }

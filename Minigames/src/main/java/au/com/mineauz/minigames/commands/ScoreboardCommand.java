@@ -141,8 +141,10 @@ public class ScoreboardCommand extends ACommand {
         CompletableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start, length);
         future.whenComplete((result, throwable) -> {
             if (throwable == null) {
-                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, //todo don't hardcode this
-                        Component.text(minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase(), NamedTextColor.GREEN));
+                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
+                        minigame.getDisplayName().append( //todo don't hardcode this
+                                Component.text(" Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase(), NamedTextColor.GREEN)
+                        ));
                 for (StoredStat playerStat : result) {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SCOREBOARD_LIST_PLAYER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), playerStat.getPlayerDisplayName()),

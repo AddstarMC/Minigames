@@ -54,14 +54,14 @@ public class RegenAreaMode implements ToolMode {
 
     @Override
     public void onSetMode(final @NotNull MinigamePlayer mgPlayer, final @NotNull MinigameTool tool) {
-        tool.addSetting("Region", "None");
+        tool.setSetting("Region", "None");
         final Menu menu = new Menu(2, "Regen Region Selection", mgPlayer);
 
         if (mgPlayer.isInMenu()) {
             menu.addItem(new MenuItemBack(mgPlayer.getMenu()), menu.getSize() - 9);
         }
 
-        menu.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<>() {
+        menu.addItem(new MenuItemString(Material.PAPER, "Region Name", new Callback<>() {
 
             @Override
             public String getValue() {
@@ -70,7 +70,7 @@ public class RegenAreaMode implements ToolMode {
 
             @Override
             public void setValue(String value) {
-                tool.changeSetting("Region", value);
+                tool.setSetting("Region", value);
             }
         }));
 
@@ -82,12 +82,12 @@ public class RegenAreaMode implements ToolMode {
                 MenuItemCustom item = new MenuItemCustom(Material.CHEST, region.getName());
 
                 // Set the node and go back to the main menu
-                item.setClick(object -> {
-                    tool.changeSetting("Region", region.getName());
+                item.setClick(() -> {
+                    tool.setSetting("Region", region.getName());
 
                     menu.displayMenu(mgPlayer);
 
-                    return object;
+                    return null;
                 });
 
                 items.add(item);
@@ -118,13 +118,13 @@ public class RegenAreaMode implements ToolMode {
             if (result.success()) {
                 if (region == null) {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_REGENREGION_CREATED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                 } else {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_REGENREGION_UPDATED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
@@ -160,7 +160,7 @@ public class RegenAreaMode implements ToolMode {
                     Minigames.getPlugin().display.displayCuboid(mgPlayer.getPlayer(), minigame.getRegenRegion(name)));
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_REGENREGION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOREGENREION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name));

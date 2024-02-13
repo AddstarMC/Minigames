@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
@@ -12,7 +13,6 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -22,14 +22,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RewardSign implements MinigameSign {
-
+public class RewardSign extends AMinigameSign {
     private static final Minigames plugin = Minigames.getPlugin();
     private final MinigameManager mdata = plugin.getMinigameManager();
 
     @Override
-    public @NotNull String getName() {
-        return "Reward";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_REWARD);
     }
 
     @Override
@@ -45,7 +44,7 @@ public class RewardSign implements MinigameSign {
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
         if (!event.getLine(2).isEmpty()) {
-            event.setLine(1, ChatColor.GREEN + getName());
+            event.line(1, getName());
             return true;
         }
         MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_REWARD_ERROR_NONAME);
@@ -90,10 +89,10 @@ public class RewardSign implements MinigameSign {
             Menu rewardMenu = new Menu(5, getName(), mgPlayer);
 
             rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateMaterial(), "Add Group", rew), 42);
-            rewardMenu.addItem(new MenuItemRewardAdd("Add Item", MenuUtility.getCreateMaterial(), rew), 43);
+            rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), "Add Item", rew), 43);
             final MenuItemCustom mic = new MenuItemCustom(MenuUtility.getSaveMaterial(), "Save Rewards");
             final Location floc = loc;
-            mic.setClick(object -> {
+            mic.setClick(() -> {
                 mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
                 MinigameMessageManager.sendMgMessage(mic.getContainer().getViewer(), MinigameMessageType.INFO, MinigameLangKey.SIGN_REWARD_SAVED);
                 mic.getContainer().getViewer().getPlayer().closeInventory();
@@ -127,5 +126,4 @@ public class RewardSign implements MinigameSign {
             plugin.getMinigameManager().removeRewardSign(sign.getLocation());
         }
     }
-
 }

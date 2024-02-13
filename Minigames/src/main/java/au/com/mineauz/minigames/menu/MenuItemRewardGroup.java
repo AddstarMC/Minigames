@@ -1,6 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
@@ -79,18 +81,18 @@ public class MenuItemRewardGroup extends MenuItem {
 
     @Override
     public void checkValidEntry(String entry) {
-        if (entry.equalsIgnoreCase("yes")) {
+        getContainer().cancelReopenTimer();
+
+        if (entry.equalsIgnoreCase("yes")) { // todo?
             rewards.removeGroup(group);
             getContainer().removeItem(this.getSlot());
 
-            getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
-            return;
-        }
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        } else {
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_REWARD_NOTREMOVED);
 
-        getContainer().getViewer().sendMessage("The selected group will not be removed from the rewards.", MinigameMessageType.ERROR);
+            getContainer().displayMenu(getContainer().getViewer());
+        }
     }
 
     @Override
@@ -119,8 +121,8 @@ public class MenuItemRewardGroup extends MenuItem {
         des.add("Click without an item");
         des.add("to add a money reward.");
 
-        rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, MenuUtility.getCreateMaterial(), group), 43);
-        rewardMenu.addItem(new MenuItemPage("Save " + getName(), MenuUtility.getSaveMaterial(), rewardMenu.getPreviousPage()), 44);
+        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), "Add Item", des, group), 43);
+        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveMaterial(), "Save " + getName(), rewardMenu.getPreviousPage()), 44);
 
         List<MenuItem> mi = new ArrayList<>();
         for (RewardType item : group.getItems()) {

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
+import au.com.mineauz.minigames.FloorDegenerator;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -70,7 +72,7 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
                             mgPlayer.clearSelection();
 
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_CREATE,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                         } else {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
                         }
@@ -78,24 +80,26 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
                     case "remove" -> {
                         minigame.removeFloorDegen();
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_CLEAR,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     }
                     case "type" -> {
                         if (args.length >= 2) {
-                            switch (args[1].toLowerCase()) {
-                                case "random", "inward", "circle" -> {
-                                    minigame.setDegenType(args[1].toLowerCase());
+                            FloorDegenerator.DegeneratorType type = FloorDegenerator.DegeneratorType.matchType(args[1]);
 
-                                    if (args.length > 2 && args[2].matches("[0-9]+")) {
-                                        minigame.setDegenRandomChance(Integer.parseInt(args[2]));
-                                    }
+                            if (type != null) {
+                                minigame.setDegenType(type);
 
-                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_TYPE,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]),
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                                if (args.length > 2 && args[2].matches("[0-9]+")) {
+                                    minigame.setDegenRandomChance(Integer.parseInt(args[2]));
                                 }
-                                default ->
-                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_ERROR_NOTYPE);
+
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_TYPE,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                            } else {
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_ERROR_NOTYPE,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(),
+                                                String.join(", ", Arrays.stream(FloorDegenerator.DegeneratorType.values()).map(Enum::name).toList())));
                             }
                         }
                     }
@@ -125,13 +129,15 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
-        if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("create", "remove", "type", "time"), args[0]);
-        } else if (args[0].equalsIgnoreCase("type")) {
-            return MinigameUtils.tabCompleteMatch(List.of("random", "inward", "circle"), args[1]);
-        } else if (args[0].equalsIgnoreCase("time")) {
-            return List.of("s", "m", "h");
+                                                         @NotNull String @NotNull [] args) {
+        if (args != null) {
+            if (args.length == 1) {
+                return MinigameUtils.tabCompleteMatch(List.of("create", "remove", "type", "time"), args[0]);
+            } else if (args[0].equalsIgnoreCase("type")) {
+                return MinigameUtils.tabCompleteMatch(List.of("random", "inward", "circle"), args[1]);
+            } else if (args[0].equalsIgnoreCase("time")) {
+                return List.of("s", "m", "h");
+            }
         }
         return null;
     }

@@ -13,7 +13,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -84,17 +83,17 @@ public class MatchTeamCondition extends ACondition {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
 
-        List<String> teams = new ArrayList<>(TeamColor.validColorNames());
+        List<TeamColor> teams = new ArrayList<>(TeamColor.validColors());
 
-        m.addItem(new MenuItemList<String>(getTeamMaterial(), "Team Color", new Callback<>() {
+        m.addItem(new MenuItemList<>(getTeamMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<>() {
             @Override
-            public String getValue() {
-                return WordUtils.capitalizeFully(team.getFlag().replace("_", " "));
+            public TeamColor getValue() {
+                return TeamColor.matchColor(team.getFlag());
             }
 
             @Override
-            public void setValue(String value) {
-                team.setFlag(value.toUpperCase().replace(" ", "_"));
+            public void setValue(TeamColor value) {
+                team.setFlag(value.toString());
             }
         }, teams) {
             @Override
@@ -104,6 +103,7 @@ public class MatchTeamCondition extends ACondition {
                 return stack;
             }
         });
+
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

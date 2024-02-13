@@ -1,6 +1,8 @@
 package au.com.mineauz.minigames.stats;
 
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -8,11 +10,11 @@ import java.util.Objects;
  * Represents per minigame settings for a stat
  */
 public class StatSettings {
-    private final MinigameStat stat;
-    private StatFormat format;
-    private Component displayName;
+    private final @NotNull MinigameStat stat;
+    private @Nullable StatFormat format;
+    private @Nullable Component displayName;
 
-    public StatSettings(MinigameStat stat, StatFormat format, Component displayName) {
+    public StatSettings(@NotNull MinigameStat stat, @Nullable StatFormat format, @Nullable Component displayName) {
         this.stat = stat;
         this.format = format;
         this.displayName = displayName;
@@ -25,7 +27,7 @@ public class StatSettings {
     /**
      * @return Returns the stat
      */
-    public MinigameStat getStat() {
+    public @NotNull MinigameStat getStat() {
         return stat;
     }
 
@@ -45,7 +47,7 @@ public class StatSettings {
      *
      * @param format The new format to display. Setting to null will reset the format
      */
-    public void setFormat(StatFormat format) {
+    public void setFormat(@Nullable StatFormat format) {
         this.format = format;
     }
 
@@ -61,7 +63,7 @@ public class StatSettings {
      *
      * @param displayName The new name of this stat. Setting to null will reset the name
      */
-    public void setDisplayName(Component displayName) {
+    public void setDisplayName(@Nullable Component displayName) {
         this.displayName = displayName;
     }
 }

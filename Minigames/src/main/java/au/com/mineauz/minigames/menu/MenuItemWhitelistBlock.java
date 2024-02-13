@@ -14,7 +14,7 @@ public class MenuItemWhitelistBlock extends MenuItem {
 
     public MenuItemWhitelistBlock(@NotNull Material displayMat, @NotNull List<@NotNull Material> whitelist) {
         super(displayMat, Component.translatable(displayMat.translationKey()),
-                List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK)));
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
         this.whitelist = whitelist;
     }
 

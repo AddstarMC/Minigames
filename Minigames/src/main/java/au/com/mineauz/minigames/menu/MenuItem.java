@@ -33,7 +33,7 @@ public class MenuItem {
     }
 
     public MenuItem(@Nullable Material displayMat, @NotNull LangKey langKey) {
-        this(displayMat, langKey, null);
+        this(displayMat, MinigameMessageManager.getMgMessage(langKey), null);
     }
 
     public MenuItem(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<Component> description) {

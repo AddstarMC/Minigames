@@ -20,7 +20,7 @@ import java.util.List;
 public class LivesMechanic extends GameMechanicBase {
 
     @Override
-    public String getMechanic() {
+    public String getMechanicName() {
         return "lives";
     }
 
@@ -36,7 +36,7 @@ public class LivesMechanic extends GameMechanicBase {
         }
 
         if (caller == null) {
-            Minigames.getCmpnntLogger().warn("The Minigame \"" + minigame.getName(false) + "\" must have more than 0 lives to use this type");
+            Minigames.getCmpnntLogger().warn("The Minigame \"" + minigame.getName() + "\" must have more than 0 lives to use this type");
         } else {
             MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_LIVES_ERROR_NOLIVES);
         }
@@ -72,7 +72,7 @@ public class LivesMechanic extends GameMechanicBase {
 
     @EventHandler
     private void minigameStart(StartMinigameEvent event) {
-        if (event.getMinigame().getMechanicName().equals(getMechanic())) {
+        if (event.getMinigame().getMechanicName().equals(getMechanicName())) {
             final List<MinigamePlayer> players = event.getPlayers();
             final Minigame minigame = event.getMinigame();
             for (MinigamePlayer player : players) {
@@ -91,7 +91,7 @@ public class LivesMechanic extends GameMechanicBase {
     @EventHandler
     private void playerDeath(PlayerDeathEvent event) {
         MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getEntity());
-        if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getMechanicName().equals(getMechanic())) {
+        if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getMechanicName().equals(getMechanicName())) {
             mgPlayer.addScore(-1);
             mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
         }

@@ -1,16 +1,21 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +35,15 @@ public class MenuItemList<T> extends MenuItem {
     public MenuItemList(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
         this(displayMat, name, null, value, options);
+    }
+
+    public MenuItemList(@Nullable Material displayMat, @NotNull LangKey langKey,
+                        @Nullable List<@NotNull Component> description, @NotNull Callback<@NotNull T> value,
+                        @NotNull List<@NotNull T> options) {
+        super(displayMat, langKey, description);
+        this.value = value;
+        this.options = options;
+        updateDescription();
     }
 
     public MenuItemList(@Nullable Material displayMat, @Nullable Component name,
@@ -93,14 +107,20 @@ public class MenuItemList<T> extends MenuItem {
 
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        mgPlayer.sendInfoMessage("Enter the name of the option into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.");
+        int reopenSeconds = 10;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
         mgPlayer.setManualEntry(this);
-        if (MinigameUtils.listToString(options).getBytes().length > 16000) {
-            mgPlayer.sendInfoMessage("Unfortunately there are too many options to provide a list in game. Perhaps use the WIKI");
+
+        String optionsStr = String.join(", ", options.stream().map(Object::toString).toList());
+        if (optionsStr.length() > 8000) {
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMenuLangKey.MENU_LIST_ERROR_TOOLONG);
         } else {
-            mgPlayer.sendInfoMessage("Possible Options: " + MinigameUtils.listToString(options));
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_OPTION,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), optionsStr));
         }
-        getContainer().startReopenTimer(10);
+        getContainer().startReopenTimer(reopenSeconds);
         return null;
     }
 
@@ -119,6 +139,6 @@ public class MenuItemList<T> extends MenuItem {
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
 
-        getContainer().getViewer().sendMessage("Could not find matching value!", MinigameMessageType.ERROR);
+        MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LIST_ERROR_INVALID);
     }
 }

@@ -176,8 +176,10 @@ public class Team implements ScriptObject {
      */
     public void setScore(int amount) {
         score = amount;
-        Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName(false));
-        if (obj != null) obj.getScore(getColoredDisplayName()).setScore(score);
+        Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName());
+        if (obj != null) {
+            obj.getScore(getDisplayName()).setScore(score);
+        }
     }
 
     /**
@@ -195,8 +197,10 @@ public class Team implements ScriptObject {
      */
     public int addScore(int amount) {
         score += amount;
-        Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName(false));
-        if (obj != null) obj.getScore(getColoredDisplayName()).setScore(score);
+        Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName());
+        if (obj != null) {
+            obj.getScore(getDisplayName()).setScore(score);
+        }
         return score;
     }
 
@@ -205,7 +209,7 @@ public class Team implements ScriptObject {
      */
     public void resetScore() {
         score = 0;
-        mgm.getScoreboardManager().resetScores(getColoredDisplayName());
+        mgm.getScoreboardManager().resetScores(getDisplayName());
     }
 
     /**
@@ -227,7 +231,9 @@ public class Team implements ScriptObject {
         player.setTeam(this);
         player.getPlayer().setScoreboard(mgm.getScoreboardManager());
         org.bukkit.scoreboard.Team team = mgm.getScoreboardManager().getTeam(scoreboardName);
-        if (team != null) team.addEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+        if (team != null) {
+            team.addEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+        }
     }
 
     /**
@@ -304,6 +310,10 @@ public class Team implements ScriptObject {
         return playerAssignMsg.getFlag();
     }
 
+    public StringFlag getPlayerAssignMessageFlag() {
+        return playerAssignMsg;
+    }
+
     public void setPlayerAssignMsg(String msg) {
         playerAssignMsg.setFlag(msg);
     }
@@ -326,6 +336,14 @@ public class Team implements ScriptObject {
 
     public String getGameAutobalanceMessage() {
         return gameAutobalanceMsg.getFlag();
+    }
+
+    public StringFlag getAutoBalanceMsgFlag() {
+        return autobalanceMsg;
+    }
+
+    public StringFlag getGameAutoBalanceMsgFlag() {
+        return gameAutobalanceMsg;
     }
 
     public void setGameAutobalanceMessage(String msg) {

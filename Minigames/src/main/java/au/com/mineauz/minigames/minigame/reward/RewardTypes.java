@@ -33,8 +33,8 @@ public class RewardTypes {
         return null;
     }
 
-    public static List<String> getAllRewardTypeNames() {
-        return new ArrayList<>(types.keySet());
+    public static List<RewardTypeFactory> getRewardTypeFactories() {
+        return new ArrayList<>(types.values());
     }
 
     public enum MgRewardType implements RewardTypeFactory {

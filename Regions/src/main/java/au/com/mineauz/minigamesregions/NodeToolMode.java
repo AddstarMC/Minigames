@@ -50,7 +50,7 @@ public class NodeToolMode implements ToolMode {
 
     @Override
     public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
-        tool.addSetting("Node", "None");
+        tool.setSetting("Node", "None");
         final Menu m = new Menu(2, "Node Selection", player);
         if (player.isInMenu()) {
             m.addItem(new MenuItemBack(player.getMenu()), m.getSize() - 9);
@@ -65,7 +65,7 @@ public class NodeToolMode implements ToolMode {
 
             @Override
             public void setValue(String value) {
-                ftool.changeSetting("Node", value);
+                ftool.setSetting("Node", value);
             }
         }));
 
@@ -80,11 +80,11 @@ public class NodeToolMode implements ToolMode {
                 MenuItemCustom item = new MenuItemCustom(Material.STONE_BUTTON, node.getName());
 
                 // Set the node and go back to the main menu
-                item.setClick(object -> {
-                    ftool.changeSetting("Node", node.getName());
+                item.setClick(() -> {
+                    ftool.setSetting("Node", node.getName());
                     m.displayMenu(player);
 
-                    return object;
+                    return null;
                 });
 
                 items.add(item);
@@ -93,7 +93,7 @@ public class NodeToolMode implements ToolMode {
             nodeMenu.addItems(items);
             nodeMenu.addItem(new MenuItemBack(m), nodeMenu.getSize() - 9);
 
-            m.addItem(new MenuItemPage("Edit Node", Material.STONE_BUTTON, nodeMenu));
+            m.addItem(new MenuItemPage(Material.STONE_BUTTON, "Edit Node", nodeMenu));
         }
         m.displayMenu(player);
     }
@@ -116,13 +116,13 @@ public class NodeToolMode implements ToolMode {
                 mod.addNode(name, node);
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                         RegionLangKey.NODE_ADDED,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
             } else {
                 node.setLocation(loc);
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                         RegionLangKey.NODE_EDITED,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
                 Main.getPlugin().getDisplayManager().update(node);
             }
@@ -140,13 +140,13 @@ public class NodeToolMode implements ToolMode {
             mod.addNode(name, node);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.NODE_ADDED,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
         } else {
             node.setLocation(mgPlayer.getLocation());
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.NODE_EDITED,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
             Main.getPlugin().getDisplayManager().update(node);
         }

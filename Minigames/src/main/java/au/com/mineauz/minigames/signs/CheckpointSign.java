@@ -2,8 +2,10 @@ package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,11 +13,11 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class CheckpointSign implements MinigameSign {
+public class CheckpointSign extends AMinigameSign {
 
     @Override
-    public @NotNull String getName() {
-        return "Checkpoint";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_CHECKPOINT);
     }
 
     @Override
@@ -30,7 +32,7 @@ public class CheckpointSign implements MinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        event.setLine(1, ChatColor.GREEN + "Checkpoint");
+        event.line(1, getName());
         if (event.getLine(2).equalsIgnoreCase("global")) {
             event.setLine(2, ChatColor.BLUE + "Global");
         }

@@ -5,14 +5,15 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
@@ -21,12 +22,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FinishSign implements MinigameSign {
+public class FinishSign extends AMinigameSign {
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public @NotNull String getName() {
-        return "Finish";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_FINISH);
     }
 
     @Override
@@ -41,13 +42,20 @@ public class FinishSign implements MinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        event.setLine(1, ChatColor.GREEN + "Finish");
-        if (!event.getLine(2).isEmpty() && plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
-            event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
-        } else if (!event.getLine(2).isEmpty()) {
-            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
-                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
-            return false;
+        event.line(1, getName());
+        Component line2 = event.line(2);
+        if (line2 != null) {
+            final Sign sign = (Sign) event.getBlock().getState();
+            final Minigame minigame = getMinigame(sign, event.line(2));
+
+            if (minigame != null) {
+                event.line(2, minigame.getDisplayName());
+                setPersistentMinigame(sign, minigame);
+            } else {
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), line2));
+                return false;
+            }
         }
         return true;
     }
@@ -63,8 +71,10 @@ public class FinishSign implements MinigameSign {
 
             if (!minigame.getFlags().isEmpty()) {
                 if (mgPlayer.getPlayer().isOnGround()) {
-                    if (plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame.getName(false)).isEmpty()) {
-                        if (sign.getLine(2).isEmpty() || sign.getLine(2).equals(mgPlayer.getMinigame().getName(false))) {
+                    if (plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame.getName()).isEmpty()) {
+                        Minigame mgmOnSign = getMinigame(sign);
+                        if (sign.getLine(2).isEmpty() ||
+                                (mgmOnSign != null && mgmOnSign.getName().equals(mgPlayer.getMinigame().getName()))) {
                             if (mgPlayer.getMinigame().isTeamGame()) {
                                 List<MinigamePlayer> w = new ArrayList<>(mgPlayer.getTeam().getPlayers());
                                 List<MinigamePlayer> l = new ArrayList<>(minigame.getPlayers().size() - mgPlayer.getTeam().getPlayers().size());
@@ -88,7 +98,7 @@ public class FinishSign implements MinigameSign {
                             plugin.getPlayerManager().partyMode(mgPlayer, 3, 10L);
                         }
                     } else {
-                        String requiredFlags = String.join(", ", plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame.getName(false)));
+                        String requiredFlags = String.join(", ", plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame.getName()));
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.SIGN_FINISH_REQUIREFLAGS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), requiredFlags));
                     }

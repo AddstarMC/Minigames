@@ -74,7 +74,7 @@ public class SetGamemodeCommand extends ASetCommand {
                 minigame.setDefaultGamemode(gameMode);
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMEMODE_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(gameMode.translationKey())));
             }
         }
@@ -83,7 +83,7 @@ public class SetGamemodeCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(Arrays.stream(GameMode.values()).map(gm -> gm.name().toLowerCase()).toList(), args[0]);
         }

@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -47,14 +48,14 @@ public class SetGametypeNameCommand extends ASetCommand {
             if (args[0].equalsIgnoreCase("null")) {
                 minigame.setGameTypeName(null);
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMETYPENAME_REMOVE,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else {
-                String gameTypeName = String.join(" ", args);
+                Component gameTypeName = MiniMessage.miniMessage().deserialize(String.join(" ", args));
 
                 minigame.setGameTypeName(gameTypeName);
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMETYPENAME_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), gameTypeName));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), gameTypeName));
             }
             return true;
         }
@@ -63,7 +64,7 @@ public class SetGametypeNameCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         return null;
     }
 

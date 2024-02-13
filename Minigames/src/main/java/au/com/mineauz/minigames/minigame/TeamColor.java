@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,6 +69,11 @@ public enum TeamColor {
 
     public Component getCompName() {
         return Component.text(this.toString(), this.getColor());
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return WordUtils.capitalizeFully(super.toString().replaceAll("_", " "));
     }
 
     public NamedTextColor getColor() {

@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.objects.MgRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -46,7 +48,7 @@ public class FloorDegenerator {
     public void startDegeneration() {
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             switch (mgm.getDegenType()) {
-                case "inward" -> {
+                case INWARD -> {
                     degenerateSide(xSideNeg1, xSideNeg2);
                     degenerateSide(xSidePos1, xSidePos2);
                     degenerateSide(zSideNeg1, zSideNeg2);
@@ -56,8 +58,8 @@ public class FloorDegenerator {
                         stopDegenerator();
                     }
                 }
-                case "random" -> degenerateRandom(bottomCorner, topCorner, mgm.getDegenRandomChance());
-                case "circle" -> degenerateCircle(bottomCorner, topCorner);
+                case RANDOM -> degenerateRandom(bottomCorner, topCorner, mgm.getDegenRandomChance());
+                case CIRCLE -> degenerateCircle(bottomCorner, topCorner);
             }
         }, timeDelay * 20L, timeDelay * 20L);
     }
@@ -155,6 +157,22 @@ public class FloorDegenerator {
     public void stopDegenerator() {
         if (taskID != -1) {
             Bukkit.getScheduler().cancelTask(taskID);
+        }
+    }
+
+    public enum DegeneratorType {
+        INWARD,
+        RANDOM,
+        CIRCLE;
+
+        public static @Nullable DegeneratorType matchType(@NotNull String str) {
+            for (DegeneratorType value : DegeneratorType.values()) {
+                if (value.name().equalsIgnoreCase(str)) {
+                    return value;
+                }
+            }
+
+            return null;
         }
     }
 }

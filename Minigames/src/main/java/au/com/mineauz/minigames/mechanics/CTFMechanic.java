@@ -52,7 +52,7 @@ public class CTFMechanic extends GameMechanicBase {
     }
 
     @Override
-    public String getMechanic() {
+    public String getMechanicName() {
         return "ctf";
     }
 

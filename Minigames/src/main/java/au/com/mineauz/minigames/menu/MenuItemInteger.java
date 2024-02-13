@@ -1,15 +1,22 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
 
 public class MenuItemInteger extends MenuItem {
@@ -30,6 +37,15 @@ public class MenuItemInteger extends MenuItem {
     public MenuItemInteger(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Integer> value,
                            @Nullable Integer min, @Nullable Integer max) {
         super(displayMat, name);
+        this.value = value;
+        this.min = min;
+        this.max = max;
+        updateDescription();
+    }
+
+    public MenuItemInteger(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<Component> description,
+                           @NotNull Callback<Integer> value, @Nullable Integer min, @Nullable Integer max) {
+        super(displayMat, langKey, description);
         this.value = value;
         this.min = min;
         this.max = max;
@@ -90,18 +106,13 @@ public class MenuItemInteger extends MenuItem {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        mgPlayer.sendMessage("Enter number value into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
-        String min = "N/A";
-        String max = "N/A";
-        if (this.min != null) {
-            min = this.min.toString();
-        }
-        if (this.max != null) {
-            max = this.max.toString();
-        }
-        mgPlayer.setManualEntry(this);
-        mgPlayer.sendInfoMessage("Min: " + min + ", Max: " + max);
-        getContainer().startReopenTimer(10);
+        final int reopenSeconds = 10;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))),
+                Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
+                Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
+        getContainer().startReopenTimer(reopenSeconds);
 
         return null;
     }
@@ -116,24 +127,14 @@ public class MenuItemInteger extends MenuItem {
 
                 getContainer().cancelReopenTimer();
                 getContainer().displayMenu(getContainer().getViewer());
-                return;
             }
+        } else {
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
+
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+                    MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
         }
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
-
-        getContainer().getViewer().sendMessage("Invalid value entry!", MinigameMessageType.ERROR);
-    }
-
-    Callback<Integer> getValue() {
-        return value;
-    }
-
-    Integer getMin() {
-        return min;
-    }
-
-    Integer getMax() {
-        return max;
     }
 }

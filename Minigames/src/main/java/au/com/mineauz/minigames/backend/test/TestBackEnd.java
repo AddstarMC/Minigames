@@ -64,7 +64,7 @@ public class TestBackEnd extends Backend {
     public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order) {
         List<StoredStat> result = new ArrayList<>();
         for (StoredGameStats store : playerGameStats) {
-            if (store.hasStat(stat) && store.getMinigame().getName(false).equals(minigame.getName(false))) {
+            if (store.hasStat(stat) && store.getMinigame().getName().equals(minigame.getName())) {
                 result.add(new StoredStat(store.getPlayer().getUUID(), store.getPlayer().getName(), store.getPlayer().getDisplayName(true), store.getStat(stat)));
             }
         }

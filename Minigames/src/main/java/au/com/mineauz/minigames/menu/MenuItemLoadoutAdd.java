@@ -1,22 +1,35 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
 public class MenuItemLoadoutAdd extends MenuItem {
     private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts;
     private @Nullable Minigame minigame = null;
+
+    public MenuItemLoadoutAdd(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Map<@NotNull String,
+            @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
+        super(displayMat, langKey);
+        this.loadouts = loadouts;
+        this.minigame = mgm;
+    }
 
     public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Map<@NotNull String,
             @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
@@ -50,10 +63,12 @@ public class MenuItemLoadoutAdd extends MenuItem {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        mgPlayer.sendInfoMessage("Enter a name for the new Loadout, the menu will automatically reopen in 10s if nothing is entered.");
+        final int reopenSeconds = 30;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_ADD_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
         mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(30);
+        getContainer().startReopenTimer(reopenSeconds);
         return null;
     }
 
@@ -65,12 +80,12 @@ public class MenuItemLoadoutAdd extends MenuItem {
                 if (!getContainer().hasMenuItem(i)) {
                     PlayerLoadout loadout = new PlayerLoadout(entry);
                     loadouts.put(entry, loadout);
-                    List<Component> des = new ArrayList<>();
-                    des.add("Shift + Right Click to Delete");
+                    List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
+
                     if (minigame != null) {
-                        getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout, minigame), i);
+                        getContainer().addItem(new MenuItemDisplayLoadout(Material.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout, minigame), i);
                     } else {
-                        getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout), i);
+                        getContainer().addItem(new MenuItemDisplayLoadout(Material.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout), i);
                     }
                     break;
                 }
@@ -78,11 +93,12 @@ public class MenuItemLoadoutAdd extends MenuItem {
 
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
-            return;
-        }
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        } else {
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
 
-        getContainer().getViewer().sendMessage("A Loadout already exists by the name \"" + entry + "\".", MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LOADOUT_ERROR_ALREADYEXISTS,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), entry));
+        }
     }
 }

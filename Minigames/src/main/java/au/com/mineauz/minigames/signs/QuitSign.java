@@ -3,21 +3,21 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class QuitSign implements MinigameSign {
-
+public class QuitSign extends AMinigameSign {
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public @NotNull String getName() {
-        return "Quit";
+    public @NotNull Component getName() {
+        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_QUIT);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class QuitSign implements MinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        event.setLine(1, ChatColor.GREEN + "Quit");
+        event.line(1, getName());
         return true;
     }
 

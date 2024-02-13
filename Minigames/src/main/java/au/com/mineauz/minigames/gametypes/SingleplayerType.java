@@ -71,26 +71,26 @@ public class SingleplayerType extends MinigameTypeBase {
             if (mgm.isFlightEnabled())
                 mgPlayer.getPlayer().setFlying(true);
         }
-        if (mgPlayer.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))) {
-            mgPlayer.setCheckpoint(mgPlayer.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName(false)));
+        if (mgPlayer.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName())) {
+            mgPlayer.setCheckpoint(mgPlayer.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName()));
             StoredPlayerCheckpoints spc = mgPlayer.getStoredPlayerCheckpoints();
-            if (spc.hasFlags(mgm.getName(false))) {
-                mgPlayer.setFlags(spc.getFlags(mgm.getName(false)));
+            if (spc.hasFlags(mgm.getName())) {
+                mgPlayer.setFlags(spc.getFlags(mgm.getName()));
             }
-            if (spc.hasTime(mgm.getName(false))) {
-                mgPlayer.setStoredTime(spc.getTime(mgm.getName(false)));
+            if (spc.hasTime(mgm.getName())) {
+                mgPlayer.setStoredTime(spc.getTime(mgm.getName()));
             }
-            if (spc.hasDeaths(mgm.getName(false))) {
-                mgPlayer.setDeaths(spc.getDeaths(mgm.getName(false)));
+            if (spc.hasDeaths(mgm.getName())) {
+                mgPlayer.setDeaths(spc.getDeaths(mgm.getName()));
             }
-            if (spc.hasReverts(mgm.getName(false))) {
-                mgPlayer.setReverts(spc.getReverts(mgm.getName(false)));
+            if (spc.hasReverts(mgm.getName())) {
+                mgPlayer.setReverts(spc.getReverts(mgm.getName()));
             }
-            spc.removeCheckpoint(mgm.getName(false));
-            spc.removeFlags(mgm.getName(false));
-            spc.removeDeaths(mgm.getName(false));
-            spc.removeTime(mgm.getName(false));
-            spc.removeReverts(mgm.getName(false));
+            spc.removeCheckpoint(mgm.getName());
+            spc.removeFlags(mgm.getName());
+            spc.removeDeaths(mgm.getName());
+            spc.removeTime(mgm.getName());
+            spc.removeReverts(mgm.getName());
             mgPlayer.teleport(mgPlayer.getCheckpoint());
             spc.saveCheckpoints();
         }
@@ -106,12 +106,12 @@ public class SingleplayerType extends MinigameTypeBase {
     @Override
     public void endMinigame(@NotNull List<@NotNull MinigamePlayer> winners, @Nullable List<@Nullable MinigamePlayer> losers, @NotNull Minigame mgm) {
         for (MinigamePlayer player : winners) {
-            if (player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))) {
-                player.getStoredPlayerCheckpoints().removeCheckpoint(mgm.getName(false));
-                player.getStoredPlayerCheckpoints().removeDeaths(mgm.getName(false));
-                player.getStoredPlayerCheckpoints().removeFlags(mgm.getName(false));
-                player.getStoredPlayerCheckpoints().removeReverts(mgm.getName(false));
-                player.getStoredPlayerCheckpoints().removeTime(mgm.getName(false));
+            if (player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName())) {
+                player.getStoredPlayerCheckpoints().removeCheckpoint(mgm.getName());
+                player.getStoredPlayerCheckpoints().removeDeaths(mgm.getName());
+                player.getStoredPlayerCheckpoints().removeFlags(mgm.getName());
+                player.getStoredPlayerCheckpoints().removeReverts(mgm.getName());
+                player.getStoredPlayerCheckpoints().removeTime(mgm.getName());
                 player.getStoredPlayerCheckpoints().saveCheckpoints();
             }
         }
@@ -121,13 +121,13 @@ public class SingleplayerType extends MinigameTypeBase {
     public void quitMinigame(final @NotNull MinigamePlayer player, final @NotNull Minigame mgm, boolean forced) {
         if (mgm.canSaveCheckpoint()) {
             StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
-            spc.addCheckpoint(mgm.getName(false), player.getCheckpoint());
+            spc.addCheckpoint(mgm.getName(), player.getCheckpoint());
             if (!player.getFlags().isEmpty()) {
-                spc.addFlags(mgm.getName(false), player.getFlags());
+                spc.addFlags(mgm.getName(), player.getFlags());
             }
-            spc.addDeaths(mgm.getName(false), player.getDeaths());
-            spc.addReverts(mgm.getName(false), player.getReverts());
-            spc.addTime(mgm.getName(false), Calendar.getInstance().getTimeInMillis() - player.getStartTime() + player.getStoredTime());
+            spc.addDeaths(mgm.getName(), player.getDeaths());
+            spc.addReverts(mgm.getName(), player.getReverts());
+            spc.addTime(mgm.getName(), Calendar.getInstance().getTimeInMillis() - player.getStartTime() + player.getStoredTime());
             spc.saveCheckpoints();
         }
 
@@ -145,7 +145,7 @@ public class SingleplayerType extends MinigameTypeBase {
         if (pdata.getMinigamePlayer(event.getPlayer()).isInMinigame()) {
             MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
             Minigame mgm = mgPlayer.getMinigame();
-            if (mgm.getType() == MinigameType.SINGLEPLAYER) {
+            if (mgm != null && mgm.getType() == MinigameType.SINGLEPLAYER) {
                 event.setRespawnLocation(mgPlayer.getCheckpoint());
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_CHECKPOINT_DEATHREVERT);
 

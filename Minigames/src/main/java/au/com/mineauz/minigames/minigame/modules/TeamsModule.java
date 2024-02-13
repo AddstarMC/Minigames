@@ -34,7 +34,7 @@ public class TeamsModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public @NotNull Map<@NotNull String, @NotNull Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> flags = new HashMap<>();
         flags.put(teamsFlag.getName(), teamsFlag);
         flags.put(defaultWinner.getName(), defaultWinner);
@@ -47,25 +47,25 @@ public class TeamsModule extends MinigameModule {
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config) {
     }
 
     @Override
-    public void load(FileConfiguration config) {
+    public void load(@NotNull FileConfiguration config) {
         if (config.contains(getMinigame() + ".startposred") || config.contains(getMinigame() + ".startposblue")) {
             Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + getMinigame() + ".startpos*");
         }
     }
 
-    public Team getTeam(TeamColor color) {
+    public @Nullable Team getTeam(@NotNull TeamColor color) {
         return teams.get(color);
     }
 
-    public List<Team> getTeams() {
+    public @NotNull List<@NotNull Team> getTeams() {
         return new ArrayList<>(teams.values());
     }
 
-    public Map<String, Team> getTeamsNameMap() {
+    public @NotNull Map<@NotNull String, @NotNull Team> getTeamsNameMap() {
         Map<String, Team> result = new HashMap<>(teams.size());
 
         for (Team team : teams.values()) {

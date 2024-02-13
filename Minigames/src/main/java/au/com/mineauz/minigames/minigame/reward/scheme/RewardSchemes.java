@@ -60,7 +60,7 @@ public final class RewardSchemes {
         return definedSchemes.inverse().get(schemeClass);
     }
 
-    public static MenuItem newMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public static MenuItem newMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                        @NotNull Callback<Class<? extends RewardScheme>> callback) {
         return new MenuItemRewardScheme(displayMat, name, callback);
     }
