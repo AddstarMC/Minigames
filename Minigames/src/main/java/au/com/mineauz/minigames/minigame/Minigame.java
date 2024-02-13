@@ -64,7 +64,7 @@ public class Minigame implements ScriptObject {
     private final LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
     private final BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
     private final TimeFlag timer = new TimeFlag(0L, "timer");
-    private final BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
+    private final EnumFlag<MinigameTimer.DisplayType> timerDisplayType = new EnumFlag(MinigameTimer.DisplayType.XP_BAR, "useXPBarTimer");
     private final TimeFlag startWaitTime = new TimeFlag(0L, "startWaitTime");
     private final BooleanFlag showCompletionTime = new BooleanFlag(false, "showCompletionTime");
     private final BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
@@ -1182,7 +1182,7 @@ public class Minigame implements ScriptObject {
             mainMenu.addItem(gamLengthMenuItem, 18);
         }
 
-        mainMenu.addItem(useXPBarTimer.getMenuItem(Material.ENDER_PEARL, "Use XP bar as Timer"), 19); //todo fixed in later commit
+        mainMenu.addItem(timerDisplayType.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_MINIGAME_TIME_DISPLAYTYPE_NAME), 19);
 
         final MenuItemTime startWaitTimeMenuItem = startWaitTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_TIME_STARTWAIT_NAME, 3L, null);
         typeDependentDisplayData.add(new TypeDependentDisplayData(startWaitTimeMenuItem, List.of(MinigameType.MULTIPLAYER), 19));

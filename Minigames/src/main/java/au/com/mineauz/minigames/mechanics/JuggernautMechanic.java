@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
@@ -44,7 +43,7 @@ public class JuggernautMechanic extends GameMechanicBase {
     }
 
     @Override
-    public MinigameModule displaySettings(Minigame minigame) {
+    public JuggernautModule displaySettings(Minigame minigame) {
         return JuggernautModule.getMinigameModule(minigame);
     }
 

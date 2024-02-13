@@ -27,7 +27,7 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
 
     @Override
     public Component getDisplayName() {
-        return "Start Positions";
+        return "Start Locations";
     }
 
     @Override

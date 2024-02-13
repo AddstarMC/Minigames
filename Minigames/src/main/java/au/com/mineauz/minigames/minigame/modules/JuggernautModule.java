@@ -22,6 +22,10 @@ public class JuggernautModule extends MinigameModule {
         super(mgm, name);
     }
 
+    public static JuggernautModule getMinigameModule(@NotNull Minigame mgm) {
+        return ((JuggernautModule) mgm.getModule(MgModules.JUGGERNAUT.getName()));
+    }
+
     @Override
     public Map<String, Flag<?>> getConfigFlags() {
         return null;

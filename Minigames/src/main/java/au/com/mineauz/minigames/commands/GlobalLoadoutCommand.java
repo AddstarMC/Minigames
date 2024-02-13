@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
@@ -58,17 +59,16 @@ public class GlobalLoadoutCommand extends ACommand { //todo merge with loadout c
         MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
         Menu loadouts = new Menu(6, getName(), player);
 
-        List<Component> des = new ArrayList<>();
-        des.add("Shift + Right Click to Delete");
         List<MenuItem> mi = new ArrayList<>();
         for (String ld : mdata.getLoadouts()) {
-            Material item = Material.WHITE_STAINED_GLASS_PANE;
+            Material displayMaterial = Material.WHITE_STAINED_GLASS_PANE;
             if (!mdata.getLoadout(ld).getItemSlots().isEmpty()) {
-                item = mdata.getLoadout(ld).getItem((Integer) mdata.getLoadout(ld).getItemSlots().toArray()[0]).getType();
+                displayMaterial = mdata.getLoadout(ld).getItem((Integer) mdata.getLoadout(ld).getItemSlots().toArray()[0]).getType();
             }
-            mi.add(new MenuItemDisplayLoadout(ld, des, item, mdata.getLoadout(ld)));
+            mi.add(new MenuItemDisplayLoadout(displayMaterial, ld,
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), mdata.getLoadout(ld)));
         }
-        loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mdata.getLoadoutMap()), 53);
+        loadouts.addItem(new MenuItemLoadoutAdd(Material.ITEM_FRAME, "Add Loadout", mdata.getLoadoutMap()), 53);
         loadouts.addItems(mi);
 
         loadouts.displayMenu(player);

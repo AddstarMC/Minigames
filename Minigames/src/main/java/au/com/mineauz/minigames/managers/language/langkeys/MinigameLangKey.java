@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public enum MinigameLangKey implements LangKey { //todo this gets rather big. Slit it into smaller digestible parts: tool, ?...
     CONFIG_BLACKLIST("config.blacklist"),
     CONFIG_WHITELIST("config.whitelist"),
+    BOOL_FALSE("bool.false"),
     MINIGAME_ERROR_FULL("minigame.error.full"),
     MINIGAME_ERROR_INCORRECTSTART("minigame.error.incorrectStart"),
     MINIGAME_ERROR_INVALIDMECHANIC("minigame.error.invalidMechanic"),
@@ -244,7 +245,8 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     TOOL_SET_ENDLOCATION("tool.set.endLocation"),
     TOOL_SET_LOBBYLOCATION("tool.set.lobbyLocation"),
     TOOL_SET_QUITLOCATION("tool.set.quitLocation"),
-    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation");
+    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation"),
+    BOOL_TRUE("bool.true");
 
     private final @NotNull String path;
 

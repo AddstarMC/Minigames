@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SelectCommand implements ICommand {
+public class SelectCommand extends ACommand {
     @Override
     public @NotNull String getName() {
         return "select";
@@ -44,12 +43,11 @@ public class SelectCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (sender instanceof Player player) {
             MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 
-            if (args != null && args.length > 0) {
+            if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("1")) {
                     mgPlayer.setSelection1(player.getLocation());
                     mgPlayer.sendInfoMessage(Component.text("Point 1 selected", NamedTextColor.GRAY));
@@ -75,8 +73,8 @@ public class SelectCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String[] args) {
-        if (args != null && args.length == 1) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+        if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("1", "2", "clear"), args[0]);
         }
         return null;

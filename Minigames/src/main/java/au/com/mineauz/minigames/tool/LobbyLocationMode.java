@@ -23,7 +23,7 @@ public class LobbyLocationMode implements ToolMode {
 
     @Override
     public Component getDisplayName() {
-        return "Lobby Position";
+        return "Lobby Location";
     }
 
     @Override

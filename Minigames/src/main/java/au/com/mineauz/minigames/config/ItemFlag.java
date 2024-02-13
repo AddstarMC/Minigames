@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemItemNbt;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -51,8 +52,8 @@ public class ItemFlag extends Flag<ItemStack> {
     }
 
 
-    public @NotNull MenuItemItemNbt getMenuItem(@NotNull String name) {
-        return new MenuItemItemNbt(name, getFlagOrDefault(), new Callback<>() {
+    public @NotNull MenuItemItemNbt getMenuItem(@NotNull Component name) {
+        return new MenuItemItemNbt(getFlagOrDefault(), name, new Callback<>() {
             @Override
             public ItemStack getValue() {
                 return getFlag();
@@ -66,13 +67,14 @@ public class ItemFlag extends Flag<ItemStack> {
     }
 
     @Override
-    public @NotNull MenuItemItemNbt getMenuItem(@NotNull String name, @Nullable Material displayMaterial) {
-        return getMenuItem(name, displayMaterial, null);
+    public @NotNull MenuItemItemNbt getMenuItem(@Nullable Material displayMaterial, @Nullable Component name) {
+        return getMenuItem(displayMaterial, name, null);
     }
 
     @Override
-    public @NotNull MenuItemItemNbt getMenuItem(@NotNull String name, @Nullable Material displayMaterial, @Nullable List<@NotNull String> description) {
-        return new MenuItemItemNbt(name, description, displayMaterial, new Callback<>() {
+    public @NotNull MenuItemItemNbt getMenuItem(@Nullable Material displayMaterial, @Nullable Component name,
+                                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemItemNbt(displayMaterial, name, description, new Callback<>() {
             @Override
             public ItemStack getValue() {
                 return getFlag();

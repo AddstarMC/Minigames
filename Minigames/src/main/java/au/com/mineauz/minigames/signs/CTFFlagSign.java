@@ -87,5 +87,4 @@ public class CTFFlagSign extends AMinigameSign {
     public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
 
     }
-
 }

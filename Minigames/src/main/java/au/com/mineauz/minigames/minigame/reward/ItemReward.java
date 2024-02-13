@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemItemNbt;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -81,7 +82,7 @@ public class ItemReward extends RewardType {
         this.item = item;
     }
 
-    private class MenuItemReward extends MenuItem {
+    private class MenuItemReward extends MenuItemItemNbt {
         private final static String DESCRIPTION_TOKEN = "Reward_description";
         private final @NotNull ItemReward reward;
         private final @NotNull List<RewardRarity> options;

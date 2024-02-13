@@ -233,7 +233,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
         if (!thm.hasTreasureLocation() || thm.isTreasureFound()) return;
 
-        int time = event.getTimeLeft();
+        long time = event.getTimeLeft();
         long hintTime1 = event.getMinigame().getTimer() - 1;
         int hintTime2 = (int) (event.getMinigame().getTimer() * 0.75);
         int hintTime3 = (int) (event.getMinigame().getTimer() * 0.50);

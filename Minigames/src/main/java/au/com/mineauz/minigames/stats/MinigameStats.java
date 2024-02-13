@@ -19,6 +19,7 @@ public final class MinigameStats {
     public static final MinigameStat Wins = new BasicMinigameStat("wins", "Wins", StatFormat.Total);
     public static final MinigameStat Losses = new BasicMinigameStat("losses", "Losses", StatFormat.Total); // Fake stat
     public static final MinigameStat Attempts = new BasicMinigameStat("attempts", "Attempts", StatFormat.Total);
+    // in milliseconds
     public static final MinigameStat CompletionTime = new BasicMinigameStat("time", "Completion Time", StatFormat.MinMaxAndTotal);
 
     public static final MinigameStat Kills = new BasicMinigameStat("kills", "Kills", StatFormat.MaxAndTotal);

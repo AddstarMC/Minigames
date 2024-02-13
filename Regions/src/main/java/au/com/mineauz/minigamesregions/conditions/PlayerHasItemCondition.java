@@ -11,8 +11,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -317,14 +315,15 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        final Menu menu = new Menu(3, "Player Has Item", player);
-        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), menu.getSize() - 9);
+        final Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_NAME), player);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
         // we need a reference for two object we will create soon down the line
         final CompletableFuture<MenuItemString> futureNameItem = new CompletableFuture<>();
         final CompletableFuture<MenuItemString> futureLoreItem = new CompletableFuture<>();
 
-        final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt("Item", itemToSearchFor.getFlagOrDefault(), new Callback<>() {
+        final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt(itemToSearchFor.getFlagOrDefault(),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_ITEM_NAME), new Callback<>() {
             @Override
             public ItemStack getValue() {
                 return itemToSearchFor.getFlagOrDefault();
@@ -350,10 +349,13 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         });
 
         menu.addItem(itemMenuItem);
-        menu.addItem(count.getMenuItem("Amount", Material.STONE_SLAB, 1, 999));
+        menu.addItem(count.getMenuItem(Material.STONE_SLAB,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_AMOUNT_NAME), 1, 999));
 
-        final MenuItemInteger slotMenuItem = slot.getMenuItem("Slot", Material.DIAMOND, null, 0, 40);
-        final MenuItemEnum<PositionType> whereMenuItem = new MenuItemEnum<>("Search Where", Material.COMPASS, new Callback<>() {
+        final MenuItemInteger slotMenuItem = slot.getMenuItem(Material.DIAMOND,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_SLOT_NAME), null, 0, 40);
+        final MenuItemEnum<PositionType> whereMenuItem = new MenuItemEnum<>(Material.COMPASS,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_WHERE_NAME), new Callback<>() {
             @Override
             public PositionType getValue() {
                 return where.getFlag();
@@ -375,9 +377,12 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        final MenuItemString nameMenuItem = new MenuItemString("Display Name",
-                List.of("The name to match.", "Use % to do a wildcard match"), Material.NAME_TAG, new Callback<>() {
+        menu.addItem(matchName.getMenuItem(Material.NAME_TAG,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_DISPLAYNAME_NAME)));
+        final MenuItemString nameMenuItem = new MenuItemString(Material.NAME_TAG,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_DESCRIPTION),
+                new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
 
             @Override
@@ -396,10 +401,12 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         futureNameItem.complete(nameMenuItem);
         menu.addItem(nameMenuItem);
 
-        menu.addItem(matchLore.getMenuItem("Match Lore", Material.BOOK));
-        final MenuItemString loreMenuItem = new MenuItemString("Lore",
-                List.of("The lore to match. Separate", "with semi-colons", "for new lines.", "Use % to do a wildcard match"),
-                Material.BOOK, new Callback<>() {
+        menu.addItem(matchLore.getMenuItem(Material.BOOK,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_LORE_NAME)));
+        final MenuItemString loreMenuItem = new MenuItemString(Material.BOOK,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_DESCRIPTION),
+                new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
 
             @Override
@@ -425,8 +432,10 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         futureLoreItem.complete(loreMenuItem);
         menu.addItem(loreMenuItem);
 
-        menu.addItem(matchEnchantments.getMenuItem("Match enchantments", Material.ENCHANTED_BOOK));
-        menu.addItem(matchExact.getMenuItem("Match exact", Material.BOOKSHELF)); //todo with callback to turn the others on
+        menu.addItem(matchEnchantments.getMenuItem(Material.ENCHANTED_BOOK,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_ENCHANTMENTS_NAME)));
+        menu.addItem(matchExact.getMenuItem(Material.BOOKSHELF,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on
 
         addInvertMenuItem(menu);
         menu.displayMenu(player);

@@ -10,13 +10,11 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemComponent extends MenuItem {
@@ -49,9 +47,9 @@ public class MenuItemComponent extends MenuItem {
     }
 
     public void updateDescription() {
-        Component settingComp = stringCallback.getValue();
+        Component settingComp = component.getValue();
         if (settingComp == null) {
-            settingComp = "<red>Not Set</red>";
+            settingComp = MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET);
         }
 
         // limit to a still readable size

@@ -6,10 +6,10 @@ import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.StoredPlayerCheckpoints;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.display.DisplayCuboid;
+import au.com.mineauz.minigames.managers.DependencyManager;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
-import au.com.mineauz.minigames.managers.DependencyManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -372,10 +372,16 @@ public class MinigamePlayer implements ScriptObject {
         this.startTime = ms;
     }
 
+    /**
+     * in milliseconds
+     */
     public long getEndTime() {
         return this.endTime;
     }
 
+    /**
+     * in milliseconds
+     */
     public void setEndTime(final long ms) {
         this.endTime = ms;
     }
@@ -386,10 +392,16 @@ public class MinigamePlayer implements ScriptObject {
         this.storedTime = 0;
     }
 
+    /**
+     * in milliseconds
+     */
     public long getStoredTime() {
         return this.storedTime;
     }
 
+    /**
+     * in milliseconds
+     */
     public void setStoredTime(final long ms) {
         this.storedTime = ms;
     }

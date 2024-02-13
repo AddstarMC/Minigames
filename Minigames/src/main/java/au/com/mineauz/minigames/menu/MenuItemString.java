@@ -7,8 +7,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemString extends MenuItem {
-    protected final static String DESCRIPTION_TOKEN = "String_description";
-    protected final Callback<String> stringCallback;
+    private final static String DESCRIPTION_TOKEN = "String_description";
+    private final Callback<String> stringCallback;
     private boolean allowNull = false;
 
     public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<String> stringCallback) {
@@ -36,7 +36,7 @@ public class MenuItemString extends MenuItem {
     public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey,
                           @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
         super(displayMat, langKey, description);
-        this.str = str;
+        this.stringCallback = str;
         updateDescription();
     }
 

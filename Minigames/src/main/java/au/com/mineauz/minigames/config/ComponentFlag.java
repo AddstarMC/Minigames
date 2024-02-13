@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemComponent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -19,13 +20,14 @@ public class ComponentFlag extends Flag<Component> {
 
     @Override
     public void saveValue(String path, FileConfiguration config) {
-        config.set(path + "." + getName(), getFlag());
+        config.set(path + "." + getName(), MiniMessage.miniMessage().serialize(getFlag()));
     }
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        if (config.contains(path + "." + getName())) {
-            setFlag(config.getString(path + "." + getName()));
+        final String confStr = config.getString(path + "." + getName());
+        if (confStr != null) {
+            setFlag(MiniMessage.miniMessage().deserialize(confStr));
         } else {
             setFlag(getDefaultFlag());
         }

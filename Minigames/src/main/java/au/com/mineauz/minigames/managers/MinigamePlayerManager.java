@@ -532,7 +532,7 @@ public class MinigamePlayerManager {
                 if (loc != null) {
                     mgPlayer.teleport(loc);
                 } else {
-                    Minigames.getCmpnntLogger().warn("Minigame " + minigame.getName(true) + " has no end location set! (Player: " + mgPlayer.getName() + ")");
+                    Minigames.getCmpnntLogger().warn("Minigame " + minigame.getName() + " has no end location set! (Player: " + mgPlayer.getName() + ")");
                 }
 
                 mgPlayer.setStartPos(null);
@@ -544,10 +544,10 @@ public class MinigamePlayerManager {
                 }
 
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_SPECTATE_QUIT_PLAYERMSG,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
-                mgManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_SPECTATE_QUIT_MINIGAMEMSG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_SPECTATE_QUIT_MINIGAMEMSG,
                         Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), MinigameMessageType.ERROR, mgPlayer);
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName())), MinigameMessageType.ERROR, mgPlayer);
             } else {
                 if (mgPlayer.getEndTime() == 0)
                     mgPlayer.setEndTime(System.currentTimeMillis());

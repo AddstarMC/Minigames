@@ -79,6 +79,7 @@ public enum RegionLangKey implements LangKey {
     MENU_CONDITION_MINIGAMETIMER_NAME("menu.condition.minigameTimer.name"),
     MENU_CONDITION_PLAYERCOUNT_NAME("menu.condition.playerCount.name"),
     MENU_CONDITION_PLAYERFOODRANGE_NAME("menu.condition.playerFoodRange.name"),
+    MENU_CONDITION_PLAYERHASITEM_ITEM_NAME("menu.condition.playerHasItem.item.name"),
     MENU_CONDITION_PLAYERHASITEM_NAME("menu.condition.playerHasItem.name"),
     MENU_CONDITION_PLAYERHEALTHRANGE_NAME("menu.condition.playerHealthRange.name"),
     MENU_CONDITION_PLAYERSCORERANGE_NAME("menu.condition.playerScoreRange.name"),
@@ -90,6 +91,7 @@ public enum RegionLangKey implements LangKey {
     MENU_EXECUTOR_ADD_NAME("menu.executor.add.name"),
     MENU_EXECUTOR_EDIT("menu.executor.edit"),
     MENU_EXECUTOR_NAME("menu.executor.name"),
+    MENU_EXECUTOR_PERPLAYER_DESCRIPTION("menu.executor.perPlayer.description"),
     MENU_EXECUTOR_PERPLAYER_NAME("menu.executor.perPlayer.name"),
     MENU_EXECUTOR_TRIGGER("menu.executor.trigger"),
     MENU_EXECUTOR_TRIGGERCOUNT_DESCRIPTION("menu.executor.triggerCount.description"),
@@ -159,7 +161,17 @@ public enum RegionLangKey implements LangKey {
     TRIGGER_TIME_GAMETICK_NAME("trigger.time.gameTick.name"),
     TRIGGER_TIME_TICK_NAME("trigger.time.tick.name"),
     TRIGGER_TIME_TIMER_NAME("trigger.time.timer.name"),
-    MENU_EXECUTOR_PERPLAYER_DESCRIPTION("menu.executor.perPlayer.description");
+    MENU_CONDITION_PLAYERHASITEM_WHERE_NAME("menu.condition.playerHasItem.where.name"),
+    MENU_CONDITION_PLAYERHASITEM_AMOUNT_NAME("menu.condition.playerHasItem.amount.name"),
+    MENU_CONDITION_PLAYERHASITEM_SLOT_NAME("menu.condition.playerHasItem.slot.name"),
+    MENU_CONDITION_PLAYERHASITEM_MATCH_DISPLAYNAME_NAME("menu.condition.playerHasItem.match.displayname.name"),
+    MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_NAME("menu.condition.playerHasItem.displayname.name"),
+    MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_DESCRIPTION("menu.condition.playerHasItem.displayname.description"),
+    MENU_CONDITION_PLAYERHASITEM_MATCH_LORE_NAME("menu.condition.playerHasItem.match.lore.name"),
+    MENU_CONDITION_PLAYERHASITEM_LORE_NAME("menu.condition.playerHasItem.lore.name"),
+    MENU_CONDITION_PLAYERHASITEM_LORE_DESCRIPTION("menu.condition.playerHasItem.lore.description"),
+    MENU_CONDITION_PLAYERHASITEM_MATCH_ENCHANTMENTS_NAME("menu.condition.playerHasItem.match.enchantments.name"),
+    MENU_CONDITION_PLAYERHASITEM_MATCH_EXACT_NAME("menu.condition.playerHasItem.match.exact.name");
 
     private final @NotNull String path;
 

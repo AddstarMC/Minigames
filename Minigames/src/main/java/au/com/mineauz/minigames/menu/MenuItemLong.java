@@ -9,8 +9,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +46,15 @@ public class MenuItemLong extends MenuItem {
     public MenuItemLong(@Nullable Material displayMat, @Nullable Component name, @Nullable List<Component> description,
                         @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
         super(displayMat, name, description);
+        this.value = value;
+        this.min = min;
+        this.max = max;
+        updateDescription();
+    }
+
+    public MenuItemLong(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<@NotNull Component> description,
+                        @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
+        super(displayMat, langKey, description);
         this.value = value;
         this.min = min;
         this.max = max;

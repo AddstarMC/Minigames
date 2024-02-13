@@ -12,7 +12,7 @@ public class MinigameTimerTickEvent extends AbstractCancellableMinigameEvent {
         this.timer = timer;
     }
 
-    public int getTimeLeft() {
+    public long getTimeLeft() {
         return timer.getTimeLeft();
     }
 
