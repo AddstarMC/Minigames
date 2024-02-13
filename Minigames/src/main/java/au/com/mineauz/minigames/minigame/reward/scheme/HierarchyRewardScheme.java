@@ -83,7 +83,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     }
 
     private void showRewardsMenu(TreeMap<T, Rewards> rewards, MinigamePlayer player, Menu parent) {
-        Menu submenu = new Menu(6, "Rewards", player);
+        Menu submenu = new Menu(6, MgMenuLangKey.MENU_REWARD_NAME, player);
 
         for (T key : rewards.keySet()) {
             submenu.addItem(new MenuItemRewardPair(Material.CHEST, rewards, key));

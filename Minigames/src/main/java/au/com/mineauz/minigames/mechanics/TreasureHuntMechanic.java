@@ -152,7 +152,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
     }
 
     @Override
-    public String getMechanic() {
+    public String getMechanicName() {
         return "treasure_hunt";
     }
 
@@ -227,7 +227,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
     @EventHandler
     private void timerTick(@NotNull MinigameTimerTickEvent event) {
         if (event.getMinigame().getType() != MinigameType.GLOBAL &&
-                !event.getMinigame().getMechanicName().equals(getMechanic())) return;
+                !event.getMinigame().getMechanicName().equals(getMechanicName())) return;
 
         Minigame mgm = event.getMinigame();
         TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
@@ -319,7 +319,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
     @EventHandler
     private void timerExpire(@NotNull TimerExpireEvent event) {
         if (event.getMinigame().getType() != MinigameType.GLOBAL &&
-                !event.getMinigame().getMechanicName().equals(getMechanic())) return;
+                !event.getMinigame().getMechanicName().equals(getMechanicName())) return;
 
         Minigame mgm = event.getMinigame();
         TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
@@ -348,7 +348,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             if (cblock != null && cblock.getState() instanceof Chest && !cancelled) {
                 for (Minigame minigame : mdata.getAllMinigames().values()) {
                     if (minigame.getType() == MinigameType.GLOBAL &&
-                            minigame.getMechanicName().equalsIgnoreCase(getMechanic()) &&
+                            minigame.getMechanicName().equalsIgnoreCase(getMechanicName()) &&
                             minigame.getMinigameTimer() != null) {
                         TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
                         if (!thm.isTreasureFound() && thm.hasTreasureLocation()) {

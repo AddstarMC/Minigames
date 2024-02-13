@@ -25,7 +25,7 @@ import java.util.List;
 public class JuggernautMechanic extends GameMechanicBase {
 
     @Override
-    public String getMechanic() {
+    public String getMechanicName() {
         return "juggernaut";
     }
 

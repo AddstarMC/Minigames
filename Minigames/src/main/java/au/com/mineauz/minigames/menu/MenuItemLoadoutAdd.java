@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -22,6 +23,13 @@ import java.util.Map;
 public class MenuItemLoadoutAdd extends MenuItem {
     private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts;
     private @Nullable Minigame minigame = null;
+
+    public MenuItemLoadoutAdd(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Map<@NotNull String,
+            @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
+        super(displayMat, langKey);
+        this.loadouts = loadouts;
+        this.minigame = mgm;
+    }
 
     public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Map<@NotNull String,
             @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {

@@ -23,6 +23,10 @@ public class MenuItemCustom extends MenuItem {
         super(displayMat, name);
     }
 
+    public MenuItemCustom(@Nullable Material displayMat, @NotNull LangKey langKey) {
+        super(displayMat, langKey);
+    }
+
     public MenuItemCustom(@Nullable Material displayMat, @NotNull LangKey langKey,
                           @Nullable List<@NotNull Component> description) {
         super(displayMat, langKey, description);

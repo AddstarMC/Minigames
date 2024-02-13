@@ -23,10 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class LoadoutModule extends MinigameModule {
     private static final Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
@@ -170,8 +167,12 @@ public class LoadoutModule extends MinigameModule {
         extraLoadouts.remove(name);
     }
 
-    public Set<String> getLoadouts() {
+    public Set<String> getLoadoutNames() {
         return extraLoadouts.keySet();
+    }
+
+    public Set<PlayerLoadout> getLoadouts() {
+        return new HashSet<>(extraLoadouts.values());
     }
 
     public Map<String, PlayerLoadout> getLoadoutMap() {
@@ -233,7 +234,7 @@ public class LoadoutModule extends MinigameModule {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN);
                             } else {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_EQUIPPED,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
+                                        Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                                 loadout.equipLoadout(mgPlayer);
                             }
                             return null;

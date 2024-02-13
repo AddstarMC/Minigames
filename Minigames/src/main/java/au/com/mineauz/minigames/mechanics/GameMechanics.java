@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class GameMechanics {
-    private static final Map<String, GameMechanicBase> gameMechanics = new HashMap<>();
+    private static final Map<@NotNull String, @NotNull GameMechanicBase> gameMechanics = new HashMap<>();
 
     static {
         addGameMechanic(new CustomMechanic());
@@ -19,8 +19,8 @@ public class GameMechanics {
      *
      * @param mechanic A game mechanic extending GameMechanicBase
      */
-    public static void addGameMechanic(GameMechanicBase mechanic) {
-        gameMechanics.put(mechanic.getMechanic(), mechanic);
+    public static void addGameMechanic(@NotNull GameMechanicBase mechanic) {
+        gameMechanics.put(mechanic.getMechanicName(), mechanic);
     }
 
     /**
@@ -29,7 +29,7 @@ public class GameMechanics {
      * @param mechanic The name of the mechanic to be removed
      * @throws NullPointerException if the mechanic cannot be found.
      */
-    public static void removeGameMechanic(String mechanic) throws NullPointerException {
+    public static void removeGameMechanic(@NotNull String mechanic) {
         if (gameMechanics.containsKey(mechanic)) {
             HandlerList.unregisterAll(gameMechanics.get(mechanic));
             gameMechanics.remove(mechanic);
@@ -43,7 +43,7 @@ public class GameMechanics {
      * @param mechanic The name of the mechanic
      * @return A game mechanic extending GameMechanicBase or Null if none found.
      */
-    public static GameMechanicBase getGameMechanic(String mechanic) {
+    public static @Nullable GameMechanicBase getGameMechanic(@NotNull String mechanic) {
         if (gameMechanics.containsKey(mechanic)) {
             return gameMechanics.get(mechanic);
         }
@@ -89,7 +89,7 @@ public class GameMechanics {
 
         @Override
         public String toString() {
-            return mechanic.getMechanic();
+            return mechanic.getMechanicName();
         }
     }
 }

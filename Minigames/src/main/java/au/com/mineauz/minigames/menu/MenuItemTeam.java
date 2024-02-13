@@ -60,7 +60,7 @@ public class MenuItemTeam extends MenuItem {
     @Override
     public ItemStack onClick() {
         Menu menu = new Menu(3, getName(), getContainer().getViewer());
-        menu.addItem(new MenuItemString(Material.NAME_TAG, MgMenuLangKey.MENU_TEAM_DISPLAYNAME, new Callback<>() {
+        menu.addItem(new MenuItemString(Material.NAME_TAG, MgMenuLangKey.MENU_DISPLAYNAME_NAME, new Callback<>() {
 
             @Override
             public String getValue() {

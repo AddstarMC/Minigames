@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.objects;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -25,7 +27,8 @@ import java.util.Map;
 
 public final class ResourcePack implements ConfigurationSerializable {
     private static final String ext = "resourcepack";
-    private final Component name;
+    private final String name;
+    private final Component displayName;
     private final URL url;
     private final File local;
     private final String description;
@@ -42,7 +45,8 @@ public final class ResourcePack implements ConfigurationSerializable {
      */
     public ResourcePack(final Map<String, Object> input) {
         URL url1;
-        this.name = (String) input.get("name");
+        this.name = MiniMessage.miniMessage().stripTags((String) input.get("name"));
+        this.displayName = MiniMessage.miniMessage().deserialize((String) input.get("name"));
         this.description = (String) input.get("description");
         try {
             url1 = new URL((String) input.get("url"));
@@ -53,41 +57,42 @@ public final class ResourcePack implements ConfigurationSerializable {
         }
         this.url = url1;
         final Path path = ResourcePackManager.getResourceDir();
-        this.local = new File(path.toFile(), this.name + '.' + ext);
+        this.local = new File(path.toFile(), name + '.' + ext);
         this.validate();
     }
 
     /**
      * Instantiates a new Resource pack.
      *
-     * @param name the name
+     * @param displayName the name
      * @param url  the url
      */
-    public ResourcePack(final Component name, final @NotNull URL url) {
-        this(name, url, null);
+    public ResourcePack(final Component displayName, final @NotNull URL url) {
+        this(displayName, url, null);
     }
 
     /**
      * Instantiates a new Resource pack.
      *
-     * @param name the name
+     * @param displayName the name
      * @param url  the url
      * @param file the file
      */
-    public ResourcePack(final Component name, final @NotNull URL url, final File file) {
-        this(name, url, file, null);
+    public ResourcePack(final Component displayName, final @NotNull URL url, final File file) {
+        this(displayName, url, file, null);
     }
 
     /**
      * Instantiates a new Resource pack.
      *
-     * @param name        the name
+     * @param displayName        the name
      * @param url         the url
      * @param file        the file
      * @param description the description
      */
-    public ResourcePack(final Component name, final @NotNull URL url, final File file, final String description) {
-        this.name = name;
+    public ResourcePack(final Component displayName, final @NotNull URL url, final File file, final String description) {
+        this.name = PlainTextComponentSerializer.plainText().serialize(displayName);
+        this.displayName = displayName;
         final Path path = ResourcePackManager.getResourceDir();
         this.local = file != null ? file : new File(path.toFile(), name + '.' + ext);
         this.url = url;
@@ -140,7 +145,7 @@ public final class ResourcePack implements ConfigurationSerializable {
                         try (final FileInputStream fis = new FileInputStream(temp)) {
                             final byte[] has = this.getSH1Hash(fis);
                             if (Arrays.equals(has, this.hash)) {
-                                Minigames.getCmpnntLogger().info("Resource Pack: " + this.name + " passed external validation");
+                                Minigames.getCmpnntLogger().info(Component.text("Resource Pack: ").append(this.displayName).append(Component.text(" passed external validation")));
                                 this.valid = true;
                                 return;
                             }
@@ -238,8 +243,8 @@ public final class ResourcePack implements ConfigurationSerializable {
      *
      * @return the name
      */
-    public Component getName() {
-        return this.name;
+    public Component getDisplayName() {
+        return this.displayName;
     }
 
     /**
@@ -282,7 +287,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     @Override
     public @NotNull Map<String, Object> serialize() {
         final Map<String, Object> result = new HashMap<>();
-        result.put("name", this.name);
+        result.put("name", this.displayName);
         result.put("url", this.url.toString());
         result.put("description", this.description);
 

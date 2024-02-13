@@ -15,7 +15,7 @@ import java.util.List;
 public class CustomMechanic extends GameMechanicBase {
 
     @Override
-    public String getMechanic() {
+    public String getMechanicName() {
         return "custom";
     }
 

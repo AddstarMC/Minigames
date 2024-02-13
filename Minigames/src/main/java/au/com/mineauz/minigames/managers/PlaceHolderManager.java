@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -96,10 +97,10 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
                             return minigame.getState().name();
                         }
                         case "objective" -> {
-                            return minigame.getObjective();
+                            return minigame.getObjective() == null ? null : PlainTextComponentSerializer.plainText().serialize(minigame.getObjective());
                         }
                         case "gameType" -> {
-                            return minigame.getGameTypeName();
+                            return minigame.getGameTypeName() == null ? null : PlainTextComponentSerializer.plainText().serialize(minigame.getGameTypeName());
                         }
                         case "timeLeft" -> {
                             return Long.toString(minigame.getMinigameTimer().getTimeLeft());

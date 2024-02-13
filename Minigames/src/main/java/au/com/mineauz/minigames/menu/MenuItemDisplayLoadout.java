@@ -80,7 +80,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
                             Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName().toLowerCase())),
                     loadout.getUsePermissionsCallback()));
         }
-        MenuItemComponent disName = new MenuItemComponent(Material.PAPER, MgMenuLangKey.MENU_DISPLAYLOADOUT_DISPLAYNAME_NAME, loadout.getDisplayNameCallback());
+        MenuItemComponent disName = new MenuItemComponent(Material.PAPER, MgMenuLangKey.MENU_DISPLAYNAME_NAME, loadout.getDisplayNameCallback());
         disName.setAllowNull(true);
         menuItems.add(disName);
         menuItems.add(new MenuItemBoolean(Material.LEATHER_BOOTS,

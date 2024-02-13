@@ -36,6 +36,15 @@ public class MenuItemList<T> extends MenuItem {
         this(displayMat, name, null, value, options);
     }
 
+    public MenuItemList(@Nullable Material displayMat, @NotNull LangKey langKey,
+                        @Nullable List<@NotNull Component> description, @NotNull Callback<@NotNull T> value,
+                        @NotNull List<@NotNull T> options) {
+        super(displayMat, langKey, description);
+        this.value = value;
+        this.options = options;
+        updateDescription();
+    }
+
     public MenuItemList(@Nullable Material displayMat, @Nullable Component name,
                         @Nullable List<@NotNull Component> description, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {

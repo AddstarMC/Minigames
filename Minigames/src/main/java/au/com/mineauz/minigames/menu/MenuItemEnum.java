@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
@@ -38,8 +39,17 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
         updateDescription();
     }
 
+    public MenuItemEnum(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<T> callback,
+                        @NotNull Class<T> enumClass) {
+        super(displayMat, langKey);
+        this.callback = callback;
+        enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
+        baseDescription = Collections.emptyList();
+        updateDescription();
+    }
+
     protected final void updateDescription() {
-        List<String> valueDesc = getValueDescription(callback.getValue());
+        List<Component> valueDesc = getValueDescription(callback.getValue());
         super.setDescription(Lists.newArrayList(Iterators.concat(valueDesc.iterator(), baseDescription.iterator())));
     }
 

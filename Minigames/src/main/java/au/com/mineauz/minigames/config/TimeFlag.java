@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.config;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import net.kyori.adventure.text.Component;
@@ -39,11 +41,21 @@ public class TimeFlag extends Flag<Long> {
         return getMenuItem(displayMat, name, null, min, max);
     }
 
+    public MenuItemTime getMenuItem(@Nullable Material displayMat, @NotNull LangKey langKey,
+                                    @Nullable Long min, @Nullable Long max) {
+        return getMenuItem(displayMat, langKey, null, min, max);
+    }
+
     @Deprecated
     @Override
     public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                     @Nullable List<@NotNull Component> description) {
         return getMenuItem(displayMat, name, description, 0L, null);
+    }
+
+    public MenuItemTime getMenuItem(@Nullable Material displayMat, @NotNull LangKey langKey,
+                                    @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
+        return getMenuItem(displayMat, MinigameMessageManager.getMgMessage(langKey), description, min, max);
     }
 
     public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,

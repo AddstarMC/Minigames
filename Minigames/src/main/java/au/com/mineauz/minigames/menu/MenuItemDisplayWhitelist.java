@@ -15,14 +15,16 @@ public class MenuItemDisplayWhitelist extends MenuItem {
     private final @NotNull Callback<Boolean> whitelistMode;
     private final @NotNull List<@NotNull Component> modeDescription;
 
-    public MenuItemDisplayWhitelist(@Nullable Material displayMat, @Nullable Component name, @NotNull List<@NotNull Material> whitelist,
-                                    @NotNull Callback<Boolean> whitelistMode, @NotNull List<@NotNull Component> modeDescription) {
+    public MenuItemDisplayWhitelist(@Nullable Material displayMat, @Nullable Component name,
+                                    @NotNull List<@NotNull Material> whitelist, @NotNull Callback<Boolean> whitelistMode,
+                                    @NotNull List<@NotNull Component> modeDescription) {
         this(displayMat, name, null, whitelist, whitelistMode, modeDescription);
     }
 
     public MenuItemDisplayWhitelist(@Nullable Material displayMat, @Nullable Component name,
-                                    @Nullable List<@NotNull Component> mainDescription, @NotNull List<@NotNull Material> whitelist,
-                                    @NotNull Callback<Boolean> whitelistMode, @NotNull List<@NotNull Component> modeDescription) {
+                                    @Nullable List<@NotNull Component> mainDescription,
+                                    @NotNull List<@NotNull Material> whitelist, @NotNull Callback<Boolean> whitelistMode,
+                                    @NotNull List<@NotNull Component> modeDescription) {
         super(displayMat, name, mainDescription);
         this.whitelist = whitelist;
         this.whitelistMode = whitelistMode;

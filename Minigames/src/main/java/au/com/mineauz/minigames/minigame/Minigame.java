@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.minigame;
 import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
@@ -25,6 +27,7 @@ import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -42,15 +45,15 @@ public class Minigame implements ScriptObject {
     private final String name; //todo maybe component
     private final Map<String, Flag<?>> configFlags = new HashMap<>();
     private final ComponentFlag displayName = new ComponentFlag(null, "displayName");
-    private final StringFlag objective = new StringFlag(null, "objective");
-    private final StringFlag gameTypeName = new StringFlag(null, "gametypeName");
+    private final ComponentFlag objective = new ComponentFlag(null, "objective");
+    private final ComponentFlag gameTypeName = new ComponentFlag(null, "gametypeName");
     private final EnumFlag<MinigameType> type = new EnumFlag<>(MinigameType.SINGLEPLAYER, "type");
     private final BooleanFlag enabled = new BooleanFlag(false, "enabled");
     private final IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
     private final IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
     private final BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
     private final StrListFlag flags = new StrListFlag(null, "flags");
-    private final StringFlag degenType = new StringFlag("inward", "degentype");
+    private final EnumFlag<FloorDegenerator.DegeneratorType> degenType = new EnumFlag<>(FloorDegenerator.DegeneratorType.INWARD, "degentype");
     private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
     private final RegionFlag floorDegen = new RegionFlag(null, "sfloor", "sfloorpos.1", "sfloorpos.2");
     private final TimeFlag floorDegenTime = new TimeFlag(Minigames.getPlugin().getConfig().getLong("multiplayer.floordegenerator.time"), "floordegentime");
@@ -424,11 +427,11 @@ public class Minigame implements ScriptObject {
         floorDegen.setFlag(null);
     }
 
-    public String getDegenType() {
+    public FloorDegenerator.DegeneratorType getDegenType() {
         return degenType.getFlag();
     }
 
-    public void setDegenType(String degenType) {
+    public void setDegenType(FloorDegenerator.DegeneratorType degenType) {
         this.degenType.setFlag(degenType);
     }
 
@@ -730,7 +733,7 @@ public class Minigame implements ScriptObject {
     }
 
     public void setMechanic(@NotNull GameMechanicBase gameMechanicBase) {
-        this.mechanic.setFlag(gameMechanicBase.getMechanic());
+        this.mechanic.setFlag(gameMechanicBase.getMechanicName());
     }
 
     public boolean isFlagCarrier(@Nullable MinigamePlayer mgPlayer) {
@@ -994,19 +997,19 @@ public class Minigame implements ScriptObject {
         return sbManager;
     }
 
-    public String getObjective() {
+    public Component getObjective() {
         return objective.getFlag();
     }
 
-    public void setObjective(String objective) {
+    public void setObjective(Component objective) {
         this.objective.setFlag(objective);
     }
 
-    public @Nullable String getGameTypeName() {
+    public @Nullable Component getGameTypeName() {
         return gameTypeName.getFlag();
     }
 
-    public void setGameTypeName(@Nullable String gameTypeName) {
+    public void setGameTypeName(@Nullable Component gameTypeName) {
         this.gameTypeName.setFlag(gameTypeName);
     }
 
@@ -1048,185 +1051,302 @@ public class Minigame implements ScriptObject {
         return settings;
     }
 
+    private record TypeDependentDisplayData(@NotNull MenuItem menuItem,
+                                            @NotNull List<@NotNull MinigameType> applicableTypes, int slot) {
+    }
+
     public void displayMenu(MinigamePlayer player) {
-        Menu main = new Menu(6, getDisplayName(), player);
+        Menu mainMenu = new Menu(6, getDisplayName(), player);
         Menu playerMenu = new Menu(6, getDisplayName(), player);
         Menu loadouts = new Menu(6, getDisplayName(), player);
         Menu flags = new Menu(6, getDisplayName(), player);
         Menu lobby = new Menu(6, getDisplayName(), player);
 
-        List<MenuItem> itemsMain = new ArrayList<>();
-        itemsMain.add(enabled.getMenuItem("Enabled", Material.PAPER));
-        itemsMain.add(usePermissions.getMenuItem("Use Permissions", Material.PAPER));
-        itemsMain.add(type.getMenuItem("Game Type", Material.PAPER));
+        mainMenu.addItem(enabled.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME), 0);
+        mainMenu.addItem(usePermissions.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_USEPERNS_NAME), 1);
+
+        List<TypeDependentDisplayData> typeDependentDisplayData = new ArrayList<>();
+        mainMenu.addItem(new MenuItemEnum<>(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_TYPE_NAME, new Callback<>() {
+
+            @Override
+            public MinigameType getValue() {
+                return type.getFlag();
+            }
+
+            @Override
+            public void setValue(MinigameType value) {
+                type.setFlag(value);
+
+                for (TypeDependentDisplayData data : typeDependentDisplayData) {
+                    if (!data.applicableTypes.contains(value)) {
+                        mainMenu.removeItem(data.slot);
+                    } else {
+                        mainMenu.addItem(data.menuItem, data.slot);
+                    }
+                }
+            }
+        }, MinigameType.class), 2);
+
         List<String> scoreTypes = new ArrayList<>();
         for (GameMechanicBase val : GameMechanics.getGameMechanics()) {
-            scoreTypes.add(WordUtils.capitalize(val.getMechanic()));
+            scoreTypes.add(WordUtils.capitalizeFully(val.getMechanicName()));
         }
-        itemsMain.add(new MenuItemList<>("Game Mechanic", List.of("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<>() {
+        final MenuItemList<String> mechanicMenuItem = new MenuItemList<>(Material.ROTTEN_FLESH,
+                MgMenuLangKey.MENU_MINIGAME_MECHANIC_NAME, new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(mechanic.getFlag());
+                return WordUtils.capitalizeFully(mechanic.getFlag());
             }
 
             @Override
             public void setValue(String value) {
                 mechanic.setFlag(value.toLowerCase());
             }
+        }, scoreTypes);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(mechanicMenuItem, List.of(MinigameType.MULTIPLAYER), 3));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(mechanicMenuItem, 3);
+        }
 
-        }, scoreTypes));
-        final MenuItemCustom mechSettings = new MenuItemCustom(Material.PAPER, "Game Mechanic Settings");
+        final MenuItemCustom mechSettings = new MenuItemCustom(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_MECHANIC_SETTINGS_NAME);
         final Minigame mgm = this;
-        final Menu fmain = main;
+        final Menu fmain = mainMenu;
         mechSettings.setClick(() -> {
             if (getMechanic().displaySettings(mgm) != null &&
                     getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
                 return null;
             return mechSettings.getItem();
         });
-        itemsMain.add(mechSettings);
-        MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
-        obj.setAllowNull(true);
-        itemsMain.add(obj);
-        obj = (MenuItemString) gameTypeName.getMenuItem("Gametype Description", Material.OAK_SIGN);
-        obj.setAllowNull(true);
-        itemsMain.add(obj);
-        obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.OAK_SIGN);
-        obj.setAllowNull(true);
-        itemsMain.add(obj);
-        itemsMain.add(new MenuItemNewLine());
-        itemsMain.add(minScore.getMenuItem(Material.STONE_SLAB, "Min. Score", List.of("Multiplayer Only")));
-        itemsMain.add(maxScore.getMenuItem(Material.STONE, "Max. Score", List.of("Multiplayer Only")));
-        itemsMain.add(minPlayers.getMenuItem(Material.STONE_SLAB, "Min. Players", List.of("Multiplayer Only")));
-        itemsMain.add(maxPlayers.getMenuItem(Material.STONE, "Max. Players", List.of("Multiplayer Only")));
-        itemsMain.add(spMaxPlayers.getMenuItem("Enable Singleplayer Max Players", Material.IRON_BARS));
-        itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.OAK_SIGN));
-        itemsMain.add(new MenuItemPage("Lobby Settings", List.of("Multiplayer Only"), Material.OAK_DOOR, lobby));
-        itemsMain.add(new MenuItemNewLine());
-        itemsMain.add(timer.getMenuItem(List.of("Multiplayer Only"), "Time Length", Material.CLOCK, 0, null));
-        itemsMain.add(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
-        itemsMain.add(startWaitTime.getMenuItem(List.of("Multiplayer Only"), "Start Wait Time", Material.CLOCK, 3, null));
-        itemsMain.add(showCompletionTime.getMenuItem("Show completion time", Material.PAPER));
-        itemsMain.add(lateJoin.getMenuItem(Material.DEAD_BUSH, "Allow Late Join", List.of("Multiplayer Only")));
-        itemsMain.add(randomizeStart.getMenuItem(Material.LIGHT_BLUE_GLAZED_TERRACOTTA, "Randomize Start Point", List.of("The location will be", "chosen at random", "from global or team lists.")));
-        itemsMain.add(new MenuItemDisplayWhitelist(Material.CHEST, "Block Whitelist/Blacklist", List.of("Blocks that can/can't", "be broken"),
-                getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(), List.of("If whitelist mode only", "added items can be", "broken.")));
-        itemsMain.add(new MenuItemNewLine());
-        List<String> floorDegenDes = new ArrayList<>();
-        floorDegenDes.add("Mainly used to prevent");
-        floorDegenDes.add("islanding in spleef Minigames.");
-        List<String> floorDegenOpt = new ArrayList<>();
-        floorDegenOpt.add("Inward");
-        floorDegenOpt.add("Circle");
-        floorDegenOpt.add("Random");
-        itemsMain.add(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, new Callback<>() {
+        typeDependentDisplayData.add(new TypeDependentDisplayData(mechSettings, List.of(MinigameType.MULTIPLAYER), 4));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(mechSettings, 4);
+        }
+
+        MenuItemComponent cmpntItem = (MenuItemComponent) objective.getMenuItem(Material.DIAMOND,
+                MgMenuLangKey.MENU_MINIGAME_OBJECTIVEDESCRIPTION_NAME);
+        cmpntItem.setAllowNull(true);
+        mainMenu.addItem(cmpntItem, 5);
+
+        cmpntItem = (MenuItemComponent) gameTypeName.getMenuItem(Material.WRITTEN_BOOK, MgMenuLangKey.MENU_MINIGAME_TYPEDESCRIPTION_NAME);
+        cmpntItem.setAllowNull(true);
+        mainMenu.addItem(cmpntItem, 6);
+
+        cmpntItem = (MenuItemComponent) displayName.getMenuItem(Material.OAK_SIGN, MgMenuLangKey.MENU_DISPLAYNAME_NAME);
+        cmpntItem.setAllowNull(true);
+        mainMenu.addItem(cmpntItem, 7);
+
+        mainMenu.addItem(new MenuItemNewLine(), 8);
+
+        final MenuItem scoreMinMenuItem = minScore.getMenuItem(Material.STONE_SLAB, MgMenuLangKey.MENU_MINIGAME_SCORE_MIN_NAME);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(scoreMinMenuItem, List.of(MinigameType.MULTIPLAYER), 9));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(scoreMinMenuItem, 9);
+        }
+
+        final MenuItem scoreMaxMenuItem = maxScore.getMenuItem(Material.STONE, MgMenuLangKey.MENU_MINIGAME_SCORE_MAX_NAME);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(scoreMaxMenuItem, List.of(MinigameType.MULTIPLAYER), 10));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(scoreMaxMenuItem, 10);
+        }
+
+        final MenuItem minPlayersMenuItem = minPlayers.getMenuItem(Material.STONE_SLAB, MgMenuLangKey.MENU_MINIGAME_PLAYERS_MIN_NAME);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(minPlayersMenuItem, List.of(MinigameType.MULTIPLAYER), 11));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(minPlayersMenuItem, 11);
+        }
+
+        final MenuItem maxPlayersMenuItem = maxPlayers.getMenuItem(Material.STONE, MgMenuLangKey.MENU_MINIGAME_PLAYERS_MAX_NAME);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(maxPlayersMenuItem, List.of(MinigameType.MULTIPLAYER), 12));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(maxPlayersMenuItem, 12);
+        }
+
+        final MenuItemBoolean SinglePlayerAmountCappedMenuItem = spMaxPlayers.getMenuItem(Material.IRON_BARS,
+                MgMenuLangKey.MENU_MINIGAME_PLAYERS_SINGLEPLAYER_CAPPED_NAME);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(maxPlayersMenuItem, List.of(MinigameType.SINGLEPLAYER), 13));
+        if (type.getFlag() == MinigameType.SINGLEPLAYER) {
+            mainMenu.addItem(SinglePlayerAmountCappedMenuItem, 13);
+        }
+
+        mainMenu.addItem(displayScoreboard.getMenuItem(Material.OAK_SIGN, MgMenuLangKey.MENU_MINIGAME_SCOREBOARD_DISPLAY_NAME), 14);
+
+        final MenuItemPage lobbySettingsMenuItemPage = new MenuItemPage(Material.OAK_DOOR, MgMenuLangKey.MENU_MINIGAME_LOBBY_SETTINGS_NAME, lobby);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(lobbySettingsMenuItemPage, List.of(MinigameType.MULTIPLAYER), 14));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(lobbySettingsMenuItemPage, 14);
+        }
+
+        mainMenu.addItem(new MenuItemNewLine(), 15);
+
+        final MenuItemTime gamLengthMenuItem = timer.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_TIME_GAMELENGTH_NAME, 0L, null);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(gamLengthMenuItem, List.of(MinigameType.MULTIPLAYER), 18));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(gamLengthMenuItem, 18);
+        }
+
+        mainMenu.addItem(useXPBarTimer.getMenuItem(Material.ENDER_PEARL, "Use XP bar as Timer"), 19); //todo fixed in later commit
+
+        final MenuItemTime startWaitTimeMenuItem = startWaitTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_TIME_STARTWAIT_NAME, 3L, null);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(startWaitTimeMenuItem, List.of(MinigameType.MULTIPLAYER), 19));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(startWaitTimeMenuItem, 19);
+        }
+
+        mainMenu.addItem(showCompletionTime.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_TIME_SHOWCOMPLETION_NAME), 20);
+
+        final MenuItem allowLateJoinMenuItem = lateJoin.getMenuItem(Material.DEAD_BUSH, MgMenuLangKey.MENU_MINIGAME_ALLOWLATEJOIN_NAME);
+        typeDependentDisplayData.add(new TypeDependentDisplayData(allowLateJoinMenuItem, List.of(MinigameType.MULTIPLAYER), 21));
+        if (type.getFlag() == MinigameType.MULTIPLAYER) {
+            mainMenu.addItem(allowLateJoinMenuItem, 21);
+        }
+
+        mainMenu.addItem(randomizeStart.getMenuItem(Material.LIGHT_BLUE_GLAZED_TERRACOTTA, MgMenuLangKey.MENU_MINIGAME_STARTPOINT_RANDOMIZE_NAME,
+                MgMenuLangKey.MENU_MINIGAME_STARTPOINT_RANDOMIZE_DESCRIPTION), 22);
+
+        mainMenu.addItem(new MenuItemDisplayWhitelist(Material.CHEST,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME), // Block Whitelist/Blacklist
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_MAIN),
+                getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(),
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_SECOND)), 23);
+
+        mainMenu.addItem(new MenuItemNewLine(), 24);
+
+        // double pack, since the type shows / hides random chance percent
+        final MenuItemInteger randomFloorDegenChanceMenuItem = degenRandomChance.getMenuItem(Material.SNOW,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_NAME),
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_DESCRIPTION), 1, 100);
+        mainMenu.addItem(new MenuItemList<>(Material.SNOW_BLOCK, MgMenuLangKey.MENU_MINIGAME_DEGEN_TYPE_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_TYPE_DESCRIPTION), new Callback<>() {
 
             @Override
-            public String getValue() {
-                return WordUtils.capitalize(degenType.getFlag());
+            public FloorDegenerator.DegeneratorType getValue() {
+                return degenType.getFlag();
             }
 
             @Override
-            public void setValue(String value) {
-                degenType.setFlag(value.toLowerCase());
+            public void setValue(FloorDegenerator.DegeneratorType value) {
+                degenType.setFlag(value);
+
+                if (value == FloorDegenerator.DegeneratorType.RANDOM) {
+                    mainMenu.addItem(randomFloorDegenChanceMenuItem, 28);
+                } else {
+                    mainMenu.removeItem(28);
+                }
             }
 
-        }, floorDegenOpt));
-        List<String> degenRandDes = new ArrayList<>();
-        degenRandDes.add("Chance of block being");
-        degenRandDes.add("removed on random");
-        degenRandDes.add("degeneration.");
-        itemsMain.add(degenRandomChance.getMenuItem(Material.SNOW, "Random Floor Degen Chance", degenRandDes, 1, 100));
-        itemsMain.add(floorDegenTime.getMenuItem(Material.CLOCK, "Floor Degenerator Delay", 1L, null));
-        itemsMain.add(regenDelay.getMenuItem(List.of("Time in seconds before", "Minigame regeneration starts"), "Regeneration Delay",
-                Material.CLOCK, 0, null));
-        itemsMain.add(new MenuItemNewLine());
-        itemsMain.add(new MenuItemPage("Player Settings", Material.SKELETON_SKULL, playerMenu));
-//      List<String> thDes = new ArrayList<>();
-//        thDes.add("Treasure hunt related");
-//        thDes.add("settings.");
-//        itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
+        }, List.of(FloorDegenerator.DegeneratorType.values())), 27);
+        if (degenType.getFlag() == FloorDegenerator.DegeneratorType.RANDOM) {
+            mainMenu.addItem(randomFloorDegenChanceMenuItem, 28);
+        }
+
+        mainMenu.addItem(floorDegenTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_DEGEN_DELAY_NAME, 1L, null));
+
+
+        mainMenu.addItem(regenDelay.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_REGENDELAY_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_REGENDELAY_DESCRIPTION), 0L, null));
+
+        mainMenu.addItem(new MenuItemNewLine());
+
+        mainMenu.addItem(new MenuItemPage(Material.SKELETON_SKULL, MgMenuLangKey.MENU_PLAYERSETTINGS_NAME, playerMenu));
+
+//        List<String> thDes = new ArrayList<>();
+//        thDes.add("Treasure hunt related<newline>settings.");
+//        itemsMain.add(new MenuItemPage(Material.CHEST, "Treasure Hunt Settings", thDes, treasureHunt));
 //        MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
 //        defLoad.setAllowDelete(false);
 //        itemsMain.add(defLoad);
-        itemsMain.add(new MenuItemPage("Loadouts", Material.CHEST, loadouts));
-        itemsMain.add(canSpectateFly.getMenuItem("Allow Spectator Fly", Material.FEATHER));
-        List<String> rndChstDes = new ArrayList<>();
-        rndChstDes.add("Randomize items in");
-        rndChstDes.add("chest upon first opening");
-        itemsMain.add(randomizeChests.getMenuItem(Material.CHEST, "Randomize Chests", rndChstDes));
-        rndChstDes.clear();
-        rndChstDes.add("Min. item randomization");
-        itemsMain.add(minChestRandom.getMenuItem(Material.OAK_STAIRS, "Min. Chest Random", rndChstDes, 0, null));
-        rndChstDes.clear();
-        rndChstDes.add("Max. item randomization");
-        itemsMain.add(maxChestRandom.getMenuItem(Material.STONE, "Max. Chest Random", rndChstDes, 0, null));
-        itemsMain.add(new MenuItemStatisticsSettings(Material.WRITABLE_BOOK, "Stat Settings", this));
-        itemsMain.add(new MenuItemNewLine());
+
+        mainMenu.addItem(new MenuItemPage(Material.CHEST, MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadouts));
+
+        mainMenu.addItem(canSpectateFly.getMenuItem(Material.FEATHER, MgMenuLangKey.MENU_MINIGAME_ALLOWSPECTATORFLY_NAME));
+
+        mainMenu.addItem(randomizeChests.getMenuItem(Material.CHEST, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_NAME,
+                MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_DESCRIPTION));
+
+        mainMenu.addItem(minChestRandom.getMenuItem(Material.OAK_STAIRS, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MIN_NAME,
+                MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MIN_DESCRIPTION, 0, null));
+
+        mainMenu.addItem(maxChestRandom.getMenuItem(Material.STONE, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MAX_NAME,
+                MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MAX_DESCRIPTION, 0, null));
+
+        mainMenu.addItem(new MenuItemStatisticsSettings(Material.WRITABLE_BOOK, MgMenuLangKey.MENU_MINIGAME_STATISTIC_NAME, this));
+
+        mainMenu.addItem(new MenuItemNewLine());
+
+        mainMenu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), getDisplayName())),
+                this), mainMenu.getSize() - 1);
 
         //--------------//
         //Loadout Settings
         //--------------//
         List<MenuItem> mi = new ArrayList<>();
-        List<Component> des = new ArrayList<>();
-        des.add("Shift + Right Click to Delete");
-
 
         LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(this);
         if (loadoutModule != null) {
-            for (String ld : loadoutModule.getLoadouts()) {
+
+            for (PlayerLoadout playerLoadout : loadoutModule.getLoadouts()) {
                 Material material = Material.GLASS_PANE;
-                PlayerLoadout playerLoadout = loadoutModule.getLoadout(ld);
 
                 if (!playerLoadout.getItemSlots().isEmpty()) {
                     material = playerLoadout.getItem((Integer) playerLoadout.getItemSlots().toArray()[0]).getType();
                 }
                 if (playerLoadout.isDeleteable()) {
-                    mi.add(new MenuItemDisplayLoadout(material, ld, des, playerLoadout, this));
+                    mi.add(new MenuItemDisplayLoadout(material, playerLoadout.getDisplayName(),
+                            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), playerLoadout, this));
                 } else {
-                    mi.add(new MenuItemDisplayLoadout(ld, material, playerLoadout, this));
+                    mi.add(new MenuItemDisplayLoadout(material, playerLoadout.getDisplayName(), playerLoadout, this));
                 }
             }
 
-            loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", MenuUtility.getCreateMaterial(), loadoutModule.getLoadoutMap(), this), 53);
-            loadouts.addItem(new MenuItemBack(main), loadouts.getSize() - 9);
+            loadouts.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+                    loadoutModule.getLoadoutMap(), this), 53);
+            loadouts.addItem(new MenuItemBack(mainMenu), loadouts.getSize() - 9);
             loadouts.addItems(mi);
         }
-
-        main.addItems(itemsMain);
-        main.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(), "Save " + getDisplayName(), this), main.getSize() - 1);
 
         //----------------------//
         //Minigame Player Settings
         //----------------------//
         List<MenuItem> itemsPlayer = new ArrayList<>(20);
-        itemsPlayer.add(defaultGamemode.getMenuItem("Players Gamemode", Material.CRAFTING_TABLE));
-        itemsPlayer.add(allowEnderPearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
-        itemsPlayer.add(itemDrops.getMenuItem("Allow Item Drops", Material.DIAMOND_SWORD));
-        itemsPlayer.add(deathDrops.getMenuItem("Allow Death Drops", Material.SKELETON_SKULL));
-        itemsPlayer.add(itemPickup.getMenuItem("Allow Item Pickup", Material.DIAMOND));
-        itemsPlayer.add(blockBreak.getMenuItem("Allow Block Break", Material.DIAMOND_PICKAXE));
-        itemsPlayer.add(blockPlace.getMenuItem("Allow Block Place", Material.STONE));
-        itemsPlayer.add(blocksDrop.getMenuItem("Allow Block Drops", Material.COBBLESTONE));
-        itemsPlayer.add(lives.getMenuItem(Material.APPLE, "Lives", null));
-        itemsPlayer.add(paintBallMode.getMenuItem("Paintball Mode", Material.SNOWBALL));
-        itemsPlayer.add(paintBallDamage.getMenuItem(Material.ARROW, "Paintball Damage", 1, null));
-        itemsPlayer.add(unlimitedAmmo.getMenuItem("Unlimited Ammo", Material.SNOW_BLOCK));
-        itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.OAK_SIGN));
-        itemsPlayer.add(saveCheckpoints.getMenuItem(Material.OAK_SIGN, "Save Checkpoints", List.of("Singleplayer Only")));
-        itemsPlayer.add(new MenuItemPage("Flags", List.of("Singleplayer flags"), Material.OAK_SIGN, flags));
-        itemsPlayer.add(allowFlight.getMenuItem(Material.FEATHER, "Allow Flight", List.of("Allow flight to", "be toggled")));
-        itemsPlayer.add(enableFlight.getMenuItem(Material.FEATHER, "Enable Flight", List.of("Start players", "in flight", "(Must have Allow", "Flight)")));
-        itemsPlayer.add(allowDragonEggTeleport.getMenuItem("Allow Dragon Egg Teleport", Material.DRAGON_EGG));
-        itemsPlayer.add(usePlayerDisplayNames.getMenuItem(Material.POTATO, "Use Players Display Names", List.of("Use Player Nicks or Real Names")));
-        itemsPlayer.add(showPlayerBroadcasts.getMenuItem(Material.PAPER, "Show Join/Exit Broadcasts", List.of("Show Join and Exit broadcasts", "Plus other Player broadcasts")));
-        itemsPlayer.add(showCTFBroadcasts.getMenuItem(Material.PAPER, "Show CTF Broadcasts", List.of("Show Flag captures and home returns")));
-        itemsPlayer.add(keepInventory.getMenuItem("Keep Inventory", Material.ZOMBIE_HEAD));
-        itemsPlayer.add(friendlyFireSplashPotions.getMenuItem("Allow friendly fire with splash potions", Material.SPLASH_POTION));
-        itemsPlayer.add(friendlyFireLingeringPotions.getMenuItem("Allow friendly fire with lingering potions", Material.LINGERING_POTION));
+        itemsPlayer.add(defaultGamemode.getMenuItem(Material.CRAFTING_TABLE, MgMenuLangKey.MENU_PLAYERSETTINGS_GAMEMODE_NAME));
+        itemsPlayer.add(allowEnderPearls.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_PLAYERSETTINGS_ENDERPERLS_NAME));
+        itemsPlayer.add(itemDrops.getMenuItem(Material.DIAMOND_SWORD, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_ITEM_NAME));
+        itemsPlayer.add(deathDrops.getMenuItem(Material.SKELETON_SKULL, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_DEATH_NAME));
+        itemsPlayer.add(itemPickup.getMenuItem(Material.DIAMOND, MgMenuLangKey.MENU_PLAYERSETTINGS_ITEMPICKUP_NAME));
+        itemsPlayer.add(blockBreak.getMenuItem(Material.DIAMOND_PICKAXE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_BREAK_NAME));
+        itemsPlayer.add(blockPlace.getMenuItem(Material.STONE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_PLACE_NAME));
+        itemsPlayer.add(blocksDrop.getMenuItem(Material.COBBLESTONE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_DROPS_NAME));
+        itemsPlayer.add(lives.getMenuItem(Material.APPLE, MgMenuLangKey.MENU_PLAYERSETTINGS_LIVES_NAME));
+        itemsPlayer.add(paintBallMode.getMenuItem(Material.SNOWBALL, MgMenuLangKey.MENU_PLAYERSETTINGS_PAINTBALL_MODE_NAME));
+        itemsPlayer.add(paintBallDamage.getMenuItem(Material.ARROW, MgMenuLangKey.MENU_PLAYERSETTINGS_PAINTBALL_DAMAGE_NAME, 1, null));
+        itemsPlayer.add(unlimitedAmmo.getMenuItem(Material.SNOW_BLOCK, MgMenuLangKey.MENU_PLAYERSETTINGS_UNLIMITEDAMMO_NAME));
+        itemsPlayer.add(allowMPCheckpoints.getMenuItem(Material.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_CHECKPOINT_MULTIPLAYER_NAME,
+                MgMenuLangKey.MENU_MINIGAME_MULTIPLAYERONLY_DESCRIPTION)); // todo hide if not multiplayer
+        itemsPlayer.add(saveCheckpoints.getMenuItem(Material.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_CHECKPOINT_SAVE_NAME,
+                MgMenuLangKey.MENU_MINIGAME_SINGLEPLAYERONLY_DESCRIPTION)); // todo hide if not SinglePlayer
+        itemsPlayer.add(new MenuItemPage(Material.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_SINGLEPLAYERFLAG_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_SINGLEPLAYERONLY_DESCRIPTION), flags)); // todo hide if not SinglePlayer
+        itemsPlayer.add(allowFlight.getMenuItem(Material.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME,
+                MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_DESCRIPTION));
+        itemsPlayer.add(enableFlight.getMenuItem(Material.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_NAME,
+                MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_DESCRIPTION));
+        itemsPlayer.add(allowDragonEggTeleport.getMenuItem(Material.DRAGON_EGG, MgMenuLangKey.MENU_PLAYERSETTINGS_DRAGONEGGTELEPORT_NAME));
+        itemsPlayer.add(usePlayerDisplayNames.getMenuItem(Material.POTATO, MgMenuLangKey.MENU_PLAYERSETTINGS_DISPLAYNAMES_NAME,
+                MgMenuLangKey.MENU_PLAYERSETTINGS_DISPLAYNAMES_DESCRIPTION));
+        itemsPlayer.add(showPlayerBroadcasts.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_JOINEXIT_NAME,
+                MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_JOINEXIT_DESCRIPTION)); // todo hide if not multiplayer
+        itemsPlayer.add(showCTFBroadcasts.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_CTF_NAME,
+                MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_CTF_DESCRIPTION)); //todo hide if not ctf
+        itemsPlayer.add(keepInventory.getMenuItem(Material.ZOMBIE_HEAD, MgMenuLangKey.MENU_PLAYERSETTINGS_KEEPINVENTORY_NAME));
+        itemsPlayer.add(friendlyFireSplashPotions.getMenuItem(Material.SPLASH_POTION,
+                MgMenuLangKey.MENU_PLAYERSETTINGS_FRIENDLYFIRE_SPLASH_NAME)); // todo hide if not multiplayer
+        itemsPlayer.add(friendlyFireLingeringPotions.getMenuItem(Material.LINGERING_POTION,
+                MgMenuLangKey.MENU_PLAYERSETTINGS_FRIENDLYFIRE_LINGERING_NAME)); // todo hide if not multiplayer
         playerMenu.addItems(itemsPlayer);
-        playerMenu.addItem(new MenuItemBack(main), main.getSize() - 9);
+        playerMenu.addItem(new MenuItemBack(mainMenu), mainMenu.getSize() - 9);
 
         //--------------//
         //Minigame Flags//
@@ -1246,25 +1366,33 @@ public class Minigame implements ScriptObject {
         LobbySettingsModule lobbySettingsModule = LobbySettingsModule.getMinigameModule(this);
         if (lobbySettingsModule != null) {
             List<MenuItem> itemsLobby = new ArrayList<>(4);
-            itemsLobby.add(new MenuItemBoolean(Material.STONE_BUTTON, "Can Interact on Player Wait", lobbySettingsModule.getCanInteractPlayerWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.STONE_BUTTON, "Can Interact on Start Wait", lobbySettingsModule.getCanInteractStartWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.ICE, "Can Move on Player Wait", lobbySettingsModule.getCanMovePlayerWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.ICE, "Can Move on Start Wait", lobbySettingsModule.getCanMoveStartWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.ENDER_PEARL, "Teleport After Player Wait", List.of("Should players be teleported", "after player wait time?"),
+
+            itemsLobby.add(new MenuItemBoolean(Material.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_INTERACT_NAME,
+                    lobbySettingsModule.getCanInteractPlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_START_INTERACT_NAME,
+                    lobbySettingsModule.getCanInteractStartWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_MOVE_NAME,
+                    lobbySettingsModule.getCanMovePlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_START_MOVE_NAME,
+                    lobbySettingsModule.getCanMoveStartWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(Material.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_NAME,
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_DESCRIPTION),
                     lobbySettingsModule.getTeleportOnPlayerWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.ENDER_PEARL, "Teleport on Start", List.of("Should players teleport", "to the start position", "after lobby?"),
+            itemsLobby.add(new MenuItemBoolean(Material.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_NAME,
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_DESCRIPTION),
                     lobbySettingsModule.getTeleportOnStartCallback()));
-            itemsLobby.add(new MenuItemTime(Material.CLOCK, "Waiting for Players Time", List.of("The time in seconds", "the game will wait for", "more players to join.", "A value of 0 will use", "the config setting"),
-                    lobbySettingsModule.getPlayerWaitTimeCallback(), 0, Long.MAX_VALUE));
+            itemsLobby.add(new MenuItemTime(Material.CLOCK, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_NAME,
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
+                    lobbySettingsModule.getPlayerWaitTimeCallback(), 0L, Long.MAX_VALUE));
             lobby.addItems(itemsLobby);
-            lobby.addItem(new MenuItemBack(main), lobby.getSize() - 9);
+            lobby.addItem(new MenuItemBack(mainMenu), lobby.getSize() - 9);
         }
 
         for (MinigameModule mod : getModules()) {
-            mod.addEditMenuOptions(main);
+            mod.addEditMenuOptions(mainMenu);
         }
-        main.displayMenu(player);
 
+        mainMenu.displayMenu(player);
     }
 
     @NotNull

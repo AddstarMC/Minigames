@@ -1,8 +1,7 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.menu.MenuItemComponent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,17 +32,17 @@ public class ComponentFlag extends Flag<Component> {
     }
 
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemComponent getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
-        return new MenuItemString(displayMat, name, description, new Callback<>() {
+        return new MenuItemComponent(displayMat, name, description, new Callback<>() {
 
             @Override
-            public String getValue() {
+            public Component getValue() {
                 return getFlag();
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(Component value) {
                 setFlag(value);
             }
         });

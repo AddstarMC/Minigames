@@ -34,7 +34,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
                 Placeholder.component(MinigamePlaceHolderKey.STAT.getKey(), stat.getDisplayName())), getContainer().getViewer());
 
         subMenu.addItem(new MenuItemComponent(Material.NAME_TAG,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_DISPLAYNAME), new Callback<>() {
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DISPLAYNAME_NAME), new Callback<>() {
             @Override
             public Component getValue() {
                 return minigame.getSettings(stat).getDisplayName();

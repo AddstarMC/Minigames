@@ -77,8 +77,8 @@ public class MenuItemPotionAdd extends MenuItem {
                         des.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
 
                         PotionEffect peff = new PotionEffect(eff, dur.intValue(), level);
-                        for (int slot : getContainer().getSlotMap()) {
-                            if (getContainer().getClicked(slot) instanceof MenuItemPotion pot) {
+                        for (int slot : getContainer().getUsedSlots()) {
+                            if (getContainer().getMenuItem(slot) instanceof MenuItemPotion pot) {
                                 if (pot.getEffect().getType() == peff.getType()) {
                                     pot.onShiftRightClick();
                                     break;

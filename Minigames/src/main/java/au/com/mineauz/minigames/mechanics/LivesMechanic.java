@@ -20,7 +20,7 @@ import java.util.List;
 public class LivesMechanic extends GameMechanicBase {
 
     @Override
-    public String getMechanic() {
+    public String getMechanicName() {
         return "lives";
     }
 
@@ -72,7 +72,7 @@ public class LivesMechanic extends GameMechanicBase {
 
     @EventHandler
     private void minigameStart(StartMinigameEvent event) {
-        if (event.getMinigame().getMechanicName().equals(getMechanic())) {
+        if (event.getMinigame().getMechanicName().equals(getMechanicName())) {
             final List<MinigamePlayer> players = event.getPlayers();
             final Minigame minigame = event.getMinigame();
             for (MinigamePlayer player : players) {
@@ -91,7 +91,7 @@ public class LivesMechanic extends GameMechanicBase {
     @EventHandler
     private void playerDeath(PlayerDeathEvent event) {
         MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getEntity());
-        if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getMechanicName().equals(getMechanic())) {
+        if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getMechanicName().equals(getMechanicName())) {
             mgPlayer.addScore(-1);
             mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
         }

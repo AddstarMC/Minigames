@@ -30,7 +30,7 @@ import java.util.List;
 public class InfectionMechanic extends GameMechanicBase {
 
     @Override
-    public String getMechanic() {
+    public String getMechanicName() {
         return "infection";
     }
 

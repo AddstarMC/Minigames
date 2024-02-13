@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,6 +17,11 @@ public class MenuItemTime extends MenuItemLong {
     public MenuItemTime(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Long> value,
                         @Nullable Long min, @Nullable Long max) {
         super(displayMat, name, value, min, max);
+    }
+
+    public MenuItemTime(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<@NotNull Component> description,
+                        @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
+        super(displayMat, langKey, description, value, min, max);
     }
 
     public MenuItemTime(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description,
