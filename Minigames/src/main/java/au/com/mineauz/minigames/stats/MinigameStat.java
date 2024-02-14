@@ -1,15 +1,23 @@
 package au.com.mineauz.minigames.stats;
 
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 public abstract class MinigameStat {
-    private final String name;
-    private final StatFormat format;
-    private Component displayName;
+    private final @NotNull String name;
+    private final @NotNull StatFormat format;
+    private @Nullable Component displayName;
 
-    MinigameStat(String name, StatFormat format) {
+    MinigameStat(@NotNull String name, @Nullable Component displayName, @NotNull StatFormat format) {
+        this.displayName = displayName;
+        this.name = name;
+        this.format = format;
+    }
+
+    MinigameStat(@NotNull String name, @NotNull StatFormat format) {
         this.name = name;
         this.format = format;
     }
@@ -17,14 +25,14 @@ public abstract class MinigameStat {
     /**
      * @return Returns the name of this stat
      */
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
     /**
      * @return Returns the general format of this stat.
      */
-    public StatFormat getFormat() {
+    public @NotNull StatFormat getFormat() {
         return format;
     }
 
@@ -41,7 +49,7 @@ public abstract class MinigameStat {
      *
      * @param name The new name or null to reset
      */
-    public void setDisplayName(Component name) {
+    public void setDisplayName(@Nullable Component name) {
         displayName = name;
     }
 

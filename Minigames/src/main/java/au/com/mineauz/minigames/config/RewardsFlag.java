@@ -32,7 +32,7 @@ public class RewardsFlag extends Flag<Rewards> {
 
     @Override
     public MenuItemDisplayRewards getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                @Nullable List<@NotNull Component> description) {
+                                              @Nullable List<@NotNull Component> description) {
         return new MenuItemDisplayRewards(displayMat, name, description, getFlag());
     }
 }

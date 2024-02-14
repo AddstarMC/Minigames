@@ -339,16 +339,16 @@ public class Team implements ScriptObject {
         return gameAutobalanceMsg.getFlag();
     }
 
+    public void setGameAutobalanceMessage(String msg) {
+        gameAutobalanceMsg.setFlag(msg);
+    }
+
     public StringFlag getAutoBalanceMsgFlag() {
         return autobalanceMsg;
     }
 
     public StringFlag getGameAutoBalanceMsgFlag() {
         return gameAutobalanceMsg;
-    }
-
-    public void setGameAutobalanceMessage(String msg) {
-        gameAutobalanceMsg.setFlag(msg);
     }
 
     public OptionStatus getNameTagVisibility() {
@@ -362,56 +362,6 @@ public class Team implements ScriptObject {
             team.setOption(Option.NAME_TAG_VISIBILITY, vis);
         else
             Minigames.getCmpnntLogger().warn("No team set for visibility call");
-    }
-
-    /**
-     * I have no Idea, why whoever
-     */
-    public enum VisibilityMapper {
-        /**
-         * Apply this option to everyone.
-         */
-        ALWAYS(OptionStatus.ALWAYS, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_ALWAYSVISIBLE),
-        /**
-         * Never apply this option.
-         */
-        NEVER(OptionStatus.NEVER, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NEVERVISIBLE),
-        /**
-         * Apply this option only for opposing teams.
-         */
-        HIDE_FOR_OTHER_TEAMS(OptionStatus.FOR_OTHER_TEAMS, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_HIDEOTHERTEAM),
-        /**
-         * Apply this option for only team members.
-         */
-        HIDE_FOR_OWN_TEAM(OptionStatus.FOR_OWN_TEAM, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_HIDEOWNTEAM);
-
-        private final @NotNull OptionStatus status;
-        private final @NotNull String name;
-
-        VisibilityMapper(@NotNull OptionStatus status, @NotNull LangKey langKey) {
-            this.status = status;
-            this.name = MinigameMessageManager.getUnformattedMgMessage(langKey);
-        }
-
-        @NotNull OptionStatus getStatus() {
-            return status;
-        }
-
-        static @NotNull VisibilityMapper getMapping(@NotNull OptionStatus status) {
-            for (VisibilityMapper mapping : VisibilityMapper.values()) {
-                if (status == mapping.status) {
-                    return mapping;
-                }
-            }
-
-            // fallback should never get used unless Mojang decides to add another visibility
-            return ALWAYS;
-        }
-
-        @Override
-        public @NotNull String toString() {
-            return name;
-        }
     }
 
     public Callback<VisibilityMapper> getNameTagVisibilityCallback() {
@@ -481,5 +431,55 @@ public class Team implements ScriptObject {
     @Override
     public String getAsString() {
         return getColor().name();
+    }
+
+    /**
+     * I have no Idea, why whoever
+     */
+    public enum VisibilityMapper {
+        /**
+         * Apply this option to everyone.
+         */
+        ALWAYS(OptionStatus.ALWAYS, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_ALWAYSVISIBLE),
+        /**
+         * Never apply this option.
+         */
+        NEVER(OptionStatus.NEVER, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NEVERVISIBLE),
+        /**
+         * Apply this option only for opposing teams.
+         */
+        HIDE_FOR_OTHER_TEAMS(OptionStatus.FOR_OTHER_TEAMS, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_HIDEOTHERTEAM),
+        /**
+         * Apply this option for only team members.
+         */
+        HIDE_FOR_OWN_TEAM(OptionStatus.FOR_OWN_TEAM, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_HIDEOWNTEAM);
+
+        private final @NotNull OptionStatus status;
+        private final @NotNull String name;
+
+        VisibilityMapper(@NotNull OptionStatus status, @NotNull LangKey langKey) {
+            this.status = status;
+            this.name = MinigameMessageManager.getUnformattedMgMessage(langKey);
+        }
+
+        static @NotNull VisibilityMapper getMapping(@NotNull OptionStatus status) {
+            for (VisibilityMapper mapping : VisibilityMapper.values()) {
+                if (status == mapping.status) {
+                    return mapping;
+                }
+            }
+
+            // fallback should never get used unless Mojang decides to add another visibility
+            return ALWAYS;
+        }
+
+        @NotNull OptionStatus getStatus() {
+            return status;
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return name;
+        }
     }
 }

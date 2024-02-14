@@ -18,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public abstract class ACondition {
-    protected @NotNull String name;
     private final BooleanFlag invert = new BooleanFlag(false, "invert");
+    protected @NotNull String name;
 
     protected ACondition(@NotNull String name) {
         this.name = name;

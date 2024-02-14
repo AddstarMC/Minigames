@@ -145,7 +145,7 @@ public class BackendManager {
      * @param length   The number of stats to retrieve
      * @return A ListenableFuture that returns the list of StoredStats loaded
      */
-    public ListenableFuture<List<StoredStat>> loadStats(final Minigame minigame, final MinigameStat stat, final StatValueField field, final ScoreboardOrder order, final int offset, final int length) {
+    public ListenableFuture<List<StoredStat>> loadStats(final Minigame minigame, final MinigameStat stat, final StatisticValueField field, final ScoreboardOrder order, final int offset, final int length) {
         return executorService.submit(() -> backend.loadStats(minigame, stat, field, order, offset, length));
     }
 
@@ -158,7 +158,7 @@ public class BackendManager {
      * @param playerId The player that owns the stat
      * @return The value of the stat. If it is not set, 0 will be returned
      */
-    public ListenableFuture<Long> loadSingleStat(final Minigame minigame, final MinigameStat stat, final StatValueField field, final UUID playerId) {
+    public ListenableFuture<Long> loadSingleStat(final Minigame minigame, final MinigameStat stat, final StatisticValueField field, final UUID playerId) {
         return executorService.submit(() -> backend.getStat(minigame, playerId, stat, field));
     }
 

@@ -69,7 +69,7 @@ public class ScoreboardCommand extends ACommand {
             return true;
         }
 
-        final MinigameStat stat = MinigameStats.getStat(args[1]);
+        final MinigameStat stat = MinigameStatistics.getStat(args[1]);
         if (stat == null) {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTSTAT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
@@ -78,8 +78,8 @@ public class ScoreboardCommand extends ACommand {
 
         final StatSettings settings = minigame.getSettings(stat);
 
-        StatValueField field = null;
-        for (StatValueField f : settings.getFormat().getFields()) {
+        StatisticValueField field = null;
+        for (StatisticValueField f : settings.getFormat().getFields()) {
             if (f.name().equalsIgnoreCase(args[2])) {
                 field = f;
                 break;
@@ -139,7 +139,7 @@ public class ScoreboardCommand extends ACommand {
         }
 
         final ScoreboardOrder fOrder = order;
-        final StatValueField fField = field;
+        final StatisticValueField fField = field;
 
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SCOREBOARD_LOAD);
         // Now load the values
@@ -175,9 +175,9 @@ public class ScoreboardCommand extends ACommand {
             List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);
         } else if (args.length == 2) { // Stat
-            return MinigameUtils.tabCompleteMatch(Lists.newArrayList(MinigameStats.getAllStats().keySet()), args[1]);
+            return MinigameUtils.tabCompleteMatch(Lists.newArrayList(MinigameStatistics.getAllStats().keySet()), args[1]);
         } else if (args.length == 3) { // Field
-            MinigameStat stat = MinigameStats.getStat(args[1]);
+            MinigameStat stat = MinigameStatistics.getStat(args[1]);
             if (stat == null) {
                 return null;
             }
@@ -193,7 +193,7 @@ public class ScoreboardCommand extends ACommand {
 
             String toMatch = args[2].toLowerCase();
             List<String> matches = Lists.newArrayList();
-            for (StatValueField field : format.getFields()) {
+            for (StatisticValueField field : format.getFields()) {
                 if (field.name().toLowerCase().startsWith(toMatch)) {
                     matches.add(field.name());
                 }

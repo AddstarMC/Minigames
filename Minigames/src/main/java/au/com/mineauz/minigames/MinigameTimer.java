@@ -12,13 +12,14 @@ import au.com.mineauz.minigames.sounds.PlayMGSound;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MinigameTimer {
     private static final Minigames plugin = Minigames.getPlugin();
     private final Minigame minigame;
-    private final List<Integer> timeMsg = new ArrayList<>();
+    private final List<Long> timeMsg = new ArrayList<>();
     private long time = 0;
     private long otime = 0;
     private int taskID = -1;
@@ -28,7 +29,7 @@ public class MinigameTimer {
         this.time = time;
         otime = time;
         this.minigame = minigame;
-        timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
+        timeMsg.addAll(plugin.getConfig().getLongList("multiplayer.timerMessageInterval"));
         startTimer();
     }
 
@@ -52,12 +53,13 @@ public class MinigameTimer {
     private void runTimer() {
         time--;
         if (minigame.isUsingXPBarTimer()) {
-            float timeper = ((Integer) time).floatValue() / ((Integer) otime).floatValue();
-            int level = 0;
-            if (time / 60 > 0)
+            float timeper = ((Long) time).floatValue() / ((Long) otime).floatValue();
+            long level = 0;
+            if (time / 60 > 0) {
                 level = time / 60;
-            else
+            } else {
                 level = time;
+            }
 
             for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
                 if (timeper < 0) {
@@ -65,14 +67,14 @@ public class MinigameTimer {
                     mgPlayer.getPlayer().setLevel(0);
                 } else {
                     mgPlayer.getPlayer().setExp(timeper);
-                    mgPlayer.getPlayer().setLevel(level);
+                    mgPlayer.getPlayer().setLevel((int) level);
                 }
             }
         }
         if (timeMsg.contains(time) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_TIMELEFT,
-                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(time))));
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(time)))));
         }
 
         if (time <= 0) {

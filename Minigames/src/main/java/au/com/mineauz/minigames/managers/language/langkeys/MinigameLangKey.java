@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.managers.language.langkeys;
 import org.jetbrains.annotations.NotNull;
 
 public enum MinigameLangKey implements LangKey { //todo this gets rather big. Slit it into smaller digestible parts: tool, ?...
+    AND("and"),
     CONFIG_BLACKLIST("config.blacklist"),
     CONFIG_WHITELIST("config.whitelist"),
     MINIGAME_ERROR_FULL("minigame.error.full"),
@@ -52,10 +53,11 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     MINIGAME_LATEJOINWAIT("minigame.lateJoinWait"),
     MINIGAME_LIVES_ERROR_NOLIVES("minigame.lives.error.noLives"),
     MINIGAME_LIVES_LIVESLEFT("minigame.lives.livesLeft"),
-    MINIGAME_RESOURCEPACK_DECLINED("minigame.resourcepack.declined"),
-    MINIGAME_RESOURCEPACK_FAILED("minigame.resourcepack.failed"),
-    MINIGAME_RESSOURCEPACK_APPLY("minigame.resourcepack.apply"),
-    MINIGAME_RESSOURCEPACK_NORESSOURCEPACK("minigame.resourcepack.noResourcepack"),
+    MINIGAME_RESOURCEPACK_DECLINED("minigame.ressourcePack.declined"),
+    MINIGAME_RESOURCEPACK_FAILED("minigame.ressourcePack.failed"),
+    MINIGAME_RESSOURCEPACK_APPLY("minigame.ressourcePack.apply"),
+    MINIGAME_RESSOURCEPACK_EMPTY_NAME("minigame.ressourcePack.empty.name"),
+    MINIGAME_RESSOURCEPACK_NORESSOURCEPACK("minigame.ressourcePack.noResourcepack"),
     MINIGAME_RESSOURCEPACK_REMOVE("minigames.resourcepack.remove"),
     MINIGAME_SAVED("minigame.saved"),
     MINIGAME_SCORETOWIN("minigame.scoreToWin"),
@@ -112,6 +114,7 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     PLAYER_CTF_RETURNFAIL("player.ctf.returnFail"),
     PLAYER_CTF_STOLE("player.ctf.stole"),
     PLAYER_END_BROADCAST_NOBODY("player.end.broadcast.nobodyWon"),
+    PLAYER_END_BROADCAST_OTHERS("player.end.broadcast.others"),
     PLAYER_END_BROADCAST_WIN("player.end.broadcast.win"),
     PLAYER_END_TEAM_SCORE("player.end.team.score"),
     PLAYER_END_TEAM_TIE("player.end.team.tie"),
@@ -182,10 +185,13 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     SIGN_SCORE_ERROR_ALREADYUSEDTEAM("sign.score.error.alreadyUsedTeam"),
     SIGN_TEAM_ERROR_UNBALANCE("sign.team.error.unbalance"),
     SIGN_TELEPORT_INVALID("sign.teleport.invalid"),
+    STATISTIC_TITLE_LAST("statistic.title.last"),
+    STATISTIC_TITLE_MAX("statistic.title.max"),
+    STATISTIC_TITLE_MIN("statistic.title.min"),
+    STATISTIC_TITLE_TOTAL("statistic.title.total"),
     TEAM_ADD("team.add"),
     TEAM_ERROR_COLOR_INVALID("team.error.color.invalid"),
     TEAM_ERROR_COLOR_TAKEN("team.error.color.taken"),
-    TIME_AND("time.and"),
     TIME_DAYS_LONG("time.days.long"),
     TIME_DAYS_SHORT("time.days.short"),
     TIME_HOURS_LONG("time.hours.long"),
@@ -239,7 +245,15 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     TOOL_SET_ENDLOCATION("tool.set.endLocation"),
     TOOL_SET_LOBBYLOCATION("tool.set.lobbyLocation"),
     TOOL_SET_QUITLOCATION("tool.set.quitLocation"),
-    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation");
+    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation"),
+    STATISTIC_WINS_NAME("statistic.wins.name"),
+    STATISTIC_LOSSES_NAME("statistic.losses.name"),
+    STATISTIC_ATTEMPTS_NAME("statistic.attempts.name"),
+    STATISTIC_TIME_NAME("statistic.time.name"),
+    STATISTIC_KILLS_NAME("statistic.kills.name"),
+    STATISTIC_DEATHS_NAME("statistic.deaths.name"),
+    STATISTIC_SCORE_NAME("statistic.score.name"),
+    STATISTIC_REVERTS_NAME("statistic.reverts.name");
 
     private final @NotNull String path;
 

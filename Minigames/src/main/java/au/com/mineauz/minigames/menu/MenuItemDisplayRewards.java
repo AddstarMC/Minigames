@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -11,6 +12,11 @@ import java.util.List;
 
 public class MenuItemDisplayRewards extends MenuItem {
     private final @NotNull Rewards rewards;
+
+    public MenuItemDisplayRewards(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Rewards rewards) {
+        super(displayMat, langKey);
+        this.rewards = rewards;
+    }
 
     public MenuItemDisplayRewards(@Nullable Material displayMat, @Nullable Component name, @NotNull Rewards rewards) {
         super(displayMat, name);

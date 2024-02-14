@@ -43,7 +43,7 @@ public class MenuItemDisplayEffects extends MenuItem { // todo unused
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
             potionMenu.addItem(new MenuItemPotion(Material.POTION,
                     Component.translatable(eff.getType().translationKey()),
-                    List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK)),
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK),
                     eff, loadout), inc);
             inc++;
         }

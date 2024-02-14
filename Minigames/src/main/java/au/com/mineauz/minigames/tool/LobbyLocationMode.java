@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.tool;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -23,14 +24,12 @@ public class LobbyLocationMode implements ToolMode {
 
     @Override
     public Component getDisplayName() {
-        return "Lobby Position";
+        return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_LOCATION_LOBBY_NAME);
     }
 
     @Override
-    public List<Component> getDescription() { //todo translation String
-        return List.of(
-                "Sets the lobby",
-                "locatoin");
+    public List<Component> getDescription() {
+        return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_LOCATION_LOBBY_DESCRIPTION);
     }
 
     @Override

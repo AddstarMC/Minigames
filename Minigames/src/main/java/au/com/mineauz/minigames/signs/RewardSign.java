@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
@@ -13,6 +15,7 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -59,7 +62,7 @@ public class RewardSign extends AMinigameSign {
             if (mgPlayer.isInMinigame()) {
                 if (!mgPlayer.hasTempClaimedReward(label)) {
                     if (mdata.hasRewardSign(loc)) {
-                        Rewards rew = mdata.getRewardSign(loc);
+                        Rewards rew = mdata.getRewardsRewardSign(loc);
                         for (RewardType r : rew.getReward()) {
                             r.giveReward(mgPlayer);
                         }
@@ -69,7 +72,7 @@ public class RewardSign extends AMinigameSign {
             } else {
                 if (!mgPlayer.hasClaimedReward(label)) {
                     if (mdata.hasRewardSign(loc)) {
-                        Rewards rew = mdata.getRewardSign(loc);
+                        Rewards rew = mdata.getRewardsRewardSign(loc);
                         for (RewardType r : rew.getReward()) {
                             r.giveReward(mgPlayer);
                         }
@@ -84,13 +87,14 @@ public class RewardSign extends AMinigameSign {
             if (!mdata.hasRewardSign(loc)) {
                 mdata.addRewardSign(loc);
             }
-            rew = mdata.getRewardSign(loc);
+            rew = mdata.getRewardsRewardSign(loc);
 
             Menu rewardMenu = new Menu(5, getName(), mgPlayer);
 
-            rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateMaterial(), "Add Group", rew), 42);
-            rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), "Add Item", rew), 43);
-            final MenuItemCustom mic = new MenuItemCustom(MenuUtility.getSaveMaterial(), "Save Rewards");
+            rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateMaterial(),
+                    MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, rew), 42);
+            rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, rew), 43);
+            final MenuItemCustom mic = new MenuItemCustom(MenuUtility.getSaveMaterial(), MgMenuLangKey.MENU_REWARD_SAVE_ALL_NAME);
             final Location floc = loc;
             mic.setClick(() -> {
                 mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
@@ -104,17 +108,20 @@ public class RewardSign extends AMinigameSign {
             //    list.add(r.toString());
             //}
 
-            List<MenuItem> mi = new ArrayList<>();
+            List<MenuItem> menuItems = new ArrayList<>();
             for (RewardType item : rew.getRewards()) {
-                mi.add(item.getMenuItem());
+                menuItems.add(item.getMenuItem());
             }
-            List<String> des = new ArrayList<>();
-            des.add("Double Click to edit");
+
+            List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_DOUBLECLICK);
             for (RewardGroup group : rew.getGroups()) {
-                MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST, group.getName() + " Group", des, group, rew);
-                mi.add(rwg);
+                MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST,
+                        MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
+                        des, group, rew);
+                menuItems.add(rwg);
             }
-            rewardMenu.addItems(mi);
+            rewardMenu.addItems(menuItems);
             rewardMenu.displayMenu(mgPlayer);
         }
         return true;

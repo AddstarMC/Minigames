@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -97,7 +98,7 @@ public class StandardRewardScheme implements RewardScheme {
 
     @Override
     public void addMenuItems(Menu menu) {
-        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, "Primary Rewards", primaryReward));
-        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, "Secondary Rewards", secondaryReward));
+        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME, primaryReward));
+        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME, secondaryReward));
     }
 }

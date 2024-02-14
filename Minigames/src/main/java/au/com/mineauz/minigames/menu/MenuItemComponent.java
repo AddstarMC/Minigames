@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemComponent extends MenuItem {
+    private final Callback<Component> component;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
-    protected final Callback<Component> component;
     private boolean allowNull = false;
 
     public MenuItemComponent(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Component> component) {

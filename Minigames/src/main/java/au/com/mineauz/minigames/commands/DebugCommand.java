@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
 import com.google.common.base.Charsets;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -20,6 +19,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * This Command remains untranslated,
+ * since I'm lazy and just used if something goes wrong.
+ * Whoever reads this please finish my work here!
+ */
 public class DebugCommand extends ACommand {
 
     @Override
@@ -34,12 +38,12 @@ public class DebugCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Debugs stuff.";
+        return Component.text("Debugs stuff.");
     }
 
     @Override
     public Component getUsage() {
-        return new String[]{"/minigame debug"};
+        return Component.text("/minigame debug");
     }
 
     @Override
@@ -70,7 +74,7 @@ public class DebugCommand extends ACommand {
                 }
                 case "PASTE" -> {
                     sender.sendMessage(ChatColor.GRAY + "Generating a paste.....");
-                    generatePaste(sender, minigame);
+                    generatePaste(sender);
                 }
                 default -> {
                     return false;
@@ -108,7 +112,7 @@ public class DebugCommand extends ACommand {
         }
     }
 
-    private void generatePaste(CommandSender sender, Minigame minigame) {
+    private void generatePaste(CommandSender sender) {
         StringBuilder mainInfo = new StringBuilder(); //todo
         mainInfo.append(Bukkit.getName()).append(" version: ").append(Bukkit.getServer().getVersion()).append('\n');
         mainInfo.append("Plugin version: ").append(Minigames.getPlugin().getDescription().getVersion()).append('\n');
@@ -160,5 +164,4 @@ public class DebugCommand extends ACommand {
             }
         });
     }
-
 }

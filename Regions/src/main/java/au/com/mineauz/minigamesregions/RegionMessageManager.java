@@ -21,7 +21,7 @@ import java.util.*;
 public class RegionMessageManager {
     private final static String BUNDLE_KEY = "minigames-regions";
 
-    public static void register(){
+    public static void register() {
         CodeSource src = Main.class.getProtectionDomain().getCodeSource();
         if (src != null) {
             MinigameMessageManager.initLangFiles(src, BUNDLE_KEY);

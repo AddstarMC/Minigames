@@ -1,11 +1,14 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,18 +119,25 @@ public class Rewards {
 
         rewardMenu.setPreviousPage(parent);
 
-        rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateMaterial(), "Add Group", this), 42);
-        rewardMenu.addItem(new MenuItemRewardAdd("Add Item", MenuUtility.getCreateMaterial(), this), 43);
-        rewardMenu.addItem(new MenuItemPage("Save " + name, MenuUtility.getSaveMaterial(), parent), 44);
+        rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateMaterial(),
+                MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, this), 42);
+        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, this), 43);
+        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveMaterial(),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
+                        Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), name)),
+                parent), 44);
 
         List<MenuItem> mi = new ArrayList<>();
         for (RewardType item : items) {
             mi.add(item.getMenuItem());
         }
-        List<String> des = new ArrayList<>();
-        des.add("Double Click to edit");
+
+        List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_DOUBLECLICK);
         for (RewardGroup group : groups) {
-            MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST, group.getName() + " Group", des, group, this);
+            MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST,
+                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
+                    des, group, this);
             mi.add(rwg);
         }
         rewardMenu.addItems(mi);
@@ -153,22 +163,8 @@ public class Rewards {
 
     public void load(ConfigurationSection section) {
         for (String key : section.getKeys(false)) {
-            // Upgrade from pre 1.7
-            //TODO: Remove after 1.7 release
-            if (section.contains(key + ".item") || section.contains(key + ".money")) {
-                ItemStack item = section.getItemStack(key + ".item");
-                RewardType ir;
-                if (item != null) {
-                    ir = RewardTypes.getRewardType("ITEM", this);
-                    ir.loadReward(key + ".item", section);
-                } else {
-                    ir = RewardTypes.getRewardType("MONEY", this);
-                    ir.loadReward(key + ".money", section);
-                }
-                ir.setRarity(RewardRarity.valueOf(section.getString(key + ".rarity")));
-                addReward(ir);
-                // Load reward item
-            } else if (section.contains(key + ".type")) {
+            // Load reward item
+            if (section.contains(key + ".type")) {
                 ConfigurationSection itemSection = section.getConfigurationSection(key);
                 RewardType rew = RewardTypes.getRewardType(itemSection.getString("type"), this);
                 rew.loadReward("data", itemSection);

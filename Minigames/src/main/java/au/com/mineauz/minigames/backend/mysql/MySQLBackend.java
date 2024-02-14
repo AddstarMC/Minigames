@@ -163,17 +163,17 @@ public class MySQLBackend extends Backend {
     }
 
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order) {
+    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order) {
         return loadStats(minigame, stat, field, order, 0, Integer.MAX_VALUE);
     }
 
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
+    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length) {
         return loader.loadStatValues(minigame, stat, field, order, offset, length);
     }
 
     @Override
-    public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field) {
+    public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatisticValueField field) {
         return loader.loadSingleValue(minigame, stat, field, playerId);
     }
 
@@ -209,7 +209,7 @@ public class MySQLBackend extends Backend {
                     String rawFormat = rs.getString("format");
                     Component displayName = MiniMessage.miniMessage().deserialize(rs.getString("display_name"));
 
-                    MinigameStat stat = MinigameStats.getStat(statName);
+                    MinigameStat stat = MinigameStatistics.getStat(statName);
                     if (stat == null) {
                         // Just ignore it
                         continue;

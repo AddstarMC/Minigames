@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.tool;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -23,14 +24,12 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
 
     @Override
     public Component getDisplayName() {
-        return "Spectator Position";
+        return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_LOCATION_SPECTATORSTART_NAME);
     }
 
     @Override
-    public List<Component> getDescription() { //todo translation String
-        return List.of(
-                "Sets the spectator",
-                "join position");
+    public List<Component> getDescription() {
+        return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_LOCATION_SPECTATORSTART_DESCRIPTION);
     }
 
     @Override

@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.minigame;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
@@ -9,6 +10,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
@@ -25,8 +27,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ScoreboardDisplay {
@@ -38,7 +38,7 @@ public class ScoreboardDisplay {
     private final int height;
     private final BlockFace facing;
     private MinigameStat stat;
-    private StatValueField field;
+    private StatisticValueField field;
     private ScoreboardOrder order;
     private StatSettings settings;
 
@@ -54,8 +54,8 @@ public class ScoreboardDisplay {
         this.facing = facing;
 
         // Default values
-        stat = MinigameStats.Wins;
-        field = StatValueField.Total;
+        stat = MinigameStatistics.Wins;
+        field = StatisticValueField.Total;
         order = ScoreboardOrder.DESCENDING;
 
         stats = Lists.newArrayListWithCapacity(width * height * 2);
@@ -75,8 +75,8 @@ public class ScoreboardDisplay {
 
         ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height, location, facing);
         display.setOrder(ScoreboardOrder.valueOf(section.getString("order")));
-        MinigameStat stat = MinigameStats.getStat(section.getString("stat", "wins"));
-        StatValueField field = StatValueField.valueOf(section.getString("field", "Total"));
+        MinigameStat stat = MinigameStatistics.getStat(section.getString("stat", "wins"));
+        StatisticValueField field = StatisticValueField.valueOf(section.getString("field", "Total"));
         display.setStat(stat, field);
         Block block = location.getBlock();
         block.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
@@ -93,11 +93,11 @@ public class ScoreboardDisplay {
         return stat;
     }
 
-    public StatValueField getField() {
+    public StatisticValueField getField() {
         return field;
     }
 
-    public void setStat(MinigameStat stat, StatValueField field) {
+    public void setStat(MinigameStat stat, StatisticValueField field) {
         this.stat = stat;
         this.field = field;
     }
@@ -209,17 +209,17 @@ public class ScoreboardDisplay {
     }
 
     public void displayMenu(MinigamePlayer player) {
-        final Menu setupMenu = new Menu(3, "Setup Scoreboard", player);
+        final Menu setupMenu = new Menu(3, MgMenuLangKey.MENU_SCOREBOARD_SETUP_NAME, player);
 
         StatSettings settings = minigame.getSettings(stat);
-        final MenuItemCustom statisticChoice = new MenuItemCustom(Material.WRITABLE_BOOK, "Statistic");
-        statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings.getDisplayName()));
+        final MenuItemCustom statisticChoice = new MenuItemCustom(Material.WRITABLE_BOOK, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_NAME,
+                List.of(settings.getDisplayName().color(NamedTextColor.GREEN)));
 
-        final MenuItemCustom fieldChoice = new MenuItemCustom(Material.PAPER, "Statistic Field");
-        fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
+        final MenuItemCustom fieldChoice = new MenuItemCustom(Material.PAPER, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_FIELD_NAME,
+                List.of(field.getTitle().color(NamedTextColor.GREEN)));
 
         statisticChoice.setClick(() -> {
-            Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<>() {
+            Menu childMenu = MinigameStatistics.createStatSelectMenu(setupMenu, new Callback<>() {
                 @Override
                 public MinigameStat getValue() {
                     throw new UnsupportedOperationException();
@@ -229,12 +229,12 @@ public class ScoreboardDisplay {
                 public void setValue(MinigameStat value) {
                     stat = value;
                     StatSettings settings12 = minigame.getSettings(stat);
-                    statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings12.getDisplayName()));
+                    statisticChoice.setDescription(List.of(settings12.getDisplayName().color(NamedTextColor.GREEN)));
 
                     // Check that the field is valid
-                    StatValueField first = null;
+                    StatisticValueField first = null;
                     boolean valid = false;
-                    for (StatValueField sfield : settings12.getFormat().getFields()) {
+                    for (StatisticValueField sfield : settings12.getFormat().getFields()) {
                         if (first == null) {
                             first = sfield;
                         }
@@ -248,7 +248,7 @@ public class ScoreboardDisplay {
                     // Update the field
                     if (!valid) {
                         field = first;
-                        fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.toString()));
+                        fieldChoice.setDescription(List.of(value.getDisplayName().color(NamedTextColor.GREEN)));
                     }
                 }
             });
@@ -259,16 +259,16 @@ public class ScoreboardDisplay {
 
         fieldChoice.setClick(() -> {
             StatSettings settings1 = minigame.getSettings(stat);
-            Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<>() {
+            Menu childMenu = MinigameStatistics.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<>() {
                 @Override
-                public StatValueField getValue() {
+                public StatisticValueField getValue() {
                     throw new UnsupportedOperationException();
                 }
 
                 @Override
-                public void setValue(StatValueField value) {
+                public void setValue(StatisticValueField value) {
                     field = value;
-                    fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.getTitle()));
+                    fieldChoice.setDescription(List.of(value.getTitle().color(NamedTextColor.GREEN)));
                 }
             });
 
@@ -279,25 +279,21 @@ public class ScoreboardDisplay {
         setupMenu.addItem(statisticChoice);
         setupMenu.addItem(fieldChoice);
 
-        List<String> sbotypes = new ArrayList<>();
-        for (ScoreboardOrder o : ScoreboardOrder.values()) {
-            sbotypes.add(o.toString().toLowerCase());
-        }
-        setupMenu.addItem(new MenuItemList("Scoreboard Order", Material.ENDER_PEARL, new Callback<>() {
+        setupMenu.addItem(new MenuItemEnum<>(Material.ENDER_PEARL, MgMenuLangKey.MENU_SCOREBOARD_ORDER_NAME, new Callback<>() {
 
             @Override
-            public String getValue() {
-                return order.toString().toLowerCase();
+            public ScoreboardOrder getValue() {
+                return order;
             }
 
             @Override
-            public void setValue(String value) {
-                order = ScoreboardOrder.valueOf(value.toUpperCase());
+            public void setValue(ScoreboardOrder value) {
+                order = value;
             }
+        }, ScoreboardOrder.class));
 
-
-        }, sbotypes));
-        setupMenu.addItem(new MenuItemScoreboardSave(MenuUtility.getCreateMaterial(), "Create Scoreboard", this), setupMenu.getSize() - 1);
+        setupMenu.addItem(new MenuItemScoreboardSave(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_SCOREBOARD_CREATE_NAME, this),
+                setupMenu.getSize() - 1);
         setupMenu.displayMenu(player);
     }
 
@@ -349,11 +345,10 @@ public class ScoreboardDisplay {
         if (Tag.ALL_SIGNS.isTagged(root.getType())) {
             BlockState state = root.getState();
             if (state instanceof Sign sign) {
-
                 sign.getSide(Side.FRONT).line(0, minigame.getDisplayName().color(NamedTextColor.BLUE));
                 sign.getSide(Side.FRONT).line(1, settings.getDisplayName().color(NamedTextColor.GREEN));
-                sign.getSide(Side.FRONT).line(2, ChatColor.GREEN + field.getTitle());
-                sign.getSide(Side.FRONT).line(3, "(" + WordUtils.capitalize(order.toString()) + ")");
+                sign.getSide(Side.FRONT).line(2, field.getTitle().color(NamedTextColor.GREEN));
+                sign.getSide(Side.FRONT).line(3, Component.text("(" + WordUtils.capitalize(order.toString()) + ")"));
                 sign.update();
 
                 sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
@@ -385,7 +380,7 @@ public class ScoreboardDisplay {
             @Override
             public void onFailure(@NotNull Throwable t) {
                 Minigames.getCmpnntLogger().error("", t);
-                stats = Collections.emptyList();
+                stats = List.of();
                 needsLoad = true;
             }
         };

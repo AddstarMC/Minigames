@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -10,7 +11,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CTFModule extends MinigameModule {
@@ -56,29 +56,26 @@ public class CTFModule extends MinigameModule {
 
     @Override
     public void save(FileConfiguration config) {
-
     }
 
     @Override
     public void load(FileConfiguration config) {
-
     }
 
     @Override
     public void addEditMenuOptions(Menu menu) {
-
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
-        Menu m = new Menu(6, "CTF Settings", previous.getViewer());
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
+        Menu menu = new Menu(6, MgMenuLangKey.MENU_CTF_NAME, previous.getViewer());
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        m.addItem(useFlagAsCapturePoint.getMenuItem(Material.BLACK_BANNER, "CTF Flag is Capture Point",
-                List.of("Use a teams Flag as a capture point")));
-        m.addItem(bringFlagBackManual.getMenuItem(Material.ENDER_EYE, "Bring Flag Back Manually",
-                List.of("If enabled, the flag can be brought", "back to the base manually")));
-        m.displayMenu(previous.getViewer());
+        menu.addItem(useFlagAsCapturePoint.getMenuItem(Material.BLACK_BANNER, MgMenuLangKey.MENU_CTF_CAPTUREPOINT_NAME,
+                MgMenuLangKey.MENU_CTF_CAPTUREPOINT_DESCRIPTION));
+        menu.addItem(bringFlagBackManual.getMenuItem(Material.ENDER_EYE, MgMenuLangKey.MENU_CTF_FLAGBACKMANUALLY_NAME,
+                MgMenuLangKey.MENU_CTF_FLAGBACKMANUALLY_DESCRIPTION));
+        menu.displayMenu(previous.getViewer());
         return true;
     }
 }

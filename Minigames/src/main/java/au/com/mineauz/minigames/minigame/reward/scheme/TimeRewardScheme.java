@@ -3,8 +3,13 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
     @Override
@@ -28,17 +33,23 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected String getMenuItemDescName(Integer value) {
-        return "Time: " + MinigameUtils.convertTime(value, true);
+    protected String getMenuItemDescName(@NotNull Integer value) {
+        return "Time: " + MinigameUtils.convertTime(Duration.ofSeconds(value), true);
     }
 
+    /**
+     * in seconds
+     */
     @Override
     protected Integer getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
-        return (int) (data.getStat(MinigameStats.CompletionTime) / 1000);
+        return (int) TimeUnit.MILLISECONDS.toSeconds(data.getStat(MinigameStatistics.CompletionTime));
     }
 
+    /**
+     * in seconds
+     */
     @Override
-    protected String getMenuItemName(Integer value) {
-        return MinigameUtils.convertTime(value, true);
+    protected Component getMenuItemName(@NotNull Integer value) {
+        return MinigameUtils.convertTime(Duration.ofSeconds(value), true);
     }
 }

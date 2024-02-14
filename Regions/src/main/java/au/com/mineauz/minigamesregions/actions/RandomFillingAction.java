@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -154,8 +153,8 @@ public class RandomFillingAction extends AAction {
 
         //Percentage of blocks that will get replaced
         m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemInteger(Material.BOOK, "Chance in integer percentage (0-100)", List.of(Component.empty()),
-                        new Callback<>() {
+        m.addItem(new MenuItemInteger(Material.BOOK, RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME,
+                new Callback<>() {
 
                     @Override
                     public Integer getValue() {

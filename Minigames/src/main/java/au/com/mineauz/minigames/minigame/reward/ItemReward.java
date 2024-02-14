@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -85,7 +84,7 @@ public class ItemReward extends RewardType {
         private final @NotNull List<String> options = new ArrayList<>();
 
         public MenuItemReward(@NotNull ItemReward reward) {
-            super(Material.DIAMOND, "PLACEHOLDER", List.of("Click with item", "to change."));
+            super(Material.DIAMOND, Component.translatable(Material.DIAMOND.translationKey()));
             setItem(reward.getRewardItem());
             for (RewardRarity rarity : RewardRarity.values()) {
                 options.add(rarity.toString());
@@ -95,11 +94,10 @@ public class ItemReward extends RewardType {
         }
 
         @Override
-        public void setItem(ItemStack item) {
-            super.setItem(item);
-            ItemMeta meta = getItem().getItemMeta();
-            meta.setDisplayName(ChatColor.RESET + WordUtils.capitalize(item.getType().toString().replace("_", " ")));
-            getItem().setItemMeta(meta);
+        public void setItem(@NotNull ItemStack item) {
+            ItemMeta meta = item.getItemMeta();
+            meta.displayName(Component.translatable(item.translationKey()));
+            item.setItemMeta(meta);
         }
 
         @Override

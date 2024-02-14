@@ -57,8 +57,10 @@ public class MenuItemNodeExecutor extends MenuItem {
                 List.of("Number of times this", "executor can be", "triggered"),
                 ex.getTriggerCountCallback(), 0, null));
 
-        m.addItem(new MenuItemBoolean(List.of("Whether this executor", "is triggered per player", "or just on count"), Material.ENDER_PEARL,
+        m.addItem(new MenuItemBoolean(
+                Material.ENDER_PEARL,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
+                List.of("Whether this executor", "is triggered per player", "or just on count"),
                 ex.getIsTriggerPerPlayerCallback()));
         m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
         m.displayMenu(fviewer);

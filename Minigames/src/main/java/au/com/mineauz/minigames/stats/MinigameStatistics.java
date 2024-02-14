@@ -1,11 +1,12 @@
 package au.com.mineauz.minigames.stats;
 
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import com.google.common.collect.Maps;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 
 import java.util.Collections;
@@ -15,16 +16,16 @@ import java.util.stream.Collectors;
 /**
  * This class allows you to register stats that are usable in scoreboards
  */
-public final class MinigameStats {
-    public static final MinigameStat Wins = new BasicMinigameStat("wins", "Wins", StatFormat.Total);
-    public static final MinigameStat Losses = new BasicMinigameStat("losses", "Losses", StatFormat.Total); // Fake stat
-    public static final MinigameStat Attempts = new BasicMinigameStat("attempts", "Attempts", StatFormat.Total);
-    public static final MinigameStat CompletionTime = new BasicMinigameStat("time", "Completion Time", StatFormat.MinMaxAndTotal);
+public final class MinigameStatistics {
+    public static final MinigameStat Wins = new BasicMinigameStat("wins", MinigameLangKey.STATISTIC_WINS_NAME, StatFormat.Total);
+    public static final MinigameStat Losses = new BasicMinigameStat("losses", MinigameLangKey.STATISTIC_LOSSES_NAME, StatFormat.Total); // Fake stat
+    public static final MinigameStat Attempts = new BasicMinigameStat("attempts", MinigameLangKey.STATISTIC_ATTEMPTS_NAME, StatFormat.Total);
+    public static final MinigameStat CompletionTime = new BasicMinigameStat("time", MinigameLangKey.STATISTIC_TIME_NAME, StatFormat.MinMaxAndTotal);
 
-    public static final MinigameStat Kills = new BasicMinigameStat("kills", "Kills", StatFormat.MaxAndTotal);
-    public static final MinigameStat Deaths = new BasicMinigameStat("deaths", "Deaths", StatFormat.MinAndTotal);
-    public static final MinigameStat Score = new BasicMinigameStat("score", "Score", StatFormat.MaxAndTotal);
-    public static final MinigameStat Reverts = new BasicMinigameStat("reverts", "Reverts", StatFormat.MinAndTotal);
+    public static final MinigameStat Kills = new BasicMinigameStat("kills", MinigameLangKey.STATISTIC_KILLS_NAME, StatFormat.MaxAndTotal);
+    public static final MinigameStat Deaths = new BasicMinigameStat("deaths", MinigameLangKey.STATISTIC_DEATHS_NAME, StatFormat.MinAndTotal);
+    public static final MinigameStat Score = new BasicMinigameStat("score", MinigameLangKey.STATISTIC_SCORE_NAME, StatFormat.MaxAndTotal);
+    public static final MinigameStat Reverts = new BasicMinigameStat("reverts", MinigameLangKey.STATISTIC_REVERTS_NAME, StatFormat.MinAndTotal);
 
     private static final Map<String, MinigameStat> stats = Maps.newHashMap();
 
@@ -39,7 +40,7 @@ public final class MinigameStats {
         registerStat0(Reverts);
     }
 
-    private MinigameStats() {
+    private MinigameStatistics() {
     }
 
     /**
@@ -140,10 +141,10 @@ public final class MinigameStats {
      * @return The menu to display
      */
     public static Menu createStatSelectMenu(final Menu parent, final Callback<MinigameStat> statCallback) {
-        final Menu submenu = new Menu(6, "Select Statistic", parent.getViewer());
+        final Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_NAME, parent.getViewer());
 
         for (final MinigameStat stat : getAllStats().values()) {
-            MenuItemCustom item = new MenuItemCustom(Material.WRITABLE_BOOK, WordUtils.capitalizeFully(stat.getDisplayName()));
+            MenuItemCustom item = new MenuItemCustom(Material.WRITABLE_BOOK, stat.getDisplayName());
             item.setClick(() -> {
                 statCallback.setValue(stat);
                 parent.displayMenu(submenu.getViewer());
@@ -165,11 +166,11 @@ public final class MinigameStats {
      * @param callback The callback to be invoked when the field is chosen. Note: only the setValue() method will be called.
      * @return The menu to display
      */
-    public static Menu createStatFieldSelectMenu(final Menu parent, StatFormat format, final Callback<StatValueField> callback) {
-        final Menu submenu = new Menu(6, "Select Statistic Field", parent.getViewer());
+    public static Menu createStatFieldSelectMenu(final Menu parent, StatFormat format, final Callback<StatisticValueField> callback) {
+        final Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_FIELD_NAME, parent.getViewer());
 
-        for (final StatValueField field : format.getFields()) {
-            MenuItemCustom item = new MenuItemCustom(Material.PAPER, WordUtils.capitalizeFully(field.name()));
+        for (final StatisticValueField field : format.getFields()) {
+            MenuItemCustom item = new MenuItemCustom(Material.PAPER, field.getTitle());
             item.setClick(() -> {
                 callback.setValue(field);
                 parent.displayMenu(submenu.getViewer());

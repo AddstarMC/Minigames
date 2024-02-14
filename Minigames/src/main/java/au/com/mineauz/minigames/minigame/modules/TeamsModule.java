@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TeamSetFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
@@ -10,19 +10,21 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TeamsModule extends MinigameModule {
     private final Map<TeamColor, Team> teams = new HashMap<>();
     private final TeamSetFlag teamsFlag;
-    private StringFlag defaultWinner = new StringFlag(TeamColor.NONE.toString(), "defaultwinner");
+    private EnumFlag<TeamColor> defaultWinner = new EnumFlag<>(TeamColor.NONE, "defaultwinner");
 
     public TeamsModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
@@ -83,7 +85,7 @@ public class TeamsModule extends MinigameModule {
      * @return {@link Team}
      */
     public @NotNull Team addTeam(@NotNull TeamColor color) {
-        return addTeam(color, "");
+        return addTeam(color, (String) null);
     }
 
     /**
@@ -163,32 +165,31 @@ public class TeamsModule extends MinigameModule {
         return true;
     }
 
-    public Callback<String> getDefaultWinnerCallback() {
+    public Callback<TeamColor> getDefaultWinnerCallback() {
         return new Callback<>() {
 
             @Override
-            public String getValue() {
+            public TeamColor getValue() {
                 if (defaultWinner.getFlag() != null) {
-                    if (!teams.containsKey(TeamColor.matchColor(defaultWinner.getFlag()))) {
-                        return TeamColor.NONE.toString();
+                    if (!teams.containsKey(defaultWinner.getFlag())) {
+                        return TeamColor.NONE;
                     }
 
-                    return WordUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
+                    return defaultWinner.getFlag();
                 }
-                return TeamColor.NONE.toString();
+                return TeamColor.NONE;
             }
 
             @Override
-            public void setValue(String value) {
-                TeamColor match = TeamColor.matchColor(value.replace(" ", "_"));
-                defaultWinner.setFlag(Objects.requireNonNullElse(match, TeamColor.NONE).toString());
+            public void setValue(TeamColor value) {
+                defaultWinner.setFlag(value);
             }
         };
     }
 
     public @Nullable TeamColor getDefaultWinner() {
         if (defaultWinner.getFlag() != null) {
-            TeamColor team = TeamColor.matchColor(defaultWinner.getFlag());
+            TeamColor team = defaultWinner.getFlag();
             if (!teams.containsKey(team)) {
                 return null;
             } else {
@@ -199,7 +200,7 @@ public class TeamsModule extends MinigameModule {
     }
 
     public void setDefaultWinner(@NotNull TeamColor defaultWinner) {
-        this.defaultWinner.setFlag(defaultWinner.toString());
+        this.defaultWinner.setFlag(defaultWinner);
     }
 
     public void clearTeams() {
@@ -208,29 +209,25 @@ public class TeamsModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
-        Menu m = new Menu(6, "Teams", menu.getViewer());
-        m.setPreviousPage(menu);
-        List<MenuItem> items = new ArrayList<>();
-        List<String> teams = new ArrayList<>(this.teams.size() + 1);
-        for (TeamColor t : this.teams.keySet()) {
-            teams.add(WordUtils.capitalize(t.toString().replace("_", " ")));
-        }
-        teams.add("None");
-        items.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));
-        items.add(new MenuItemNewLine());
+    public void addEditMenuOptions(Menu previousMenu) {
+        Menu menu = new Menu(6, MgMenuLangKey.MENU_TEAM_NAME, previousMenu.getViewer());
+        menu.setPreviousPage(previousMenu);
+        List<MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(new MenuItemList<>(Material.PAPER, MgMenuLangKey.MENU_TEAM_DEFAULTWIN_NAME,
+                getDefaultWinnerCallback(), List.of(TeamColor.values())));
+        menuItems.add(new MenuItemNewLine());
         for (Team team : this.teams.values()) {
-            items.add(new MenuItemTeam(team.getColoredDisplayName(), team));
+            menuItems.add(new MenuItemTeam(team.getColoredDisplayName(), team));
         }
 
-        m.addItem(new MenuItemAddTeam(MgMenuLangKey.MENU_TEAMADD_NAME, this), m.getSize() - 1);
+        menu.addItem(new MenuItemAddTeam(MgMenuLangKey.MENU_TEAMADD_NAME, this), menu.getSize() - 1);
 
-        m.addItems(items);
+        menu.addItems(menuItems);
 
-        m.addItem(new MenuItemBack(menu), m.getSize() - 9);
+        menu.addItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
 
-        MenuItemPage p = new MenuItemPage("Team Options", Material.CHEST, m);
-        menu.addItem(p);
+        MenuItemPage teamOptionsMenuPage = new MenuItemPage(Material.CHEST, MgMenuLangKey.MENU_TEAM_OPTIONS_NAME, menu);
+        previousMenu.addItem(teamOptionsMenuPage);
     }
 
     @Override

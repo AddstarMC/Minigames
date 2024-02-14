@@ -118,7 +118,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         potionMenu.addItem(new MenuItemPotionAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_POTIONADD_NAME, loadout), potionMenu.getSize() - 1);
         potionMenu.addItem(menuItemBack, potionMenu.getSize() - 2);
 
-        List<Component> description = List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
+        List<Component> description = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
         List<MenuItem> potionMenuItems = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
