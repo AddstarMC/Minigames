@@ -2,9 +2,11 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -25,16 +27,12 @@ public class SelectCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "select and clear region selections";
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SELECT_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return new String[]{
-                "/minigame select 1",
-                "/minigame select 2",
-                "/minigame select clear"
-        };
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SELECT_USAGE);
     }
 
     @Override
@@ -50,14 +48,14 @@ public class SelectCommand extends ACommand {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("1")) {
                     mgPlayer.setSelection1(player.getLocation());
-                    mgPlayer.sendInfoMessage(Component.text("Point 1 selected", NamedTextColor.GRAY));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SELECT_POINT1);
                 } else if (args[0].equalsIgnoreCase("2")) {
                     mgPlayer.setSelection2(player.getLocation());
-                    mgPlayer.sendInfoMessage(Component.text("Point 2 selected", NamedTextColor.GRAY));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SELECT_POINT2);
 
                 } else if (args[0].equalsIgnoreCase("clear")) {
                     mgPlayer.clearSelection();
-                    mgPlayer.sendInfoMessage(Component.text("Selection cleared.", NamedTextColor.GRAY));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SELECT_CLEAR);
                 } else { // unknown param
                     return false;
                 }
@@ -65,7 +63,7 @@ public class SelectCommand extends ACommand {
                 return false;
             }
         } else {
-            sender.sendMessage(Component.text("You have to be a player.", NamedTextColor.RED));
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             return false;
         }
 

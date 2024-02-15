@@ -9,7 +9,6 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,15 +64,18 @@ public class SetTimerCommand extends ASetCommand {
             } else if (args[0].equalsIgnoreCase("display") && args.length >= 2){ //todo
                 if (args[1].equalsIgnoreCase("xpBar")) {
                     minigame.setTimerDisplayType(MinigameTimer.DisplayType.XP_BAR);
-                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the XP bar.");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_XPBAR,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     return true;
                 } else if (args[1].equalsIgnoreCase("bossBar")) {
                     minigame.setTimerDisplayType(MinigameTimer.DisplayType.BOSS_BAR);
-                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the boss bar.");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_BOSSBAR,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     return true;
                 } else if (args[1].equalsIgnoreCase("none")) {
                     minigame.setTimerDisplayType(MinigameTimer.DisplayType.NONE);
-                    sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will no longer show the timer.");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_NONE,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     return true;
                 } // else here will default to false
             }

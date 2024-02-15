@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.ConnectionPool;
 import au.com.mineauz.minigames.backend.StatementKey;
 import au.com.mineauz.minigames.stats.StatFormat;
+import net.kyori.adventure.text.Component;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -68,7 +69,7 @@ public class SQLImport implements BackendImportCallback {
     }
 
     @Override
-    public void acceptPlayer(UUID playerId, String name, String displayName) {
+    public void acceptPlayer(UUID playerId, String name, Component displayName) {
         try {
             handler.batchUpdate(insertPlayer, playerId.toString(), name, displayName);
             ++playerBatchCount;

@@ -93,6 +93,7 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_LIST_LIST("command.list.list"),
     COMMAND_LIST_USAGE("command.list.usage"),
     COMMAND_LOADOUT_DESCRIPTION("command.loadout.description"),
+    COMMAND_LOADOUT_USAGE("command.loadout.usage"),
     COMMAND_MINIGAMES_AUTHORS("command.minigames.authors"),
     COMMAND_MINIGAMES_HELP("command.minigames.help"),
     COMMAND_MINIGAMES_VERSION("command.minigames.version"),
@@ -346,12 +347,13 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_SET_TEAM_REMOVE("command.set.team.remove"),
     COMMAND_SET_TEAM_RENAME("command.set.team.rename"),
     COMMAND_SET_TEAM_USAGE("command.set.team.usage"),
+    COMMAND_SET_TIMER_BOSSBAR("command.set.timer.bossBar"),
     COMMAND_SET_TIMER_DESCRIPTION("command.set.timer.description"),
+    COMMAND_SET_TIMER_NONE("command.set.timer.none"),
     COMMAND_SET_TIMER_REMOVE("command.set.timer.remove"),
     COMMAND_SET_TIMER_SUCCESS("command.set.timer.success"),
     COMMAND_SET_TIMER_USAGE("command.set.timer.usage"),
-    COMMAND_SET_TIMER_XPBAR_REMOVE("command.set.timer.xpBar.remove"),
-    COMMAND_SET_TIMER_XPBAR_SUCCESS("command.set.timer.xpBar.success"),
+    COMMAND_SET_TIMER_XPBAR("command.set.timer.xpBar"),
     COMMAND_SET_TYPE_DESCRIPTION("command.set.type.description"),
     COMMAND_SET_TYPE_ERROR_NOTTYPE("command.set.type.error.notType"),
     COMMAND_SET_TYPE_SUCCESS("command.set.type.success"),
@@ -397,7 +399,11 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_TOOL_SETMODE("command.tool.setMode"),
     COMMAND_TOOL_SETTEAM("command.tool.setTeam"),
     COMMAND_TOOL_USAGE("command.tool.usage"),
-    COMMAND_LOADOUT_USAGE("command.loadout.usage");
+    COMMAND_SELECT_DESCRIPTION("command.select.description"),
+    COMMAND_SELECT_USAGE("command.select.usage"),
+    COMMAND_SELECT_POINT1("command.select.point1"),
+    COMMAND_SELECT_POINT2("command.select.point2"),
+    COMMAND_SELECT_CLEAR("command.select.clear");
 
     private final @NotNull String path;
 

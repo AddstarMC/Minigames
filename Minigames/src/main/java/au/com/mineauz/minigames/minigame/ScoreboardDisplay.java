@@ -10,7 +10,10 @@ import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -20,6 +23,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -187,13 +191,13 @@ public class ScoreboardDisplay {
         Preconditions.checkArgument(stats.length >= 1 && stats.length <= 2);
 
         Sign sign = (Sign) block.getState();
-        sign.getSide(Side.FRONT).line(0, MinigameUtils.limitIgnoreFormat(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[0].getPlayerDisplayName(), 15));
-        sign.getSide(Side.FRONT).line(1, MinigameUtils.limitIgnoreFormat(ChatColor.BLUE + stat.displayValueSign(stats[0].getValue(), settings), 15));
+        sign.getSide(Side.FRONT).line(0, MinigameUtils.limitIgnoreFormat(Component.text(place + ". ").color(NamedTextColor.GREEN).append(stats[0].getPlayerDisplayName().color(NamedTextColor.BLACK)), 15));
+        sign.getSide(Side.FRONT).line(1, MinigameUtils.limitIgnoreFormat(stat.displayValueSign(stats[0].getValue(), settings).color(NamedTextColor.BLUE), 15));
 
         if (stats.length == 2) {
             ++place;
-            sign.getSide(Side.FRONT).line(2, MinigameUtils.limitIgnoreFormat(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[1].getPlayerDisplayName(), 15));
-            sign.getSide(Side.FRONT).line(3, MinigameUtils.limitIgnoreFormat(ChatColor.BLUE + stat.displayValueSign(stats[1].getValue(), settings), 15));
+            sign.getSide(Side.FRONT).line(2, MinigameUtils.limitIgnoreFormat(Component.text(place + ". ").color(NamedTextColor.GREEN).append(stats[1].getPlayerDisplayName().color(NamedTextColor.BLACK)), 15));
+            sign.getSide(Side.FRONT).line(3, MinigameUtils.limitIgnoreFormat(stat.displayValueSign(stats[1].getValue(), settings).color(NamedTextColor.BLUE), 15));
         } else {
             sign.getSide(Side.FRONT).setLine(2, "");
             sign.getSide(Side.FRONT).setLine(3, "");
@@ -366,7 +370,7 @@ public class ScoreboardDisplay {
                 needsLoad = false;
                 updateSigns();
             } else {
-                Minigames.getCmpnntLogger().error("Error when loading scoreboard " + stat.getDisplayName() + " for minigame " + minigame.getName(false), exp);
+                Minigames.getCmpnntLogger().error("Error when loading scoreboard " + stat.getDisplayName() + " for minigame " + minigame.getName(), exp);
                 stats = List.of();
                 needsLoad = true;
             }

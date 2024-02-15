@@ -1,12 +1,14 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -14,9 +16,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandReward extends RewardType {
+    private final static String DESCRIPTION_TOKEN = "CommandReward_description";
     private String command = "say Hello World!";
 
     public CommandReward(Rewards rewards) {
@@ -60,7 +64,7 @@ public class CommandReward extends RewardType {
 
     private class CommandRewardItem extends MenuItemString {
         private final CommandReward reward;
-        private final @NotNull List<@NotNull String> options = new ArrayList<>();
+        private final @NotNull List<@NotNull RewardRarity> options = new ArrayList<>();
 
         public CommandRewardItem(CommandReward reward) {
             super(Material.COMMAND_BLOCK, Component.text("/" + command), new Callback<>() {
@@ -78,9 +82,7 @@ public class CommandReward extends RewardType {
                 }
             });
 
-            for (RewardRarity rarity : RewardRarity.values()) {
-                options.add(rarity.toString());
-            }
+            Collections.addAll(options, RewardRarity.values());
             this.reward = reward;
             updateDescription();
         }
@@ -91,56 +93,31 @@ public class CommandReward extends RewardType {
                 newName = newName.substring(0, 15);
                 newName += "...";
             }
-            meta.setDisplayName(ChatColor.RESET + newName);
+            meta.displayName(Component.text(newName));
             getDisplayItem().setItemMeta(meta);
-            getContainer().removeItem(getSlot());
-            getContainer().addItem(this, getSlot());
         }
 
         @Override
         public void updateDescription() {
             List<Component> description;
-            int pos = options.indexOf(getRarity().toString());
+            int pos = options.indexOf(getRarity());
             int before = pos - 1;
             int after = pos + 1;
-            if (before == -1)
+            if (before == -1) {
                 before = options.size() - 1;
-            if (after == options.size())
+            }
+            if (after == options.size()) {
                 after = 0;
-
-            if (getDescriptionStr() != null) {
-                description = getDescriptionStr();
-                if (getDescriptionStr().size() >= 3) {
-                    String desc = ChatColor.stripColor(getDescriptionStr().get(1));
-
-                    if (options.contains(desc)) {
-                        description.set(0, ChatColor.GRAY + options.get(before));
-                        description.set(1, ChatColor.GREEN + getRarity().toString());
-                        description.set(2, ChatColor.GRAY + options.get(after));
-                    } else {
-                        description.add(0, ChatColor.GRAY + options.get(before));
-                        description.add(1, ChatColor.GREEN + getRarity().toString());
-                        description.add(2, ChatColor.GRAY + options.get(after));
-                        description.add(3, ChatColor.DARK_PURPLE + "Shift + Left Click to change");
-                        description.add(4, ChatColor.DARK_PURPLE + "Shift + Right Click to remove");
-                    }
-                } else {
-                    description.add(0, ChatColor.GRAY + options.get(before));
-                    description.add(1, ChatColor.GREEN + getRarity().toString());
-                    description.add(2, ChatColor.GRAY + options.get(after));
-                    description.add(3, ChatColor.DARK_PURPLE + "Shift + Left Click to change");
-                    description.add(4, ChatColor.DARK_PURPLE + "Shift + Right Click to remove");
-                }
-            } else {
-                description = new ArrayList<>();
-                description.add(ChatColor.GRAY + options.get(before));
-                description.add(ChatColor.GREEN + getRarity().toString());
-                description.add(ChatColor.GRAY + options.get(after));
-                description.add(3, ChatColor.DARK_PURPLE + "Shift + Left Click to change");
-                description.add(4, ChatColor.DARK_PURPLE + "Shift + Right Click to remove");
             }
 
-            setDescriptionStr(description);
+            description = new ArrayList<>();
+            description.add(options.get(before).getDisplayName().color(NamedTextColor.GRAY));
+            description.add(getRarity().getDisplayName().color(NamedTextColor.GREEN));
+            description.add(options.get(after).getDisplayName().color(NamedTextColor.GRAY));
+            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_EDIT_SHIFTLEFT).color(NamedTextColor.DARK_PURPLE));
+            description.addAll(MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
+
+            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
         }
 
         @Override
@@ -150,12 +127,12 @@ public class CommandReward extends RewardType {
 
         @Override
         public ItemStack onClick() {
-            int ind = options.lastIndexOf(getRarity().toString());
+            int ind = options.lastIndexOf(getRarity());
             ind++;
             if (ind == options.size())
                 ind = 0;
 
-            setRarity(RewardRarity.valueOf(options.get(ind)));
+            setRarity(options.get(ind));
             updateDescription();
 
             return getDisplayItem();
@@ -163,13 +140,13 @@ public class CommandReward extends RewardType {
 
         @Override
         public ItemStack onRightClick() {
-            int ind = options.lastIndexOf(getRarity().toString());
+            int ind = options.lastIndexOf(getRarity());
             ind--;
             if (ind == -1) {
                 ind = options.size() - 1;
             }
 
-            setRarity(RewardRarity.valueOf(options.get(ind)));
+            setRarity(options.get(ind));
             updateDescription();
 
             return getDisplayItem();

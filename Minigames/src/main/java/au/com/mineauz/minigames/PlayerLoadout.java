@@ -430,32 +430,39 @@ public class PlayerLoadout {
             section.set("potions." + eff.getType().getName() + ".dur", eff.getDuration());
         }
 
-        if (getUsePermissions())
+        if (getUsePermissions()) {
             section.set("usepermissions", true);
+        }
 
-        if (!hasFallDamage())
+        if (!hasFallDamage()) {
             section.set("falldamage", hasFallDamage());
+        }
 
-        if (hasHunger())
+        if (hasHunger()) {
             section.set("hunger", hasHunger());
+        }
 
-        if (getDisplayName() != null)
-            section.set("displayName", getDisplayName());
+        section.set("displayName", getDisplayName());
 
-        if (isArmourLocked())
+        if (isArmourLocked()) {
             section.set("armourLocked", isArmourLocked());
+        }
 
-        if (isInventoryLocked())
+        if (isInventoryLocked()) {
             section.set("inventoryLocked", isInventoryLocked());
+        }
 
-        if (getTeamColor() != null)
+        if (getTeamColor() != null) {
             section.set("team", getTeamColor().toString());
+        }
 
-        if (!isDisplayedInMenu())
+        if (!isDisplayedInMenu()) {
             section.set("displayInMenu", isDisplayedInMenu());
+        }
 
-        if (!allowOffHand())
+        if (!allowOffHand()) {
             section.set("allowOffhand", allowOffHand());
+        }
 
         for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
             ConfigurationSection subSection = section.createSection("addons." + addonValue.getKey().getName().replace('.', '-'));

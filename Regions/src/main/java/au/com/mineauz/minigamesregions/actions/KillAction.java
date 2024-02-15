@@ -30,7 +30,7 @@ public class KillAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
+    public void describe(@NotNull Map<@NotNull Component, @NotNull Component> out) {
     }
 
     @Override
@@ -54,8 +54,8 @@ public class KillAction extends AAction {
 
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
-        debug(mgPlayer, region);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        debug(mgPlayer, region);
         if (mgPlayer.isLiving())
             mgPlayer.getPlayer().setHealth(0.0);
     }

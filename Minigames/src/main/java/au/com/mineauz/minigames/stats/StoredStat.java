@@ -1,5 +1,8 @@
 package au.com.mineauz.minigames.stats;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+
 import java.util.UUID;
 
 /**
@@ -9,11 +12,11 @@ import java.util.UUID;
 public final class StoredStat {
     private final UUID playerId;
     private final String playerName;
-    private final String playerDispName;
+    private final Component playerDispName;
 
     private long value;
 
-    public StoredStat(UUID playerId, String name, String displayName, long value) {
+    public StoredStat(UUID playerId, String name, Component displayName, long value) {
         this.playerId = playerId;
         this.playerName = name;
         this.playerDispName = displayName;
@@ -37,7 +40,7 @@ public final class StoredStat {
     /**
      * @return Returns the display name of the owning player
      */
-    public String getPlayerDisplayName() {
+    public Component getPlayerDisplayName() {
         return playerDispName;
     }
 
@@ -59,6 +62,6 @@ public final class StoredStat {
 
     @Override
     public String toString() {
-        return String.format("%s: %d", playerDispName, value);
+        return String.format("%s: %d", PlainTextComponentSerializer.plainText().serialize(playerDispName), value);
     }
 }

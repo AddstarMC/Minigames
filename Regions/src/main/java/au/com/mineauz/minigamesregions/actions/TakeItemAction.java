@@ -4,15 +4,13 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.ItemFlag;
 import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -48,7 +46,7 @@ public class TakeItemAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
+    public void describe(@NotNull Map<@NotNull Component, @NotNull Component> out) {
         out.put("Item", itemToSearchFor.getFlag().getType());
         out.put("Count", count);
     }
@@ -177,13 +175,14 @@ public class TakeItemAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) {
         final Menu menu = new Menu(3, getDisplayname(), mgPlayer);
-        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), menu.getSize() - 9);
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         // we need a reference for two object we will create soon down the line
         final CompletableFuture<MenuItemString> futureNameItem = new CompletableFuture<>();
         final CompletableFuture<MenuItemString> futureLoreItem = new CompletableFuture<>();
 
-        final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt("Item", itemToSearchFor.getFlagOrDefault(), new Callback<>() {
+        final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt(itemToSearchFor.getFlagOrDefault(),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_ITEM_NAME), new Callback<>() {
             @Override
             public ItemStack getValue() {
                 return itemToSearchFor.getFlagOrDefault();
@@ -209,13 +208,13 @@ public class TakeItemAction extends AAction {
         });
 
         menu.addItem(itemMenuItem);
-        menu.addItem(count.getMenuItem("Amount", Material.STONE_SLAB, 1, 999));
+        menu.addItem(count.getMenuItem(Material.STONE_SLAB, "Amount", 1, 999));
 
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        final MenuItemString nameMenuItem = new MenuItemString("Display Name",
-                List.of("The name to match.", "Use % to do a wildcard match"), Material.NAME_TAG, new Callback<>() {
+        menu.addItem(matchName.getMenuItem(Material.NAME_TAG, "Match Display Name"));
+        final MenuItemString nameMenuItem = new MenuItemString(Material.NAME_TAG, "Display Name",
+                List.of("The name to match.", "Use % to do a wildcard match"), new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
 
             @Override
@@ -234,7 +233,7 @@ public class TakeItemAction extends AAction {
         futureNameItem.complete(nameMenuItem);
         menu.addItem(nameMenuItem);
 
-        menu.addItem(matchLore.getMenuItem("Match Lore", Material.BOOK));
+        menu.addItem(matchLore.getMenuItem(Material.BOOK, "Match Lore"));
         final MenuItemString loreMenuItem = new MenuItemString("Lore",
                 List.of("The lore to match. Separate", "with semi-colons", "for new lines.", "Use % to do a wildcard match"),
                 Material.BOOK, new Callback<>() {

@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemItemNbt;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -14,7 +15,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -88,27 +88,28 @@ public class ItemReward extends RewardType {
         private final @NotNull List<RewardRarity> options;
 
         public MenuItemReward(@NotNull ItemReward reward) {
-            super(Material.DIAMOND, Component.translatable(Material.DIAMOND.translationKey()));
+            super(Material.DIAMOND, Component.translatable(Material.DIAMOND.translationKey()), new Callback<>() {
+                @Override
+                public ItemStack getValue() {
+                    return item;
+                }
+
+                @Override
+                public void setValue(ItemStack value) {
+                    item = value;
+                }
+            });
             setDisplayItem(reward.getRewardItem());
             options = Arrays.asList(RewardRarity.values());
             this.reward = reward;
             updateDescription();
         }
 
-        @Override
-        public void setDisplayItem(@NotNull ItemStack item) {
-            super.setDisplayItem(item);
-            ItemMeta meta = getDisplayItem().getItemMeta();
-            meta.displayName(Component.translatable(item.translationKey()));
-            getDisplayItem().setItemMeta(meta);
-        }
 
         @Override
         public ItemStack onClickWithItem(ItemStack item) {
-            setDisplayItem(item);
             setRewardItem(item.clone());
-            updateDescription();
-            return getDisplayItem();
+            return super.onClickWithItem(item);
         }
 
         public void updateDescription() {

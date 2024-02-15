@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.backend.mysql;
 
 import au.com.mineauz.minigames.backend.*;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -86,7 +87,8 @@ public class LegacyExporter {
 
         try (ResultSet rs = handler.executeQuery(selectPlayers)) {
             while (rs.next()) {
-                callback.acceptPlayer(UUID.fromString(rs.getString("UUID")), rs.getString("Player"), rs.getString("Player"));
+                callback.acceptPlayer(UUID.fromString(rs.getString("UUID")), rs.getString("Player"),
+                        MiniMessage.miniMessage().deserialize(rs.getString("Player")));
                 ++notifyCount;
                 notifyProgress();
             }

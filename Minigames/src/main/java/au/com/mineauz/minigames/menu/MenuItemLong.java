@@ -61,15 +61,6 @@ public class MenuItemLong extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemLong(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<@NotNull Component> description,
-                        @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
-        super(displayMat, langKey, description);
-        this.value = value;
-        this.min = min;
-        this.max = max;
-        updateDescription();
-    }
-
     public void updateDescription() {
         setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(Component.text(value.getValue(), NamedTextColor.GREEN)));
     }

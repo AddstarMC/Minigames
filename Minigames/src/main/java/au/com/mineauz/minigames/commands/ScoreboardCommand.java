@@ -147,8 +147,8 @@ public class ScoreboardCommand extends ACommand {
                         ));
                 for (StoredStat playerStat : result) {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SCOREBOARD_LIST_PLAYER,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), playerStat.getPlayerDisplayName()),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), stat.displayValue(playerStat.getValue(), settings)));
+                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), playerStat.getPlayerDisplayName()),
+                            Placeholder.component(MinigamePlaceHolderKey.NUMBER.getKey(), stat.displayValue(playerStat.getValue(), settings)));
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL);

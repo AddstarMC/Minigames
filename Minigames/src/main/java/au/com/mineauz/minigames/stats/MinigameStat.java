@@ -82,8 +82,8 @@ public abstract class MinigameStat {
      * @param settings The settings of this stat
      * @return The output string
      */
-    public String displayValue(long value, StatSettings settings) {
-        return String.valueOf(value);
+    public Component displayValue(long value, @NotNull StatSettings settings) {
+        return Component.text(String.valueOf(value));
     }
 
     /**
@@ -93,5 +93,5 @@ public abstract class MinigameStat {
      * @param settings The settings of this stat
      * @return The output string
      */
-    public abstract Component displayValueSign(long value, StatSettings settings);
+    public abstract Component displayValueSign(long value, @NotNull StatSettings settings);
 }

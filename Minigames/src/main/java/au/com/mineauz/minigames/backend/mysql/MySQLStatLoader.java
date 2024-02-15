@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -109,6 +110,6 @@ class MySQLStatLoader {
         String displayName = rs.getString("displayname");
         long value = rs.getLong("value");
 
-        return new StoredStat(playerId, name, displayName, value);
+        return new StoredStat(playerId, name, MiniMessage.miniMessage().deserialize(displayName), value);
     }
 }

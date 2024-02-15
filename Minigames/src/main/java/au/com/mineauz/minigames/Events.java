@@ -255,7 +255,7 @@ public class Events implements Listener {
         }
         if (mgPlayer.isInMenu() && mgPlayer.getNoClose() && mgPlayer.getManualEntry() != null) {
             event.setCancelled(true);
-            ply.setNoClose(false);
+            mgPlayer.setNoClose(false);
             if (event.getClickedBlock() != null) {
                 mgPlayer.setNoClose(false);
                 mgPlayer.getManualEntry().checkValidEntry(event.getClickedBlock().getBlockData().getAsString());

@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.Notifier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -81,9 +82,9 @@ public class FlatFileExporter {
             // Attempt to get information about this player
             OfflinePlayer player = Bukkit.getPlayer(playerId);
             if (player != null) {
-                callback.acceptPlayer(playerId, player.getName(), player.getName());
+                callback.acceptPlayer(playerId, player.getName(), player.getPlayer() != null ? player.getPlayer().displayName() : Component.text(player.getName()));
             } else {
-                callback.acceptPlayer(playerId, "Unknown", "Unknown");
+                callback.acceptPlayer(playerId, "Unknown", Component.text("Unknown"));
             }
 
             ++notifyCount;

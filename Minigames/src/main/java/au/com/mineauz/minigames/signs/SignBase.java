@@ -156,7 +156,11 @@ public class SignBase implements Listener {
 
             for (CTFFlag ctfFlag : takenFlags) {
                 if (ctfFlag.getAttachedToLocation().equals(blockLocation)) {
-                    AMinigameSign mgSign = minigameSigns.get("Flag");
+                    // new creation for easy access to permissions.
+                    // I wish once again that you could define abstract static methods,
+                    // so we could access static values like permissions without an object
+                    // but guarantee that this methode exists
+                    AMinigameSign mgSign = new CTFFlagSign();
 
                     if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                         event.setCancelled(true);

@@ -65,7 +65,7 @@ public class TestBackEnd extends Backend {
         List<StoredStat> result = new ArrayList<>();
         for (StoredGameStats store : playerGameStats) {
             if (store.hasStat(stat) && store.getMinigame().getName().equals(minigame.getName())) {
-                result.add(new StoredStat(store.getPlayer().getUUID(), store.getPlayer().getName(), store.getPlayer().getDisplayName(true), store.getStat(stat)));
+                result.add(new StoredStat(store.getPlayer().getUUID(), store.getPlayer().getName(), store.getPlayer().displayName(), store.getStat(stat)));
             }
         }
         if (Objects.requireNonNull(order) == ScoreboardOrder.DESCENDING) {

@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.backend;
 
 import au.com.mineauz.minigames.stats.StatFormat;
+import net.kyori.adventure.text.Component;
 
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public interface BackendImportCallback {
      * @param name        The username of the player
      * @param displayName the display name of the player
      */
-    void acceptPlayer(UUID playerId, String name, String displayName);
+    void acceptPlayer(UUID playerId, String name, Component displayName);
 
     /**
      * Called to add a minigame to the destination backend.

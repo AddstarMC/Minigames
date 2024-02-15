@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.backend.both;
 
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.stats.StatFormat;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -61,7 +62,8 @@ public class SQLExport {
         notifyNext("Exporting players...");
         try (ResultSet rs = handler.executeQuery(getPlayers)) {
             while (rs.next()) {
-                callback.acceptPlayer(UUID.fromString(rs.getString("player_id")), rs.getString("name"), rs.getString("displayname"));
+                callback.acceptPlayer(UUID.fromString(rs.getString("player_id")), rs.getString("name"),
+                        MiniMessage.miniMessage().deserialize(rs.getString("displayname")));
                 ++notifyCount;
                 notifyProgress();
             }
