@@ -41,6 +41,12 @@ public class MenuItemRewardAdd extends MenuItem {
         this.group = group;
     }
 
+    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable LangKey langKey,
+                             @Nullable List<@NotNull Component> description, @NotNull RewardGroup group) {
+        super(displayMat, langKey, description);
+        this.group = group;
+    }
+
     public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name,
                              @Nullable List<@NotNull Component> description, @NotNull RewardGroup group) {
         super(displayMat, name, description);

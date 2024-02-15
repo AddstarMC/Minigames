@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -67,17 +68,18 @@ public class GameOverModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
-        Menu m = new Menu(6, "Game Over Settings", menu.getViewer());
-        m.addItem(timer.getMenuItem(Material.CLOCK, "Time Length", 0L, null));
+    public void addEditMenuOptions(Menu previous) {
+        Menu menu = new Menu(6, MgMenuLangKey.MENU_GAMEOVER_NAME, previous.getViewer());
+        menu.addItem(timer.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_GAMEOVER_TIME_NAME, 0L, null));
 
-        m.addItem(invincible.getMenuItem("Invincibility", Material.ENDER_PEARL));
-        m.addItem(humiliation.getMenuItem(Material.DIAMOND_SWORD, "Humiliation Mode", List.of("Losers are stripped", "of weapons and can't kill")));
-        m.addItem(interact.getMenuItem("Allow Interact", Material.STONE_PRESSURE_PLATE));
+        menu.addItem(invincible.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_GAMEOVER_INVINCIBILITY_NAME));
+        menu.addItem(humiliation.getMenuItem(Material.DIAMOND_SWORD, MgMenuLangKey.MENU_GAMEOVER_HUMILIATION_NAME,
+                MgMenuLangKey.MENU_GAMEOVER_HUMILIATION_DESCRIPTION));
+        menu.addItem(interact.getMenuItem(Material.STONE_PRESSURE_PLATE, MgMenuLangKey.MENU_GAMEOVER_INTERACT_NAME));
 
-        m.addItem(new MenuItemBack(menu), m.getSize() - 9);
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        menu.addItem(new MenuItemPage("Game Over Settings", Material.OAK_DOOR, m));
+        previous.addItem(new MenuItemPage(Material.OAK_DOOR, MgMenuLangKey.MENU_GAMEOVER_NAME, menu));
     }
 
     @Override
