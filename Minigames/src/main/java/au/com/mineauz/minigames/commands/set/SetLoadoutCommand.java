@@ -71,7 +71,8 @@ public class SetLoadoutCommand extends ASetCommand {
             mil.setAllowDelete(ld.isDeleteable());
             mi.add(mil);
         }
-        loadoutMenu.addItem(new MenuItemLoadoutAdd(Material.ITEM_FRAME, "Add Loadout", mod.getLoadoutMap(), minigame), 53);
+        loadoutMenu.addItem(new MenuItemLoadoutAdd(Material.ITEM_FRAME, MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+                mod.getLoadoutMap(), minigame), 53);
         loadoutMenu.addItems(mi);
 
         loadoutMenu.displayMenu(player);

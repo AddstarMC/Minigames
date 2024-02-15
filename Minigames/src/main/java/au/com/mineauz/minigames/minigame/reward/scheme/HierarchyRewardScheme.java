@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
@@ -32,20 +33,14 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements RewardScheme {
-    private final EnumFlag<Comparison> comparisonType;
-    private final BooleanFlag enableRewardsOnLoss;
-    private final BooleanFlag lossUsesSecondary;
+    private final EnumFlag<Comparison> comparisonType = new EnumFlag<>(Comparison.Greater, "comparison");
+    private final BooleanFlag enableRewardsOnLoss = new BooleanFlag(false, "loss-rewards");
+    private final BooleanFlag lossUsesSecondary = new BooleanFlag(true, "loss-use-secondary");
 
-    private final TreeMap<T, Rewards> primaryRewards;
-    private final TreeMap<T, Rewards> secondaryRewards;
+    private final TreeMap<T, Rewards> primaryRewards = new TreeMap<>();
+    private final TreeMap<T, Rewards> secondaryRewards = new TreeMap<>();
 
     public HierarchyRewardScheme() {
-        primaryRewards = new TreeMap<>();
-        secondaryRewards = new TreeMap<>();
-
-        comparisonType = new EnumFlag<>(Comparison.Greater, "comparison");
-        enableRewardsOnLoss = new BooleanFlag(false, "loss-rewards");
-        lossUsesSecondary = new BooleanFlag(true, "loss-use-secondary");
     }
 
     @Override
@@ -58,18 +53,21 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
     @Override
     public void addMenuItems(final Menu menu) {
-        menu.addItem(new MenuItemEnum<Comparison>(Material.COMPARATOR, "Comparison Type", getConfigurationTypeCallback(), Comparison.class));
-        menu.addItem(enableRewardsOnLoss.getMenuItem(Material.LEVER, "Award On Loss", List.of("When on, awards will still", "be given to losing", "players")));
-        menu.addItem(lossUsesSecondary.getMenuItem(Material.LEVER, "Losers Get Secondary", List.of("When on, the losers", "will only get the", "secondary reward")));
+        menu.addItem(new MenuItemEnum<>(Material.COMPARATOR, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_COMPARISON_NAME,
+                getConfigurationTypeCallback(), Comparison.class));
+        menu.addItem(enableRewardsOnLoss.getMenuItem(Material.LEVER, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_LOSS_AWARD_NAME,
+                MgMenuLangKey.MENUREWARD_SCHEME_HIERARCHY_LOSS_AWARD_DESCRIPTION));
+        menu.addItem(lossUsesSecondary.getMenuItem(Material.LEVER, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_LOSS_SECONDARY_NAME,
+                MgMenuLangKey.MENUREWARD_SCHEME_HIERARCHY_LOSS_SECONDARY_DESCRIPTION));
         menu.addItem(new MenuItemNewLine());
 
-        MenuItemCustom primary = new MenuItemCustom(Material.CHEST, "Primary Rewards");
+        MenuItemCustom primary = new MenuItemCustom(Material.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME);
         primary.setClick(() -> {
             showRewardsMenu(primaryRewards, menu.getViewer(), menu);
             return null;
         });
 
-        MenuItemCustom secondary = new MenuItemCustom(Material.CHEST, "Secondary Rewards");
+        MenuItemCustom secondary = new MenuItemCustom(Material.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME);
         secondary.setClick(() -> {
             showRewardsMenu(secondaryRewards, menu.getViewer(), menu);
             return null;
@@ -86,7 +84,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             submenu.addItem(new MenuItemRewardPair(Material.CHEST, rewards, key));
         }
 
-        submenu.addItem(new MenuItemAddReward(MenuUtility.getCreateMaterial(), "Add Reward Set", rewards), submenu.getSize() - 2);
+        submenu.addItem(new MenuItemAddReward(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_REWARD_SET_ADD_NAME, rewards), submenu.getSize() - 2);
         submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 1);
 
         submenu.setPreviousPage(parent);
@@ -337,7 +335,14 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     private class MenuItemAddReward extends MenuItem {
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
 
-        public MenuItemAddReward(@Nullable Material displayMat, @NotNull Component name,
+        public MenuItemAddReward(@Nullable Material displayMat, @NotNull LangKey langKey,
+                                 @NotNull TreeMap<@NotNull T, @NotNull Rewards> map) {
+            super(displayMat, langKey);
+
+            this.map = map;
+        }
+
+        public MenuItemAddReward(@Nullable Material displayMat, @Nullable Component name,
                                  @NotNull TreeMap<@NotNull T, @NotNull Rewards> map) {
             super(displayMat, name);
 
@@ -349,11 +354,12 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
             mgPlayer.getPlayer().closeInventory();
+            final int reopenSeconds = 10;
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(10)));
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
 
             mgPlayer.setManualEntry(this);
-            getContainer().startReopenTimer(10);
+            getContainer().startReopenTimer(reopenSeconds);
 
             return null;
         }

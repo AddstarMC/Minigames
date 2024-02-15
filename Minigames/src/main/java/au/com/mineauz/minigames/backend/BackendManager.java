@@ -138,7 +138,7 @@ public class BackendManager {
      * @param length   The number of stats to retrieve
      * @return A CompletableFuture that returns the list of StoredStats loaded
      */
-    public CompletableFuture<List<StoredStat>> loadStats(final Minigame minigame, final MinigameStat stat, final StatValueField field, final ScoreboardOrder order, final int offset, final int length) {
+    public CompletableFuture<List<StoredStat>> loadStats(final Minigame minigame, final MinigameStat stat, final StatisticValueField field, final ScoreboardOrder order, final int offset, final int length) {
         return CompletableFuture.supplyAsync(() -> backend.loadStats(minigame, stat, field, order, offset, length));
     }
 
@@ -151,7 +151,7 @@ public class BackendManager {
      * @param playerId The player that owns the stat
      * @return The value of the stat. If it is not set, 0 will be returned
      */
-    public CompletableFuture<Long> loadSingleStat(final Minigame minigame, final MinigameStat stat, final StatValueField field, final UUID playerId) {
+    public CompletableFuture<Long> loadSingleStat(final Minigame minigame, final MinigameStat stat, final StatisticValueField field, final UUID playerId) {
         return CompletableFuture.supplyAsync(() -> backend.getStat(minigame, playerId, stat, field));
     }
 

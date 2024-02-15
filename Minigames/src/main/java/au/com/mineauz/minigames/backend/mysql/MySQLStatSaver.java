@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.backend.StatementKey;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatFormat;
-import au.com.mineauz.minigames.stats.StatValueField;
+import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
@@ -35,10 +35,10 @@ class MySQLStatSaver {
         insertStatMax = new StatementKey("INSERT INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `entered`) VALUES (?, ?, ?, ?, Now()) ON DUPLICATE KEY UPDATE `value`=GREATEST(`value`, VALUES(`value`))");
 
         // Prepare lookup table
-        insertStatements[StatValueField.Last.ordinal()] = insertStat;
-        insertStatements[StatValueField.Min.ordinal()] = insertStatMin;
-        insertStatements[StatValueField.Max.ordinal()] = insertStatMax;
-        insertStatements[StatValueField.Total.ordinal()] = insertStatTotal;
+        insertStatements[StatisticValueField.Last.ordinal()] = insertStat;
+        insertStatements[StatisticValueField.Min.ordinal()] = insertStatMin;
+        insertStatements[StatisticValueField.Max.ordinal()] = insertStatMax;
+        insertStatements[StatisticValueField.Total.ordinal()] = insertStatTotal;
     }
 
     public void saveData(StoredGameStats data) {
@@ -96,7 +96,7 @@ class MySQLStatSaver {
     }
 
     private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, StatFormat format, UUID player, int minigameId) throws SQLException {
-        for (StatValueField field : format.getFields()) {
+        for (StatisticValueField field : format.getFields()) {
             handler.batchUpdate(insertStatements[field.ordinal()], player.toString(), minigameId, stat.getName() + field.getSuffix(), value);
         }
     }

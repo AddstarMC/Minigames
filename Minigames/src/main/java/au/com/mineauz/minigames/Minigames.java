@@ -16,8 +16,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.recorder.BasicRecorder;
 import au.com.mineauz.minigames.signs.SignBase;
-import au.com.mineauz.minigames.stats.MinigameStats;
-import au.com.mineauz.minigames.stats.StatValueField;
+import au.com.mineauz.minigames.stats.MinigameStatistics;
+import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.milkbowl.vault.economy.Economy;
@@ -135,19 +135,19 @@ public class Minigames extends JavaPlugin {
 
         final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
         if (this.minigameManager.hasLoadouts()) {
-            for (final String loadout : this.minigameManager.getLoadouts()) {
-                for (final Integer slot : this.minigameManager.getLoadout(loadout).getItemSlots()) {
-                    globalLoadouts.getConfig().set(loadout + '.' + slot, this.minigameManager.getLoadout(loadout).getItem(slot));
+            for (final PlayerLoadout loadout : this.minigameManager.getGlobalLoadouts()) {
+                for (final Integer slot : loadout.getItemSlots()) {
+                    globalLoadouts.getConfig().set(loadout.getName() + '.' + slot, loadout.getItem(slot));
                 }
-                if (!this.minigameManager.getLoadout(loadout).getAllPotionEffects().isEmpty()) {
-                    for (final PotionEffect eff : this.minigameManager.getLoadout(loadout).getAllPotionEffects()) {
+                if (!loadout.getAllPotionEffects().isEmpty()) {
+                    for (final PotionEffect eff : loadout.getAllPotionEffects()) {
                         globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
                         globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
                     }
                 } else {
                     globalLoadouts.getConfig().set(loadout + ".potions", null);
                 }
-                if (this.minigameManager.getLoadout(loadout).getUsePermissions()) {
+                if (loadout.getUsePermissions()) {
                     globalLoadouts.getConfig().set(loadout + ".usepermissions", true);
                 } else {
                     globalLoadouts.getConfig().set(loadout + ".usepermissions", null);
@@ -475,7 +475,7 @@ public class Minigames extends JavaPlugin {
     public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
         MinigameMessageManager.debugMessage("Scheduling SQL data save for " + saveData);
 
-        final CompletableFuture<Long> winCountFuture = this.backend.loadSingleStat(saveData.getMinigame(), MinigameStats.Wins, StatValueField.Total, saveData.getPlayer().getUUID());
+        final CompletableFuture<Long> winCountFuture = this.backend.loadSingleStat(saveData.getMinigame(), MinigameStatistics.Wins, StatisticValueField.Total, saveData.getPlayer().getUUID());
         this.backend.saveStats(saveData);
 
         winCountFuture.thenApply(winCount -> Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> {

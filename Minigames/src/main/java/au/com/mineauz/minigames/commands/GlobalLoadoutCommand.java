@@ -1,14 +1,12 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
-import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -20,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlobalLoadoutCommand extends ACommand { //todo merge with loadout command
+public class GlobalLoadoutCommand extends ACommand {
     private final MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
 
     @Override
@@ -30,7 +28,7 @@ public class GlobalLoadoutCommand extends ACommand { //todo merge with loadout c
 
     @Override
     public @NotNull String @Nullable [] getAliases() {
-        return new String[]{"gloadout", "loadout"};
+        return new String[]{"gloadout"};
     }
 
     @Override
@@ -57,21 +55,22 @@ public class GlobalLoadoutCommand extends ACommand { //todo merge with loadout c
     public boolean onCommand(@NotNull CommandSender sender,
                              @NotNull String @NotNull [] args) {
         MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
-        Menu loadouts = new Menu(6, getName(), player);
+        Menu globalLoadoutMenu = new Menu(6, MgMenuLangKey.MENU_GLOBALLOADOUT_NAME, player);
+        List<MenuItem> menuItems = new ArrayList<>();
 
-        List<MenuItem> mi = new ArrayList<>();
-        for (String ld : mdata.getLoadouts()) {
+        for (PlayerLoadout globalLoadout : mdata.getGlobalLoadouts()) {
             Material displayMaterial = Material.WHITE_STAINED_GLASS_PANE;
-            if (!mdata.getLoadout(ld).getItemSlots().isEmpty()) {
-                displayMaterial = mdata.getLoadout(ld).getItem((Integer) mdata.getLoadout(ld).getItemSlots().toArray()[0]).getType();
+            if (!globalLoadout.getItemSlots().isEmpty()) {
+                displayMaterial = globalLoadout.getItem((Integer) globalLoadout.getItemSlots().toArray()[0]).getType();
             }
-            mi.add(new MenuItemDisplayLoadout(displayMaterial, ld,
-                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), mdata.getLoadout(ld)));
+            menuItems.add(new MenuItemDisplayLoadout(displayMaterial, globalLoadout.getDisplayName(),
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
         }
-        loadouts.addItem(new MenuItemLoadoutAdd(Material.ITEM_FRAME, "Add Loadout", mdata.getLoadoutMap()), 53);
-        loadouts.addItems(mi);
+        globalLoadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+                mdata.getGlobalLoadoutMap()), 53);
+        globalLoadoutMenu.addItems(menuItems);
 
-        loadouts.displayMenu(player);
+        globalLoadoutMenu.displayMenu(player);
         return true;
     }
 

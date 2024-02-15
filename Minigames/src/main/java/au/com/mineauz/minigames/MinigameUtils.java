@@ -134,7 +134,7 @@ public class MinigameUtils {
             Component lastTimeComponent = timeComponents.pop();
             if (!timeComponents.isEmpty()) {
                 return Component.join(JoinConfiguration.commas(true), timeComponents).
-                        appendSpace().append(MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_AND)).appendSpace().
+                        appendSpace().append(MinigameMessageManager.getMgMessage(MinigameLangKey.AND)).appendSpace().
                         append(lastTimeComponent);
             } else {
                 return lastTimeComponent;

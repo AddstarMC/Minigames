@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStat;
-import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StatFormat;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -45,7 +45,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
             }
         }));
 
-        if (stat != MinigameStats.Losses) {
+        if (stat != MinigameStatistics.Losses) {
             subMenu.addItem(new MenuItemList<>(Material.ENDER_CHEST, MgMenuLangKey.MENU_STAT_STORAGEFORMAT, new Callback<>() {
                 @Override
                 public StatFormat getValue() {

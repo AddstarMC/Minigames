@@ -1048,10 +1048,6 @@ public class Minigame implements ScriptObject {
         return settings;
     }
 
-    private record TypeDependentDisplayData(@NotNull MenuItem menuItem,
-                                            @NotNull List<@NotNull MinigameType> applicableTypes, int slot) {
-    }
-
     public void displayMenu(MinigamePlayer player) {
         Menu mainMenu = new Menu(6, getDisplayName(), player);
         Menu playerMenu = new Menu(6, getDisplayName(), player);
@@ -1582,5 +1578,9 @@ public class Minigame implements ScriptObject {
     @Override
     public String getAsString() {
         return getName();
+    }
+
+    private record TypeDependentDisplayData(@NotNull MenuItem menuItem,
+                                            @NotNull List<@NotNull MinigameType> applicableTypes, int slot) {
     }
 }

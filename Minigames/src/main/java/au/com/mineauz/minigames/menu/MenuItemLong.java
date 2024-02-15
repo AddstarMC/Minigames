@@ -43,6 +43,15 @@ public class MenuItemLong extends MenuItem {
         updateDescription();
     }
 
+    public MenuItemLong(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<Component> description,
+                        @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
+        super(displayMat, langKey, description);
+        this.value = value;
+        this.min = min;
+        this.max = max;
+        updateDescription();
+    }
+
     public MenuItemLong(@Nullable Material displayMat, @Nullable Component name, @Nullable List<Component> description,
                         @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
         super(displayMat, name, description);

@@ -88,7 +88,7 @@ public class ItemReward extends RewardType {
         private final @NotNull List<RewardRarity> options;
 
         public MenuItemReward(@NotNull ItemReward reward) {
-            super(Material.DIAMOND, "PLACEHOLDER", List.of("Click with item", "to change."));
+            super(Material.DIAMOND, Component.translatable(Material.DIAMOND.translationKey()));
             setDisplayItem(reward.getRewardItem());
             options = Arrays.asList(RewardRarity.values());
             this.reward = reward;

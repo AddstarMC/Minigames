@@ -80,8 +80,7 @@ public class MinigameManager {
             final ResourcePackModule module = ResourcePackModule.getMinigameModule(minigame);
             if (module != null) {
                 if (module.isEnabled()) {
-                    final String name = module.getResourcePackName();
-                    final ResourcePack pack = PLUGIN.getResourceManager().getResourcePack(name);
+                    final ResourcePack pack = PLUGIN.getResourceManager().getResourcePack(module.getResourcePackName());
                     if (pack.isValid()) {
                         for (final MinigamePlayer player : minigame.getPlayers()) {
                             player.applyResourcePack(pack);
@@ -237,11 +236,11 @@ public class MinigameManager {
         this.globalLoadouts.remove(name);
     }
 
-    public @NotNull Set<@NotNull String> getLoadouts() {
-        return this.globalLoadouts.keySet();
+    public @NotNull List<@NotNull PlayerLoadout> getGlobalLoadouts() {
+        return new ArrayList<>(this.globalLoadouts.values());
     }
 
-    public @NotNull Map<@NotNull String, @NotNull PlayerLoadout> getLoadoutMap() {
+    public @NotNull Map<@NotNull String, @NotNull PlayerLoadout> getGlobalLoadoutMap() {
         return this.globalLoadouts;
     }
 
@@ -266,7 +265,7 @@ public class MinigameManager {
         this.rewardSigns.put(MinigameUtils.createLocationID(loc), flag);
     }
 
-    public @Nullable Rewards getRewardSign(final @NotNull Location loc) {
+    public @Nullable Rewards getRewardsRewardSign(final @NotNull Location loc) {
         return this.rewardSigns.get(MinigameUtils.createLocationID(loc)).getFlag();
     }
 

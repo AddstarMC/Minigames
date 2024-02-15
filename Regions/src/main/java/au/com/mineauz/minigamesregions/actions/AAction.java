@@ -22,7 +22,7 @@ public abstract class AAction implements ActionInterface {
     /**
      * Logs Debug re these 2 items.
      *
-     * @param mgPlayer   the player
+     * @param mgPlayer     the player
      * @param scriptObject a script object
      */
     public void debug(final @NotNull MinigamePlayer mgPlayer, final @NotNull ScriptObject scriptObject) {

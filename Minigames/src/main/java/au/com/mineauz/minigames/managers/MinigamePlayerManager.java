@@ -21,7 +21,7 @@ import au.com.mineauz.minigames.recorder.RegenRecorder;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
 import au.com.mineauz.minigames.stats.DynamicMinigameStat;
-import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -224,7 +224,8 @@ public class MinigamePlayerManager {
 
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_BET_INCORRECTITEMAMOUNTINFO,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(mpBets.getHighestItemBet().getAmount())),
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), mpBets.getHighestItemBet().getType().name())); //todo use translation
+                                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(),
+                                        Component.translatable(mpBets.getHighestItemBet().getType().translationKey())));
                     }
                     return false;
                 }
@@ -371,7 +372,7 @@ public class MinigamePlayerManager {
     public ResourcePack getResourcePack(@NotNull Minigame game) {
         ResourcePackModule module = ResourcePackModule.getMinigameModule(game);
         if (module != null && module.isEnabled()) {
-            ResourcePack pack = plugin.getResourceManager().getResourcePack(module.getResourcePackName());
+            ResourcePack pack = plugin.getResourceManager().getResourcePack(module.getName());
             if (pack != null && pack.isValid()) {
                 return pack;
             } else {
@@ -382,7 +383,8 @@ public class MinigamePlayerManager {
     }
 
     public void clearResourcePack(@NotNull Minigame game) {
-        ResourcePack pack = plugin.getResourceManager().getResourcePack("empty"); //todo ressource pack manager - allow multiple!
+        ResourcePack pack = plugin.getResourceManager().getResourcePack(
+                MinigameMessageManager.getStrippedMgMessage(MinigameLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME)); //todo ressource pack manager - allow multiple!
         if (pack != null && pack.isValid()) {
             for (MinigamePlayer mgPlayer : game.getPlayers()) {
                 mgPlayer.applyResourcePack(pack);
@@ -566,9 +568,9 @@ public class MinigamePlayerManager {
                 if (!isWinner) {
                     if (!minigame.canSaveCheckpoint() && minigame.isEnabled()) {
                         StoredGameStats saveData = new StoredGameStats(minigame, mgPlayer);
-                        saveData.addStat(MinigameStats.Attempts, 1);
+                        saveData.addStat(MinigameStatistics.Attempts, 1);
 
-                        for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
+                        for (DynamicMinigameStat stat : MinigameStatistics.getDynamicStats()) {
                             if (stat.doesApply(minigame, mgPlayer, false)) {
                                 saveData.addStat(stat, stat.getValue(minigame, mgPlayer, false));
                             }
@@ -795,21 +797,21 @@ public class MinigamePlayerManager {
                 mgWinner.setEndTime(System.currentTimeMillis());
 
                 StoredGameStats saveData = new StoredGameStats(minigame, mgWinner);
-                saveData.addStat(MinigameStats.Attempts, 1);
-                saveData.addStat(MinigameStats.Wins, 1);
+                saveData.addStat(MinigameStatistics.Attempts, 1);
+                saveData.addStat(MinigameStatistics.Wins, 1);
 
-                saveData.addStat(MinigameStats.Kills, mgWinner.getKills());
-                saveData.addStat(MinigameStats.Deaths, mgWinner.getDeaths());
-                saveData.addStat(MinigameStats.Score, mgWinner.getScore());
-                saveData.addStat(MinigameStats.Reverts, mgWinner.getReverts());
-                saveData.addStat(MinigameStats.CompletionTime, mgWinner.getEndTime() - mgWinner.getStartTime() + mgWinner.getStoredTime());
+                saveData.addStat(MinigameStatistics.Kills, mgWinner.getKills());
+                saveData.addStat(MinigameStatistics.Deaths, mgWinner.getDeaths());
+                saveData.addStat(MinigameStatistics.Score, mgWinner.getScore());
+                saveData.addStat(MinigameStatistics.Reverts, mgWinner.getReverts());
+                saveData.addStat(MinigameStatistics.CompletionTime, mgWinner.getEndTime() - mgWinner.getStartTime() + mgWinner.getStoredTime());
 
                 if (minigame.getShowCompletionTime()) {
                     MinigameMessageManager.sendMgMessage(mgWinner, MinigameMessageType.INFO, MinigameLangKey.PLAYER_COMPLETIONTIME,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf((double) (winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime()) / 1000)));
                 }
 
-                for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
+                for (DynamicMinigameStat stat : MinigameStatistics.getDynamicStats()) {
                     if (stat.doesApply(minigame, mgWinner, true)) {
                         saveData.addStat(stat, stat.getValue(minigame, mgWinner, true));
                     }
@@ -870,10 +872,10 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void broadcastEndGame(@NotNull List<@NotNull MinigamePlayer> winners, @NotNull Minigame minigame) {
+    public void broadcastEndGame(@NotNull List<@NotNull MinigamePlayer> winners, @NotNull Minigame minigame) { // todo to much hardcoded here
         if (plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()) {
-            if (minigame.isTeamGame()) {
-                TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+            TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+            if (minigame.isTeamGame() && teamsModule != null) {
                 if (!winners.isEmpty() || teamsModule.getDefaultWinner() != null) {
                     Team team;
                     if (!winners.isEmpty()) {
@@ -916,29 +918,42 @@ public class MinigamePlayerManager {
                         score = MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_TEAM_SCORE,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(winner.getScore())));
                     }
-                    MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_BROADCAST_WIN,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), winner.getDisplayName(minigame.usePlayerDisplayNames())),
-                            Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
-                            Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), score)), minigame, MinigameMessageType.WIN);
+
+                    if (minigame.usePlayerDisplayNames()) {
+                        MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_BROADCAST_WIN,
+                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), winner.displayName()),
+                                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
+                                Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), score)), minigame, MinigameMessageType.WIN);
+                    } else {
+                        MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_BROADCAST_WIN,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), winner.getName()),
+                                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
+                                Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), score)), minigame, MinigameMessageType.WIN);
+                    }
                 } else if (winners.size() > 1) {
-                    TextComponent.Builder winComp = Component.text();
+                    TextComponent.Builder winCompBuilder = Component.text();
                     winners.sort(Comparator.comparingInt(MinigamePlayer::getScore));
 
                     for (MinigamePlayer pl : winners) {
                         if (winners.indexOf(pl) < 2) {
-                            winComp.append(Component.text(pl.getDisplayName(minigame.usePlayerDisplayNames())));
-                            if (winners.indexOf(pl) + 2 >= winners.size()) {
-                                winComp.append(" and ");
+                            if (minigame.usePlayerDisplayNames()) {
+                                winCompBuilder.append(pl.displayName());
                             } else {
-                                winComp.append(", ");
+                                winCompBuilder.append(Component.text(pl.getName()));
+                            }
+                            if (winners.indexOf(pl) + 2 >= winners.size()) {
+                                winCompBuilder.appendSpace().append(MinigameMessageManager.getMgMessage(MinigameLangKey.AND)).appendSpace();
+                            } else {
+                                winCompBuilder.append(Component.text(", "));
                             }
                         } else {
-                            winComp.append((winners.size() - 3)).append(" others");
+                            winCompBuilder.append(Component.text(String.valueOf(winners.size() - 3))).
+                                    appendSpace().append(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_BROADCAST_OTHERS));
                         }
                     }
                     MinigameMessageManager.broadcastServer(
                             MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_BROADCAST_WIN,
-                                    Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), winComp.build()),
+                                    Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), winCompBuilder.build()),
                                     Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), "")),
                             minigame, MinigameMessageType.WIN);

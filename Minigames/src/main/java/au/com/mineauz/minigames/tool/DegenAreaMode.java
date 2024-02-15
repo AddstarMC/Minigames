@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.tool;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -25,15 +26,12 @@ public class DegenAreaMode implements ToolMode {
 
     @Override
     public Component getDisplayName() {
-        return "Degeneration Area";
+        return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_DEGENAREA_NAME);
     }
 
     @Override
-    public List<Component> getDescription() { //todo translation String
-        return List.of(
-                "Selects the degeneration",
-                "area with right click",
-                "finalise with left");
+    public List<Component> getDescription() {
+        return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_DEGENAREA_DESCRIPTION);
     }
 
     @Override

@@ -11,7 +11,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -137,7 +136,8 @@ public class ResourcePackCommand extends ACommand {
     private void sendList(@NotNull CommandSender sender) {
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_RESSOUCEPACK_LIST_HEADER);
         MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
-                Component.join(JoinConfiguration.commas(true), PLUGIN.getResourceManager().getResourceNames()));
+                Component.join(JoinConfiguration.commas(true),
+                        PLUGIN.getResourceManager().getResourcePacks().stream().map(ResourcePack::getDisplayName).toList()));
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_DIVIDER_LARGE);
     }
 
@@ -150,8 +150,7 @@ public class ResourcePackCommand extends ACommand {
             }
             case 2 -> {
                 switch (args[0]) {
-                    case "apply", "remove" -> result.addAll(PLUGIN.getResourceManager().getResourceNames().stream().
-                            map(comp -> PlainTextComponentSerializer.plainText().serialize(comp)).toList());
+                    case "apply", "remove" -> result.addAll(PLUGIN.getResourceManager().getResourceNames());
                     case "addnew", "clear" -> {
                         return null;
                     }

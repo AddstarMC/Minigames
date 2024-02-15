@@ -2,8 +2,8 @@ package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.MinigameSave;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.ResourcePack;
-import net.kyori.adventure.text.Component;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -15,7 +15,7 @@ import java.util.*;
 
 public class ResourcePackManager { //todo work with multiple ressource packs
     final static Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
-    private final Map<Component, ResourcePack> resources = new HashMap<>();
+    private final Map<String, ResourcePack> resources = new HashMap<>();
     private boolean enabled = true;
     private MinigameSave config;
 
@@ -50,8 +50,8 @@ public class ResourcePackManager { //todo work with multiple ressource packs
 
     private boolean loadEmptyPack() {
         try {
-            URL u = new URL("https://github.com/AddstarMC/Minigames/raw/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
-            ResourcePack empty = new ResourcePack("empty", u);
+            URL url = new URL("https://github.com/AddstarMC/Minigames/raw/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
+            ResourcePack empty = new ResourcePack(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME), url);
             addResourcePack(empty);
             return true;
         } catch (MalformedURLException e) {
@@ -68,12 +68,12 @@ public class ResourcePackManager { //todo work with multiple ressource packs
 
     public ResourcePack addResourcePack(ResourcePack pack) {
         if (!enabled) return null;
-        return resources.put(pack.getDisplayName(), pack);
+        return resources.put(pack.getName(), pack);
     }
 
     public void removeResourcePack(ResourcePack pack) {
         if (!enabled) return;
-        resources.remove(pack.getDisplayName());
+        resources.remove(pack.getName());
         saveResources();
     }
 
@@ -90,7 +90,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
             }
         }
         for (final ResourcePack pack : resources) {
-            if (pack.getDisplayName().equals("empty")) {
+            if (pack.getName().equals(MinigameMessageManager.getStrippedMgMessage(MinigameLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME))) {
                 emptyPresent = true;
                 enabled = true;
             }
@@ -113,7 +113,11 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         config.saveConfig();
     }
 
-    public Set<Component> getResourceNames() {
+    public Set<ResourcePack> getResourcePacks() {
+        return new HashSet<>(resources.values());
+    }
+
+    public Set<String> getResourceNames() {
         return resources.keySet();
     }
 }

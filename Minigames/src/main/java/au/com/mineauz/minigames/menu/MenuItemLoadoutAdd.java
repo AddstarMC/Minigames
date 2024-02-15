@@ -46,15 +46,22 @@ public class MenuItemLoadoutAdd extends MenuItem {
         this.minigame = mgm;
     }
 
-    public MenuItemLoadoutAdd(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name,
                               @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
         super(displayMat, name);
         this.loadouts = loadouts;
     }
 
-    public MenuItemLoadoutAdd(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                              @Nullable Material displayMat, @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
+    public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name,
+                              @Nullable List<@NotNull Component> description,
+                              @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
         super(displayMat, name, description);
+        this.loadouts = loadouts;
+    }
+
+    public MenuItemLoadoutAdd(@Nullable Material displayMat, @NotNull MgMenuLangKey langKey,
+                              @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
+        super(displayMat, langKey);
         this.loadouts = loadouts;
     }
 

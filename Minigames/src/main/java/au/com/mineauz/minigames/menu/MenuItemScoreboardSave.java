@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -11,6 +12,11 @@ import java.util.List;
 
 public class MenuItemScoreboardSave extends MenuItem {
     private final ScoreboardDisplay disp;
+
+    public MenuItemScoreboardSave(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull ScoreboardDisplay disp) {
+        super(displayMat, langKey);
+        this.disp = disp;
+    }
 
     public MenuItemScoreboardSave(@Nullable Material displayMat, @Nullable Component name, @NotNull ScoreboardDisplay disp) {
         super(displayMat, name);

@@ -65,7 +65,8 @@ public class MenuItemNodeExecutor extends MenuItem {
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_DESCRIPTION),
                 ex.getTriggerCountCallback(), 0, null));
 
-        m.addItem(new MenuItemBoolean(Material.ENDER_PEARL,
+        m.addItem(new MenuItemBoolean(
+                Material.ENDER_PEARL,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_PERPLAYER_DESCRIPTION),
                 ex.getIsTriggerPerPlayerCallback()));

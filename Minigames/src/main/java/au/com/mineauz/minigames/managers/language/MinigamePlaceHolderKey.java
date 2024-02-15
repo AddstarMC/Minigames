@@ -8,6 +8,7 @@ public enum MinigamePlaceHolderKey implements PlaceHolderKey {
     COORDINATE_X("x"),
     COORDINATE_Y("y"),
     COORDINATE_Z("z"),
+    REWARD("reward"),
     DEATHS("deaths"),
     DIRECTION("direction"),
     FLAG("flag"),

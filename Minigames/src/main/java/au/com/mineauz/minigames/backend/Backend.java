@@ -45,7 +45,7 @@ public abstract class Backend {
      * @param order    The order to get the stats in
      * @return A list of stats matching the requirements
      */
-    public abstract List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order);
+    public abstract List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order);
 
     /**
      * Loads player stats from the backend. This method is blocking.
@@ -58,7 +58,7 @@ public abstract class Backend {
      * @param length   the maximum amount of data to return
      * @return A list of stats matching the requirements
      */
-    public abstract List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length);
+    public abstract List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length);
 
     /**
      * Gets the value of a stat for a player. This method is blocking
@@ -69,7 +69,7 @@ public abstract class Backend {
      * @param field    the field of the stat to load
      * @return The value of the stat
      */
-    public abstract long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field);
+    public abstract long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatisticValueField field);
 
     /**
      * Loads stat settings for the minigame

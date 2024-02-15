@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
@@ -18,6 +19,11 @@ import java.util.List;
 public class MenuItemRewardAdd extends MenuItem {
     private Rewards rewards = null;
     private RewardGroup group = null;
+
+    public MenuItemRewardAdd(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Rewards rewards) {
+        super(displayMat, langKey);
+        this.rewards = rewards;
+    }
 
     public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Rewards rewards) {
         super(displayMat, name);

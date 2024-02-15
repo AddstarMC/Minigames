@@ -2,12 +2,13 @@ package au.com.mineauz.minigamesregions.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.commands.ACommand;
 import au.com.mineauz.minigames.commands.set.ASetCommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetRegionCommand implements ASetCommand {
+public class SetRegionCommand extends ASetCommand {
 
     @Override
     public @NotNull String getName() {
@@ -38,16 +39,12 @@ public class SetRegionCommand implements ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return List.of("Creates, edits and removes Minigame regions");
+        return RegionMessageManager.getMessage(RegionLangKey.COMMAND_REGION_DESCIPTION);
     }
 
     @Override
-    public Component getUsage() {
-        return new String[]{
-                "/minigame set <Minigame> region create <name>",
-                "/minigame set <Minigame> region remove <name>",
-                "/minigame set <Minigame> region modify"
-        };
+    public Component getUsage() { //todo remove selection and delete to remove
+        return RegionMessageManager.getMessage(RegionLangKey.COMMAND_REGION_USAGE);
     }
 
     @Override
@@ -56,61 +53,68 @@ public class SetRegionCommand implements ASetCommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             @NotNull String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String @NotNull [] args) {
+        if (args != null) {
+            if (sender instanceof Player player) {
+                MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
+                RegionModule rmod = RegionModule.getMinigameModule(minigame);
 
-        MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
-        RegionModule rmod = RegionModule.getMinigameModule(minigame);
-        if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("create")) {
-                if (mgPlayer.hasSelection()) {
-                    String name = args[1];
-                    rmod.addRegion(name, new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
-                    mgPlayer.clearSelection();
+                if (rmod != null) {
+                    if (args.length == 2) {
+                        if (args[0].equalsIgnoreCase("create")) {
+                            if (mgPlayer.hasSelection()) {
+                                String name = args[1];
+                                rmod.addRegion(name, new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
+                                mgPlayer.clearSelection();
 
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
-                            RegionLangKey.REGION_CREATED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
-                            Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name));
+                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                                        RegionLangKey.REGION_CREATED,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name));
+                            } else {
+                                // this is a message already in the main plugin
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
+                            }
+                            return true;
+                        } else if (args[0].equalsIgnoreCase("remove")) {
+                            if (rmod.hasRegion(args[1])) {
+                                rmod.removeRegion(args[1]);
+                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                                        RegionLangKey.REGION_REMOVED,
+                                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), args[1]),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                            } else {
+                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                                        RegionLangKey.REGION_ERROR_NOREGION,
+                                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), args[1]),
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                            }
+                            return true;
+                        }
+
+                    } else if (args.length == 1) {
+                        if (args[0].equalsIgnoreCase("modify")) {
+                            rmod.displayMenu(mgPlayer, null);
+                            return true;
+                        }
+                    }
                 } else {
-                    // this is a message already in the main plugin
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getName()));
                 }
-                return true;
-            } else if (args[0].equalsIgnoreCase("remove")) {
-                if (rmod.hasRegion(args[1])) {
-                    rmod.removeRegion(args[1]);
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
-                            RegionLangKey.REGION_REMOVED,
-                            Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), args[1]),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
-                } else {
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                            RegionLangKey.REGION_ERROR_NOREGION,
-                            Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), args[1]),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
-                }
-                return true;
-            }
-
-        } else if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("modify")) {
-                rmod.displayMenu(mgPlayer, null);
-                return true;
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             }
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
-
         if (args.length == 1) {
-            List<String> tab = new ArrayList<>();
-            tab.add("create");
-            tab.add("modify");
-            tab.add("remove");
+            List<String> tab = List.of("create", "modify", "remove");
             return MinigameUtils.tabCompleteMatch(tab, args[0]);
         } else if (args.length == 2) {
             List<String> tab = new ArrayList<>();
@@ -124,5 +128,4 @@ public class SetRegionCommand implements ASetCommand {
         }
         return null;
     }
-
 }

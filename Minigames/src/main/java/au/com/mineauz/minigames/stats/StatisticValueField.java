@@ -2,28 +2,29 @@ package au.com.mineauz.minigames.stats;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 
 /**
  * These are the components of {@link StatFormat} indicating what
  * fields are available
  */
-public enum StatValueField {
-    Last("", "Last Value"),
-    Min("_min", "Minimum"),
-    Max("_max", "Maximum"),
-    Total("_total", "Total");
+public enum StatisticValueField {
+    Last("", MinigameLangKey.STATISTIC_TITLE_LAST),
+    Min("_min", MinigameLangKey.STATISTIC_TITLE_MIN),
+    Max("_max", MinigameLangKey.STATISTIC_TITLE_MAX),
+    Total("_total", MinigameLangKey.STATISTIC_TITLE_TOTAL);
 
-    private final Component title;
+    private final LangKey titleLangKey;
     private final String suffix;
 
-    StatValueField(String suffix, LangKey titleLangKey) {
+    StatisticValueField(String suffix, LangKey titleLangKey) {
         this.suffix = suffix;
-        this.title = MinigameMessageManager.getMgMessage(titleLangKey);
+        this.titleLangKey = titleLangKey;
     }
 
     public Component getTitle() {
-        return title;
+        return MinigameMessageManager.getMgMessage(titleLangKey);
     }
 
     public String getSuffix() {

@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.TimeFlag;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
@@ -48,16 +49,16 @@ public class WeatherTimeModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
-        Menu m = new Menu(6, "Time and Weather", menu.getViewer());
+    public void addEditMenuOptions(Menu previosMenu) {
+        Menu menu = new Menu(6, MgMenuLangKey.MENU_TIMEWEATHER_NAME, previosMenu.getViewer());
 
-        m.addItem(useCustomTime.getMenuItem("Use Custom Time", Material.CLOCK));
-        m.addItem(time.getMenuItem(Material.CLOCK, "Time of Day", 0L, 24000L));
-        m.addItem(useCustomWeather.getMenuItem("Use Custom Weather", Material.WATER_BUCKET));
-        m.addItem(weather.getMenuItem("Weather Type", Material.WATER_BUCKET));
-        m.addItem(new MenuItemBack(menu), m.getSize() - 9);
+        menu.addItem(useCustomTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_USE_NAME));
+        menu.addItem(time.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_NAME, 0L, 24000L));
+        menu.addItem(useCustomWeather.getMenuItem(Material.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_USE_NAME)); // todo 1.21 use wind charge
+        menu.addItem(weather.getMenuItem(Material.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_NAME));
+        menu.addItem(new MenuItemBack(previosMenu), menu.getSize() - 9);
 
-        menu.addItem(new MenuItemPage("Time and Weather Settings", Material.CHEST, m));
+        previosMenu.addItem(new MenuItemPage(Material.CHEST, MgMenuLangKey.MENU_TIMEWEATHER_NAME, menu));
     }
 
     @Override

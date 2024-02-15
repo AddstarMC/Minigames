@@ -12,8 +12,9 @@ import java.util.List;
 public abstract class ASetCommand implements ICommandInfo {
     protected static final Minigames PLUGIN = Minigames.getPlugin();
 
-    abstract boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String @Nullable [] args);
+    abstract public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                      @NotNull String @Nullable [] args);
 
-    abstract @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+    abstract public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                            @NotNull String @NotNull [] args);
 }

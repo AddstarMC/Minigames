@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.tool;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -27,15 +28,12 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
 
     @Override
     public Component getDisplayName() {
-        return "Start Locations";
+        return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_LOCATION_START_NAME);
     }
 
     @Override
-    public List<Component> getDescription() { //todo translation String
-        return List.of(
-                "Sets the starting",
-                "positions for a team",
-                "or player");
+    public List<Component> getDescription() {
+        return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_LOCATION_START_DESCRIPTION);
     }
 
     @Override

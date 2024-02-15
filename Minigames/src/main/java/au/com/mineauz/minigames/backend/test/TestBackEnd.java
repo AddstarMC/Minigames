@@ -61,7 +61,7 @@ public class TestBackEnd extends Backend {
      * @return A list of stats matching the requirements
      */
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order) {
+    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order) {
         List<StoredStat> result = new ArrayList<>();
         for (StoredGameStats store : playerGameStats) {
             if (store.hasStat(stat) && store.getMinigame().getName().equals(minigame.getName())) {
@@ -89,7 +89,7 @@ public class TestBackEnd extends Backend {
      * @return A list of stats matching the requirements
      */
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
+    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length) {
         List<StoredStat> result = loadStats(minigame, stat, field, order);
         int i = offset;
         List<StoredStat> newR = new ArrayList<>();
@@ -110,7 +110,7 @@ public class TestBackEnd extends Backend {
      * @return The value of the stat
      */
     @Override
-    public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field) {
+    public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatisticValueField field) {
         List<StoredStat> set = loadStats(minigame, stat, field, ScoreboardOrder.ASCENDING);
         for (StoredStat s : set) {
             if (s.getPlayerId().equals(playerId)) {

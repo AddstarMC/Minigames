@@ -19,6 +19,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * This Command remains untranslated,
+ * since I'm lazy and just used if something goes wrong.
+ * Whoever reads this please finish my work here!
+ */
 public class DebugCommand extends ACommand {
 
     @Override
@@ -33,12 +38,12 @@ public class DebugCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Debugs stuff.";
+        return Component.text("Debugs stuff.");
     }
 
     @Override
     public Component getUsage() {
-        return new String[]{"/minigame debug"};
+        return Component.text("/minigame debug");
     }
 
     @Override
@@ -159,5 +164,4 @@ public class DebugCommand extends ACommand {
             }
         });
     }
-
 }

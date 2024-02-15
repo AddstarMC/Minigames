@@ -65,7 +65,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * Instantiates a new Resource pack.
      *
      * @param displayName the name
-     * @param url  the url
+     * @param url         the url
      */
     public ResourcePack(final Component displayName, final @NotNull URL url) {
         this(displayName, url, null);
@@ -75,8 +75,8 @@ public final class ResourcePack implements ConfigurationSerializable {
      * Instantiates a new Resource pack.
      *
      * @param displayName the name
-     * @param url  the url
-     * @param file the file
+     * @param url         the url
+     * @param file        the file
      */
     public ResourcePack(final Component displayName, final @NotNull URL url, final File file) {
         this(displayName, url, file, null);
@@ -85,7 +85,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     /**
      * Instantiates a new Resource pack.
      *
-     * @param displayName        the name
+     * @param displayName the name
      * @param url         the url
      * @param file        the file
      * @param description the description
@@ -240,6 +240,15 @@ public final class ResourcePack implements ConfigurationSerializable {
 
     /**
      * Gets name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Gets Displayname.
      *
      * @return the name
      */

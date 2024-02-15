@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.config.LoadoutSetFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
@@ -214,7 +215,7 @@ public class LoadoutModule extends MinigameModule {
     }
 
     public void displaySelectionMenu(final MinigamePlayer mgPlayer, final boolean equip) {
-        Menu m = new Menu(6, "Select Loadout", mgPlayer);
+        Menu m = new Menu(6, MgMenuLangKey.MENU_LOADOUT_SELECT_NAME, mgPlayer);
 
         for (final PlayerLoadout loadout : extraLoadouts.values()) {
             if (loadout.isDisplayedInMenu()) {

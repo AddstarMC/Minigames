@@ -110,19 +110,19 @@ public class RewardsModule extends MinigameModule {
 
         submenu.addItem(RewardSchemes.newMenuItem(Material.PAPER,
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SCHEME_NAME), new Callback<>() {
-            @Override
-            public Class<? extends RewardScheme> getValue() {
-                return scheme.getClass();
-            }
+                    @Override
+                    public Class<? extends RewardScheme> getValue() {
+                        return scheme.getClass();
+                    }
 
-            @Override
-            public void setValue(Class<? extends RewardScheme> value) {
-                scheme = RewardSchemes.createScheme(value);
-                // Update the menu
-                Menu menu = createSubMenu(parent);
-                menu.displayMenu(submenu.getViewer());
-            }
-        }), submenu.getSize() - 1);
+                    @Override
+                    public void setValue(Class<? extends RewardScheme> value) {
+                        scheme = RewardSchemes.createScheme(value);
+                        // Update the menu
+                        Menu menu = createSubMenu(parent);
+                        menu.displayMenu(submenu.getViewer());
+                    }
+                }), submenu.getSize() - 1);
 
         submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
         return submenu;

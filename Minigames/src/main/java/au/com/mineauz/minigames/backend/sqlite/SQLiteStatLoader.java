@@ -6,7 +6,7 @@ import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
-import au.com.mineauz.minigames.stats.StatValueField;
+import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
@@ -35,7 +35,7 @@ class SQLiteStatLoader {
         getSingle = new StatementKey("SELECT `value` FROM `PlayerStats` WHERE `minigame_id`=? AND `player_id`=? AND `stat`=?;");
     }
 
-    public List<StoredStat> loadStatValues(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
+    public List<StoredStat> loadStatValues(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length) {
         MinigameMessageManager.debugMessage("SQLite beginning stat load for " + minigame.getName() + ", " + stat + ", " + field);
         ConnectionHandler handler = null;
         try {
@@ -54,7 +54,7 @@ class SQLiteStatLoader {
         }
     }
 
-    public long loadSingleValue(Minigame minigame, MinigameStat stat, StatValueField field, UUID playerId) {
+    public long loadSingleValue(Minigame minigame, MinigameStat stat, StatisticValueField field, UUID playerId) {
         ConnectionHandler handler = null;
         try {
             handler = backend.getPool().getConnection();
@@ -81,7 +81,7 @@ class SQLiteStatLoader {
     }
 
     // Loads from the stats table
-    private List<StoredStat> loadStats(ConnectionHandler handler, int minigameId, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) throws SQLException {
+    private List<StoredStat> loadStats(ConnectionHandler handler, int minigameId, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length) throws SQLException {
         String statName = stat.getName() + field.getSuffix();
 
         StatementKey statement = switch (order) {

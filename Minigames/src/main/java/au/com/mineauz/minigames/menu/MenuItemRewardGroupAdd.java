@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
@@ -19,6 +20,11 @@ import java.util.List;
 
 public class MenuItemRewardGroupAdd extends MenuItem {
     private final Rewards rewards;
+
+    public MenuItemRewardGroupAdd(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Rewards rewards) {
+        super(displayMat, langKey);
+        this.rewards = rewards;
+    }
 
     public MenuItemRewardGroupAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Rewards rewards) {
         super(displayMat, name);

@@ -8,7 +8,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
  * The values of these dynamic stats will be automatically computed and saved upon
  * game end.
  */
-public abstract class DynamicMinigameStat extends MinigameStat {
+public abstract class DynamicMinigameStat extends MinigameStat { // never used as far as I can see
     DynamicMinigameStat(String name, StatFormat format) {
         super(name, format);
     }

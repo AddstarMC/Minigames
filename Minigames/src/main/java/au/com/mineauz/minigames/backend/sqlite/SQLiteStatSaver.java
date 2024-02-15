@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.backend.StatementKey;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatFormat;
-import au.com.mineauz.minigames.stats.StatValueField;
+import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
@@ -40,10 +40,10 @@ class SQLiteStatSaver {
         insertStatMax = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `last_updated`, `entered`) VALUES (?, ?, ?, " + sqlMaxValue + ", datetime('now','localtime'), " + sqlDateEntered + ");");
 
         // Prepare lookup table
-        insertStatements[StatValueField.Last.ordinal()] = insertStat;
-        insertStatements[StatValueField.Min.ordinal()] = insertStatMin;
-        insertStatements[StatValueField.Max.ordinal()] = insertStatMax;
-        insertStatements[StatValueField.Total.ordinal()] = insertStatTotal;
+        insertStatements[StatisticValueField.Last.ordinal()] = insertStat;
+        insertStatements[StatisticValueField.Min.ordinal()] = insertStatMin;
+        insertStatements[StatisticValueField.Max.ordinal()] = insertStatMax;
+        insertStatements[StatisticValueField.Total.ordinal()] = insertStatTotal;
     }
 
     public void saveData(StoredGameStats data) {
@@ -102,10 +102,10 @@ class SQLiteStatSaver {
     }
 
     private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, StatFormat format, UUID player, int minigameId) throws SQLException {
-        for (StatValueField field : format.getFields()) {
+        for (StatisticValueField field : format.getFields()) {
             String statName = stat.getName() + field.getSuffix();
 
-            if (field == StatValueField.Last) {
+            if (field == StatisticValueField.Last) {
                 //                              player_id,         minigame_id, stat,    value, [..... fields for sqlDateEntered .....]
                 handler.batchUpdate(insertStat, player.toString(), minigameId, statName, value, player.toString(), minigameId, statName);
             } else {

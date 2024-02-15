@@ -2,8 +2,9 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.text.Component;
 
 public class RevertsRewardScheme extends HierarchyRewardScheme<Integer> {
     @Override
@@ -28,11 +29,11 @@ public class RevertsRewardScheme extends HierarchyRewardScheme<Integer> {
 
     @Override
     protected Integer getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
-        return (int) data.getStat(MinigameStats.Reverts);
+        return (int) data.getStat(MinigameStatistics.Reverts);
     }
 
     @Override
-    protected String getMenuItemName(Integer value) {
-        return value.toString();
+    protected Component getMenuItemName(Integer value) {
+        return Component.text(value.toString());
     }
 }

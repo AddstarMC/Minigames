@@ -59,8 +59,8 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_ERROR_NOTTEAM("command.error.notTeam"),
     COMMAND_ERROR_NOTTIME("command.error.notTime"),
     COMMAND_ERROR_NOTTYPE("command.error.noType"),
-    COMMAND_ERROR_PLAYERNOTINMINIGAME("command.error.playerNotInMinigame"),
     COMMAND_ERROR_OUTOFBOUNDS("command.error.OutOfBounds"),
+    COMMAND_ERROR_PLAYERNOTINMINIGAME("command.error.playerNotInMinigame"),
     COMMAND_ERROR_SENDERNOTAPLAYER("command.error.senderNotAPlayer"),
     COMMAND_ERROR_UNKNOWN_PARAM("command.error.unknown.parameter"),
     COMMAND_GLOBALLOADOUT_DESCRIPTION("command.globalLoadout.description"),
@@ -92,6 +92,7 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_LIST_DESCRIPTION("command.list.description"),
     COMMAND_LIST_LIST("command.list.list"),
     COMMAND_LIST_USAGE("command.list.usage"),
+    COMMAND_LOADOUT_DESCRIPTION("command.loadout.description"),
     COMMAND_MINIGAMES_AUTHORS("command.minigames.authors"),
     COMMAND_MINIGAMES_HELP("command.minigames.help"),
     COMMAND_MINIGAMES_VERSION("command.minigames.version"),
@@ -395,7 +396,8 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_TOOL_ERROR_NOTOOL("command.tool.error.noTool"),
     COMMAND_TOOL_SETMODE("command.tool.setMode"),
     COMMAND_TOOL_SETTEAM("command.tool.setTeam"),
-    COMMAND_TOOL_USAGE("command.tool.usage");
+    COMMAND_TOOL_USAGE("command.tool.usage"),
+    COMMAND_LOADOUT_USAGE("command.loadout.usage");
 
     private final @NotNull String path;
 
