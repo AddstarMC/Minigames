@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SetStartCommand extends ASetCommand {
 
@@ -61,7 +62,7 @@ public class SetStartCommand extends ASetCommand {
                     TeamColor teamColor = TeamColor.matchColor(args[1]);
 
                     if (teamColor != null) {
-                        Team team = teamsModule.getTeam(TeamColor.matchColor(args[1]));
+                        Team team = teamsModule.getTeam(teamColor);
 
                         if (team != null) {
                             team.getStartLocations().clear();
@@ -183,10 +184,10 @@ public class SetStartCommand extends ASetCommand {
         TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
         if (teamsModule != null) {
-            List<String> teams = new ArrayList<>(teamsModule.getTeamsNameMap().size() + 1);
-            for (String t : teamsModule.getTeamsNameMap().keySet()) {
-                teams.add(WordUtils.capitalizeFully(t.replace("_", " ")));
-            }
+
+            List<String> teams = teamsModule.getTeamColors().stream().
+                    map(t -> WordUtils.capitalizeFully(t.toString().replace("_", " "))).
+                    collect(Collectors.toCollection(ArrayList::new));
             if (args.length == 1) {
                 teams.add("Clear");
                 return MinigameUtils.tabCompleteMatch(teams, args[0]);

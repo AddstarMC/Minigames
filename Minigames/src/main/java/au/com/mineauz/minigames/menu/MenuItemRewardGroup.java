@@ -1,7 +1,9 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
@@ -9,12 +11,14 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -100,13 +104,14 @@ public class MenuItemRewardGroup extends MenuItem {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        String itemName = group.getName();
 
-        mgPlayer.sendInfoMessage("Delete the reward group \"" + itemName + "\"? Type \"Yes\" to confirm.");
-        mgPlayer.sendInfoMessage("The menu will automatically reopen in 10s if nothing is entered.");
+        final int reopenSeconds = 10;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_GROUP_ENTERCHAT,
+                Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), group.getName()),
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
         mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(10);
+        getContainer().startReopenTimer(reopenSeconds);
         return null;
     }
 
@@ -115,14 +120,11 @@ public class MenuItemRewardGroup extends MenuItem {
         Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
         rewardMenu.setPreviousPage(getContainer());
 
-        List<Component> des = new ArrayList<>();
-        des.add("Click this with an item");
-        des.add("to add it to rewards.");
-        des.add("Click without an item");
-        des.add("to add a money reward.");
-
-        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), "Add Item", des, group), 43);
-        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveMaterial(), "Save " + getName(), rewardMenu.getPreviousPage()), 44);
+        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_REWARD_ITEM_ADD_DESCRIPTION), group), 43);
+        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveMaterial(),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
+                        Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), getName())), rewardMenu.getPreviousPage()), 44);
 
         List<MenuItem> mi = new ArrayList<>();
         for (RewardType item : group.getItems()) {

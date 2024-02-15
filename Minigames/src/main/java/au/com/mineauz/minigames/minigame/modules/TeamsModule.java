@@ -67,6 +67,13 @@ public class TeamsModule extends MinigameModule {
         return new ArrayList<>(teams.values());
     }
 
+    public @NotNull List<@NotNull TeamColor> getTeamColors() {
+        return new ArrayList<>(teams.keySet());
+    }
+
+    /**
+     * For constructing a script reference
+     */
     public @NotNull Map<@NotNull String, @NotNull Team> getTeamsNameMap() {
         Map<String, Team> result = new HashMap<>(teams.size());
 
