@@ -55,7 +55,7 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_ERROR_NOTINMINIGAME_SELF("command.error.notInMinigame.self"),
     COMMAND_ERROR_NOTMATERIAL("command.error.notMaterial"),
     COMMAND_ERROR_NOTNUMBER("command.error.notNumber"),
-    COMMAND_ERROR_NOTPOTION("command.error.notPotion"),
+    COMMAND_ERROR_NOTSTATUSEFFECT("command.error.notStatusEffect"),
     COMMAND_ERROR_NOTTEAM("command.error.notTeam"),
     COMMAND_ERROR_NOTTIME("command.error.notTime"),
     COMMAND_ERROR_NOTTYPE("command.error.noType"),
@@ -142,6 +142,11 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_SCORE_SET_PLAYER("command.score.set.player"),
     COMMAND_SCORE_SET_TEAM("command.score.set.team"),
     COMMAND_SCORE_USAGE("command.score.usage"),
+    COMMAND_SELECT_CLEAR("command.select.clear"),
+    COMMAND_SELECT_DESCRIPTION("command.select.description"),
+    COMMAND_SELECT_POINT1("command.select.point1"),
+    COMMAND_SELECT_POINT2("command.select.point2"),
+    COMMAND_SELECT_USAGE("command.select.usage"),
     COMMAND_SET_ALLOWENDERPERLS_DESCRIPTION("command.set.allowEnderPerls.description"),
     COMMAND_SET_ALLOWENDERPERLS_SUCCESS("command.set.allowEnderPerls.success"),
     COMMAND_SET_ALLOWENDERPERLS_USAGE("command.set.allowEnderPerls.usage"),
@@ -398,12 +403,7 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_TOOL_ERROR_NOTOOL("command.tool.error.noTool"),
     COMMAND_TOOL_SETMODE("command.tool.setMode"),
     COMMAND_TOOL_SETTEAM("command.tool.setTeam"),
-    COMMAND_TOOL_USAGE("command.tool.usage"),
-    COMMAND_SELECT_DESCRIPTION("command.select.description"),
-    COMMAND_SELECT_USAGE("command.select.usage"),
-    COMMAND_SELECT_POINT1("command.select.point1"),
-    COMMAND_SELECT_POINT2("command.select.point2"),
-    COMMAND_SELECT_CLEAR("command.select.clear");
+    COMMAND_TOOL_USAGE("command.tool.usage");
 
     private final @NotNull String path;
 

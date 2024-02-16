@@ -813,13 +813,13 @@ public class Events implements Listener {
     private boolean isEffectApplicable(@NotNull Collection<@NotNull PotionEffectType> effectTypes, @NotNull MinigamePlayer mgPlayerEffecting, @NotNull MinigamePlayer mgPlayerReceiving) {
         if (!mgPlayerEffecting.getMinigame().isTeamGame()) {
             if (mgPlayerEffecting == mgPlayerReceiving) {
-                return !MinigameTag.NEGATIVE_POTION.allTagged(effectTypes);
+                return !MinigameTag.NEGATIVE_POTION_EFFECT.allTagged(effectTypes);
             }
-            return !MinigameTag.POSITIVE_POTION.allTagged(effectTypes);
+            return !MinigameTag.POSITIVE_POTION_EFFECT.allTagged(effectTypes);
         }
         if (mgPlayerEffecting.getTeam() == mgPlayerReceiving.getTeam()) {
-            return !MinigameTag.NEGATIVE_POTION.allTagged(effectTypes);
+            return !MinigameTag.NEGATIVE_POTION_EFFECT.allTagged(effectTypes);
         }
-        return !MinigameTag.POSITIVE_POTION.allTagged(effectTypes);
+        return !MinigameTag.POSITIVE_POTION_EFFECT.allTagged(effectTypes);
     }
 }

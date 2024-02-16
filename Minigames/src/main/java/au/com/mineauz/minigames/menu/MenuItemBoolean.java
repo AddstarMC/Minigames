@@ -45,7 +45,7 @@ public class MenuItemBoolean extends MenuItem {
 
     public void updateDescription() {
         LangKey boolKey = toggle.getValue() ? MinigameLangKey.BOOL_TRUE : MinigameLangKey.BOOL_FALSE;
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, MinigameMessageManager.getMgMessageList(boolKey));
+        setDescriptionPart(DESCRIPTION_TOKEN, MinigameMessageManager.getMgMessageList(boolKey));
     }
 
     @Override

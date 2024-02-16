@@ -68,7 +68,7 @@ public class SetLoadoutCommand extends ASetCommand {
             MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(material, ld.getDisplayName(),
                     MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), ld, minigame);
 
-            mil.setAllowDelete(ld.isDeleteable());
+            mil.setAllowDelete(ld.isDeletable());
             mi.add(mil);
         }
         loadoutMenu.addItem(new MenuItemLoadoutAdd(Material.ITEM_FRAME, MgMenuLangKey.MENU_LOADOUT_ADD_NAME,

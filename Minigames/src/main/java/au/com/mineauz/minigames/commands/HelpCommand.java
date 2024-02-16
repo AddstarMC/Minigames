@@ -9,7 +9,9 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permissible;
@@ -28,16 +30,23 @@ public class HelpCommand extends ACommand {
     private final int COMMANDS_PER_SITE = 6; // just a random number. Change it if you know a better one!
 
     private static boolean sendHelpInfo(@NotNull CommandSender sender, @NotNull ICommandInfo setCommand) {
-        if (setCommand.getPermission() != null || sender.hasPermission(setCommand.getPermission())) {
-            Component info = Component.empty();
-            if (setCommand.getAliases() != null) {
-                info = info.append(Component.join(JoinConfiguration.arrayLike(), Arrays.stream(setCommand.getAliases()).map(Component::text).toList()));
-            }
+        if (setCommand.getPermission() == null || sender.hasPermission(setCommand.getPermission())) {
+            if (setCommand.getAliases() != null && setCommand.getAliases().length > 0) {
+                TextComponent.Builder info = Component.text();
+                info.append(Component.join(JoinConfiguration.arrayLike(), Arrays.stream(setCommand.getAliases()).map(Component::text).toList()));
 
-            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
-                    MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
-                            append(info.appendNewline().append(setCommand.getUsage()).appendNewline().append(setCommand.getDescription())));//todo needs formatting (not hardcoded)
+                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
+                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
+                                append(info.appendNewline().append(setCommand.getUsage()).appendNewline().append(setCommand.getDescription()).
+                                        colorIfAbsent(NamedTextColor.WHITE)));//todo needs formatting (not hardcoded)
+            } else {
+                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
+                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
+                                append(setCommand.getUsage().appendNewline().append(setCommand.getDescription()).
+                                        colorIfAbsent(NamedTextColor.WHITE)));//todo needs formatting (not hardcoded)
+            }
             return true;
         } else {
             return false;
@@ -82,7 +91,7 @@ public class HelpCommand extends ACommand {
         // command name + description + click event for detailed info
         final Component pageCore = Component.join(JoinConfiguration.newlines(), commandsOfPage.stream().
                 map(cmd -> Component.text(cmd.getName()).append(Component.text(" - ")).append(cmd.getDescription()).
-                        clickEvent(ClickEvent.suggestCommand("/minigame help " + cmd.getName()))).toList()); //todo needs formatting (not hardcoded)
+                        clickEvent(ClickEvent.suggestCommand("/minigame help " + cmd.getName()))).toList()).colorIfAbsent(NamedTextColor.WHITE); //todo needs formatting (not hardcoded)
 
         final Component header = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_LIST_HEADER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pageNumber)),

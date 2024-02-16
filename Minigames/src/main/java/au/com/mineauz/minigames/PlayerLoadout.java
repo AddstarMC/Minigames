@@ -22,7 +22,7 @@ public class PlayerLoadout {
     private final Map<Integer, ItemStack> itemSlot = new HashMap<>();
     private final List<PotionEffect> potions = new ArrayList<>();
     private final Map<Class<? extends LoadoutAddon>, Object> addonValues = new HashMap<>();
-    private String loadoutName = "default";
+    private String loadoutName;
     private boolean usePermission = false;
     private boolean fallDamage = true;
     private boolean hunger = false;
@@ -266,11 +266,11 @@ public class PlayerLoadout {
         };
     }
 
-    public boolean isDeleteable() {
+    public boolean isDeletable() {
         return deleteable;
     }
 
-    public void setDeleteable(boolean value) {
+    public void setDeletable(boolean value) {
         deleteable = value;
     }
 
@@ -442,7 +442,7 @@ public class PlayerLoadout {
             section.set("hunger", hasHunger());
         }
 
-        section.set("displayName", getDisplayName());
+        section.set("displayName", MiniMessage.miniMessage().serialize(getDisplayName()));
 
         if (isArmourLocked()) {
             section.set("armourLocked", isArmourLocked());

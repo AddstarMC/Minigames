@@ -78,7 +78,8 @@ public class LoadoutSign extends AMinigameSign {
                             if (mgm.getType() == MinigameType.SINGLEPLAYER ||
                                     mgm.hasStarted()) {
                                 if (sign.getSide(Side.FRONT).getLine(3).equalsIgnoreCase("respawn")) {
-                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN);
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
+                                            Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                                 } else if (sign.getSide(Side.FRONT).getLine(3).equalsIgnoreCase("temporary")) {
                                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_TEMPORARILY);
                                     loadout.equipLoadout(mgPlayer);

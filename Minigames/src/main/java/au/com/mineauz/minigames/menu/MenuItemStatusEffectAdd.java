@@ -23,21 +23,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class MenuItemPotionAdd extends MenuItem {
+public class MenuItemStatusEffectAdd extends MenuItem {
     private final @NotNull PlayerLoadout loadout;
 
-    public MenuItemPotionAdd(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull PlayerLoadout loadout) {
+    public MenuItemStatusEffectAdd(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull PlayerLoadout loadout) {
         super(displayMat, langKey);
         this.loadout = loadout;
     }
 
-    public MenuItemPotionAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull PlayerLoadout loadout) {
+    public MenuItemStatusEffectAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull PlayerLoadout loadout) {
         super(displayMat, name);
         this.loadout = loadout;
     }
 
-    public MenuItemPotionAdd(@Nullable Material displayMat, @Nullable Component name,
-                             @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout) {
+    public MenuItemStatusEffectAdd(@Nullable Material displayMat, @Nullable Component name,
+                                   @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout) {
         super(displayMat, name, description);
         this.loadout = loadout;
     }
@@ -50,7 +50,7 @@ public class MenuItemPotionAdd extends MenuItem {
 
         // time for a player to write a valid potion into chat
         int reopenSeconds = 30;
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_POTIONADD_ENTERCHAT,
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STATUSEFFECTADD_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
         mgPlayer.setManualEntry(this);
 
@@ -78,7 +78,7 @@ public class MenuItemPotionAdd extends MenuItem {
 
                         PotionEffect peff = new PotionEffect(eff, dur.intValue(), level);
                         for (int slot : getContainer().getUsedSlots()) {
-                            if (getContainer().getMenuItem(slot) instanceof MenuItemPotion pot) {
+                            if (getContainer().getMenuItem(slot) instanceof MenuItemStatusEffect pot) {
                                 if (pot.getEffect().getType() == peff.getType()) {
                                     pot.onShiftRightClick();
                                     break;
@@ -87,7 +87,7 @@ public class MenuItemPotionAdd extends MenuItem {
                         }
                         for (int i = 0; i < 36; i++) {
                             if (!getContainer().hasMenuItem(i)) {
-                                getContainer().addItem(new MenuItemPotion(Material.POTION, Component.text(eff.getName().toLowerCase().replace("_", " ")), des, peff, loadout), i);
+                                getContainer().addItem(new MenuItemStatusEffect(Material.POTION, Component.text(eff.getName().toLowerCase().replace("_", " ")), des, peff, loadout), i);
                                 loadout.addPotionEffect(peff);
                                 break;
                             }
@@ -101,7 +101,7 @@ public class MenuItemPotionAdd extends MenuItem {
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTPOTION,
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTSTATUSEFFECT,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
             }
 
@@ -111,7 +111,7 @@ public class MenuItemPotionAdd extends MenuItem {
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
 
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_POTIONADD_ERROR_SYNTAX);
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_STATUSEFFECTADD_ERROR_SYNTAX);
         }
     }
 }

@@ -52,25 +52,25 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 
         int position = enumList.indexOf(callback.getValue());
         if (position == -1) {
-            setDescriptionPartAtEnd(DESCRIPTION_VALUE_TOKEN,
-                    List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ENUM_ERROR)));
-        }
+            setDescriptionPart(DESCRIPTION_VALUE_TOKEN, List.of(
+                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ITERABLE_ERROR_UNKNOWN)));
+        } else {
+            int last = position - 1;
+            int next = position + 1;
+            if (last < 0) {
+                last = enumList.size() - 1;
+            }
+            if (next >= enumList.size()) {
+                next = 0;
+            }
 
-        int last = position - 1;
-        int next = position + 1;
-        if (last < 0) {
-            last = enumList.size() - 1;
-        }
-        if (next >= enumList.size()) {
-            next = 0;
-        }
+            List<Component> options = new ArrayList<>(3);
+            options.add(Component.text(getEnumName(enumList.get(last)), NamedTextColor.GRAY));
+            options.add(Component.text(getEnumName(enumList.get(position)), NamedTextColor.GREEN));
+            options.add(Component.text(getEnumName(enumList.get(next)), NamedTextColor.GRAY));
 
-        List<Component> options = new ArrayList<>(3);
-        options.add(Component.text(getEnumName(enumList.get(last)), NamedTextColor.GRAY));
-        options.add(Component.text(getEnumName(enumList.get(position)), NamedTextColor.GREEN));
-        options.add(Component.text(getEnumName(enumList.get(next)), NamedTextColor.GRAY));
-
-        setDescriptionPartAtEnd(DESCRIPTION_VALUE_TOKEN, options);
+            setDescriptionPart(DESCRIPTION_VALUE_TOKEN, options);
+        }
     }
 
     private String getEnumName(T val) {

@@ -32,6 +32,6 @@ public class MenuItemTime extends MenuItemLong {
     @Override
     public void updateDescription() {
         Component timeComponent = MinigameUtils.convertTime(Duration.ofMillis(value.getValue()), true).color(NamedTextColor.GREEN);
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(timeComponent));
+        setDescriptionPart(DESCRIPTION_TOKEN, List.of(timeComponent));
     }
 }

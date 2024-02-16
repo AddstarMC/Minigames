@@ -143,7 +143,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args != null && args.length > 0) {
-            ACommand comd = commands.get(args[0].toLowerCase());
+            ACommand comd = getCommand(args[0]);
 
             if (comd != null) {
                 String[] shortArgs;

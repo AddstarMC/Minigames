@@ -33,7 +33,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         super(displayMat, name);
         this.loadout = loadout;
         this.minigame = minigame;
-        if (!loadout.isDeleteable()) {
+        if (!loadout.isDeletable()) {
             allowDelete = false;
         }
     }
@@ -41,7 +41,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
     public MenuItemDisplayLoadout(@Nullable Material displayMat, @Nullable Component name, @NotNull PlayerLoadout loadout) {
         super(displayMat, name);
         this.loadout = loadout;
-        if (!loadout.isDeleteable()) {
+        if (!loadout.isDeletable()) {
             allowDelete = false;
         }
     }
@@ -52,7 +52,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         super(displayMat, name, description);
         this.loadout = loadout;
         this.minigame = minigame;
-        if (!loadout.isDeleteable()) {
+        if (!loadout.isDeletable()) {
             allowDelete = false;
         }
     }
@@ -61,7 +61,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
                                   @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout) {
         super(displayMat, name, description);
         this.loadout = loadout;
-        if (!loadout.isDeleteable()) {
+        if (!loadout.isDeletable()) {
             allowDelete = false;
         }
     }
@@ -115,14 +115,14 @@ public class MenuItemDisplayLoadout extends MenuItem {
         Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
 
         potionMenu.setPreviousPage(loadoutMenu);
-        potionMenu.addItem(new MenuItemPotionAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_POTIONADD_NAME, loadout), potionMenu.getSize() - 1);
+        potionMenu.addItem(new MenuItemStatusEffectAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_STATUSEFFECTADD_NAME, loadout), potionMenu.getSize() - 1);
         potionMenu.addItem(menuItemBack, potionMenu.getSize() - 2);
 
         List<Component> description = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
         List<MenuItem> potionMenuItems = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
-            potionMenuItems.add(new MenuItemPotion(Material.POTION, Component.translatable(eff.getType().translationKey()), description, eff, loadout));
+            potionMenuItems.add(new MenuItemStatusEffect(Material.POTION, Component.translatable(eff.getType().translationKey()), description, eff, loadout));
         }
         potionMenu.addItems(potionMenuItems);
 
@@ -134,7 +134,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         loadoutMenu.addItem(new MenuItemSaveLoadoutPage(MenuUtility.getSaveMaterial(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SAVE_NAME, loadout, getContainer()), 44);
         final int numOfSlots = loadout.allowOffHand() ? 41 : 40;
         for (int i = numOfSlots; i < 42; i++) {
-            loadoutMenu.addItem(new MenuItem(null, Component.empty()), i);
+            loadoutMenu.addItem(new MenuItem((Material) null, Component.empty()), i);
         }
         loadoutMenu.displayMenu(getContainer().getViewer());
 

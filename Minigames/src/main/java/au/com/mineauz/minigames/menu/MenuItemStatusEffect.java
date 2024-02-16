@@ -15,21 +15,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemPotion extends MenuItem {
+public class MenuItemStatusEffect extends MenuItem {
     private final static String DESCRIPTION_TOKEN = "Potion_description";
     private final @NotNull PotionEffect eff;
     private final @NotNull PlayerLoadout loadout;
 
-    public MenuItemPotion(@Nullable Material displayMat, @Nullable Component name, @NotNull PotionEffect eff,
-                          @NotNull PlayerLoadout loadout) {
+    public MenuItemStatusEffect(@Nullable Material displayMat, @Nullable Component name, @NotNull PotionEffect eff,
+                                @NotNull PlayerLoadout loadout) {
         super(displayMat, name);
         this.eff = eff;
         this.loadout = loadout;
         updateDescription();
     }
 
-    public MenuItemPotion(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description,
-                          @NotNull PotionEffect eff, @NotNull PlayerLoadout loadout) {
+    public MenuItemStatusEffect(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description,
+                                @NotNull PotionEffect eff, @NotNull PlayerLoadout loadout) {
         super(displayMat, name, description);
         this.eff = eff;
         this.loadout = loadout;
@@ -38,19 +38,19 @@ public class MenuItemPotion extends MenuItem {
 
     public void updateDescription() {
         List<Component> description = new ArrayList<>();
-        description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_POTION_LEVEL,
+        description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STATUSEFFECT_LEVEL,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(eff.getAmplifier() + 1))));
 
         if (eff.isInfinite()) {
-            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_POTION_DURATION,
+            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STATUSEFFECT_DURATION,
                     Placeholder.component(MinigamePlaceHolderKey.NUMBER.getKey(),
                             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_NUMBER_INFINITE))));
         } else {
-            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_POTION_DURATION,
+            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STATUSEFFECT_DURATION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(eff.getDuration()))));
         }
 
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
+        setDescriptionPart(DESCRIPTION_TOKEN, description);
     }
 
     @Override

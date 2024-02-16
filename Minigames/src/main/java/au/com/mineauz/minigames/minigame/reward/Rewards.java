@@ -13,6 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Rewards {
 
@@ -24,33 +25,33 @@ public class Rewards {
     }
 
     public List<RewardType> getReward() {
-        double rand = Math.random();
+        double rand = ThreadLocalRandom.current().nextDouble();
         RewardRarity rarity;
-        List<Object> itemsCopy = new ArrayList<>();
-        itemsCopy.addAll(items);
-        itemsCopy.addAll(groups);
-        Collections.shuffle(itemsCopy);
+        List<Object> itemsCopyList = new ArrayList<>();
+        itemsCopyList.addAll(items);
+        itemsCopyList.addAll(groups);
+        Collections.shuffle(itemsCopyList);
 
-        if (rand > RewardRarity.VERY_COMMON.getRarity())
+        if (rand > RewardRarity.VERY_COMMON.getRarity()) {
             rarity = RewardRarity.VERY_COMMON;
-        else if (rand > RewardRarity.COMMON.getRarity())
+        } else if (rand > RewardRarity.COMMON.getRarity()) {
             rarity = RewardRarity.COMMON;
-        else if (rand > RewardRarity.NORMAL.getRarity())
+        } else if (rand > RewardRarity.NORMAL.getRarity()) {
             rarity = RewardRarity.NORMAL;
-        else if (rand > RewardRarity.RARE.getRarity())
+        } else if (rand > RewardRarity.RARE.getRarity()) {
             rarity = RewardRarity.RARE;
-        else
+        } else {
             rarity = RewardRarity.VERY_RARE;
+        }
 
-
-        if (!itemsCopy.isEmpty()) {
+        if (!itemsCopyList.isEmpty()) {
             RewardType item = null;
             RewardGroup group = null;
-            RewardRarity orarity = rarity;
-            boolean up = true;
+            final RewardRarity originalRarity = rarity;
+            boolean up = false;
 
             while (item == null && group == null) {
-                for (Object ritem : itemsCopy) {
+                for (Object ritem : itemsCopyList) {
                     if (ritem instanceof RewardType ri) {
                         if (ri.getRarity() == rarity) {
                             item = ri;
@@ -65,21 +66,22 @@ public class Rewards {
                     }
                 }
 
-                if (rarity == RewardRarity.VERY_COMMON) {
-                    rarity = orarity;
-                    up = false;
+                // nothing in the list with the same rarity
+                // only go up if there is no way further down
+                if (rarity == RewardRarity.VERY_COMMON && !up) {
+                    rarity = originalRarity;
+                    up = true;
                 }
 
-                if (up)
-                    rarity = rarity.getNextRarity();
-                else {
-                    rarity = rarity.getPreviousRarity();
+                if (up) {
+                    rarity = rarity.getHigherRarity();
+                } else {
+                    rarity = rarity.getLowerRarity();
                 }
             }
+
             if (item != null) {
-                List<RewardType> items = new ArrayList<>();
-                items.add(item);
-                return items;
+                return List.of(item);
             } else {
                 return group.getItems();
             }
@@ -132,7 +134,7 @@ public class Rewards {
             mi.add(item.getMenuItem());
         }
 
-        List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_DOUBLECLICK);
+        List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
         for (RewardGroup group : groups) {
             MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST,
                     MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,

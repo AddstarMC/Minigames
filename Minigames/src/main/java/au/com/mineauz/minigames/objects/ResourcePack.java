@@ -296,7 +296,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     @Override
     public @NotNull Map<String, Object> serialize() {
         final Map<String, Object> result = new HashMap<>();
-        result.put("name", this.displayName);
+        result.put("name", MiniMessage.miniMessage().serialize(this.displayName));
         result.put("url", this.url.toString());
         result.put("description", this.description);
 

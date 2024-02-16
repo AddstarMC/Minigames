@@ -110,7 +110,7 @@ public class MoneyReward extends RewardType {
             description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_CHANGE_SHIFTCLICK).color(NamedTextColor.DARK_PURPLE));
             description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).color(NamedTextColor.DARK_PURPLE));
 
-            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
+            setDescriptionPart(DESCRIPTION_TOKEN, description);
         }
 
         @Override

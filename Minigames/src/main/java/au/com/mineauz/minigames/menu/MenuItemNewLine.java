@@ -1,12 +1,13 @@
 package au.com.mineauz.minigames.menu;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class MenuItemNewLine extends MenuItem {
 
     public MenuItemNewLine() {
-        super(null, Component.text("NL")); // since it will never be visible anyway we can hardcode the name
+        super((Material) null, Component.text("NL")); // since it will never be visible anyway we can hardcode the name
     }
 
     @Override

@@ -4,9 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 public enum MinigameLangKey implements LangKey { //todo this gets rather big. Slit it into smaller digestible parts: tool, ?...
     AND("and"),
+    BOOL_FALSE("bool.false"),
+    BOOL_TRUE("bool.true"),
     CONFIG_BLACKLIST("config.blacklist"),
     CONFIG_WHITELIST("config.whitelist"),
-    BOOL_FALSE("bool.false"),
     MINIGAME_ERROR_FULL("minigame.error.full"),
     MINIGAME_ERROR_INCORRECTSTART("minigame.error.incorrectStart"),
     MINIGAME_ERROR_INVALIDMECHANIC("minigame.error.invalidMechanic"),
@@ -191,10 +192,18 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     SIGN_SCORE_ERROR_ALREADYUSEDTEAM("sign.score.error.alreadyUsedTeam"),
     SIGN_TEAM_ERROR_UNBALANCE("sign.team.error.unbalance"),
     SIGN_TELEPORT_INVALID("sign.teleport.invalid"),
+    STATISTIC_ATTEMPTS_NAME("statistic.attempts.name"),
+    STATISTIC_DEATHS_NAME("statistic.deaths.name"),
+    STATISTIC_KILLS_NAME("statistic.kills.name"),
+    STATISTIC_LOSSES_NAME("statistic.losses.name"),
+    STATISTIC_REVERTS_NAME("statistic.reverts.name"),
+    STATISTIC_SCORE_NAME("statistic.score.name"),
+    STATISTIC_TIME_NAME("statistic.time.name"),
     STATISTIC_TITLE_LAST("statistic.title.last"),
     STATISTIC_TITLE_MAX("statistic.title.max"),
     STATISTIC_TITLE_MIN("statistic.title.min"),
     STATISTIC_TITLE_TOTAL("statistic.title.total"),
+    STATISTIC_WINS_NAME("statistic.wins.name"),
     TEAM_ADD("team.add"),
     TEAM_ERROR_COLOR_INVALID("team.error.color.invalid"),
     TEAM_ERROR_COLOR_TAKEN("team.error.color.taken"),
@@ -251,16 +260,7 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     TOOL_SET_ENDLOCATION("tool.set.endLocation"),
     TOOL_SET_LOBBYLOCATION("tool.set.lobbyLocation"),
     TOOL_SET_QUITLOCATION("tool.set.quitLocation"),
-    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation"),
-    STATISTIC_WINS_NAME("statistic.wins.name"),
-    STATISTIC_LOSSES_NAME("statistic.losses.name"),
-    STATISTIC_ATTEMPTS_NAME("statistic.attempts.name"),
-    STATISTIC_TIME_NAME("statistic.time.name"),
-    STATISTIC_KILLS_NAME("statistic.kills.name"),
-    STATISTIC_DEATHS_NAME("statistic.deaths.name"),
-    STATISTIC_SCORE_NAME("statistic.score.name"),
-    STATISTIC_REVERTS_NAME("statistic.reverts.name"),
-    BOOL_TRUE("bool.true");
+    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation");
 
     private final @NotNull String path;
 

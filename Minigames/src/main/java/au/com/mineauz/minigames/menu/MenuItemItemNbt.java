@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +18,8 @@ import java.util.List;
 * Amounts are not supported here.
 */
 public class MenuItemItemNbt extends MenuItem {
+    private final static String DESCRIPTION_TOKEN = "Nbt_description";
+
     /**
      * NEVER EVER confuse this item with the display item of MenuItem!
      * this one contains the pure data as it should get written to config if needed.
@@ -40,9 +43,9 @@ public class MenuItemItemNbt extends MenuItem {
     }
 
     public MenuItemItemNbt(@NotNull ItemStack itemStack, Component name, @NotNull Callback<ItemStack> c) {
-        super(name, itemStack.clone()); // clone to not overwrite lore / name
+        super(itemStack.clone(), name); // clone to not overwrite lore / name
 
-        setDescriptionPartAtEnd("MenuItemItemNbt", createDescription(itemStack));
+        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(itemStack));
         itemCallback = c;
     }
 
@@ -58,7 +61,7 @@ public class MenuItemItemNbt extends MenuItem {
         // cloned one as display item since it gets changed to display name / description / other meta
         setDisplayItem(workItemStack.clone());
         // please note, the item used to create the components is the original - not cloned one!
-        setDescriptionPartAtEnd("MenuItemItemNbt", createDescription(workItemStack));
+        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(workItemStack));
 
         return super.onClickWithItem(itemCallback.getValue());
     }
@@ -78,21 +81,24 @@ public class MenuItemItemNbt extends MenuItem {
 
     public void processNewName(@NotNull Component newName) {
         ItemStack oldData = itemCallback.getValue();
-        setDescriptionPartAtEnd("MenuItemItemNbt", createDescription(oldData.getType(), newName, oldData.lore()));
+        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(oldData.getType(), newName, oldData.lore()));
     }
 
     public void processNewLore(@Nullable List<@NotNull Component> newLore) {
         ItemStack oldData = itemCallback.getValue();
-        setDescriptionPartAtEnd("MenuItemItemNbt", createDescription(oldData.getType(), oldData.displayName(), newLore));
+        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(oldData.getType(), oldData.displayName(), newLore));
     }
 
-    private List<Component> createDescription(@NotNull ItemStack data) {
-        return createDescription(data.getType(), data.displayName(), data.lore());
+    private List<Component> createDescription(@NotNull ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+        return createDescription(itemStack.getType(), meta.displayName(), meta.lore());
     }
 
-    private List<Component> createDescription(@NotNull Material type, @NotNull Component displayName, @Nullable List<@NotNull Component> lore) {
+    private List<Component> createDescription(@NotNull Material type, @Nullable Component displayName, @Nullable List<@NotNull Component> lore) {
         List<Component> result = new ArrayList<>();
-        result.add(Component.text("Name: ").append(displayName));
+        if (displayName != null) {
+            result.add(Component.text("Name: ").append(displayName));
+        }
         result.add(Component.text("Material: " + WordUtils.capitalizeFully(type.name())));
 
         if (lore != null) {

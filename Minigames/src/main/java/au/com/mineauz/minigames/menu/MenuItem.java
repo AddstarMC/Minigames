@@ -1,29 +1,21 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
-import au.com.mineauz.minigames.objects.IndexedMap;
-import au.com.mineauz.minigames.objects.StrIntMapPersistentDataType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class MenuItem {
-    private static final StrIntMapPersistentDataType STR_INT_MAP_TYPE = new StrIntMapPersistentDataType();
     private final static String BASE_DESCRIPTION_TOKEN = "Base_description";
-    private final static NamespacedKey DESCRIPTION_KEY = new NamespacedKey(Minigames.getPlugin(), "DescriptionOrder");
+    private final @NotNull List<@NotNull IdComponent> descriptionRegistry = new ArrayList<>();
     private @NotNull ItemStack displayItem;
     private @Nullable Menu container = null;
     private int slot = 0;
@@ -41,12 +33,13 @@ public class MenuItem {
     }
 
     public MenuItem(@Nullable Material displayMat, @Nullable Component name, @Nullable List<Component> description) {
-        if (displayMat == null)
+        if (displayMat == null) {
             if (description == null) {
                 displayMat = MenuUtility.getSlotFillerItem();
             } else {
                 displayMat = MenuUtility.getUnknownDisplayItem();
             }
+        }
         this.displayItem = new ItemStack(displayMat);
         ItemMeta meta = this.displayItem.getItemMeta();
         meta.displayName(name);
@@ -58,58 +51,74 @@ public class MenuItem {
             meta.lore(List.of());
             this.displayItem.setItemMeta(meta);
 
-            setDescriptionPartAtIndex(BASE_DESCRIPTION_TOKEN, 0, description);
+            setDescriptionPart(BASE_DESCRIPTION_TOKEN, description);
         }
     }
 
-    public MenuItem(@NotNull Component name, @NotNull ItemStack displayItem) {
+    public MenuItem(@NotNull ItemStack displayItem, @Nullable Component name) {
         ItemMeta meta = displayItem.getItemMeta();
-        meta.displayName(name);
+        if (name != null) {
+            meta.displayName(name);
+        }
+
+        List<Component> lore = meta.lore();
+        if (lore != null && !lore.isEmpty()) {
+            lore.stream().map(c -> new IdComponent(BASE_DESCRIPTION_TOKEN, c)).forEachOrdered(descriptionRegistry::add);
+        }
+
         displayItem.setItemMeta(meta);
         this.displayItem = displayItem;
     }
 
     /**
      * Adds the description part to the end of the lore of an itemStack.
-     * If a description part with the same type key will get replaced if it was already there.
+     * If a description part with the same type key will get replaced at the same place if it was already there.
      *
-     * @param typeStr         unique identifier the description part is registered as
+     * @param descriptionToken         unique identifier the description part is registered as
      * @param descriptionPart the part of description to get written. If null the part will get removed.
      */
-    public void setDescriptionPartAtEnd(@NotNull String typeStr,
-                                        @Nullable List<@NotNull Component> descriptionPart) { // todo maybe instead of Persistent data container just use a map here; the menu will not get saved anyways
+    public void setDescriptionPart(final @NotNull String descriptionToken,
+                                   @Nullable List<@NotNull Component> descriptionPart) {
         ItemMeta itemMeta = displayItem.getItemMeta();
-        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        IndexedMap<String, Integer> descriptionRegistry = container.get(DESCRIPTION_KEY, STR_INT_MAP_TYPE);
 
-        if (descriptionRegistry == null) {
+        if (descriptionRegistry.isEmpty()) {
             if (descriptionPart != null && !descriptionPart.isEmpty()) { // add
                 // set part as lore, as it is the first entry
-                descriptionRegistry = new IndexedMap<>();
-                descriptionRegistry.put(typeStr, descriptionPart.size());
+                descriptionPart.stream().map(c -> new IdComponent(descriptionToken, c)).forEachOrdered(descriptionRegistry::add);
 
                 itemMeta.lore(descriptionPart);
-                itemMeta.getPersistentDataContainer().set(DESCRIPTION_KEY, STR_INT_MAP_TYPE, descriptionRegistry);
                 displayItem.setItemMeta(itemMeta);
             } // nothing to remove, when there was nothing
         } else {
-            removeDescriptionPart(itemMeta, descriptionRegistry, typeStr);
+            if (descriptionPart == null || descriptionPart.isEmpty()) { // remove
+                descriptionRegistry.stream().filter(idC -> idC.id().equals(descriptionToken)).forEach(descriptionRegistry::remove);
+            } else {
+                int index = -1;
 
-            if (descriptionPart != null) { // replace / add
-                List<Component> loreList = new ArrayList<>();
-                List<Component> oldLoreList = itemMeta.lore();
+                // check for last position and remove last description part registered under this token
+                Iterator<IdComponent> idCIterator = descriptionRegistry.iterator();
+                for (int i = 0; idCIterator.hasNext(); i++) {
+                    IdComponent idCToCheck = idCIterator.next();
 
-                if (oldLoreList != null) {
-                    loreList.addAll(oldLoreList); // just in case the list is unmodifiable
+                    if (idCToCheck.id().equals(descriptionToken)) {
+                        idCIterator.remove();
+
+                        if (index == -1) {
+                            index = i;
+                        }
+                    } else if (index > -1) {
+                        break; // already over it
+                    }
                 }
-                loreList.addAll(descriptionPart);
-                itemMeta.lore(loreList);
 
-                descriptionRegistry.put(typeStr, descriptionPart.size());
-            } else { // remove
-                descriptionRegistry.remove(typeStr);
+                if (index >= 0) { // replace
+                    descriptionRegistry.addAll(index, descriptionPart.stream().map(c -> new IdComponent(descriptionToken, c)).toList());
+                } else { // add at end
+                    descriptionPart.stream().map(c -> new IdComponent(descriptionToken, c)).forEachOrdered(descriptionRegistry::add);
+                }
             }
 
+            itemMeta.lore(descriptionRegistry.stream().map(IdComponent::component).toList());
             displayItem.setItemMeta(itemMeta);
         }
     }
@@ -119,104 +128,68 @@ public class MenuItem {
      * A description part with the same type key will get removed if one was already present in the description.
      * This will not skip over values if a higher position was provided
      *
-     * @param typeStr         unique identifier the description part is registered as
-     * @param postion         the position to insert the part at. ()
+     * @param descriptionToken         unique identifier the description part is registered as
+     * @param postion         the position to insert the part at. (Positions are of description parts - NOT elements of Components!)
      * @param descriptionPart the part of description to get inserted
      */
-    public void setDescriptionPartAtIndex(@NotNull String typeStr, int postion,
-                                          @NotNull List<@NotNull Component> descriptionPart) {
+    public void setDescriptionPartAtIndex(final @NotNull String descriptionToken, int postion,
+                                          final @Nullable List<@NotNull Component> descriptionPart) {
         ItemMeta itemMeta = displayItem.getItemMeta();
-        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        IndexedMap<String, Integer> descriptionRegistry = container.get(DESCRIPTION_KEY, STR_INT_MAP_TYPE);
-
-        if (descriptionRegistry == null) {
-            if (!descriptionPart.isEmpty()) { // add - ignoring index
+        if (descriptionRegistry.isEmpty()) {
+            if (descriptionPart != null && !descriptionPart.isEmpty()) { // add - ignoring index
                 // set part as lore, as it is the first entry
-                descriptionRegistry = new IndexedMap<>();
-                descriptionRegistry.put(typeStr, descriptionPart.size());
+                descriptionPart.stream().map(c -> new IdComponent(descriptionToken, c)).forEachOrdered(descriptionRegistry::add);
 
                 itemMeta.lore(descriptionPart);
-                itemMeta.getPersistentDataContainer().set(DESCRIPTION_KEY, STR_INT_MAP_TYPE, descriptionRegistry);
                 displayItem.setItemMeta(itemMeta);
             }
         } else {
             // todo Math.clamp in Java 21
             postion = Math.max(0, Math.min(postion, descriptionRegistry.size()));
-            if (postion >= descriptionRegistry.getKeyIndex(typeStr)) {
-                postion--;
-            }
-            removeDescriptionPart(itemMeta, descriptionRegistry, typeStr);
-            if (!descriptionPart.isEmpty()) {
-                int startingPoint = 0;
 
-                Iterator<Integer> lengthIter = descriptionRegistry.values().iterator(); // don't modify with this iterator unless you have overwritten the standard one in IndexedMap!
+            removeDescriptionPart(descriptionToken);
 
-                for (int i = 0; lengthIter.hasNext() && i < postion; i++) {
-                    Integer length = lengthIter.next();
-
-                    if (length != null && length > 0) {
-                        startingPoint += length;
-                    } else {
-                        // well crap. invalid data!
-                        Minigames.getCmpnntLogger().warn("Found empty description data. Ignoring it for now.");
-                        //todo we need a iterator of IndexedMap --> code it!
-                    }
-                }
-
-                List<Component> loreList = new ArrayList<>();
-                List<Component> oldLoreList = itemMeta.lore();
-                if (oldLoreList != null) {
-                    loreList.addAll(oldLoreList); // just in case the list is unmodifiable
-                    loreList.addAll(startingPoint, descriptionPart);
+            if (descriptionPart != null && !descriptionPart.isEmpty()) {
+                if (descriptionRegistry.isEmpty()) { // after removed the last entry the registry might be empty now!
+                    // set part as lore, as it is the first entry
+                    descriptionPart.stream().map(c -> new IdComponent(descriptionToken, c)).forEachOrdered(descriptionRegistry::add);
                 } else {
-                    loreList = descriptionPart;
-                }
+                    int workingPos = 0;
+                    String lastId = null;
 
-                itemMeta.lore(loreList);
-            }
+                    for (int i = 0; i < descriptionRegistry.size(); i++) {
+                        IdComponent idC = descriptionRegistry.get(i);
 
-            descriptionRegistry.put(typeStr, descriptionPart.size());
-            itemMeta.getPersistentDataContainer().set(DESCRIPTION_KEY, STR_INT_MAP_TYPE, descriptionRegistry);
+                        if (lastId == null || !lastId.equals(idC.id())) {
+                            if (workingPos == postion) {
+                                descriptionRegistry.addAll(i, descriptionPart.stream().map(c -> new IdComponent(descriptionToken, c)).toList());
+
+                                break;
+                            }
+
+                            lastId = idC.id();
+                            workingPos++;
+                        }
+                    } // for loop
+                } // else
+            } // description part empty
+
+            itemMeta.lore(descriptionRegistry.stream().map(IdComponent::component).toList());
             displayItem.setItemMeta(itemMeta);
         }
     }
 
-    private static void removeDescriptionPart(@NotNull ItemMeta itemMeta, @NotNull IndexedMap<String,
-            Integer> descriptionRegistry, @NotNull String typeStr) {
-        if (descriptionRegistry.containsKey(typeStr)) {
-            Integer lastPartLength = descriptionRegistry.get(typeStr);
+    public void removeDescriptionPart(@NotNull String descriptionToken) {
+        boolean found = false;
+        for (Iterator<IdComponent> it = descriptionRegistry.iterator(); it.hasNext(); ) {
+            IdComponent idCToCheck = it.next();
 
-            if (lastPartLength != null && lastPartLength > 0) {
-                int startingPoint = 0;
-                for (Map.Entry<String, Integer> entryBefore : descriptionRegistry.entrySet()) {
-                    if (typeStr.equals(entryBefore.getKey())) {
-                        break;
-                    } else {
-                        Integer lengthBefore = entryBefore.getValue();
-                        if (lengthBefore != null) {
-                            startingPoint += entryBefore.getValue();
-                        } else {
-                            // well crap. invalid data!
-                            Minigames.getCmpnntLogger().warn("Found empty description data. Ignoring it for now.");
-                            //todo we need a iterator of IndexedMap --> code it!
-                        }
-                    }
-                }
+            if (idCToCheck.id().equals(descriptionToken)) {
+                found = true;
 
-                List<Component> loreList = itemMeta.lore();
-                if (loreList != null) {
-                    for (int i = startingPoint; i < startingPoint + lastPartLength && i < loreList.size(); i++) {
-                        loreList.remove(i);
-                    }
-                } else {
-                    // well crap. invalid data!
-                    Minigames.getCmpnntLogger().error("Menu item has empty lore but tried to remove a part of it. Clearing all parts mow. Please open an Issue!");
-                    descriptionRegistry.clear();
-                }
-            } else {
-                // well crap. invalid data!
-                Minigames.getCmpnntLogger().warn("Menu item trying to remove empty description data.");
-                descriptionRegistry.remove(typeStr);
+                it.remove();
+            } else if (found) {
+                break;
             }
         }
     }
@@ -228,8 +201,7 @@ public class MenuItem {
     /**
      * Sets the description unter the base description token.
      *
-     * @param description
-     * @see #setDescriptionPartAtEnd(String, List)
+     * @see #setDescriptionPart(String, List)
      * @see #setDescriptionPartAtIndex(String, int, List)
      */
     public void setBaseDescriptionPart(List<Component> description) {
@@ -237,25 +209,32 @@ public class MenuItem {
     }
 
     public @NotNull Component getName() {
-        return displayItem.displayName();
+        Component displayName = displayItem.getItemMeta().displayName();
+        return displayName == null ? Component.translatable(displayItem.translationKey()) : displayName;
     }
 
     public @NotNull ItemStack getDisplayItem() {
         return displayItem;
     }
 
+    /**
+     * overwrites name with last name and lore with lore registered in {@link #setDescriptionPart(String, List)} and
+     * {@link #setDescriptionPartAtIndex(String, int, List)},
+     * however this will set the BaseDescription to the new lore - potentially clearing it
+     *
+     * @see #setBaseDescriptionPart(List)
+     */
     public void setDisplayItem(@NotNull ItemStack item) {
-        ItemMeta ometa = displayItem.getItemMeta();
+        ItemMeta originalMeta = displayItem.getItemMeta();
         displayItem = item.clone();
-        ItemMeta nmeta = displayItem.getItemMeta();
-        nmeta.displayName(ometa.displayName());
-        nmeta.lore(nmeta.lore());
-        try {
-            nmeta.getPersistentDataContainer().readFromBytes(ometa.getPersistentDataContainer().serializeToBytes());
-        } catch (IOException e) {
-            Minigames.getCmpnntLogger().error("Could not carry over persistent data from one menuItem to another. Description Data might got lost!", e);
-        }
-        displayItem.setItemMeta(nmeta);
+        ItemMeta newMeta = displayItem.getItemMeta();
+        newMeta.displayName(originalMeta.displayName());
+
+        List<Component> newBaseLore = newMeta.lore(); // save temporary
+        newMeta.lore(descriptionRegistry.stream().map(IdComponent::component).toList());
+        displayItem.setItemMeta(newMeta);
+
+        setBaseDescriptionPart(newBaseLore);
     }
 
     public void update() {
@@ -309,5 +288,8 @@ public class MenuItem {
 
     public void setSlot(int slot) {
         this.slot = slot;
+    }
+
+    private record IdComponent(@NotNull String id, @NotNull Component component) {
     }
 }

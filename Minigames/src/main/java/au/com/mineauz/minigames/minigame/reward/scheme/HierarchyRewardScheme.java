@@ -233,7 +233,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
                     MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK)
             );
 
-            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
+            setDescriptionPart(DESCRIPTION_TOKEN, description);
 
             // Update name
             ItemStack item = getDisplayItem();

@@ -62,7 +62,7 @@ public class MenuItemLong extends MenuItem {
     }
 
     public void updateDescription() {
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(Component.text(value.getValue(), NamedTextColor.GREEN)));
+        setDescriptionPart(DESCRIPTION_TOKEN, List.of(Component.text(value.getValue(), NamedTextColor.GREEN)));
     }
 
     @Override

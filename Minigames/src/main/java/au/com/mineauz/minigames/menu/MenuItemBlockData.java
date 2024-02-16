@@ -29,12 +29,12 @@ public class MenuItemBlockData extends MenuItem {
                              @NotNull Callback<BlockData> callback) {
         super(displayMat, name);
         this.dataCallback = callback;
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
+        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
     }
 
     @Override
     public void update() {
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, createDescription(this.dataCallback.getValue()));
+        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(this.dataCallback.getValue()));
     }
 
     /**
@@ -95,7 +95,7 @@ public class MenuItemBlockData extends MenuItem {
         try {
             BlockData d = Bukkit.createBlockData(entry);
             dataCallback.setValue(d);
-            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
+            setDescriptionPart(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
 
             // update the display item
             if (d.getMaterial().isItem()) {

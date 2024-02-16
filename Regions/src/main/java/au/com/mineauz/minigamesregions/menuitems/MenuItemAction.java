@@ -66,7 +66,7 @@ public class MenuItemAction extends MenuItem {
             }
         }
 
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
+        setDescriptionPart(DESCRIPTION_TOKEN, description);
     }
 
     @Override

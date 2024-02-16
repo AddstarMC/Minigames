@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
 
 public class MenuItemString extends MenuItem {
@@ -54,11 +56,11 @@ public class MenuItemString extends MenuItem {
     public void updateDescription() {
         String setting = stringCallback.getValue();
         if (setting == null) {
-            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(
+            setDescriptionPart(DESCRIPTION_TOKEN, List.of(
                     MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).color(NamedTextColor.GRAY)));
         } else if (setting.length() > 20) {
             setting = setting.substring(0, 17) + "...";
-            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(Component.text(setting, NamedTextColor.GREEN)));
+            setDescriptionPart(DESCRIPTION_TOKEN, List.of(Component.text(setting, NamedTextColor.GREEN)));
         }
     }
 
@@ -67,14 +69,16 @@ public class MenuItemString extends MenuItem {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
+        final int reopenSeconds = 20;
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
-                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
         if (allowNull) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
                     Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         }
         mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(20);
+        getContainer().startReopenTimer(reopenSeconds);
 
         return null;
     }

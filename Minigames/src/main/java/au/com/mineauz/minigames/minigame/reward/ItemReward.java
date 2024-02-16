@@ -5,9 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemItemNbt;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,10 +13,10 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -82,82 +80,82 @@ public class ItemReward extends RewardType {
         this.item = item;
     }
 
-    private class MenuItemReward extends MenuItemItemNbt {
-        private final static String DESCRIPTION_TOKEN = "Reward_description";
+    private class MenuItemReward extends MenuItem {
+        private final static String DESCRIPTION_REWARD_TOKEN = "Reward_description";
         private final @NotNull ItemReward reward;
-        private final @NotNull List<RewardRarity> options;
+        private final @NotNull List<RewardRarity> rarities;
 
         public MenuItemReward(@NotNull ItemReward reward) {
-            super(Material.DIAMOND, Component.translatable(Material.DIAMOND.translationKey()), new Callback<>() {
-                @Override
-                public ItemStack getValue() {
-                    return item;
-                }
+            super(reward.item.clone(), reward.item.getItemMeta().displayName());
 
-                @Override
-                public void setValue(ItemStack value) {
-                    item = value;
-                }
-            });
-            setDisplayItem(reward.getRewardItem());
-            options = Arrays.asList(RewardRarity.values());
+            rarities = List.of(RewardRarity.values());
             this.reward = reward;
-            updateDescription();
-        }
 
+            updateDescriptionRarity();
+        }
 
         @Override
-        public ItemStack onClickWithItem(ItemStack item) {
+        public ItemStack onClickWithItem(@NotNull ItemStack item) {
             setRewardItem(item.clone());
-            return super.onClickWithItem(item);
+            setDisplayItem(item);
+
+            // update lore
+            updateDescriptionRarity();
+
+            // update display name
+            ItemMeta meta = super.getDisplayItem().getItemMeta();
+            meta.displayName(item.getItemMeta().displayName());
+            super.getDisplayItem().setItemMeta(meta);
+
+            return super.getDisplayItem();
         }
 
-        public void updateDescription() {
+        public void updateDescriptionRarity() {
             List<Component> description;
-            int pos = options.indexOf(getRarity());
+            int pos = rarities.indexOf(getRarity());
             int before = pos - 1;
             int after = pos + 1;
             if (before == -1) {
-                before = options.size() - 1;
+                before = rarities.size() - 1;
             }
-            if (after == options.size()) {
+            if (after == rarities.size()) {
                 after = 0;
             }
 
             description = new ArrayList<>();
-            description.add(options.get(before).getDisplayName().color(NamedTextColor.GRAY));
+            description.add(rarities.get(before).getDisplayName().color(NamedTextColor.GRAY));
             description.add(getRarity().getDisplayName().color(NamedTextColor.GREEN));
-            description.add(options.get(after).getDisplayName().color(NamedTextColor.GRAY));
+            description.add(rarities.get(after).getDisplayName().color(NamedTextColor.GRAY));
             description.add(MinigameMessageManager.getMgMessage(
                     MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).color(NamedTextColor.DARK_PURPLE));
 
-            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
+            setDescriptionPartAtIndex(DESCRIPTION_REWARD_TOKEN, 0, description);
         }
 
         @Override
         public ItemStack onClick() {
-            int ind = options.lastIndexOf(getRarity());
+            int ind = rarities.lastIndexOf(getRarity());
             ind++;
-            if (ind == options.size()) {
+            if (ind == rarities.size()) {
                 ind = 0;
             }
 
-            setRarity(options.get(ind));
-            updateDescription();
+            setRarity(rarities.get(ind));
+            updateDescriptionRarity();
 
             return getDisplayItem();
         }
 
         @Override
         public ItemStack onRightClick() {
-            int ind = options.lastIndexOf(getRarity());
+            int ind = rarities.lastIndexOf(getRarity());
             ind--;
             if (ind == -1) {
-                ind = options.size() - 1;
+                ind = rarities.size() - 1;
             }
 
-            setRarity(options.get(ind));
-            updateDescription();
+            setRarity(rarities.get(ind));
+            updateDescriptionRarity();
 
             return getDisplayItem();
         }

@@ -11,8 +11,8 @@ import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +20,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MenuItemRewardGroup extends MenuItem {
     private final static String DESCRIPTION_TOKEN = "RewardGroup_description";
+    private final static @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
     private final @NotNull RewardGroup group;
     private final @NotNull Rewards rewards;
 
@@ -46,8 +46,6 @@ public class MenuItemRewardGroup extends MenuItem {
     }
 
     public void updateDescription() {
-        List<RewardRarity> options = Arrays.asList(RewardRarity.values());
-
         int pos = options.indexOf(group.getRarity());
         int before = pos - 1;
         int after = pos + 1;
@@ -58,18 +56,25 @@ public class MenuItemRewardGroup extends MenuItem {
             after = 0;
         }
 
-        List<Component> description = new ArrayList<>();
+        List<Component> description = new ArrayList<>(3);
         description.add(Component.text(options.get(before).toString(), NamedTextColor.GRAY));
         description.add(Component.text(group.getRarity().toString(), NamedTextColor.GREEN));
         description.add(Component.text(options.get(after).toString(), NamedTextColor.GRAY));
 
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
+        setDescriptionPart(DESCRIPTION_TOKEN, description);
     }
 
 
     @Override
     public ItemStack onClick() {
-        group.setRarity(group.getRarity().getNextRarity());
+        int ind = options.lastIndexOf(group.getRarity());
+        ind++;
+        if (ind == options.size()) {
+            ind = 0;
+        }
+
+        group.setRarity(options.get(ind));
+
         updateDescription();
 
         return getDisplayItem();
@@ -77,7 +82,13 @@ public class MenuItemRewardGroup extends MenuItem {
 
     @Override
     public ItemStack onRightClick() {
-        group.setRarity(group.getRarity().getPreviousRarity());
+        int ind = options.lastIndexOf(group.getRarity());
+        ind--;
+        if (ind == -1) {
+            ind = options.size() - 1;
+        }
+
+        group.setRarity(options.get(ind));
         updateDescription();
 
         return getDisplayItem();
@@ -116,7 +127,7 @@ public class MenuItemRewardGroup extends MenuItem {
     }
 
     @Override
-    public ItemStack onDoubleClick() {
+    public ItemStack onShiftClick() {
         Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
         rewardMenu.setPreviousPage(getContainer());
 
@@ -126,12 +137,12 @@ public class MenuItemRewardGroup extends MenuItem {
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), getName())), rewardMenu.getPreviousPage()), 44);
 
-        List<MenuItem> mi = new ArrayList<>();
+        List<MenuItem> menuItems = new ArrayList<>(group.getItems().size());
         for (RewardType item : group.getItems()) {
-            mi.add(item.getMenuItem());
+            menuItems.add(item.getMenuItem());
         }
 
-        rewardMenu.addItems(mi);
+        rewardMenu.addItems(menuItems);
         rewardMenu.displayMenu(getContainer().getViewer());
         return null;
     }

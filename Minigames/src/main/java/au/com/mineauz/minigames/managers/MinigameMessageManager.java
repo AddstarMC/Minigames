@@ -63,7 +63,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
 
         Minigames.getCmpnntLogger().info("MessageManager set locale for language:" + locale.toLanguageTag());
         File file = new File(new File(Minigames.getPlugin().getDataFolder(), "lang"), "minigames.properties");
-        registerCoreLanguage(file, Locale.getDefault());
+        registerCoreLanguage(file, locale);
     }
 
     private static String saveConvert(String theString, boolean escapeSpace) {
@@ -142,8 +142,9 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
                         FileUtils.copyToFile(zipStream, langFile);
                     } else { // add defaults to file to expand in case there are key-value pairs missing
                         Properties defaults = new Properties();
-                        try (InputStreamReader reader = new InputStreamReader(zipStream, StandardCharsets.UTF_8)) {
-                            defaults.load(reader);
+                        // no try with since we need to keep the ZipStream open
+                        try {
+                            defaults.load(new InputStreamReader(zipStream, StandardCharsets.UTF_8));
                         } catch (Exception e) {
                             Minigames.getCmpnntLogger().warn("couldn't get default properties file for " + entryName + "!", e);
                             continue;
@@ -161,13 +162,16 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
                              // we are NOT using Properties#store since it gets rid of comments and doesn't guarantee ordering
                              BufferedWriter bw = new BufferedWriter(fw)) {
                             boolean updated = false; // only write comment once
-                            for (Map.Entry<Object, Object> translationPair : defaults.entrySet()) {
+                            for (Map.Entry<Object, Object> translationPair : defaults.entrySet()) { //todo guarantee ordering; default Properties are backed up by hashmap!
                                 if (current.get(translationPair.getKey()) == null) {
                                     if (!updated) {
+                                        // most likely this will generate an empty line, since the last line should be empty.
+                                        // however this is NOT guaranteed and therefore might write the command onto an existing line and ruin the translation there!
+                                        bw.newLine();
                                         bw.write("# New Values where added. Is everything else up to date? Time of update: " + new Date());
                                         bw.newLine();
 
-                                        Minigames.getCmpnntLogger().trace("Updated langfile \"" + entryName + "\". Might want to check the new translation strings out!");
+                                        Minigames.getCmpnntLogger().info("Updated langfile \"" + entryName + "\". Might want to check the new translation strings out!");
 
                                         updated = true;
                                     }
@@ -206,7 +210,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
             }
         }
         if (langBundleMinigames != null) {
-            registerMessageFile("minigames", langBundleMinigames);
+            registerMessageFile(BUNDLE_KEY, langBundleMinigames);
         } else {
             Minigames.getCmpnntLogger().error("No Core Language Resource Could be loaded...messaging will be broken");
         }
@@ -313,6 +317,10 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         Component init = getPluginPrefix(MinigameMessageType.INFO);
         Component message = getMessage(identifier, key, resolvers).
                 clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, command));
+
+        // don't use color of prefix
+        message = message.colorIfAbsent(NamedTextColor.WHITE);
+
         target.sendMessage(init.append(message));
     }
 
@@ -325,6 +333,10 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
                                    TagResolver... resolvers) {
         Component init = getPluginPrefix(type);
         Component message = getMessage(identifier, key, resolvers);
+
+        // don't use color of prefix
+        message = message.colorIfAbsent(NamedTextColor.WHITE);
+
         target.sendMessage(init.append(message));
     }
 
@@ -348,6 +360,9 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param permission - The permission required to see this broadcastServer message.
      */
     public static void broadcastServer(@NotNull Component message, @NotNull Minigame minigame, @NotNull String permission) {
+        // don't use color of prefix
+        message = message.colorIfAbsent(NamedTextColor.WHITE);
+
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(getPluginPrefix(MinigameMessageType.DEFAULT), message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
 
@@ -366,6 +381,9 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param type     - The color to be used in the prefix.
      */
     public static void broadcastServer(@NotNull Component message, @NotNull Minigame minigame, @NotNull MinigameMessageType type) {
+        // don't use color of prefix
+        message = message.colorIfAbsent(NamedTextColor.WHITE);
+
         Component init = getPluginPrefix(type);
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(init, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
@@ -449,7 +467,11 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
 
     public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
                                    @Nullable String identifier, @NotNull LangKey key) {
-        audience.sendMessage(getPluginPrefix(messageType).append(getMessage(identifier, key)));
+        // don't use color of prefix
+        Component message = getMessage(identifier, key);
+        message = message.colorIfAbsent(NamedTextColor.WHITE);
+
+        audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
 
     public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull LangKey key) {
@@ -473,6 +495,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
 
     public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
                                    @NotNull Component message) {
+        // don't use color of prefix
+        message = message.colorIfAbsent(NamedTextColor.WHITE);
         audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
 

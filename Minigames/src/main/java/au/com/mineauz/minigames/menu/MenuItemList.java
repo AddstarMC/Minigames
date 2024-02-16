@@ -8,8 +8,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -56,31 +56,42 @@ public class MenuItemList<T> extends MenuItem {
     }
 
     public void updateDescription() {
-        List<Component> description;
+        if (options.isEmpty()) {
+            return;
+        }
+
         int pos = options.indexOf(value.getValue());
-        int before = pos - 1;
-        int after = pos + 1;
-        if (before < 0) {
-            before = options.size() - 1;
-        }
-        if (after == options.size()) {
-            after = 0;
-        }
 
-        description = new ArrayList<>();
-        description.add(Component.text(options.get(before).toString(), NamedTextColor.GRAY));
-        description.add(Component.text(options.get(pos).toString(), NamedTextColor.GREEN));
-        description.add(Component.text(options.get(after).toString(), NamedTextColor.GRAY));
+        if (pos == -1) {
+            setDescriptionPart(DESCRIPTION_TOKEN,
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_ITERABLE_ERROR_UNKNOWN));
+        } else {
+            List<Component> description = new ArrayList<>();
 
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
+            int before = pos - 1;
+            int after = pos + 1;
+            if (before < 0) {
+                before = options.size() - 1;
+            }
+            if (after == options.size()) {
+                after = 0;
+            }
+
+            description.add(Component.text(options.get(before).toString(), NamedTextColor.GRAY));
+            description.add(Component.text(options.get(pos).toString(), NamedTextColor.GREEN));
+            description.add(Component.text(options.get(after).toString(), NamedTextColor.GRAY));
+
+            setDescriptionPart(DESCRIPTION_TOKEN, description);
+        }
     }
 
     @Override
     public ItemStack onClick() {
         int ind = options.lastIndexOf(value.getValue());
         ind++;
-        if (ind == options.size())
+        if (ind == options.size()) {
             ind = 0;
+        }
 
         value.setValue(options.get(ind));
         updateDescription();
@@ -92,8 +103,9 @@ public class MenuItemList<T> extends MenuItem {
     public ItemStack onRightClick() {
         int ind = options.lastIndexOf(value.getValue());
         ind--;
-        if (ind == -1)
+        if (ind == -1) {
             ind = options.size() - 1;
+        }
 
         value.setValue(options.get(ind));
         updateDescription();
@@ -111,7 +123,6 @@ public class MenuItemList<T> extends MenuItem {
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
-        mgPlayer.setManualEntry(this);
 
         String optionsStr = String.join(", ", options.stream().map(Object::toString).toList());
         if (optionsStr.length() > 8000) {
@@ -120,7 +131,10 @@ public class MenuItemList<T> extends MenuItem {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_OPTION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), optionsStr));
         }
+
+        mgPlayer.setManualEntry(this);
         getContainer().startReopenTimer(reopenSeconds);
+
         return null;
     }
 

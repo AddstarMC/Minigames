@@ -28,7 +28,7 @@ public class MenuItemNodeExecutor extends MenuItem {
         super(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_NODEEXECUTOR_NAME));
         this.node = node;
         this.ex = ex;
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(
+        setDescriptionPart(DESCRIPTION_TOKEN, List.of(
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_TRIGGER,
                         Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), ex.getTrigger().getDisplayName())),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_ACTION,

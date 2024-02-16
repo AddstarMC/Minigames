@@ -219,9 +219,14 @@ public class TeamsModule extends MinigameModule {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_TEAM_NAME, previousMenu.getViewer());
         menu.setPreviousPage(previousMenu);
         List<MenuItem> menuItems = new ArrayList<>();
+
+        List<TeamColor> teamColors = new ArrayList<>(teams.keySet());
+        teamColors.add(TeamColor.NONE);
         menuItems.add(new MenuItemList<>(Material.PAPER, MgMenuLangKey.MENU_TEAM_DEFAULTWIN_NAME,
-                getDefaultWinnerCallback(), List.of(TeamColor.values())));
+                getDefaultWinnerCallback(), teamColors));
+
         menuItems.add(new MenuItemNewLine());
+
         for (Team team : this.teams.values()) {
             menuItems.add(new MenuItemTeam(team.getColoredDisplayName(), team));
         }

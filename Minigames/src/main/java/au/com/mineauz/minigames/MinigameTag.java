@@ -11,7 +11,7 @@ public interface MinigameTag<T> {
      * MinigameTag representing vanilla potions with negative effect(s).
      * Also represents all potions with exclusive negative effects, which aren't in the value list.
      */
-    MinigameTag<PotionEffectType> NEGATIVE_POTION = new MinigameTag<>() {
+    MinigameTag<PotionEffectType> NEGATIVE_POTION_EFFECT = new MinigameTag<>() {
         @Override
         public boolean isTagged(PotionEffectType item) {
             return getValues().contains(item);
@@ -47,7 +47,7 @@ public interface MinigameTag<T> {
      * MinigameTag representing vanilla potions with positive effect(s)
      * Also represents all potions with exclusive positive effects, which aren't in the value list.
      */
-    MinigameTag<PotionEffectType> POSITIVE_POTION = new MinigameTag<>() {
+    MinigameTag<PotionEffectType> POSITIVE_POTION_EFFECT = new MinigameTag<>() {
         @Override
         public boolean isTagged(PotionEffectType item) {
             return getValues().contains(item);
@@ -87,7 +87,7 @@ public interface MinigameTag<T> {
     /**
      * MinigameTag representing vanilla potions with both, positive and negative, effects
      */
-    MinigameTag<Set<PotionEffectType>> MIXED_POTION = new MinigameTag<>() {
+    MinigameTag<Set<PotionEffectType>> MIXED_POTION_EFFECT = new MinigameTag<>() {
 
         @Override
         public boolean isTagged(Set<PotionEffectType> item) {

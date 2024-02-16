@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
 
 public class MenuItemComponent extends MenuItem {
@@ -55,7 +56,7 @@ public class MenuItemComponent extends MenuItem {
         // limit to a still readable size
         settingComp = MinigameUtils.limitIgnoreFormat(settingComp, 20);
 
-        setDescriptionPartAtEnd(DESCRIPTION_VALUE_TOKEN, List.of(settingComp));
+        setDescriptionPart(DESCRIPTION_VALUE_TOKEN, List.of(settingComp));
     }
 
     @Override
@@ -63,14 +64,17 @@ public class MenuItemComponent extends MenuItem {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
+
+        final int reopenSeconds = 20;
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
-                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
         if (allowNull) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
                     Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         }
         mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(20);
+        getContainer().startReopenTimer(reopenSeconds);
 
         return null;
     }

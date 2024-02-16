@@ -30,7 +30,7 @@ public class ReequipLoadoutAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
+    public void describe(@NotNull Map<@NotNull Component, @NotNull Component> out) {
     }
 
     @Override

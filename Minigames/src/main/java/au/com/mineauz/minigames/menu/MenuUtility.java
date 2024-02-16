@@ -14,7 +14,7 @@ public class MenuUtility {
     }
 
     public static @NotNull Material getSaveMaterial() {
-        return Material.REDSTONE_TORCH;
+        return Material.GREEN_BED;
     }
 
     public static @NotNull Material getCreateMaterial() {

@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -44,7 +43,7 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
      * @param description will get ignored
      */
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemEnum getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
         return new MenuItemEnum<>(displayMat, name, new Callback<>() {
 

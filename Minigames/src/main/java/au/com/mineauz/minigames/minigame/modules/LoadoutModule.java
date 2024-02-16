@@ -33,7 +33,7 @@ public class LoadoutModule extends MinigameModule {
     public LoadoutModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
         PlayerLoadout def = new PlayerLoadout("default");
-        def.setDeleteable(false);
+        def.setDeletable(false);
         extraLoadouts.put("default", def);
     }
 
@@ -97,12 +97,13 @@ public class LoadoutModule extends MinigameModule {
     @Override
     public void load(FileConfiguration config) {
 
-        //TODO: Remove entire load after 1.7
+        //TODO: Remove entire load after 1.7 <-- figure out if it's save to do so, I believe the loadouts handle loading themselves
         if (config.contains(getMinigame() + ".loadout")) {
             Set<String> keys = config.getConfigurationSection(getMinigame() + ".loadout").getKeys(false);
             for (String key : keys) {
-                if (key.matches("[-]?[0-9]+"))
+                if (key.matches("[-]?[0-9]+")) {
                     getLoadout("default").addItem(config.getItemStack(getMinigame() + ".loadout." + key), Integer.parseInt(key));
+                }
             }
             if (config.contains(getMinigame() + ".loadout.potions")) {
                 keys = config.getConfigurationSection(getMinigame() + ".loadout.potions").getKeys(false);
@@ -231,7 +232,8 @@ public class LoadoutModule extends MinigameModule {
                             mgPlayer.setLoadout(loadout);
                             mgPlayer.getPlayer().closeInventory();
                             if (!equip) {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
+                                        Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                             } else {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_EQUIPPED,
                                         Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));

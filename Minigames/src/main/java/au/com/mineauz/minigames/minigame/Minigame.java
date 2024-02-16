@@ -1286,7 +1286,7 @@ public class Minigame implements ScriptObject {
                 if (!playerLoadout.getItemSlots().isEmpty()) {
                     material = playerLoadout.getItem((Integer) playerLoadout.getItemSlots().toArray()[0]).getType();
                 }
-                if (playerLoadout.isDeleteable()) {
+                if (playerLoadout.isDeletable()) {
                     mi.add(new MenuItemDisplayLoadout(material, playerLoadout.getDisplayName(),
                             MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), playerLoadout, this));
                 } else {

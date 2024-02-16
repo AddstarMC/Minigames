@@ -113,7 +113,7 @@ public class RewardSign extends AMinigameSign {
                 menuItems.add(item.getMenuItem());
             }
 
-            List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_DOUBLECLICK);
+            List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
             for (RewardGroup group : rew.getGroups()) {
                 MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST,
                         MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,

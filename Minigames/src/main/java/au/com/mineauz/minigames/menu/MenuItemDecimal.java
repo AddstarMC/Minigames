@@ -78,7 +78,7 @@ public class MenuItemDecimal extends MenuItem {
             description = Component.text(form.format(value.getValue()), NamedTextColor.GREEN);
         }
 
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(description));
+        setDescriptionPart(DESCRIPTION_TOKEN, List.of(description));
     }
 
     @Override

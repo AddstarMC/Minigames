@@ -35,7 +35,7 @@ public class LoadoutSetFlag extends Flag<Map<String, PlayerLoadout>> {
         for (String loadout : keys) {
             lf = new LoadoutFlag(new PlayerLoadout(loadout), loadout);
             if (loadout.equals("default"))
-                lf.getFlag().setDeleteable(false);
+                lf.getFlag().setDeletable(false);
             lf.loadValue(path + "." + getName(), config);
             getFlag().put(lf.getName(), lf.getFlag());
         }

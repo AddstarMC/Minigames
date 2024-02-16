@@ -1,13 +1,15 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,8 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CommandReward extends RewardType {
@@ -62,27 +64,13 @@ public class CommandReward extends RewardType {
         command = config.getString(path);
     }
 
-    private class CommandRewardItem extends MenuItemString {
+    private class CommandRewardItem extends MenuItem {
+        private final static @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
         private final CommandReward reward;
-        private final @NotNull List<@NotNull RewardRarity> options = new ArrayList<>();
 
         public CommandRewardItem(CommandReward reward) {
-            super(Material.COMMAND_BLOCK, Component.text("/" + command), new Callback<>() {
+            super(Material.COMMAND_BLOCK, Component.text("/" + command));
 
-                @Override
-                public String getValue() {
-                    return command;
-                }
-
-                @Override
-                public void setValue(String value) {
-                    if (value.startsWith("./"))
-                        value = value.replace("./", "/");
-                    command = value;
-                }
-            });
-
-            Collections.addAll(options, RewardRarity.values());
             this.reward = reward;
             updateDescription();
         }
@@ -97,9 +85,7 @@ public class CommandReward extends RewardType {
             getDisplayItem().setItemMeta(meta);
         }
 
-        @Override
         public void updateDescription() {
-            List<Component> description;
             int pos = options.indexOf(getRarity());
             int before = pos - 1;
             int after = pos + 1;
@@ -110,27 +96,23 @@ public class CommandReward extends RewardType {
                 after = 0;
             }
 
-            description = new ArrayList<>();
+            List<Component> description = new ArrayList<>(5);
             description.add(options.get(before).getDisplayName().color(NamedTextColor.GRAY));
             description.add(getRarity().getDisplayName().color(NamedTextColor.GREEN));
             description.add(options.get(after).getDisplayName().color(NamedTextColor.GRAY));
             description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_EDIT_SHIFTLEFT).color(NamedTextColor.DARK_PURPLE));
             description.addAll(MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
 
-            setDescriptionPartAtEnd(DESCRIPTION_TOKEN, description);
-        }
-
-        @Override
-        public ItemStack onDoubleClick() {
-            return getDisplayItem();
+            setDescriptionPart(DESCRIPTION_TOKEN, description);
         }
 
         @Override
         public ItemStack onClick() {
             int ind = options.lastIndexOf(getRarity());
             ind++;
-            if (ind == options.size())
+            if (ind == options.size()) {
                 ind = 0;
+            }
 
             setRarity(options.get(ind));
             updateDescription();
@@ -161,13 +143,31 @@ public class CommandReward extends RewardType {
 
         @Override
         public ItemStack onShiftClick() {
-            super.onDoubleClick();
+            MinigamePlayer mgPlayer = getContainer().getViewer();
+            mgPlayer.setNoClose(true);
+            mgPlayer.getPlayer().closeInventory();
+            final int reopenSeconds = 40;
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
+                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+
+            mgPlayer.setManualEntry(this);
+            getContainer().startReopenTimer(reopenSeconds);
+
             return null;
         }
 
         @Override
         public void checkValidEntry(String entry) {
-            super.checkValidEntry(entry);
+            if (entry.startsWith("./")) {
+                entry = entry.replace("./", "/");
+            }
+            command = entry;
+
+            updateDescription();
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
+
             updateName(entry);
         }
     }

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
 
 public class MenuItemRewardGroupAdd extends MenuItem {
@@ -43,7 +45,8 @@ public class MenuItemRewardGroupAdd extends MenuItem {
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
         final int reopenSeconds = 30;
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_ENTERCHAT);
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
         mgPlayer.setManualEntry(this);
 
         getContainer().startReopenTimer(reopenSeconds);

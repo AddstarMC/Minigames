@@ -1,7 +1,7 @@
 name: Minigames
 main: au.com.mineauz.minigames.Minigames
 version: ${plugin.version}
-api-version: "${spigot.api.version}"
+api-version: "${paper.api.version}"
 author: _Razz_ Schmoller Addstar Narimm GreenSurvivors
 softdepend:
     - WorldEdit
@@ -9,7 +9,7 @@ description: ${project.description}
 
 libraries:
   - org.apache.commons:commons-text:1.10.0
-    - commons-io:commons-io:2.15.1
+  - commons-io:commons-io:2.15.1
 
 commands:
   minigame:

@@ -3,23 +3,26 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.Minigames;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 
 public class MinigameSave {
-    private final String name;
-    String minigame = null;
+    private final @NotNull String name;
+    private final @Nullable String minigame;
     private FileConfiguration minigameSave = null;
     private File minigameSaveFile = null;
 
-    public MinigameSave(String name) {
+    public MinigameSave(@NotNull String name) {
         this.name = name;
+        this.minigame = null;
         reloadFile();
         saveConfig();
     }
 
-    public MinigameSave(String minigame, String name) {
+    public MinigameSave(@NotNull String minigame, @NotNull String name) {
         this.minigame = minigame;
         this.name = name;
         reloadFile();
@@ -48,13 +51,21 @@ public class MinigameSave {
 
     public void saveConfig() {
         if (minigameSave == null || minigameSaveFile == null) {
-            Minigames.getCmpnntLogger().info("Could not save " + minigame + File.separator + name + " config file!");
+            if (minigame != null) {
+                Minigames.getCmpnntLogger().info("Could not save " + minigame + File.separator + name + " config file!");
+            } else {
+                Minigames.getCmpnntLogger().info("Could not save " + name + " config file!");
+            }
             return;
         }
         try {
             minigameSave.save(minigameSaveFile);
         } catch (IOException ex) {
-            Minigames.getCmpnntLogger().error("Could not save " + minigame + File.separator + name + " config file!");
+            if (minigame != null) {
+                Minigames.getCmpnntLogger().error("Could not save " + minigame + File.separator + name + " config file!");
+            } else {
+                Minigames.getCmpnntLogger().error("Could not save " + name + " config file!");
+            }
         }
     }
 

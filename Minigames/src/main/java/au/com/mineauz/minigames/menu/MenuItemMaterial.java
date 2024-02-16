@@ -47,7 +47,7 @@ public class MenuItemMaterial extends MenuItem {
     }
 
     public void updateDescription() {
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(
+        setDescriptionPart(DESCRIPTION_TOKEN, List.of(
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MATERIAL_DESCRIOPTION,
                         Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(),
                                 Component.translatable(materialCallback.getValue().translationKey())))));

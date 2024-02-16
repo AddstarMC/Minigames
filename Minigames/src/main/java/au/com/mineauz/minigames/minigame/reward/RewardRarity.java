@@ -38,22 +38,27 @@ public enum RewardRarity {
         return rarity;
     }
 
-    public @NotNull RewardRarity getPreviousRarity() {
+    /**
+     * get the next highest rarity or itself if it already is the highest one
+     */
+    public @NotNull RewardRarity getHigherRarity() {
         return switch (this) {
             case VERY_COMMON -> COMMON;
             case COMMON -> NORMAL;
             case NORMAL -> RARE;
-            default -> VERY_RARE;
+            case RARE, VERY_RARE -> VERY_RARE;
         };
-
     }
 
-    public @NotNull RewardRarity getNextRarity() {
+    /**
+     * get the next lowest rarity or itself if it already is the lowest one
+     */
+    public @NotNull RewardRarity getLowerRarity() {
         return switch (this) {
             case VERY_RARE -> RARE;
             case RARE -> NORMAL;
             case NORMAL -> COMMON;
-            default -> VERY_COMMON;
+            case COMMON, VERY_COMMON -> VERY_COMMON;
         };
     }
 
