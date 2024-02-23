@@ -26,8 +26,6 @@ import java.util.logging.Logger;
 
 /**
  * Class will hold and store all messages that are required for minigames
- * Created for the Charlton IT Project.
- * Created by benjicharlton on 19/06/2020.
  */
 public class MessageManager {
     /**
@@ -117,7 +115,6 @@ public class MessageManager {
     public static String getMessage(@Nullable String identifier, @NotNull String key, Object... args) throws MissingResourceException {
         String unformatted = getUnformattedMessage(identifier, key);
         return String.format(unformatted, args);
-
     }
 
     /**
@@ -167,7 +164,7 @@ public class MessageManager {
     }
 
     private static BaseComponent getMessageStart(MinigameMessageType type) {
-        BaseComponent init = new TextComponent("[Minigames]");
+        BaseComponent init = new TextComponent("[Minigames] ");
         switch (type) {
             case ERROR -> init.setColor(ChatColor.RED);
             case WIN -> init.setColor(ChatColor.GREEN);
@@ -194,7 +191,7 @@ public class MessageManager {
      * @param permission - The permission required to see this broadcast message.
      */
     public static void broadcast(String message, Minigame minigame, String permission) {
-        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(org.bukkit.ChatColor.AQUA + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
+        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(org.bukkit.ChatColor.AQUA + "[Minigames] " + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
 
         // Only send broadcast if event was not cancelled and is not empty
@@ -211,10 +208,10 @@ public class MessageManager {
      * @param prefixColor - The color to be used in the prefix.
      */
     public static void broadcast(String message, Minigame minigame, org.bukkit.ChatColor prefixColor) {
-        BaseComponent init = new TextComponent("[Minigames]");
+        BaseComponent init = new TextComponent("[Minigames] ");
         init.setColor(prefixColor.asBungee());
         TextComponent m = new TextComponent(" " + message);
-        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
+        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames] " + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
 
         // Only send broadcast if event was not cancelled and is not empty

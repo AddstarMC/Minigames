@@ -92,6 +92,8 @@ public class SetCommand implements ICommand {
         registerSetCommand(new SetInfectedPercentCommand());
         registerSetCommand(new SetGameOverCommand());
         registerSetCommand(new SetDisplayScoreboardCommand());
+        registerSetCommand(new SetInfectedTeamCommand());
+        registerSetCommand(new SetSurvivorTeamCommand());
 
         if (plugin.getConfig().getBoolean("outputCMDToFile")) {
             try {
@@ -334,7 +336,7 @@ public class SetCommand implements ICommand {
                 if (comd != null) {
                     if (ply != null) {
                         List<String> l = comd.onTabComplete(sender, mgm, alias, shortArgs);
-                        return Objects.requireNonNullElseGet(l, () -> MinigameUtils.stringToList(""));
+                        return Objects.requireNonNullElseGet(l, () -> List.of(""));
                     }
                 } else {
                     List<String> ls = new ArrayList<>(parameterList.keySet());

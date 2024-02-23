@@ -54,7 +54,6 @@ public class QuitPositionMode implements ToolMode {
 
     }
 
-    @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
         if (minigame.getQuitPosition() != null) {
@@ -65,13 +64,11 @@ public class QuitPositionMode implements ToolMode {
         }
     }
 
-    @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
         if (minigame.getQuitPosition() != null) {
             player.getPlayer().sendBlockChange(minigame.getQuitPosition(),
-                    minigame.getQuitPosition().getBlock().getType(),
-                    minigame.getQuitPosition().getBlock().getData());
+                    minigame.getQuitPosition().getBlock().getBlockData());
             player.sendInfoMessage("Deselected quit position");
         } else {
             player.sendMessage("No quit position set!", MinigameMessageType.ERROR);

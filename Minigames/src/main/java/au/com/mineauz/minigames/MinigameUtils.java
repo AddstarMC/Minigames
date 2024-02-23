@@ -4,9 +4,11 @@ import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -17,27 +19,18 @@ public class MinigameUtils {
     /**
      * Returns the item stack from a number or name.
      *
-     * @param item     - The items name or ID.
+     * @param itemStr  - The items material
      * @param quantity - The number of said item
      * @return The ItemStack referred to in the parameter.
+     * @deprecated use {@link org.bukkit.Material#matchMaterial} instead
      */
-    public static ItemStack stringToItemStack(String item, int quantity) {
-        String itemName;
-        String[] split;
+    @Deprecated
+    public static @Nullable ItemStack stringToItemStack(@NotNull String itemStr, int quantity) {
+        //legacy: ignore data behind ":"
+        String itemName = StringUtils.substringBefore(itemStr, ":");
 
-        if (item.contains(":")) {
-            split = item.split(":");
-            itemName = split[0].toUpperCase();
-        } else {
-            itemName = item.toUpperCase();
-        }
-
-        ItemStack it = null;
-
-        if (Material.getMaterial(itemName) != null) {
-            it = new ItemStack(Material.getMaterial(itemName), quantity);
-        }
-        return it;
+        Material mat = Material.matchMaterial(itemName);
+        return mat == null ? null : new ItemStack(mat, quantity);
     }
 
     /**
@@ -45,7 +38,10 @@ public class MinigameUtils {
      *
      * @param item - The ItemStack to get the name of
      * @return The name of the item
+     * @deprecated use {@link net.md_5.bungee.api.chat.TranslatableComponent}
+     * together with {@link Material#getItemTranslationKey()} instead
      */
+    @Deprecated
     public static String getItemStackName(ItemStack item) {
         return item.getType().toString().toLowerCase().replace("_", " ");
     }
@@ -218,21 +214,6 @@ public class MinigameUtils {
     }
 
     /**
-     * Converts a string to a list. Separate each list item with a ";".
-     *
-     * @param toList - String to be turned into a list.
-     * @return A List with the defined items.
-     * @deprecated use {@link List#of(Object[])} instead
-     */
-    @Deprecated
-    public static List<String> stringToList(String toList) {
-        String[] st = toList.split(";");
-        List<String> list = new ArrayList<>();
-        Collections.addAll(list, st);
-        return list;
-    }
-
-    /**
      * Formats a string from the language file.
      *
      * @param format - The location in the YAML of the string to format.
@@ -275,7 +256,7 @@ public class MinigameUtils {
      * @return The Minigame Tool
      */
     public static MinigameTool giveMinigameTool(MinigamePlayer player) {
-        Material toolMat = Material.getMaterial(Minigames.getPlugin().getConfig().getString("tool"));
+        Material toolMat = Material.matchMaterial(Minigames.getPlugin().getConfig().getString("tool"));
         if (toolMat == null) {
             toolMat = Material.BLAZE_ROD;
             MessageManager.sendMessage(player, MinigameMessageType.ERROR, null, "minigame.error.noDefaultTool");
@@ -345,49 +326,6 @@ public class MinigameUtils {
     }
 
     /**
-     * Creates an array containing the smallest and largest points in a selection.
-     *
-     * @param selection1 First point of the selection
-     * @param selection2 Second point of the selection
-     * @return an array containing 2 locations, first being the smallest point, second being the largest
-     */
-    public static Location[] getMinMaxSelection(Location selection1, Location selection2) {
-        int minx;
-        int maxx;
-        int miny;
-        int maxy;
-        int minz;
-        int maxz;
-
-        if (selection1.getBlockX() > selection2.getBlockX()) {
-            minx = selection2.getBlockX();
-            maxx = selection1.getBlockX();
-        } else {
-            minx = selection1.getBlockX();
-            maxx = selection2.getBlockX();
-        }
-        if (selection1.getBlockY() > selection2.getBlockY()) {
-            miny = selection2.getBlockY();
-            maxy = selection1.getBlockY();
-        } else {
-            miny = selection1.getBlockY();
-            maxy = selection2.getBlockY();
-        }
-        if (selection1.getBlockZ() > selection2.getBlockZ()) {
-            minz = selection2.getBlockZ();
-            maxz = selection1.getBlockZ();
-        } else {
-            minz = selection1.getBlockZ();
-            maxz = selection2.getBlockZ();
-        }
-
-        Location[] arr = new Location[2];
-        arr[0] = new Location(selection1.getWorld(), minx, miny, minz);
-        arr[1] = new Location(selection1.getWorld(), maxx, maxy, maxz);
-        return arr;
-    }
-
-    /**
      * Automatically assembles a tab complete array for the use in commands, matching a given string.
      *
      * @param orig  The full list to match the string to
@@ -398,12 +336,7 @@ public class MinigameUtils {
         if (match.equals(""))
             return orig;
         else {
-            List<String> ret = new ArrayList<>(orig.size());
-            for (String m : orig) {
-                if (m.toLowerCase().startsWith(match.toLowerCase()))
-                    ret.add(m);
-            }
-            return ret;
+            return orig.stream().filter(m -> m.toLowerCase().startsWith(match.toLowerCase())).toList();
         }
     }
 
@@ -412,8 +345,11 @@ public class MinigameUtils {
      *
      * @param loc The location to be stored
      * @return A map of values to store
+     * @deprecated use {@link Location#serialize()} instead
+     * (and test if the world was null for good measure)
      */
-    public static Map<String, Object> serializeLocation(Location loc) {
+    @Deprecated
+    public static Map<String, Object> serializeLocation(@NotNull Location loc) {
         Map<String, Object> sloc = new HashMap<>();
         sloc.put("x", loc.getX());
         sloc.put("y", loc.getY());
@@ -541,13 +477,4 @@ public class MinigameUtils {
             return input;
         }
     }
-
-
-//    public static void removePlayerArrows(MinigamePlayer player){
-//        try{
-//            Class.forName("net.minecraft.server.v1_5_R3.EntityPlayer");
-//            EntityPlayer eply = ((CraftPlayer) player.getPlayer()).getHandle();
-//            eply.re(0);
-//        }catch(ClassNotFoundException e){}
-//    }
 }

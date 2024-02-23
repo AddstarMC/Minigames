@@ -24,6 +24,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import io.papermc.lib.PaperLib;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.CustomChart;
+import org.bstats.charts.MultiLineChart;
+import org.bstats.charts.SimpleBarChart;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
@@ -49,7 +52,6 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Minigames extends JavaPlugin {
-
     private static final Pattern COMPILE = Pattern.compile("[-]?[0-9]+");
     public static Logger log;
     private static Minigames plugin;
@@ -256,7 +258,7 @@ public class Minigames extends JavaPlugin {
             plugin = null;
             log().log(Level.SEVERE, "Failed to enable Minigames " + this.getDescription().getVersion() + ": " + e.getMessage());
             e.printStackTrace();
-            this.getPluginLoader().disablePlugin(this);
+            Bukkit.getPluginManager().disablePlugin(this);
         }
         log.removeHandler(startUpHandler);
     }
@@ -468,7 +470,7 @@ public class Minigames extends JavaPlugin {
 
     private void initMetrics() {
         this.metrics = new Metrics(this, 1190);
-        final Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", () -> {
+        final MultiLineChart chart = new MultiLineChart("Players_in_Minigames", () -> {
             final Map<String, Integer> result = new HashMap<>();
             result.put("Total_Players", this.playerManager.getAllMinigamePlayers().size());
             for (final MinigamePlayer pl : this.playerManager.getAllMinigamePlayers()) {
@@ -479,7 +481,7 @@ public class Minigames extends JavaPlugin {
             }
             return result;
         });
-        final Metrics.SimpleBarChart barChart = new Metrics.SimpleBarChart("Modules_v_Servers", () -> {
+        final SimpleBarChart barChart = new SimpleBarChart("Modules_v_Servers", () -> {
             final Map<String, Integer> result = new HashMap<>();
             for (final Class module : this.minigameManager.getModules()) {
                 result.put(module.getCanonicalName(), 1);
@@ -490,7 +492,7 @@ public class Minigames extends JavaPlugin {
         this.metrics.addCustomChart(barChart);
     }
 
-    public void addMetric(final Metrics.CustomChart chart) {
+    public void addMetric(final CustomChart chart) {
         this.metrics.addCustomChart(chart);
     }
 

@@ -14,21 +14,19 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class EventsTest {
     private ServerMock server;
     private Minigames plugin;
     private Minigame game;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         try {
             server = MockBukkit.mock();
@@ -58,21 +56,19 @@ public class EventsTest {
         server.getPluginManager().callEvent(event);
         MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer(mock);
         JoinCommand command = new JoinCommand();
-        String[] args = {game.getName(false)};
+        String[] args = new String[]{game.getName(false)};
         command.onCommand(mock, game, "", args);
-        assertTrue(player.isInMinigame());
+        Assertions.assertTrue(player.isInMinigame());
         PlayerQuitEvent event2 = new PlayerQuitEvent(mock, "has left the game");
         server.getPluginManager().callEvent(event2);
-        assertFalse(player.isInMinigame());
-        assertFalse(plugin.getPlayerManager().hasMinigamePlayer(player.getUUID()));
+        Assertions.assertFalse(player.isInMinigame());
+        Assertions.assertFalse(plugin.getPlayerManager().hasMinigamePlayer(player.getUUID()));
     }
 
     public void onPlayerConnect() {
         PlayerMock mock = server.addPlayer();
         PlayerJoinEvent event = new PlayerJoinEvent(mock, "Joined the Server");
         server.getPluginManager().callEvent(event);
-        assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
-
+        Assertions.assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
     }
-
 }

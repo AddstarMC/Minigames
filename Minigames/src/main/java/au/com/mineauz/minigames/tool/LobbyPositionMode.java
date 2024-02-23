@@ -54,7 +54,6 @@ public class LobbyPositionMode implements ToolMode {
 
     }
 
-    @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
         if (minigame.getLobbyPosition() != null) {
@@ -65,13 +64,11 @@ public class LobbyPositionMode implements ToolMode {
         }
     }
 
-    @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
         if (minigame.getLobbyPosition() != null) {
             player.getPlayer().sendBlockChange(minigame.getLobbyPosition(),
-                    minigame.getLobbyPosition().getBlock().getType(),
-                    minigame.getLobbyPosition().getBlock().getData());
+                    minigame.getLobbyPosition().getBlock().getBlockData());
             player.sendInfoMessage("Deselected lobby position");
         } else {
             player.sendMessage("No lobby position set!", MinigameMessageType.ERROR);

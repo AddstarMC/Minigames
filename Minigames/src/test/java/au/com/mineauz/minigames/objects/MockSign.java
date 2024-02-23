@@ -7,6 +7,8 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -75,6 +77,16 @@ public class MockSign extends BlockStateMock implements Sign {
     }
 
     @Override
+    public boolean isWaxed() {
+        return false;
+    }
+
+    @Override
+    public void setWaxed(boolean b) {
+
+    }
+
+    @Override
     public boolean isGlowingText() {
         return false;
     }
@@ -120,12 +132,17 @@ public class MockSign extends BlockStateMock implements Sign {
     }
 
     @Override
-  public @Nullable DyeColor getColor() {
-    return null;
-  }
+    public @Nullable DyeColor getColor() {
+        return null;
+    }
 
-  @Override
-  public void setColor(DyeColor color) {
+    @Override
+    public void setColor(DyeColor color) {
 
-  }
+    }
+
+    @Override
+    public @NotNull SignSide getSide(@NotNull Side side) {
+        return null;
+    }
 }

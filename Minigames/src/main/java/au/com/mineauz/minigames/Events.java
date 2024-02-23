@@ -19,7 +19,9 @@ import au.com.mineauz.minigames.tool.MinigameTool;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.*;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -103,7 +105,7 @@ public class Events implements Listener {
                     killer.addKill();
             }
 
-            if (!msg.equals("")) {
+            if (msg != null && !msg.equals("")) {
                 mdata.sendMinigameMessage(mgm, msg, MinigameMessageType.ERROR);
             }
             if (mgm.getState() == MinigameState.STARTED) {
@@ -264,10 +266,12 @@ public class Events implements Listener {
             }
         }
 
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("minigame.sign.use.details")) {
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK && !(event.useInteractedBlock() == Event.Result.DENY)) {
             Block cblock = event.getClickedBlock();
-            if (cblock.getState() instanceof Sign sign && !event.isCancelled()) {
-                if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")) {
+            if (cblock.getState() instanceof Sign sign && sign.getSide(Side.FRONT).getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")) {
+                // wax signs automatically
+                sign.setWaxed(true);
+                if (event.getPlayer().hasPermission("minigame.sign.use.details")) {
                     if ((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()) {
                         Minigame mgm = mdata.getMinigame(sign.getLine(2));
                         if (mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
@@ -347,14 +351,15 @@ public class Events implements Listener {
         }
 
         ItemStack item = event.getItem();
-        if (item != null && MinigameUtils.isMinigameTool(item) && ply.getPlayer().hasPermission("minigame.tool")) {
+        //nullcheck in isMinigameTool()
+        if (MinigameUtils.isMinigameTool(item) && ply.getPlayer().hasPermission("minigame.tool")) {
             MinigameTool tool = new MinigameTool(item);
             event.setCancelled(true);
 
             if (event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                 tool.openMenu(ply);
                 event.setCancelled(true);
-            } else if (event.getClickedBlock() != null && (Tag.WALL_SIGNS.isTagged(event.getClickedBlock().getType()) || Tag.SIGNS.isTagged(event.getClickedBlock().getType()))) {
+            } else if (event.getClickedBlock() != null && (Tag.ALL_SIGNS.isTagged(event.getClickedBlock().getType()))) {
                 Sign sign = (Sign) event.getClickedBlock().getState();
                 if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")) {
                     Minigame minigame = mdata.getMinigame(sign.getLine(2));
@@ -544,35 +549,49 @@ public class Events implements Listener {
         }
     }
 
-
     @EventHandler(ignoreCancelled = true)
     private void playerShoot(ProjectileLaunchEvent event) {
         if (event.getEntityType() == EntityType.SNOWBALL) {
             Snowball snowball = (Snowball) event.getEntity();
-            if (snowball.getShooter() != null && snowball.getShooter() instanceof Player) {
-                MinigamePlayer ply = pdata.getMinigamePlayer((Player) snowball.getShooter());
+
+            if (snowball.getShooter() instanceof Player player) {
+                MinigamePlayer ply = pdata.getMinigamePlayer(player);
 
                 if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
-                    ItemStack mainhand = ply.getPlayer().getInventory().getItemInMainHand();
-                    if (mainhand.getType() == Material.SNOW_BLOCK) {
-                        mainhand.setAmount(16);
-                        ply.getPlayer().updateInventory();//todo
-                    } else {
-                        ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOWBALL, 1));
-                    }
+                    //wait for the inventory to update
+                    Bukkit.getScheduler().runTaskLater(Minigames.getPlugin(), () -> {
+                        ItemStack itemInMainHand = ply.getPlayer().getInventory().getItemInMainHand();
 
+                        if (itemInMainHand.getType() == Material.SNOWBALL) {
+                            itemInMainHand.setAmount(16);
+                            ply.getPlayer().updateInventory();
+                        } else {
+                            ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOWBALL, 1));
+                        }
+                    }, 1L);
                 }
             }
+
         } else if (event.getEntityType() == EntityType.EGG) {
             Egg egg = (Egg) event.getEntity();
             if (egg.getShooter() != null && egg.getShooter() instanceof Player player) {
                 MinigamePlayer ply = pdata.getMinigamePlayer(player);
 
                 if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
-                    ply.getPlayer().getInventory().addItem(new ItemStack(Material.EGG));
+                    //wait for the inventory to update
+                    Bukkit.getScheduler().runTaskLater(Minigames.getPlugin(), () -> {
+                        ItemStack itemInMainHand = ply.getPlayer().getInventory().getItemInMainHand();
+
+                        if (itemInMainHand.getType() == Material.EGG) {
+                            itemInMainHand.setAmount(16);
+                            ply.getPlayer().updateInventory();
+                        } else {
+                            ply.getPlayer().getInventory().addItem(new ItemStack(Material.EGG, 1));
+                        }
+                    }, 1L);
                 }
             }
-        }
+        } //todo unlimited arrows
     }
 
     @EventHandler(ignoreCancelled = true)

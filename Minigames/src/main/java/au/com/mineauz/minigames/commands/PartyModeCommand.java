@@ -68,7 +68,7 @@ public class PartyModeCommand implements ICommand {
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
-        return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[0]);
+        return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
     }
 
 }

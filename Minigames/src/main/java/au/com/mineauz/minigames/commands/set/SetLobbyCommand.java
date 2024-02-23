@@ -152,11 +152,9 @@ public class SetLobbyCommand implements ICommand {
         if (args != null && args.length > 0) {
             return switch (args.length) {
                 case 1 ->
-                        MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("canmove;caninteract;teleport;playerWait"), args[args.length - 1]);
-                case 2 ->
-                        MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("playerwait;startwait"), args[args.length - 1]);
-                default ->
-                        MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[args.length - 1]);
+                        MinigameUtils.tabCompleteMatch(List.of("canmove", "caninteract", "teleport", "playerWait"), args[args.length - 1]);
+                case 2 -> MinigameUtils.tabCompleteMatch(List.of("playerwait", "startwait"), args[args.length - 1]);
+                default -> MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[args.length - 1]);
             };
         }
         return null;

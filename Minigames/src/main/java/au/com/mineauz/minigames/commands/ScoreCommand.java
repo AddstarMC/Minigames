@@ -256,7 +256,7 @@ public class ScoreCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("get;set;add"), args[0]);
+            return MinigameUtils.tabCompleteMatch(List.of("get", "set", "add"), args[0]);
         } else if (args.length == 2) {
 
             List<String> pt = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 2);

@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 

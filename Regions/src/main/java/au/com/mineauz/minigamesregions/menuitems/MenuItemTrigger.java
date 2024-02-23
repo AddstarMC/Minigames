@@ -7,16 +7,16 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class MenuItemTrigger extends MenuItem {
 
     private final Trigger trigger;
+    private final Menu previous;
     private Region region;
     private Node node;
-    private final Menu previous;
 
     public MenuItemTrigger(Trigger trigger, Region region, Menu previous) {
         super(WordUtils.capitalize(trigger.getName().replace("_", " ")), Material.LEVER);

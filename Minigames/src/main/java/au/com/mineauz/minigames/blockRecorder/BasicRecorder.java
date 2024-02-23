@@ -33,6 +33,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
 
+/**
+ * This class records all relevant changes the player does in the world while in a minigame
+ */
 public class BasicRecorder implements Listener {
 
     private final MinigamePlayerManager playerManager = Minigames.getPlugin().getPlayerManager();
@@ -67,7 +70,7 @@ public class BasicRecorder implements Listener {
         return false;
     }
 
-    //replace blocks
+    //replace broken blocks (and stop breaking of blocks the player is not allowed to) <-- todo move this stopping into another more fitting class
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void blockBreak(BlockBreakEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
@@ -89,20 +92,24 @@ public class BasicRecorder implements Listener {
                         if (handleBlockBreak(event, mgPlayer)) {
                             event.setCancelled(true);
                         }
+                    } else { //whitelist mode and not on whitelist
+                        event.setCancelled(true);
                     }
                     //black list --> blocks that are not allowed to be broken
                 } else if (!recData.getWBBlocks().contains(event.getBlock().getType())) {
                     if (handleBlockBreak(event, mgPlayer)) {
                         event.setCancelled(true);
                     }
+                } else { //blacklist mode and on blacklist
+                    event.setCancelled(true);
                 }
-            } else {
+            } else { //block breaking is turned off
                 event.setCancelled(true);
             }
         }
     }
 
-    //remove blocks
+    //remove placed blocks (and stop placing ones the player is not allowed to) <-- todo move this stopping into another more fitting class
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void blockPlace(BlockPlaceEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
@@ -134,7 +141,7 @@ public class BasicRecorder implements Listener {
         }
     }
 
-    //reset inventories
+    //reset changed inventories
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void changeAnotherInventory(PlayerInteractEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
@@ -151,7 +158,7 @@ public class BasicRecorder implements Listener {
         }
     }
 
-    //re-add liquid
+    //re-add drained liquid
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void bucketFill(PlayerBucketFillEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
@@ -176,7 +183,7 @@ public class BasicRecorder implements Listener {
         }
     }
 
-    //remove fire
+    //remove lighted fire
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void igniteBlock(BlockIgniteEvent event) {
         if (event.getPlayer() != null) {
@@ -204,7 +211,7 @@ public class BasicRecorder implements Listener {
         }
     }
 
-    //remove hanging entities
+    //remove placed hanging entities
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void hangingPlace(HangingPlaceEvent event) {
         if (event.getPlayer() != null) {
@@ -244,7 +251,7 @@ public class BasicRecorder implements Listener {
         }
     }
 
-    //revive animals
+    //revive killed animals
     //entities like monsters or armor stands are reset if restore regions is turned on.
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void animalHurt(EntityDamageByEntityEvent event) { //todo check for spawn to not revive animals spawned while the minigame was running.

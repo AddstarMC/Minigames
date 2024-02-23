@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.events.TakeFlagEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Team;
@@ -9,7 +8,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -107,7 +106,7 @@ public class SwitchTeamAction extends AbstractAction {
             teams.add(WordUtils.capitalize(team.toString()));
         }
         teams.add("None");
-        m.addItem(new MenuItemList("Switch From:", MinigameUtils.stringToList("If 'ALL' will switch on everyone, otherwise specific team."), Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemList("Switch From:", List.of("If 'ALL' will switch on everyone, otherwise specific team."), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -121,7 +120,7 @@ public class SwitchTeamAction extends AbstractAction {
 
 
         }, teams));
-        m.addItem(new MenuItemList("Switch To:", MinigameUtils.stringToList("If 'None' will set the player to no team, otherwise specific team.  If All - will randomly chose a team"), Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemList("Switch To:", List.of("If 'None' will set the player to no team, otherwise specific team.  If All - will randomly chose a team"), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {

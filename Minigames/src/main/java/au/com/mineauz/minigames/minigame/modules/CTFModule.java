@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -11,10 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CTFModule extends MinigameModule {
     private final BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
+    private final BooleanFlag bringFlagBackManual = new BooleanFlag(false, "bringFlagBackManual");
 
     public CTFModule(Minigame mgm) {
         super(mgm);
@@ -32,6 +33,14 @@ public class CTFModule extends MinigameModule {
         this.useFlagAsCapturePoint.setFlag(useFlagAsCapturePoint);
     }
 
+    public Boolean getBringFlagBackManual() {
+        return bringFlagBackManual.getFlag();
+    }
+
+    public void setBringFlagBackManual(Boolean bringFlagBackManual) {
+        this.bringFlagBackManual.setFlag(bringFlagBackManual);
+    }
+
     @Override
     public String getName() {
         return "CTF";
@@ -41,6 +50,7 @@ public class CTFModule extends MinigameModule {
     public Map<String, Flag<?>> getFlags() {
         Map<String, Flag<?>> flags = new HashMap<>();
         flags.put("useFlagAsCapturePoint", useFlagAsCapturePoint);
+        flags.put("bringFlagBackManual", bringFlagBackManual);
         return flags;
     }
 
@@ -70,7 +80,9 @@ public class CTFModule extends MinigameModule {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 
         m.addItem(useFlagAsCapturePoint.getMenuItem("CTF Flag is Capture Point", Material.BLACK_BANNER,
-                MinigameUtils.stringToList("Use a teams Flag as a capture point")));
+                List.of("Use a teams Flag as a capture point")));
+        m.addItem(bringFlagBackManual.getMenuItem("Bring Flag Back Manually", Material.ENDER_EYE,
+                List.of("If enabled, the flag can be brought", "back to the base manually")));
         m.displayMenu(previous.getViewer());
         return true;
     }

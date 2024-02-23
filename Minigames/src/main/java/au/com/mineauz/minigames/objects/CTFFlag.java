@@ -7,15 +7,18 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.*;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.BlockData;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 
+/**
+ * Flag of Capture the Flag.
+ * Technical background for au.com.mineauz.minigames.signs.FlagSign
+ */
 public class CTFFlag {
-
     private Location spawnLocation = null;
     private Location currentLocation = null;
-    private BlockData data = null;
     private BlockState spawnData = null;
     private BlockState originalBlock = null;
     private String[] signText = null;
@@ -26,11 +29,11 @@ public class CTFFlag {
     private Minigame minigame = null;
     private int cParticleID = -1;
 
-    public CTFFlag(Location spawn, Team team, Player carrier, Minigame minigame) {
+    public CTFFlag(Location spawn, Team team, Minigame minigame) {
         spawnLocation = spawn;
-        data = spawnLocation.getBlock().getBlockData();
+        ((Sign) spawnLocation.getBlock().getState()).setWaxed(true);
         spawnData = spawnLocation.getBlock().getState();
-        signText = ((Sign) spawnLocation.getBlock().getState()).getLines();
+        signText = ((Sign) spawnLocation.getBlock().getState()).getSide(Side.FRONT).getLines();
         this.team = team;
         this.setMinigame(minigame);
         respawnTime = Minigames.getPlugin().getConfig().getInt("multiplayer.ctf.flagrespawntime");
@@ -75,7 +78,7 @@ public class CTFFlag {
 
         if (blockBelow.getBlock().getType() == Material.AIR) {
             while (blockBelow.getBlock().getType() == Material.AIR) {
-                if (blockBelow.getY() > 1) {
+                if (blockBelow.getY() > blockBelow.getWorld().getMinHeight()) {
                     blockBelow.setY(blockBelow.getY() - 1);
                 } else {
                     return null;
@@ -83,7 +86,7 @@ public class CTFFlag {
             }
         } else if (blockBelow.getBlock().getType() != Material.AIR) {
             while (blockBelow.getBlock().getType() != Material.AIR) {
-                if (blockBelow.getY() < 255) {
+                if (blockBelow.getY() < blockBelow.getWorld().getMaxHeight()) {
                     blockBelow.setY(blockBelow.getY() + 1);
                 } else {
                     return null;
@@ -96,22 +99,23 @@ public class CTFFlag {
             return null;
         }
 
-        if (blockBelow.getBlock().getType() == Material.FURNACE ||
-                blockBelow.getBlock().getType() == Material.DISPENSER ||
-                blockBelow.getBlock().getType() == Material.CHEST ||
-                blockBelow.getBlock().getType() == Material.BREWING_STAND ||
-                Tag.SIGNS.isTagged(blockBelow.getBlock().getType()) ||
-                Tag.WALL_SIGNS.isTagged(blockBelow.getBlock().getType())) {
+        if (blockBelow.getBlock().getState() instanceof Container ||
+                Tag.ALL_SIGNS.isTagged(blockBelow.getBlock().getType())) {
             blockBelow.setY(blockBelow.getY() + 1);
         }
 
         newLocation = blockBelow.clone();
         newLocation.setY(newLocation.getY() + 1);
 
-        newLocation.getBlock().setType(spawnData.getType());
-        Sign sign = (Sign) newLocation.getBlock().getState();
+        // Converting wall signs to normal signs, if necessary
+        String standingSignName = spawnData.getType().toString()
+                .replace("WALL_SIGN", "SIGN")
+                .replace("WALL_HANGING_SIGN", "SIGN")
+                .replace("HANGING_SIGN", "SIGN");
+        Material standingSign = Material.getMaterial(standingSignName);
 
-        sign.setBlockData(data);
+        newLocation.getBlock().setType(standingSign == null ? Material.OAK_SIGN : standingSign);
+        Sign sign = (Sign) newLocation.getBlock().getState();
 
         originalBlock = blockBelow.getBlock().getState();
         blockBelow.getBlock().setType(Material.BEDROCK);
@@ -119,7 +123,7 @@ public class CTFFlag {
         atHome = false;
 
         for (int i = 0; i < 4; i++) {
-            sign.setLine(i, signText[i]);
+            sign.getSide(Side.FRONT).setLine(i, signText[i]);
         }
         sign.update();
         currentLocation = newLocation.clone();
@@ -153,9 +157,10 @@ public class CTFFlag {
         atHome = true;
 
         Sign sign = (Sign) spawnLocation.getBlock().getState();
+        sign.setWaxed(true);
 
         for (int i = 0; i < 4; i++) {
-            sign.setLine(i, signText[i]);
+            sign.getSide(Side.FRONT).setLine(i, signText[i]);
         }
         sign.update();
     }

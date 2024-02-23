@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -65,14 +64,14 @@ public class MenuItemDisplayLoadout extends MenuItem {
 
         List<MenuItem> mItems = new ArrayList<>();
         if (!loadout.getName(false).equals("default"))
-            mItems.add(new MenuItemBoolean("Use Permissions", MinigameUtils.stringToList("Permission:;minigame.loadout." + loadout.getName(false).toLowerCase()),
+            mItems.add(new MenuItemBoolean("Use Permissions", List.of("Permission:", "minigame.loadout." + loadout.getName(false).toLowerCase()),
                     Material.GOLD_INGOT, loadout.getUsePermissionsCallback()));
         MenuItemString disName = new MenuItemString("Display Name", Material.PAPER, loadout.getDisplayNameCallback());
         disName.setAllowNull(true);
         mItems.add(disName);
         mItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
         mItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
-        mItems.add(new MenuItemInteger("XP Level", MinigameUtils.stringToList("Use -1 to not;use loadout levels"), Material.EXPERIENCE_BOTTLE, loadout.getLevelCallback(), -1, null));
+        mItems.add(new MenuItemInteger("XP Level", List.of("Use -1 to not", "use loadout levels"), Material.EXPERIENCE_BOTTLE, loadout.getLevelCallback(), -1, null));
         mItems.add(new MenuItemBoolean("Lock Inventory", Material.DIAMOND_SWORD, loadout.getInventoryLockedCallback()));
         mItems.add(new MenuItemBoolean("Lock Armour", Material.DIAMOND_CHESTPLATE, loadout.getArmourLockedCallback()));
         mItems.add(new MenuItemBoolean("Allow Offhand", Material.SHIELD, loadout.getAllowOffHandCallback()));

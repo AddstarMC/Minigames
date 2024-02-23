@@ -128,18 +128,18 @@ public class StartPositionMode implements ToolMode {
         }
     }
 
-    @SuppressWarnings("deprecation") //TODO: Use alternate method once available
+
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
         if (team != null) {
             for (Location loc : team.getStartLocations()) {
-                player.getPlayer().sendBlockChange(loc, loc.getBlock().getType(), loc.getBlock().getData());
+                player.getPlayer().sendBlockChange(loc, loc.getBlock().getBlockData());
             }
             player.sendInfoMessage("Deselected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE +
                     " start points in " + minigame);
         } else {
             for (Location loc : minigame.getStartLocations()) {
-                player.getPlayer().sendBlockChange(loc, loc.getBlock().getType(), loc.getBlock().getData());
+                player.getPlayer().sendBlockChange(loc, loc.getBlock().getBlockData());
             }
             player.sendInfoMessage("Deselected start points in " + minigame);
         }

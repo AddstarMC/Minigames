@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
@@ -9,7 +8,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -113,7 +112,7 @@ public class AddTeamScoreAction extends ScoreAction {
         for (TeamColor team : TeamColor.values()) {
             teams.add(WordUtils.capitalize(team.toString()));
         }
-        m.addItem(new MenuItemList("Specific Team", MinigameUtils.stringToList("If 'None', the players;team will be used"), Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemList("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {

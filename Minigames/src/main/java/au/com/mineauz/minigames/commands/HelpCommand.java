@@ -57,11 +57,11 @@ public class HelpCommand implements ICommand {
         if (sender instanceof Player) {
             player = (Player) sender;
         }
-        sender.sendMessage(ChatColor.GREEN + "List of Minigame commands");
+        sender.sendMessage(ChatColor.GREEN + MessageManager.getUnformattedMessage(null, "command.info.header"));
         sender.sendMessage(ChatColor.BLUE + "/minigame");
-        sender.sendMessage(ChatColor.GRAY + MessageManager.getMessage(null, "command.info.header"));
+        sender.sendMessage(ChatColor.GRAY + MessageManager.getUnformattedMessage(null, "command.info.mgm"));
         if (player == null || player.hasPermission("minigame.join")) {
-            sender.sendMessage(ChatColor.BLUE + MessageManager.getMessage(null, "command.info.mgm"));
+            sender.sendMessage(ChatColor.BLUE + "/minigame join <Minigame>");
             sender.sendMessage(MessageManager.getMessage(null, "command.info.join"));
         }
         if (player == null || player.hasPermission("minigame.quit")) {

@@ -6,7 +6,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
-import org.bstats.bukkit.Metrics;
+import org.bstats.charts.CustomChart;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +35,7 @@ public abstract class MinigameModule {
         return !(minRequired.compareTo(Minigames.getVERSION()) > 0);
     }
 
-    public static void addMetricChart(Metrics.CustomChart chart) {
+    public static void addMetricChart(CustomChart chart) {
         Minigames.getPlugin().addMetric(chart);
     }
 

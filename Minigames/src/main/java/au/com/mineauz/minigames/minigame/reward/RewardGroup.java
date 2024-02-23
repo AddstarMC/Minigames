@@ -34,15 +34,15 @@ public class RewardGroup {
             // TODO: Remove after 1.7 release
             if (!itemSection.contains("data")) {
                 ItemStack item = itemSection.getItemStack("item");
+                RewardType it;
                 if (item != null) {
-                    RewardType it = RewardTypes.getRewardType("ITEM", container);
+                    it = RewardTypes.getRewardType("ITEM", container);
                     it.loadReward("item", itemSection);
-                    group.addItem(it);
                 } else {
-                    RewardType it = RewardTypes.getRewardType("MONEY", container);
+                    it = RewardTypes.getRewardType("MONEY", container);
                     it.loadReward("money", itemSection);
-                    group.addItem(it);
                 }
+                group.addItem(it);
             } else {
                 RewardType rew = RewardTypes.getRewardType(itemSection.getString("type"), container);
                 rew.loadReward("data", itemSection);
