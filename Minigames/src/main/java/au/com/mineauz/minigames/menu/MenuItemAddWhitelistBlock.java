@@ -2,13 +2,13 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
 public class MenuItemAddWhitelistBlock extends MenuItem {
-
     private final List<Material> whitelist;
 
     public MenuItemAddWhitelistBlock(String name, List<Material> whitelist) {
@@ -42,24 +42,37 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
 
     @Override
     public void checkValidEntry(String entry) {
-        entry = entry.toUpperCase();
-        if (Material.getMaterial(entry) != null) {
-            Material mat = Material.getMaterial(entry);
+        // try a direct match in case of a chat input
+        Material mat = Material.matchMaterial(entry);
+
+        // didn't work, now try the input as a block data, as we get when a block was clicked
+        if (mat == null) {
+            try {
+                mat = Bukkit.createBlockData(entry).getMaterial();
+
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
+
+        if (mat == null) {
+            // still didn't work.
+            getContainer().getViewer().sendMessage("No material with BlockData \"" + entry + "\" was found!", MinigameMessageType.ERROR);
+        } else {
+            // nice we got a Material! try to add it!
             if (!whitelist.contains(mat)) {
+                // intern
                 whitelist.add(mat);
+
+                // visual
                 getContainer().addItem(new MenuItemWhitelistBlock(mat, whitelist));
+
             } else {
                 getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", MinigameMessageType.ERROR);
             }
-
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
-            return;
         }
 
+        /* cancel automatic reopening and reopen {@link MenuItemDisplayWhitelist}*/
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
-
-        getContainer().getViewer().sendMessage("No material by the name \"" + entry + "\" was found!", MinigameMessageType.ERROR);
     }
 }

@@ -18,6 +18,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Container;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -68,7 +69,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         double ry;
         double rz;
         final int maxradius;
-        if (thm.getMaxRadius() == 0) {
+        if (thm.getMaxRadius() <= 0) {
             maxradius = 1000;
         } else {
             maxradius = thm.getMaxRadius();
@@ -89,40 +90,41 @@ public class TreasureHuntMechanic extends GameMechanicBase {
 
         //Add a new Chest
         //TODO: Improve so no invalid spawns (Not over void, Strict containment)
-        switch (rpos.getBlock().getType()) {
-            case AIR, CAVE_AIR, VOID_AIR -> {
-                while (rpos.getBlock().getType() == Material.AIR && rpos.getY() > 1) {
-                    rpos.setY(rpos.getY() - 1);
-                }
-                rpos.setY(rpos.getY() + 1);
-                Bukkit.getScheduler().runTaskLater(plugin, () -> rpos.getBlock().setType(Material.CHEST), 1L);
+        if (rpos.getBlock().getType().isAir()) {
+            int minWorldHeight = rpos.getWorld().getMinHeight();
+            // find first block below that is not air anymore to spawn on top of
+            while (rpos.getBlock().getType().isAir() && rpos.getY() > minWorldHeight) {
+                rpos.setY(rpos.getY() - 1);
             }
-            default -> {
-                while (rpos.getBlock().getType() != Material.AIR && rpos.getY() < 255) {
-                    rpos.setY(rpos.getY() + 1);
-                }
-                Bukkit.getScheduler().runTaskLater(plugin, () -> rpos.getBlock().setType(Material.CHEST), 1L);
+            rpos.setY(rpos.getY() + 1);
+        } else {
+            int maxWorldHeight = rpos.getWorld().getMaxHeight();
+            // find first block above that is air to spawn into
+            while (!rpos.getBlock().getType().isAir() && rpos.getY() < maxWorldHeight) {
+                rpos.setY(rpos.getY() + 1);
             }
         }
-        //Fill new chest
+        Bukkit.getScheduler().runTaskLater(plugin, () -> rpos.getBlock().setType(Material.CHEST), 1L);
+
+        //Fill new container
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (rpos.getBlock().getState() instanceof Chest chest) {
+            if (rpos.getBlock().getState() instanceof Container container) {
 
                 // TODO: Treasure hunt needs own rewards specification
                 RewardsModule rewards = RewardsModule.getModule(mgm);
                 if (rewards.getScheme() instanceof StandardRewardScheme) {
                     if (!((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getRewards().isEmpty()) {
-                        int numitems = (int) Math.round(Math.random() * (thm.getMaxTreasure() - thm.getMinTreasure())) + thm.getMinTreasure();
+                        int numItems = (int) Math.min(container.getInventory().getSize(), Math.round(Math.random() * (thm.getMaxTreasure() - thm.getMinTreasure())) + thm.getMinTreasure());
 
                         final ItemStack[] items = new ItemStack[27];
-                        for (int i = 0; i < numitems; i++) {
+                        for (int i = 0; i < numItems; i++) {
                             RewardType rew = ((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getReward().get(0);
                             if (rew instanceof ItemReward irew) {
                                 items[i] = irew.getRewardItem();
                             }
                         }
                         Collections.shuffle(Arrays.asList(items));
-                        chest.getInventory().setContents(items);
+                        container.getInventory().setContents(items);
                     }
                 }
             }
@@ -162,13 +164,14 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         if (thm.getLocation() != null) {
             spawnTreasure(minigame);
 
-            if (Bukkit.getOnlinePlayers().size() == 0)
+            if (Bukkit.getOnlinePlayers().isEmpty())
                 minigame.getMinigameTimer().stopTimer();
         } else {
-            if (caller == null)
+            if (caller == null) {
                 Bukkit.getLogger().info("Treasure Hunt requires a location name to run!");
-            else
+            } else {
                 caller.sendMessage("Treasure Hunt requires a location name to run!", MinigameMessageType.ERROR);
+            }
         }
     }
 
@@ -343,5 +346,4 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             }
         }
     }
-
 }

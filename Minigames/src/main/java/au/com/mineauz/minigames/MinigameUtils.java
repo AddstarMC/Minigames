@@ -278,10 +278,9 @@ public class MinigameUtils {
      */
     public static boolean hasMinigameTool(MinigamePlayer player) {
         for (ItemStack i : player.getPlayer().getInventory().getContents()) {
-            if (i != null && i.getItemMeta() != null) {
-                if (i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
-                    return true;
-                }
+            if (i != null && i.getItemMeta() != null &&
+                    i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
+                return true;
             }
         }
         return false;

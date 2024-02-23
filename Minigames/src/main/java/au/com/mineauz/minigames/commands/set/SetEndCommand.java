@@ -53,7 +53,7 @@ public class SetEndCommand implements ICommand {
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
-        minigame.setEndPosition(((Player) sender).getLocation());
+        minigame.setEndLocation(((Player) sender).getLocation());
         sender.sendMessage(ChatColor.GRAY + "Ending position has been set for " + minigame);
         return true;
     }

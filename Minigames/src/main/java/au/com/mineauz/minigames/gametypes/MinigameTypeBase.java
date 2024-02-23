@@ -45,12 +45,12 @@ public abstract class MinigameTypeBase implements Listener {
 
     public void callGeneralQuit(MinigamePlayer player, Minigame minigame) {
         if (!player.getPlayer().isDead()) {
-            if (player.getPlayer().getWorld() != minigame.getQuitPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") && plugin.getConfig().getBoolean("warnings")) {
+            if (player.getPlayer().getWorld() != minigame.getQuitLocation().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") && plugin.getConfig().getBoolean("warnings")) {
                 player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Quit location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
             }
-            player.teleport(minigame.getQuitPosition());
+            player.teleport(minigame.getQuitLocation());
         } else {
-            player.setQuitPos(minigame.getQuitPosition());
+            player.setQuitPos(minigame.getQuitLocation());
             player.setRequiredQuit(true);
         }
     }

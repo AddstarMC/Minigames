@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 
-public class TakeFlagEvent extends AbstractMinigameEvent {
+public class TakeFlagEvent extends AbstractCancellableMinigameEvent {
     private final CTFFlag flag;
     private final String flagName;
     private boolean displayMessage = true;

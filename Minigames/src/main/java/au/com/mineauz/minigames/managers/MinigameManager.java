@@ -4,7 +4,6 @@ import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
@@ -19,11 +18,13 @@ import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
+import au.com.mineauz.minigames.recorder.RecorderData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -136,10 +137,9 @@ public class MinigameManager {
         if (Minigames.getPlugin().includesPapi()) {
             Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
         }
-
     }
 
-    public Minigame getMinigame(final String minigame) {
+    public @Nullable Minigame getMinigame(final String minigame) {
         if (this.minigames.containsKey(minigame)) {
             return this.minigames.get(minigame);
         }
@@ -230,7 +230,6 @@ public class MinigameManager {
         return this.minigameTypes.keySet();
     }
 
-
     public void addLoadout(final String name) {
         this.globalLoadouts.put(name, new PlayerLoadout(name));
     }
@@ -315,11 +314,11 @@ public class MinigameManager {
             type = MinigameMessageType.INFO;
         }
         finalMessage += message;
-        final List<MinigamePlayer> sendto = new ArrayList<>();
+        final Set<MinigamePlayer> sendto = new HashSet<>();
         sendto.addAll(minigame.getPlayers());
         sendto.addAll(minigame.getSpectators());
         if (exclude != null) {
-            sendto.removeAll(exclude);
+            exclude.forEach(sendto::remove);
         }
         for (final MinigamePlayer pl : sendto) {
             pl.sendMessage(finalMessage, type);
@@ -445,10 +444,10 @@ public class MinigameManager {
     }
 
     public boolean minigameStartSetupCheck(final Minigame minigame, final MinigamePlayer player) {
-        if (minigame.getEndPosition() == null) {
+        if (minigame.getEndLocation() == null) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noEnd"), MinigameMessageType.ERROR);
             return false;
-        } else if (minigame.getQuitPosition() == null) {
+        } else if (minigame.getQuitLocation() == null) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), MinigameMessageType.ERROR);
             return false;
         } else if (minigame.getType() == null || this.minigameType(minigame.getType()).cannotStart(minigame, player)) { //type specific reasons we cannot start.
@@ -467,7 +466,7 @@ public class MinigameManager {
 
     public boolean teleportPlayerOnJoin(@NotNull final Minigame minigame, final MinigamePlayer player) {
         if (this.minigameType(minigame.getType()) == null) {
-            Minigames.log().warning(MessageManager.getMinigamesMessage("error.invalidType") + " : " + minigame.getName(true));
+            Minigames.log().warning(MessageManager.getMinigamesMessage("minigame.error.invalidType") + " : " + minigame.getName(true));
         }
         return this.minigameType(minigame.getType()).teleportOnJoin(player, minigame);
     }

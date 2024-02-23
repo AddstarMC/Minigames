@@ -144,7 +144,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>20.1.0</version>
+            <version>24.0.0</version>
             <scope>provided</scope>
             <!-- no runtime features are used-->
         </dependency>

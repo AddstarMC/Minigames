@@ -12,6 +12,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.List;
+
 public class StartPositionMode implements ToolMode {
 
     @Override
@@ -25,8 +27,8 @@ public class StartPositionMode implements ToolMode {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets the starting;positions for a team;or player";
+    public List<String> getDescription() {
+        return List.of("Sets the starting", "positions for a team", "or player");
     }
 
     @Override
