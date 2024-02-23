@@ -460,8 +460,9 @@ public class Events implements Listener {
                         MinigamePlayer shooter = pdata.getMinigamePlayer(player);
                         Minigame mgm = ply.getMinigame();
 
-                        if (shooter == null)
+                        if (shooter == null) {
                             return;
+                        }
 
                         if (shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())) {
                             if (!shooter.canPvP()) {

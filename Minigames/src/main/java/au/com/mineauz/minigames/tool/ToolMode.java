@@ -16,6 +16,10 @@ public interface ToolMode {
 
     String getDisplayName();
 
+    /**
+     * Returns the description of the tool mode with lines separated into list elements,
+     * so it is compatible with lore of a (menu) item
+     */
     List<String> getDescription();
 
     Material getIcon();

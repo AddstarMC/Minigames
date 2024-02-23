@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.TakeFlagEvent;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import org.bukkit.ChatColor;
@@ -145,7 +146,9 @@ public class SignBase implements Listener {
                         event.setCancelled(true);
                         return;
                     } else {
-                        // todo what to do here? The Flag will not be able to respawn!
+                        MessageManager.sendMessage(Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()),
+                                MinigameMessageType.WARN, null, "sign.flag.broken.support");
+                        takenFlags.remove(ctfFlag);
                     }
 
                     break;
@@ -153,7 +156,6 @@ public class SignBase implements Listener {
                     takenFlags.remove(ctfFlag);
                 }
             }
-
         }
     }
 }

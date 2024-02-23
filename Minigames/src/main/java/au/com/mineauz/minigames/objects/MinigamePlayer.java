@@ -177,6 +177,7 @@ public class MinigamePlayer implements ScriptObject {
         Component init;
         init = switch (type) {
             case ERROR -> Component.text("[Minigames] ", NamedTextColor.RED);
+            case WARN -> Component.text("[Minigames]", NamedTextColor.GOLD);
             case WIN -> Component.text("[Minigames] ", NamedTextColor.GREEN);
             case LOSS -> Component.text("[Minigames] ", NamedTextColor.DARK_RED);
             case NONE -> Component.text("");

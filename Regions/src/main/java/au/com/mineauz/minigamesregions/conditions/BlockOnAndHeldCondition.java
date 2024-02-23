@@ -56,8 +56,9 @@ public class BlockOnAndHeldCondition extends ConditionInterface {
     }
 
     private boolean check(MinigamePlayer player) {
-        if (player == null)
+        if (player == null) {
             return false;
+        }
 
         ItemStack heldItem = player.getPlayer().getInventory().getItemInMainHand();
 
