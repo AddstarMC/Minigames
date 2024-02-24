@@ -147,17 +147,11 @@ public class RecorderData implements Listener {
     }
 
     public MgBlockData addBlock(@NotNull Block block, @Nullable MinigamePlayer modifier) {
-        if (!minigame.getActivateBlockRecorder()) {
-            return new MgBlockData(block, modifier);
-        }
         BlockStateSnapshotResult blockState = PaperLib.getBlockState(block, true);
         return addBlock(blockState.getState(), modifier);
     }
 
     public MgBlockData addBlock(@NotNull BlockState block, @Nullable MinigamePlayer modifier) {
-        if (!minigame.getActivateBlockRecorder()) {
-            return new MgBlockData(block, modifier);
-        }
         MgBlockData bdata = new MgBlockData(block, modifier);
         Position pos = Position.block(block.getLocation());
 
@@ -203,9 +197,6 @@ public class RecorderData implements Listener {
     }
 
     public void addInventory(MgBlockData bdata, InventoryHolder ih) {
-        if (!minigame.getActivateBlockRecorder()) {
-            return;
-        }
         ItemStack[] inventory = Arrays.stream(ih.getInventory().getContents()).
                 map(itemStack -> itemStack == null ? null : itemStack.clone()).toArray(ItemStack[]::new);
 
@@ -214,9 +205,6 @@ public class RecorderData implements Listener {
 
     //add an entity to get reset
     public void addEntity(@NotNull Entity ent, @Nullable MinigamePlayer player, boolean created) {
-        if (!minigame.getActivateBlockRecorder()) {
-            return;
-        }
         EntityData oldData = entityData.get(ent.getUniqueId());
         if (oldData != null) {
             if (oldData.wasCreated() && !created) {

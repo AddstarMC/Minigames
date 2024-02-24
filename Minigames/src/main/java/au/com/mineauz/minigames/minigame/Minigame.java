@@ -1248,7 +1248,7 @@ public class Minigame implements ScriptObject {
         rndChstDes.add("Max. item randomization");
         itemsMain.add(maxChestRandom.getMenuItem("Max. Chest Random", Material.STONE, rndChstDes, 0, null));
         itemsMain.add(new MenuItemStatisticsSettings(this, "Stat Settings", Material.WRITABLE_BOOK));
-        itemsMain.add(activateBlockRecorder.getMenuItem("Activate Block Recorder", Material.COMMAND_BLOCK));
+        itemsMain.add(activateBlockRecorder.getMenuItem("Activate Player Block Recorder", Material.COMMAND_BLOCK));
         itemsMain.add(new MenuItemNewLine());
 
         //--------------//
