@@ -120,6 +120,7 @@ public class Minigame implements ScriptObject {
     @NotNull
     private final ScoreboardData sbData = new ScoreboardData();
     private final Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
+    private final BooleanFlag activatePlayerRecorder = new BooleanFlag(true, "activatePlayerRecorder");
 
     //Unsaved data
     private final List<MinigamePlayer> players = new ArrayList<>();
@@ -180,6 +181,7 @@ public class Minigame implements ScriptObject {
 
         flags.setFlag(new ArrayList<>());
 
+        addConfigFlag(activatePlayerRecorder);
         addConfigFlag(allowEnderPearls);
         addConfigFlag(allowFlight);
         addConfigFlag(allowMPCheckpoints);
@@ -898,6 +900,14 @@ public class Minigame implements ScriptObject {
         this.maxChestRandom.setFlag(maxChestRandom);
     }
 
+    public boolean getActivatePlayerRecorder() {
+        return activatePlayerRecorder.getFlag();
+    }
+
+    public void setActivatePlayerRecorder(boolean activatePlayerRecorder) {
+        this.activatePlayerRecorder.setFlag(activatePlayerRecorder);
+    }
+
     public Collection<MgRegion> getRegenRegions() {
         return regenRegions.getFlag().values();
     }
@@ -1238,6 +1248,7 @@ public class Minigame implements ScriptObject {
         rndChstDes.add("Max. item randomization");
         itemsMain.add(maxChestRandom.getMenuItem("Max. Chest Random", Material.STONE, rndChstDes, 0, null));
         itemsMain.add(new MenuItemStatisticsSettings(this, "Stat Settings", Material.WRITABLE_BOOK));
+        itemsMain.add(activatePlayerRecorder.getMenuItem("Activate Player Block Recorder", Material.COMMAND_BLOCK));
         itemsMain.add(new MenuItemNewLine());
 
         //--------------//
