@@ -127,7 +127,7 @@ public class InfectionMechanic extends GameMechanicBase {
                 Team survivorTeam = TeamsModule.getMinigameModule(mgm).getTeam(InfectionModule.getMinigameModule(mgm).getSurvivorTeam());
                 Team infectedTeam = TeamsModule.getMinigameModule(mgm).getTeam(InfectionModule.getMinigameModule(mgm).getInfectedTeam());
                 if (survivorTeam.getPlayers().contains(player)) {
-                    if (!infectedTeam.hasRoom()) {
+                    if (infectedTeam.hasRoom()) {
                         MultiplayerType.switchTeam(mgm, player, infectedTeam);
                         InfectionModule.getMinigameModule(mgm).addInfectedPlayer(player);
                         if (event.getEntity().getKiller() != null) {
