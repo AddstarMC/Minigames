@@ -82,7 +82,7 @@ public class SetStartCommand implements ICommand {
             Team team = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[0]));
             if (team == null) {
                 sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[0]);
-                return true;
+                return false;
             }
 
             if (position >= 1) {
@@ -95,21 +95,28 @@ public class SetStartCommand implements ICommand {
             }
             return true;
         } else if (args[0].equalsIgnoreCase("clear")) {
-            if (args.length >= 2 && TeamColor.matchColor(args[1]) != null) {
-                Team team = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[1]));
-                if (team == null) {
+            if (args.length >= 2) {
+                //check for team
+                if (TeamColor.matchColor(args[1]) != null) {
+                    Team team = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[1]));
+                    if (team == null) {
+                        sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[1]);
+                        return false;
+                    }
+
+                    team.getStartLocations().clear();
+                    sender.sendMessage(ChatColor.GRAY + "Starting positions for " + team.getChatColor() + team.getDisplayName() + ChatColor.GRAY +
+                            " have been cleared in " + minigame);
+                } else {
                     sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[1]);
-                    return true;
+                    return false;
                 }
-
-                team.getStartLocations().clear();
-                sender.sendMessage(ChatColor.GRAY + "Starting positions for " + team.getChatColor() + team.getDisplayName() + ChatColor.GRAY +
-                        " have been cleared in " + minigame);
-
             } else {
                 minigame.getStartLocations().clear();
                 sender.sendMessage(ChatColor.GRAY + "Starting positions have been cleared in " + minigame);
             }
+
+            return true;
         }
         return false;
     }
@@ -118,10 +125,8 @@ public class SetStartCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(minigame).getTeamsNameMap().size() + 1);
-        for (String t : TeamsModule.getMinigameModule(minigame).getTeamsNameMap().keySet()) {
-            teams.add(WordUtils.capitalize(t.replace("_", " ")));
-        }
         if (args.length == 1) {
+            TeamsModule.getMinigameModule(minigame).getTeamsNameMap().keySet().forEach(teamName -> teams.add(WordUtils.capitalize(teamName)));
             teams.add("Clear");
             return MinigameUtils.tabCompleteMatch(teams, args[0]);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("clear")) {

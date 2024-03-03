@@ -32,12 +32,7 @@ public class MessageManager {
      * Stores each prop file with an identifier
      */
     private static final Hashtable<String, ResourceBundle> propertiesHashMap = new Hashtable<>();
-    private static Locale locale = Locale.getDefault();
     private static Logger logger = null;
-
-    public static void setLocale(Locale locale) {
-        MessageManager.locale = locale;
-    }
 
     public static void setLogger(Logger logger) {
         MessageManager.logger = logger;
@@ -45,14 +40,19 @@ public class MessageManager {
 
     public static void registerCoreLanguage() {
         String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag());
-        locale = Locale.forLanguageTag(tag);
+        Locale locale = Locale.forLanguageTag(tag.replace("_", "-"));
+
+        // fall back if locale is undefined
+        if (locale.getLanguage().isEmpty()) {
+            locale = Locale.getDefault();
+        }
+
         Minigames.log().info("MessageManager set locale for language:" + locale.toLanguageTag());
         File file = new File(new File(Minigames.getPlugin().getDataFolder(), "lang"), "minigames.properties");
-        registerCoreLanguage(file, Locale.getDefault());
+        registerCoreLanguage(file, locale);
     }
 
     public static void registerCoreLanguage(File file, Locale locale) {
-        MessageManager.setLocale(locale);
         ResourceBundle minigames = null;
         if (file.exists()) {
             try {

@@ -172,8 +172,8 @@ public class MinigameTool {
             }
         }, teams), men.getSize() - 3);
 
-        for (ToolMode m : ToolModes.getToolModes()) {
-            men.addItem(new MenuItemToolMode(m.getDisplayName(), List.of(m.getDescription()), m.getIcon(), m));
+        for (ToolMode toolMode : ToolModes.getToolModes()) {
+            men.addItem(new MenuItemToolMode(toolMode.getDisplayName(), toolMode.getDescription(), toolMode.getIcon(), toolMode));
         }
 
         men.displayMenu(player);

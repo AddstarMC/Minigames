@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +40,11 @@ public class SingleplayerType extends MinigameTypeBase {
     @Override
     public boolean teleportOnJoin(MinigamePlayer player, Minigame mgm) {
         List<Location> locs = new ArrayList<>(mgm.getStartLocations());
+
+        if (locs.isEmpty()) {
+            return false;
+        }
+
         Collections.shuffle(locs);
         boolean result = player.teleport(locs.get(0));
         if (plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != locs.get(0).getWorld() &&
@@ -51,8 +57,7 @@ public class SingleplayerType extends MinigameTypeBase {
 
     @Override
     public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
-
-        if (mgm.getLives() > 0 && !Float.isFinite(mgm.getLives())) {
+        if (mgm.getLives() > 0 && Math.abs(mgm.getLives()) < Integer.MAX_VALUE) {
             player.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives()));
         }
         if (!mgm.isAllowedFlight()) {
@@ -117,7 +122,7 @@ public class SingleplayerType extends MinigameTypeBase {
     }
 
     @Override
-    public void quitMinigame(final MinigamePlayer player, final Minigame mgm, boolean forced) {
+    public void quitMinigame(final @NotNull MinigamePlayer player, final @NotNull Minigame mgm, boolean forced) {
         if (mgm.canSaveCheckpoint()) {
             StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
             spc.addCheckpoint(mgm.getName(false), player.getCheckpoint());

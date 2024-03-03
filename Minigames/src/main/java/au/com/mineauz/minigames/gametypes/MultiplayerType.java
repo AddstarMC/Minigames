@@ -47,7 +47,7 @@ public class MultiplayerType extends MinigameTypeBase {
         boolean cannotStart;
         cannotStart = mgm.getPlayers().size() >= mgm.getMaxPlayers();
         if (cannotStart) message = MinigameUtils.getLang("minigame.full");
-        cannotStart = mgm.getLobbyPosition() == null;
+        cannotStart = mgm.getLobbyLocation() == null;
         if (cannotStart) message = MinigameUtils.getLang("minigame.error.noLobby");
         if (cannotStart) player.sendMessage(message, MinigameMessageType.ERROR);
         return cannotStart;
@@ -55,7 +55,7 @@ public class MultiplayerType extends MinigameTypeBase {
 
     @Override
     public boolean teleportOnJoin(MinigamePlayer player, Minigame mgm) {
-        Location location = mgm.getLobbyPosition();
+        Location location = mgm.getLobbyLocation();
         boolean result = false;
         if (location == null) {
             plugin.getLogger().warning("Game has no lobby set and it was expected:" + mgm.getName(true));
@@ -151,7 +151,7 @@ public class MultiplayerType extends MinigameTypeBase {
         if (mgm.isTeamGame()) {
             player.removeTeam();
             for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                if (t.getPlayers().size() > 0)
+                if (!t.getPlayers().isEmpty())
                     teamsWithPlayers++;
             }
 
@@ -179,7 +179,7 @@ public class MultiplayerType extends MinigameTypeBase {
             if (TeamsModule.getMinigameModule(mgm).getTeams().size() != 1) {
                 Team winner = null;
                 for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                    if (t.getPlayers().size() > 0) {
+                    if (!t.getPlayers().isEmpty()) {
                         winner = t;
                         break;
                     }
@@ -262,7 +262,7 @@ public class MultiplayerType extends MinigameTypeBase {
                     }
                     ply.getLoadout().equiptLoadout(ply);
                 } else {
-                    respawnPos = mg.getLobbyPosition();
+                    respawnPos = mg.getLobbyLocation();
                 }
             } else {
                 if (mg.hasStarted() && !ply.isLatejoining()) {
@@ -276,7 +276,7 @@ public class MultiplayerType extends MinigameTypeBase {
 
                     ply.getLoadout().equiptLoadout(ply);
                 } else {
-                    respawnPos = mg.getLobbyPosition();
+                    respawnPos = mg.getLobbyLocation();
                 }
             }
 

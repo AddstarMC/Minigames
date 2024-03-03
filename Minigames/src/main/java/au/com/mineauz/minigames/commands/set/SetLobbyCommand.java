@@ -58,7 +58,7 @@ public class SetLobbyCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args == null) {
-            minigame.setLobbyPosition(((Player) sender).getLocation());
+            minigame.setLobbyLocation(((Player) sender).getLocation());
             sender.sendMessage(ChatColor.GRAY + "Lobby position has been set for " + minigame);
         } else {
             LobbySettingsModule lobby = LobbySettingsModule.getMinigameModule(minigame);

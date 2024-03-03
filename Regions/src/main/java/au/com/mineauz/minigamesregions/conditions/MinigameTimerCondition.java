@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -56,12 +57,18 @@ public class MinigameTimerCondition extends ConditionInterface {
     }
 
     private boolean check(Minigame mg) {
-        int timeLeft = mg.getMinigameTimer().getTimeLeft();
-        int min = minTime.getFlag();
-        int max = maxTime.getFlag();
-        debug(mg);
-        return timeLeft >= min &&
-                timeLeft <= max;
+        MinigameTimer timer = mg.getMinigameTimer();
+
+        if (timer == null) {
+            return false;
+        } else {
+            int timeLeft = timer.getTimeLeft();
+            int min = minTime.getFlag();
+            int max = maxTime.getFlag();
+            debug(mg);
+            return timeLeft >= min &&
+                    timeLeft <= max;
+        }
     }
 
     @Override
