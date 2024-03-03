@@ -664,8 +664,6 @@ public class Events implements Listener {
             } else if (!mgPlayer.getMenu().getAllowModify()) {
                 Inventory topInv = event.getView().getTopInventory();
                 switch (event.getAction()) {
-                    case NOTHING, DROP_ALL_CURSOR, DROP_ONE_CURSOR, UNKNOWN -> {
-                    } // nothing
                     case PICKUP_ALL, PICKUP_SOME, PICKUP_HALF, PICKUP_ONE, DROP_ALL_SLOT, DROP_ONE_SLOT, HOTBAR_MOVE_AND_READD, // may take
                             PLACE_ALL, PLACE_SOME, PLACE_ONE, /*may place*/
                             SWAP_WITH_CURSOR, HOTBAR_SWAP /*may give and take*/ -> {
@@ -681,6 +679,8 @@ public class Events implements Listener {
                     case MOVE_TO_OTHER_INVENTORY -> {
                         event.setCancelled(true);
                     } // definitely one or the other
+                    default -> {
+                    } // do nothing for any other action
                 }
             }
 

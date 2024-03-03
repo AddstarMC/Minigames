@@ -230,6 +230,9 @@ public class ScoreCommand implements ICommand {
 
                     return true;
                 } // end case
+                default -> {
+                    sender.sendMessage(ChatColor.RED + "Invalid argument!");
+                }
             } // end switch
         } else {
             sender.sendMessage(ChatColor.RED + "Not enough arguments!");
@@ -276,6 +279,8 @@ public class ScoreCommand implements ICommand {
                         } // not a number
                     } // not add / set
                 } // more than 4 arguments
+                default -> {
+                } // do nothing
             } // end switch
         } // args == null
 
