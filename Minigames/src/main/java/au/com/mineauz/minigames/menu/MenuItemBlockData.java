@@ -14,23 +14,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemBlockData extends MenuItem {
-    private Callback<BlockData> dataCallback;
+    private Callback<BlockData> data;
 
     public MenuItemBlockData(String name, Material displayItem) {
         super(name, displayItem);
-        dataCallback.setValue(displayItem.createBlockData());
-        setDescription(createDescription(dataCallback.getValue()));
+        data.setValue(displayItem.createBlockData());
+        setDescription(createDescription(data.getValue()));
     }
 
     public MenuItemBlockData(String name, Material displayItem, Callback<BlockData> callback) {
         super(name, displayItem);
-        this.dataCallback = callback;
-        setDescription(createDescription(dataCallback.getValue()));
+        this.data = callback;
+        setDescription(createDescription(data.getValue()));
     }
 
     @Override
     public void update() {
-        setDescription(createDescription(this.dataCallback.getValue()));
+        setDescription(createDescription(this.data.getValue()));
     }
 
     /**
@@ -61,12 +61,7 @@ public class MenuItemBlockData extends MenuItem {
     public ItemStack onClickWithItem(@Nullable ItemStack item) {
         try {
             BlockData data = item.getType().createBlockData();
-            this.dataCallback.setValue(data);
-
-            // update the display item
-            ItemStack stackUpdate = getItem();
-            stackUpdate.setType(item.getType());
-            setItem(stackUpdate);
+            this.data.setValue(data);
         } catch (IllegalArgumentException | NullPointerException e) {
             String name = "unknown";
             if (item != null) {
@@ -82,16 +77,8 @@ public class MenuItemBlockData extends MenuItem {
         String err = "No MgBlockData detected";
         try {
             BlockData d = Bukkit.createBlockData(entry);
-            dataCallback.setValue(d);
-
-            // update the display item
-            setDescription(createDescription(dataCallback.getValue()));
-            if (d.getMaterial().isItem()) {
-                ItemStack stackUpdate = getItem();
-                stackUpdate.setType(d.getMaterial());
-                setItem(stackUpdate);
-            }
-
+            data.setValue(d);
+            setDescription(createDescription(data.getValue()));
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
             return;

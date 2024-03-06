@@ -139,8 +139,8 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         Player ply = null;
-        if (sender instanceof Player player) {
-            ply = player;
+        if (sender instanceof Player) {
+            ply = (Player) sender;
         }
 
         if (args != null && args.length > 0) {
@@ -222,10 +222,11 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                         sender.sendMessage(ChatColor.RED + comd.getPermissionMessage());
                         sender.sendMessage(ChatColor.RED + comd.getPermission());
                     }
+                    return true;
                 } else {
                     sender.sendMessage(ChatColor.RED + "You must be a player to execute this command!");
+                    return true;
                 }
-                return true;
             }
         } else {
             sender.sendMessage(ChatColor.GREEN + "Minigames");

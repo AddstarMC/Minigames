@@ -8,9 +8,6 @@ import java.util.Map;
 public class Triggers {
     private static final Map<String, Trigger> triggers = new HashMap<>();
 
-    //this maps from legacy to updated trigger names
-    private static final Map<String, String> renamedTriggers = new HashMap<>();
-
     static {
         addTrigger(new BlockBreakTrigger());
         addTrigger(new BlockPlaceTrigger());
@@ -19,8 +16,7 @@ public class Triggers {
         addTrigger(new PlayerKilledTrigger());
         addTrigger(new EnterTrigger());
         addTrigger(new MoveInRegionTrigger());
-        addTrigger(new GameEndPhaseTrigger());
-        addTrigger(new GameEndedTrigger());
+        addTrigger(new GameEndTrigger());
         addTrigger(new GameJoinTrigger());
         addTrigger(new GameQuitTrigger());
         addTrigger(new GameStartTrigger());
@@ -46,10 +42,6 @@ public class Triggers {
         addTrigger(new TimedRemoteTrigger());
     }
 
-    static {
-        renamedTriggers.put("GAME_END", "GAME_ENDPHASE");
-    }
-
     public static void addTrigger(Trigger trigger) {
         if (triggers.containsKey(trigger.getName()))
             throw new InvalidTriggerException("A trigger already exists by that name!");
@@ -57,18 +49,8 @@ public class Triggers {
             triggers.put(trigger.getName(), trigger);
     }
 
-    /**
-     * gets a trigger by its name and translates legacy names if needed
-     */
     public static Trigger getTrigger(String trigger) {
-        trigger = trigger.toUpperCase();
-        String renamedTrigger = renamedTriggers.get(trigger);
-
-        if (renamedTrigger != null) {
-            return triggers.get(renamedTrigger.toUpperCase());
-        } else {
-            return triggers.get(trigger);
-        }
+        return triggers.get(trigger.toUpperCase());
     }
 
     public static List<String> getAllTriggers() {

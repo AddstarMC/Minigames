@@ -8,19 +8,13 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.List;
-
 public interface ToolMode {
 
     String getName();
 
     String getDisplayName();
 
-    /**
-     * Returns the description of the tool mode with lines separated into list elements,
-     * so it is compatible with lore of a (menu) item
-     */
-    List<String> getDescription();
+    String getDescription();
 
     Material getIcon();
 

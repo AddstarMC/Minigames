@@ -60,20 +60,15 @@ public class PulseRedstoneAction extends AbstractAction {
     public void executeNodeAction(MinigamePlayer player,
                                   Node node) {
         debug(player, node);
-        BlockData bdata;
+        BlockData bdata = Material.REDSTONE_BLOCK.createBlockData();
         if (torch.getFlag()) {
             bdata = Material.REDSTONE_TORCH.createBlockData();
-
-            if (bdata instanceof Lightable lightable) {
-                lightable.setLit(true);
-            }
-        } else {
-            bdata = Material.REDSTONE_BLOCK.createBlockData();
+            if (bdata instanceof Lightable)
+                ((Lightable) bdata).setLit(true);
         }
         final BlockState last = node.getLocation().getBlock().getState();
         node.getLocation().getBlock().setBlockData(bdata);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () ->
-                last.update(true), 20L * time.getFlag());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> last.update(true), 20L * time.getFlag());
     }
 
     @Override

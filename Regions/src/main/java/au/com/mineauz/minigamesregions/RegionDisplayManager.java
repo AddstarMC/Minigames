@@ -50,7 +50,7 @@ public class RegionDisplayManager {
                 "Region: " +
                 ChatColor.WHITE +
                 region.getName() +
-                " Enabled: " + region.getEnabled();
+                "Enabled: " + region.getEnabled();
         stand.setCustomName(info);
     }
 

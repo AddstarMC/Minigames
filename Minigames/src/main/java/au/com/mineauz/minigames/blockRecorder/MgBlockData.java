@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.recorder;
+package au.com.mineauz.minigames.blockRecorder;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -50,22 +50,14 @@ public class MgBlockData {
         location = original.getLocation();
         state = original.getState();
         blockData = original.getBlockData().getAsString();
-        if (modifier != null) {
-            playerUUID = modifier.getUUID();
-        } else {
-            playerUUID = null;
-        }
+        if (modifier != null) playerUUID = modifier.getUUID();
     }
 
     public MgBlockData(@NotNull BlockState original, @Nullable MinigamePlayer modifier) {
         location = original.getLocation();
         state = original;
         blockData = state.getBlockData().getAsString();
-        if (modifier != null) {
-            playerUUID = modifier.getUUID();
-        } else {
-            playerUUID = null;
-        }
+        if (modifier != null) playerUUID = modifier.getUUID();
     }
 
     public @NotNull Location getLocation() {
@@ -77,11 +69,7 @@ public class MgBlockData {
     }
 
     public @Nullable MinigamePlayer getModifier() {
-        if (playerUUID == null) {
-            return null;
-        } else {
-            return Minigames.getPlugin().getPlayerManager().getMinigamePlayer(playerUUID);
-        }
+        return Minigames.getPlugin().getPlayerManager().getMinigamePlayer(playerUUID);
     }
 
     public void setModifier(@Nullable MinigamePlayer modifier) {

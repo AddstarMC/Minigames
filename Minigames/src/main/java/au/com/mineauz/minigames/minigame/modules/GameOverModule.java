@@ -115,20 +115,16 @@ public class GameOverModule extends MinigameModule {
         }
 
         if (timer.getFlag() > 0) {
-            if (task != -1) {
+            if (task != -1)
                 stopEndGameTimer();
-            }
-
             task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
                 for (MinigamePlayer loser : new ArrayList<>(losers)) {
-                    if (loser.isInMinigame()) {
+                    if (loser.isInMinigame())
                         Minigames.getPlugin().getPlayerManager().quitMinigame(loser, true);
-                    }
                 }
                 for (MinigamePlayer winner : new ArrayList<>(winners)) {
-                    if (winner.isInMinigame()) {
+                    if (winner.isInMinigame())
                         Minigames.getPlugin().getPlayerManager().quitMinigame(winner, true);
-                    }
                 }
 
                 clearLosers();
@@ -138,9 +134,8 @@ public class GameOverModule extends MinigameModule {
     }
 
     public void stopEndGameTimer() {
-        if (task != -1) {
+        if (task != -1)
             Bukkit.getScheduler().cancelTask(task);
-        }
     }
 
     public void clearWinners() {

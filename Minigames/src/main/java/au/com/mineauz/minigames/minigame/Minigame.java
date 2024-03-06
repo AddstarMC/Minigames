@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.minigame;
 
 import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
@@ -14,7 +15,6 @@ import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.RegenRegionSetResult;
-import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
@@ -32,7 +32,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,9 +66,9 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
     private final LocationListFlag startLocations = new LocationListFlag(null, "startpos");
     private final BooleanFlag randomizeStart = new BooleanFlag(false, "ranndomizeStart");
-    private final LocationFlag endLocation = new LocationFlag(null, "endpos");
-    private final LocationFlag quitLocation = new LocationFlag(null, "quitpos");
-    private final LocationFlag lobbyLocation = new LocationFlag(null, "lobbypos");
+    private final LocationFlag endPosition = new LocationFlag(null, "endpos");
+    private final LocationFlag quitPosition = new LocationFlag(null, "quitpos");
+    private final LocationFlag lobbyPosition = new LocationFlag(null, "lobbypos");
     private final LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
 
     private final BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
@@ -99,7 +102,6 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag unlimitedAmmo = new BooleanFlag(false, "unlimitedammo");
     private final BooleanFlag saveCheckpoints = new BooleanFlag(false, "saveCheckpoints");
     private final BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
-    // just to stay backwards compatible we have
     private final FloatFlag lives = new FloatFlag(0F, "lives");
 
     private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
@@ -120,7 +122,6 @@ public class Minigame implements ScriptObject {
     @NotNull
     private final ScoreboardData sbData = new ScoreboardData();
     private final Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
-    private final BooleanFlag activatePlayerRecorder = new BooleanFlag(true, "activatePlayerRecorder");
 
     //Unsaved data
     private final List<MinigamePlayer> players = new ArrayList<>();
@@ -169,19 +170,19 @@ public class Minigame implements ScriptObject {
         if (start != null)
             startLocations.getFlag().add(start);
         if (sbManager != null) {
-            sbManager.registerNewObjective(this.name, Criteria.DUMMY, this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
+            sbManager.registerNewObjective(this.name, "dummy", this.name);
+            sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         for (Class<? extends MinigameModule> mod : Minigames.getPlugin().getMinigameManager().getModules()) {
             try {
                 addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
             } catch (Exception e) {
-                Minigames.getPlugin().getLogger().log(Level.WARNING, "Couldn't construct Module.", e);
+                e.printStackTrace();
             }
         }
 
         flags.setFlag(new ArrayList<>());
 
-        addConfigFlag(activatePlayerRecorder);
         addConfigFlag(allowEnderPearls);
         addConfigFlag(allowFlight);
         addConfigFlag(allowMPCheckpoints);
@@ -196,7 +197,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(displayName);
         addConfigFlag(enableFlight);
         addConfigFlag(enabled);
-        addConfigFlag(endLocation);
+        addConfigFlag(endPosition);
         addConfigFlag(flags);
         addConfigFlag(floorDegen);
         addConfigFlag(floorDegenTime);
@@ -205,7 +206,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(itemPickup);
         addConfigFlag(lateJoin);
         addConfigFlag(lives);
-        addConfigFlag(lobbyLocation);
+        addConfigFlag(lobbyPosition);
         addConfigFlag(maxChestRandom);
         addConfigFlag(maxPlayers);
         addConfigFlag(maxScore);
@@ -221,7 +222,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(objective);
         addConfigFlag(paintBallDamage);
         addConfigFlag(paintBallMode);
-        addConfigFlag(quitLocation);
+        addConfigFlag(quitPosition);
         addConfigFlag(randomizeChests);
         addConfigFlag(regenRegions);
         addConfigFlag(regenDelay);
@@ -308,11 +309,7 @@ public class Minigame implements ScriptObject {
     }
 
     public void setStartLocation(Location loc) {
-        if (startLocations.getFlag().isEmpty()) {
-            startLocations.getFlag().add(loc);
-        } else {
-            startLocations.getFlag().set(0, loc);
-        }
+        startLocations.getFlag().set(0, loc);
     }
 
     public void addStartLocation(Location loc) {
@@ -455,28 +452,28 @@ public class Minigame implements ScriptObject {
         this.degenRandomChance.setFlag(degenRandomChance);
     }
 
-    public @Nullable Location getEndLocation() {
-        return endLocation.getFlag();
+    public Location getEndPosition() {
+        return endPosition.getFlag();
     }
 
-    public void setEndLocation(Location endLocation) {
-        this.endLocation.setFlag(endLocation);
+    public void setEndPosition(Location endPosition) {
+        this.endPosition.setFlag(endPosition);
     }
 
-    public @Nullable Location getQuitLocation() {
-        return quitLocation.getFlag();
+    public Location getQuitPosition() {
+        return quitPosition.getFlag();
     }
 
-    public void setQuitLocation(Location quitLocation) {
-        this.quitLocation.setFlag(quitLocation);
+    public void setQuitPosition(Location quitPosition) {
+        this.quitPosition.setFlag(quitPosition);
     }
 
-    public @Nullable Location getLobbyLocation() {
-        return lobbyLocation.getFlag();
+    public Location getLobbyPosition() {
+        return lobbyPosition.getFlag();
     }
 
-    public void setLobbyLocation(Location lobbyLocation) {
-        this.lobbyLocation.setFlag(lobbyLocation);
+    public void setLobbyPosition(Location lobbyPosisiton) {
+        this.lobbyPosition.setFlag(lobbyPosisiton);
     }
 
     public String getName(boolean useDisplay) {
@@ -900,14 +897,6 @@ public class Minigame implements ScriptObject {
         this.maxChestRandom.setFlag(maxChestRandom);
     }
 
-    public boolean getActivatePlayerRecorder() {
-        return activatePlayerRecorder.getFlag();
-    }
-
-    public void setActivatePlayerRecorder(boolean activatePlayerRecorder) {
-        this.activatePlayerRecorder.setFlag(activatePlayerRecorder);
-    }
-
     public Collection<MgRegion> getRegenRegions() {
         return regenRegions.getFlag().values();
     }
@@ -973,12 +962,12 @@ public class Minigame implements ScriptObject {
         this.regenDelay.setFlag(regenDelay);
     }
 
-    public int getLives() {
-        return lives.getFlag().intValue();
+    public float getLives() {
+        return lives.getFlag();
     }
 
-    public void setLives(int lives) {
-        this.lives.setFlag((float) lives);
+    public void setLives(float lives) {
+        this.lives.setFlag(lives);
     }
 
     public int getFloorDegenTime() {
@@ -1131,10 +1120,10 @@ public class Minigame implements ScriptObject {
         MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
         obj.setAllowNull(true);
         itemsMain.add(obj);
-        obj = (MenuItemString) gameTypeName.getMenuItem("Gametype Description", Material.OAK_SIGN);
+        obj = (MenuItemString) gameTypeName.getMenuItem("Gametype Description", Material.OAK_WALL_SIGN);
         obj.setAllowNull(true);
         itemsMain.add(obj);
-        obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.OAK_SIGN);
+        obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.OAK_WALL_SIGN);
         obj.setAllowNull(true);
         itemsMain.add(obj);
         itemsMain.add(new MenuItemNewLine());
@@ -1228,7 +1217,7 @@ public class Minigame implements ScriptObject {
         }, 0, null));
         itemsMain.add(new MenuItemNewLine());
         itemsMain.add(new MenuItemPage("Player Settings", Material.SKELETON_SKULL, playerMenu));
-//      List<String> thDes = new ArrayList<>();
+//        List<String> thDes = new ArrayList<>();
 //        thDes.add("Treasure hunt related");
 //        thDes.add("settings.");
 //        itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
@@ -1248,7 +1237,6 @@ public class Minigame implements ScriptObject {
         rndChstDes.add("Max. item randomization");
         itemsMain.add(maxChestRandom.getMenuItem("Max. Chest Random", Material.STONE, rndChstDes, 0, null));
         itemsMain.add(new MenuItemStatisticsSettings(this, "Stat Settings", Material.WRITABLE_BOOK));
-        itemsMain.add(activatePlayerRecorder.getMenuItem("Activate Player Block Recorder", Material.COMMAND_BLOCK));
         itemsMain.add(new MenuItemNewLine());
 
         //--------------//
@@ -1314,7 +1302,7 @@ public class Minigame implements ScriptObject {
         //--------------//
         List<MenuItem> itemsFlags = new ArrayList<>(getFlags().size());
         for (String flag : getFlags()) {
-            itemsFlags.add(new MenuItemFlag(Material.OAK_SIGN, flag, getFlags()));
+            itemsFlags.add(new MenuItemFlag(Material.OAK_WALL_SIGN, flag, getFlags()));
         }
         flags.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), playerMenu), flags.getSize() - 9);
         flags.addItem(new MenuItemAddFlag("Add Flag", MenuUtility.getCreateMaterial(), this), flags.getSize() - 1);

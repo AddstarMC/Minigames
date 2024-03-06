@@ -22,6 +22,6 @@ public class TimedRemoteTrigger implements Trigger {
 
     @Override
     public boolean triggerOnPlayerAvailable() {
-        return true;
+        return false;
     }
 }

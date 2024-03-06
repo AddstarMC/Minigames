@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.entity.Player;
 
-public class JoinMinigameEvent extends AbstractCancellableMinigameEvent {
+public class JoinMinigameEvent extends AbstractMinigameEvent {
 
     private final MinigamePlayer player;
     private final boolean betting;

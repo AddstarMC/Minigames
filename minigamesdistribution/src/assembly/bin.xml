@@ -18,10 +18,7 @@
                 <includeDependencies>true</includeDependencies>
                 <excludes>
                     <exclude>org.bstats:bstats-bukkit:jar</exclude>
-                    <exclude>org.bstats:bstats-base:jar</exclude>
                     <exclude>io.papermc:paperlib:jar</exclude>
-                    <exclude>org.apache.commons:commons-text:jar</exclude>
-                    <exclude>org.apache.commons:commons-lang3:jar</exclude>
                 </excludes>
                 <unpack>false</unpack>
             </binaries>

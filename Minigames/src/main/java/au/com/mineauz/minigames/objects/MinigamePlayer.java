@@ -66,7 +66,7 @@ public class MinigamePlayer implements ScriptObject {
     private Location selection1;
     private Location selection2;
     private IDisplayCuboid selectionDisplay;
-    private OfflineMinigamePlayer offlineMinigamePlayer;
+    private OfflineMinigamePlayer oply;
     private final StoredPlayerCheckpoints spc;
     private List<String> claimedRewards = new ArrayList<>();
     private int lateJoinTimer = -1;
@@ -177,11 +177,10 @@ public class MinigamePlayer implements ScriptObject {
         Component init;
         init = switch (type) {
             case ERROR -> Component.text("[Minigames] ", NamedTextColor.RED);
-            case WARN -> Component.text("[Minigames]", NamedTextColor.GOLD);
             case WIN -> Component.text("[Minigames] ", NamedTextColor.GREEN);
-            case LOSS -> Component.text("[Minigames] ", NamedTextColor.DARK_RED);
+            case LOSS -> Component.text("[Minigames]", NamedTextColor.DARK_RED);
             case NONE -> Component.text("");
-            default -> Component.text("[Minigames] ", NamedTextColor.AQUA); //also info
+            default -> Component.text("[Minigames]", NamedTextColor.AQUA); //also info
         };
 
         this.sendMessage(init.append(msg.colorIfAbsent(NamedTextColor.WHITE)));
@@ -210,7 +209,7 @@ public class MinigamePlayer implements ScriptObject {
         this.player.setLevel(0);
         this.player.setExp(0);
 
-        this.offlineMinigamePlayer = new OfflineMinigamePlayer(this.getPlayer().getUniqueId(), storedItems, storedArmour, food,
+        this.oply = new OfflineMinigamePlayer(this.getPlayer().getUniqueId(), storedItems, storedArmour, food,
                 health, saturation, lastGM, exp, level, this.getPlayer().getLocation());
         this.player.updateInventory();
     }
@@ -219,35 +218,35 @@ public class MinigamePlayer implements ScriptObject {
         this.player.getInventory().clear();
         this.player.getInventory().setArmorContents(null);
 
-        this.player.getInventory().setContents(this.offlineMinigamePlayer.getStoredItems());
-        this.player.getInventory().setArmorContents(this.offlineMinigamePlayer.getStoredArmour());
-        this.player.setFoodLevel(this.offlineMinigamePlayer.getFood());
-        if (this.offlineMinigamePlayer.getHealth() > 20)
+        this.player.getInventory().setContents(this.oply.getStoredItems());
+        this.player.getInventory().setArmorContents(this.oply.getStoredArmour());
+        this.player.setFoodLevel(this.oply.getFood());
+        if (this.oply.getHealth() > 20)
             this.player.setHealth(20);
         else
-            this.player.setHealth(this.offlineMinigamePlayer.getHealth());
-        this.player.setSaturation(this.offlineMinigamePlayer.getSaturation());
+            this.player.setHealth(this.oply.getHealth());
+        this.player.setSaturation(this.oply.getSaturation());
         this.player.setScoreboard(Objects.requireNonNullElseGet(this.lastScoreboard, () -> this.player.getServer().getScoreboardManager().getMainScoreboard()));
 
-        if (this.offlineMinigamePlayer.getExp() >= 0) {
-            this.player.setExp(this.offlineMinigamePlayer.getExp());
-            this.player.setLevel(this.offlineMinigamePlayer.getLevel());
+        if (this.oply.getExp() >= 0) {
+            this.player.setExp(this.oply.getExp());
+            this.player.setLevel(this.oply.getLevel());
         }
         this.startPos = null;
         this.player.resetPlayerWeather();
         this.player.resetPlayerTime();
         this.allowGMChange = true;
         this.allowTP = true;
-        this.player.setGameMode(this.offlineMinigamePlayer.getLastGamemode());
+        this.player.setGameMode(this.oply.getLastGamemode());
 
-        this.offlineMinigamePlayer.deletePlayerData();
-        this.offlineMinigamePlayer = null;
+        this.oply.deletePlayerData();
+        this.oply = null;
 
         this.player.updateInventory();
     }
 
     public boolean hasStoredData() {
-        return this.offlineMinigamePlayer != null;
+        return this.oply != null;
     }
 
     public boolean getAllowTeleport() {
@@ -643,11 +642,11 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public OfflineMinigamePlayer getOfflineMinigamePlayer() {
-        return this.offlineMinigamePlayer;
+        return this.oply;
     }
 
     public void setOfflineMinigamePlayer(final OfflineMinigamePlayer oply) {
-        this.offlineMinigamePlayer = oply;
+        this.oply = oply;
     }
 
     public StoredPlayerCheckpoints getStoredPlayerCheckpoints() {

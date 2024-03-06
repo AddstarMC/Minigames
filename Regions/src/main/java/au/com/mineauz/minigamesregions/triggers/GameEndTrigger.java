@@ -1,10 +1,10 @@
 package au.com.mineauz.minigamesregions.triggers;
 
-public class GameEndPhaseTrigger implements Trigger {
+public class GameEndTrigger implements Trigger {
 
     @Override
     public String getName() {
-        return "GAME_ENDPHASE";
+        return "GAME_END";
     }
 
     @Override

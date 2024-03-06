@@ -1,12 +1,12 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.MaterialFlag;
 import au.com.mineauz.minigames.config.MaterialListFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
@@ -93,9 +93,9 @@ public class MemorySwapBlockAction extends AbstractAction {
         blockPool.add(Material.STRIPPED_JUNGLE_LOG);
         blockPool.add(Material.ACACIA_LOG);
         blockPool.add(Material.STRIPPED_ACACIA_LOG);
+        blockPool.add(Material.DARK_OAK_LOG);
         blockPool.add(Material.MANGROVE_LOG);
         blockPool.add(Material.STRIPPED_MANGROVE_LOG);
-        blockPool.add(Material.DARK_OAK_LOG);
         blockPool.add(Material.STRIPPED_DARK_OAK_LOG);
         blockPool.add(Material.CRIMSON_STEM);
         blockPool.add(Material.STRIPPED_CRIMSON_STEM);
@@ -154,6 +154,7 @@ public class MemorySwapBlockAction extends AbstractAction {
 
         //kinda living
         blockPool.add(Material.SCULK);
+        blockPool.add(Material.SCULK_CATALYST);
         blockPool.add(Material.BONE_BLOCK);
         blockPool.add(Material.NETHER_WART_BLOCK);
         blockPool.add(Material.WARPED_WART_BLOCK);
@@ -211,6 +212,7 @@ public class MemorySwapBlockAction extends AbstractAction {
         return output;
     }
 
+
     @Override
     public String getName() {
         return "MEMORY_SWAP_BLOCK";
@@ -228,6 +230,7 @@ public class MemorySwapBlockAction extends AbstractAction {
         out.put("Whitelist mode", whitelistMode.getFlag()); //todo this can be quite long, maybe cut it off
         out.put("White/Blacklist", wbList.getFlag());
     }
+
 
     @Override
     public boolean useInRegions() {
@@ -318,6 +321,7 @@ public class MemorySwapBlockAction extends AbstractAction {
                                   Node node) {
         debug(player, node);
     }
+
 
     @Override
     public void saveArguments(FileConfiguration config, String path) {

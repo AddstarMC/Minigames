@@ -54,7 +54,7 @@ public class SetQuitCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         Player player = (Player) sender;
-        minigame.setQuitLocation(player.getLocation());
+        minigame.setQuitPosition(player.getLocation());
         sender.sendMessage(ChatColor.GRAY + "Quit position has been set for " + minigame);
         return true;
     }

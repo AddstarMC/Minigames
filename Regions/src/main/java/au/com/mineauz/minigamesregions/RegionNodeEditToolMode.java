@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -38,8 +37,8 @@ public class RegionNodeEditToolMode implements ToolMode {
     }
 
     @Override
-    public List<String> getDescription() {
-        return List.of("Allows you to simply", "edit regions and nodes", "with right click");
+    public String getDescription() {
+        return "Allows you to simply;edit regions and nodes;with right click";
     }
 
     @Override

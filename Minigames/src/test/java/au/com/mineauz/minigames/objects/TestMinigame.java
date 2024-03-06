@@ -19,9 +19,9 @@ public class TestMinigame extends Minigame {
         setType(MinigameType.MULTIPLAYER);
         setMechanic(GameMechanics.MECHANIC_NAME.CTF.toString());
         setDeathDrops(true);
-        setQuitLocation(quit);
-        setLobbyLocation(lobby);
-        setEndLocation(end);
+        setQuitPosition(quit);
+        setLobbyPosition(lobby);
+        setEndPosition(end);
         setEnabled(true);
         setStartWaitTime(5);
         setTimer(5);

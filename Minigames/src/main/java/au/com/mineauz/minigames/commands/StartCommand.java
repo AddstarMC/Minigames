@@ -61,28 +61,22 @@ public class StartCommand implements ICommand {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null) {
-                if (mgm.getType() == MinigameType.GLOBAL) {
-                    if (mgm.isEnabled()) {
-                        sender.sendMessage(ChatColor.RED + mgm.getName(false) + " is already running!");
-                    } else {
-                        MinigamePlayer caller = null;
-                        if (sender instanceof Player) {
-                            caller = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
-                        }
-
-                        plugin.getMinigameManager().startGlobalMinigame(mgm, caller);
-                    }
-                } else if (mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()) {
+                if (!mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL) {
+                    MinigamePlayer caller = null;
+                    if (sender instanceof Player)
+                        caller = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
+                    plugin.getMinigameManager().startGlobalMinigame(mgm, caller);
+                } else if (mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()) {
                     if (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0) {
                         if (mgm.getMpTimer() == null) {
                             mgm.setMpTimer(new MultiplayerTimer(mgm));
                         }
-
                         mgm.getMpTimer().setCurrentLobbyWaitTime(0);
                         mgm.getMpTimer().startTimer();
-                    } else {
+                    } else
                         sender.sendMessage(ChatColor.RED + mgm.getName(false) + " has already started.");
-                    }
+                } else if (mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL) {
+                    sender.sendMessage(ChatColor.RED + mgm.getName(false) + " is already running!");
                 }
             } else {
                 sender.sendMessage(ChatColor.RED + "No Global or Multiplayer Minigame found by the name " + args[0]);

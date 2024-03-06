@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.events;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class MinigamesBroadcastEvent extends AbstractCancellableMinigameEvent {
+public class MinigamesBroadcastEvent extends AbstractMinigameEvent {
     private String message;
     private final String prefix;
     private boolean cancelled = false;

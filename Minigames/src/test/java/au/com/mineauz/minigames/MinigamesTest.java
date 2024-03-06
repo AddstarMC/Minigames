@@ -64,7 +64,7 @@ public class MinigamesTest {
 
     @Test
     public void onJoinMinigame() {
-        Assertions.assertNotSame(player.getLocation(), game.getLobbyLocation());
+        Assertions.assertNotSame(player.getLocation(), game.getLobbyPosition());
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
         plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0.0);

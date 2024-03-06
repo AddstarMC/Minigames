@@ -9,8 +9,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.List;
-
 public class EndPositionMode implements ToolMode {
 
     @Override
@@ -24,8 +22,8 @@ public class EndPositionMode implements ToolMode {
     }
 
     @Override
-    public List<String> getDescription() {
-        return List.of("Sets the end", "position");
+    public String getDescription() {
+        return "Sets the end;position";
     }
 
     @Override
@@ -42,7 +40,7 @@ public class EndPositionMode implements ToolMode {
     @Override
     public void onRightClick(MinigamePlayer player, Minigame minigame,
                              Team team, PlayerInteractEvent event) {
-        minigame.setEndLocation(player.getLocation());
+        minigame.setEndPosition(player.getLocation());
         player.sendInfoMessage("Set end position.");
     }
 
@@ -58,8 +56,8 @@ public class EndPositionMode implements ToolMode {
 
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
-        if (minigame.getEndLocation() != null) {
-            player.getPlayer().sendBlockChange(minigame.getEndLocation(),
+        if (minigame.getEndPosition() != null) {
+            player.getPlayer().sendBlockChange(minigame.getEndPosition(),
                     Material.SKELETON_SKULL.createBlockData());
             player.sendInfoMessage("Selected end position (marked with skull)");
         } else {
@@ -69,9 +67,9 @@ public class EndPositionMode implements ToolMode {
 
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-        if (minigame.getEndLocation() != null) {
-            player.getPlayer().sendBlockChange(minigame.getEndLocation(),
-                    minigame.getEndLocation().getBlock().getBlockData());
+        if (minigame.getEndPosition() != null) {
+            player.getPlayer().sendBlockChange(minigame.getEndPosition(),
+                    minigame.getEndPosition().getBlock().getBlockData());
             player.sendInfoMessage("Deselected end position");
         } else {
             player.sendMessage("No end position set!", MinigameMessageType.ERROR);

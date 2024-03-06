@@ -25,6 +25,7 @@ import java.util.Map;
  * @author <a href="https://github.com/Turidus/Minigames">Turidus</a>
  */
 public class TimedTriggerAction extends AbstractAction {
+
     private final StringFlag toTrigger = new StringFlag("None", "toTrigger");
     private final BooleanFlag isRegion = new BooleanFlag(false, "isRegion");
     private final IntegerFlag delay = new IntegerFlag(20, "delay");
@@ -81,7 +82,12 @@ public class TimedTriggerAction extends AbstractAction {
             return;
         }
         ExecutableScriptObject toExecute = isRegion.getFlag() ? rMod.getRegion(toTrigger.getFlag()) : rMod.getNode(toTrigger.getFlag());
-        Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> toExecute.execute(Triggers.getTrigger("TIMED_REMOTE"), player), delay.getFlag());
+        Bukkit.getScheduler().runTaskLater(Main.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                toExecute.execute(Triggers.getTrigger("TIMED_REMOTE"), player);
+            }
+        }, delay.getFlag());
     }
 
     @Override

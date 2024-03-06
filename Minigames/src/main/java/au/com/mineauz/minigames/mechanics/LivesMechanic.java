@@ -67,13 +67,13 @@ public class LivesMechanic extends GameMechanicBase {
             final List<MinigamePlayer> players = event.getPlayers();
             final Minigame minigame = event.getMinigame();
             for (MinigamePlayer player : players) {
-                if (Math.abs(minigame.getLives()) < Integer.MAX_VALUE) {
-                    int lives = minigame.getLives();
-                    player.setScore(lives);
-                    minigame.setScore(player, lives);
-                } else {
+                if (!Float.isFinite(minigame.getLives())) {
                     player.setScore(Integer.MAX_VALUE);
                     minigame.setScore(player, Integer.MAX_VALUE);
+                } else {
+                    int lives = Float.floatToIntBits(minigame.getLives());
+                    player.setScore(lives);
+                    minigame.setScore(player, lives);
                 }
             }
         }
