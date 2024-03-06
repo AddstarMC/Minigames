@@ -30,8 +30,8 @@ public class NodeToolMode implements ToolMode {
     }
 
     @Override
-    public String getDescription() {
-        return "Creates a node where;you are standing;on right click";
+    public List<String> getDescription() {
+        return List.of("Creates a node where", "you are standing", "on right click");
     }
 
     @Override

@@ -30,8 +30,8 @@ public class RegionToolMode implements ToolMode {
     }
 
     @Override
-    public String getDescription() {
-        return "Selects an area;for a region.;Create via left click";
+    public List<String> getDescription() {
+        return List.of("Selects an area", "for a region.", "Create via left click");
     }
 
     @Override

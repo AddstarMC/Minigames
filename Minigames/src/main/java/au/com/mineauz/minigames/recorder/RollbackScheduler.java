@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.blockRecorder;
+package au.com.mineauz.minigames.recorder;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;

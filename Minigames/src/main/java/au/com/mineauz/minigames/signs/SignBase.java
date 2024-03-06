@@ -2,7 +2,12 @@ package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.events.TakeFlagEvent;
+import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.objects.CTFFlag;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -14,12 +19,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class SignBase implements Listener {
     private static final Map<String, MinigameSign> minigameSigns = new HashMap<>();
+    private final HashSet<CTFFlag> takenFlags = new HashSet<>();
 
     static {
         registerMinigameSign(new FinishSign());
@@ -43,6 +51,13 @@ public class SignBase implements Listener {
 
     public static void registerMinigameSign(MinigameSign mgSign) {
         minigameSigns.put(mgSign.getName().toLowerCase(), mgSign);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    private void takeFlag(@NotNull TakeFlagEvent event) {
+        if (event.getFlag().getAttachedToLocation() != null) {
+            this.takenFlags.add(event.getFlag());
+        }
     }
 
     @EventHandler
@@ -119,6 +134,27 @@ public class SignBase implements Listener {
                     return;
                 }
                 mgSign.signBreak(sign, Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()));
+            }
+        } else {
+            Location blockLocation = event.getBlock().getLocation().toBlockLocation();
+
+            for (CTFFlag ctfFlag : takenFlags) {
+                if (ctfFlag.getAttachedToLocation().equals(blockLocation)) {
+                    MinigameSign mgSign = minigameSigns.get("Flag");
+
+                    if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
+                        event.setCancelled(true);
+                        return;
+                    } else {
+                        MessageManager.sendMessage(Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()),
+                                MinigameMessageType.WARN, null, "sign.flag.broken.support");
+                        takenFlags.remove(ctfFlag);
+                    }
+
+                    break;
+                } else if (ctfFlag.getMinigame().getState() != MinigameState.STARTED) {
+                    takenFlags.remove(ctfFlag);
+                }
             }
         }
     }

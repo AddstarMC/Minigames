@@ -70,8 +70,8 @@ public class NullCommandSender implements ConsoleCommandSender {
     }
 
     @Override
-    public Component name() {
-        return null;
+    public @NotNull Component name() {
+        return Component.text("Null");
     }
 
     @Override

@@ -34,6 +34,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -48,7 +49,7 @@ public class Events implements Listener {
     private final MinigameManager mdata = plugin.getMinigameManager();
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerResourcePack(PlayerResourcePackStatusEvent event) {
+    public void onPlayerResourcePack(PlayerResourcePackStatusEvent event) { //todo 1.20.3 + add ressource pack not set
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
         List<MinigamePlayer> required = plugin.getPlayerManager().getApplyingPack();
         if (ply.isInMinigame()) {
@@ -177,7 +178,7 @@ public class Events implements Listener {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
         if (ply.isInMinigame()) {
             if (ply.getPlayer().isDead()) {
-                ply.getOfflineMinigamePlayer().setLoginLocation(ply.getMinigame().getQuitPosition());
+                ply.getOfflineMinigamePlayer().setLoginLocation(ply.getMinigame().getQuitLocation());
                 ply.getOfflineMinigamePlayer().savePlayerData();
             }
             pdata.quitMinigame(pdata.getMinigamePlayer(event.getPlayer()), false);
@@ -243,7 +244,7 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void playerInterract(PlayerInteractEvent event) {
+    public void playerInteract(PlayerInteractEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 
         if (ply.isInMinigame() && !ply.canInteract()) {
@@ -252,11 +253,11 @@ public class Events implements Listener {
         }
         if (ply.isInMenu() && ply.getNoClose() && ply.getManualEntry() != null) {
             event.setCancelled(true);
-            ply.setNoClose(false);
             if (event.getClickedBlock() != null) {
+                ply.setNoClose(false);
                 ply.getManualEntry().checkValidEntry(event.getClickedBlock().getBlockData().getAsString());
+                ply.setManualEntry(null);
             }
-            ply.setManualEntry(null);
             return;
         }
         if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.DRAGON_EGG) {
@@ -271,6 +272,7 @@ public class Events implements Listener {
             if (cblock.getState() instanceof Sign sign && sign.getSide(Side.FRONT).getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")) {
                 // wax signs automatically
                 sign.setWaxed(true);
+                sign.update();
                 if (event.getPlayer().hasPermission("minigame.sign.use.details")) {
                     if ((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()) {
                         Minigame mgm = mdata.getMinigame(sign.getLine(2));
@@ -380,7 +382,6 @@ public class Events implements Listener {
             }
         }
 
-
         //Spectator disables:
         if (ply.isInMinigame() && pdata.getMinigamePlayer(event.getPlayer()).getMinigame().isSpectator(pdata.getMinigamePlayer(event.getPlayer()))) {
             event.setCancelled(true);
@@ -458,7 +459,11 @@ public class Events implements Listener {
                     if (sb.getShooter() instanceof Player player) {
                         MinigamePlayer shooter = pdata.getMinigamePlayer(player);
                         Minigame mgm = ply.getMinigame();
-                        if (shooter == null) return;
+
+                        if (shooter == null) {
+                            return;
+                        }
+
                         if (shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())) {
                             if (!shooter.canPvP()) {
                                 event.setCancelled(true);
@@ -627,13 +632,14 @@ public class Events implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void clickMenu(InventoryClickEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getWhoClicked());
-        if (ply.isInMenu()) {
-            if (event.getRawSlot() < ply.getMenu().getSize()) {
-                if (!ply.getMenu().getAllowModify() || ply.getMenu().hasMenuItem(event.getRawSlot()))
+        MinigamePlayer mgPlayer = pdata.getMinigamePlayer(((Player) event.getWhoClicked()));
+        if (mgPlayer.isInMenu()) {
+            if (event.getRawSlot() < mgPlayer.getMenu().getSize()) {
+                if (!mgPlayer.getMenu().getAllowModify() || mgPlayer.getMenu().hasMenuItem(event.getRawSlot())) {
                     event.setCancelled(true);
+                }
 
-                MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
+                MenuItem item = mgPlayer.getMenu().getClicked(event.getRawSlot());
                 if (item != null) {
                     ItemStack disItem = null;
                     switch (event.getClick()) {
@@ -651,12 +657,38 @@ public class Events implements Listener {
 
                     event.setCurrentItem(disItem);
                 }
+                /*
+                 * Cancel special cases, where event.getRawSlot() is not in the Menu inventory,
+                 *  but the event modifies it anyway
+                 */
+            } else if (!mgPlayer.getMenu().getAllowModify()) {
+                Inventory topInv = event.getView().getTopInventory();
+                switch (event.getAction()) {
+                    case PICKUP_ALL, PICKUP_SOME, PICKUP_HALF, PICKUP_ONE, DROP_ALL_SLOT, DROP_ONE_SLOT, HOTBAR_MOVE_AND_READD, // may take
+                            PLACE_ALL, PLACE_SOME, PLACE_ONE, /*may place*/
+                            SWAP_WITH_CURSOR, HOTBAR_SWAP /*may give and take*/ -> {
+                        if (event.getClickedInventory() == topInv) {
+                            event.setCancelled(true);
+                        }
+                    }
+                    case COLLECT_TO_CURSOR -> { // may take complex
+                        if (topInv.contains(event.getCursor().getType())) {
+                            event.setCancelled(true);
+                        }
+                    }
+                    case MOVE_TO_OTHER_INVENTORY -> {
+                        event.setCancelled(true);
+                    } // definitely one or the other
+                    default -> {
+                    } // do nothing for any other action
+                }
             }
-        } else if (ply.isInMinigame()) {
-            if (!ply.getLoadout().allowOffHand() && event.getSlot() == 40) {
+
+        } else if (mgPlayer.isInMinigame()) {
+            if (!mgPlayer.getLoadout().allowOffHand() && event.getSlot() == 40) {
                 event.setCancelled(true);
-            } else if ((ply.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) ||
-                    (ply.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35)) {
+            } else if ((mgPlayer.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) ||
+                    (mgPlayer.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35)) {
                 event.setCancelled(true);
             }
         }
@@ -715,7 +747,6 @@ public class Events implements Listener {
             ply.getManualEntry().checkValidEntry(event.getMessage());
             ply.setManualEntry(null);
         }
-
     }
 
     @EventHandler(ignoreCancelled = true)

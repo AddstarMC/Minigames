@@ -9,9 +9,12 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ScoreCommand implements ICommand {
 
@@ -59,39 +62,38 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
-        if (args != null && args.length >= 2) {
+    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
+                             @Nullable String label, @NotNull String @Nullable [] args) {
+        if (args != null && args.length >= 3) {
             MinigamePlayer ply = null;
-            TeamColor color = TeamColor.matchColor(args[1]);
+            TeamColor color = TeamColor.matchColor(args[2]);
+            Minigame mg = plugin.getMinigameManager().getMinigame(args[1]);
 
             if (color == null) {
-                List<Player> plys = plugin.getServer().matchPlayer(args[1]);
+                List<Player> plys = plugin.getServer().matchPlayer(args[2]);
                 if (!plys.isEmpty()) {
                     ply = plugin.getPlayerManager().getMinigamePlayer(plys.get(0));
                 } else {
-                    sender.sendMessage(ChatColor.RED + "No player or team found by the name " + args[1]);
+                    sender.sendMessage(ChatColor.RED + "No player or team found by the name " + args[2]);
                     return true;
                 }
             }
 
-            if (args[0].equalsIgnoreCase("get")) {
-                if (ply != null) {
-                    if (ply.isInMinigame()) {
-                        sender.sendMessage(ChatColor.GRAY + ply.getName() + "'s Score: " + ChatColor.GREEN + ply.getScore());
-                    } else {
-                        sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
-                    }
-                } else {
-                    if (args.length >= 3) {
-                        Minigame mg;
-                        if (plugin.getMinigameManager().hasMinigame(args[2])) {
-                            mg = plugin.getMinigameManager().getMinigame(args[2]);
-                        } else {
-                            sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[2]);
-                            return true;
-                        }
+            if (mg == null) {
+                sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[2]);
+                return true;
+            }
 
+
+            switch (args[0].toLowerCase(Locale.ENGLISH)) {
+                case "get" -> {
+                    if (ply != null) {
+                        if (ply.isInMinigame()) {
+                            sender.sendMessage(ChatColor.GRAY + ply.getName() + "'s Score: " + ChatColor.GREEN + ply.getScore());
+                        } else {
+                            sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
+                        }
+                    } else {
                         TeamsModule tmod = TeamsModule.getMinigameModule(mg);
 
                         if (mg.isTeamGame()) {
@@ -106,170 +108,184 @@ public class ScoreCommand implements ICommand {
                             sender.sendMessage(ChatColor.RED + mg.getName(false) + " is not a team Minigame!");
                             return true;
                         }
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "This command requires a Minigame name as the last argument!");
                     }
-                }
-                return true;
-            } else if (args[0].equalsIgnoreCase("set") && args.length >= 3) {
-
-                int score;
-
-                if (args[2].matches("-?[0-9]+")) {
-                    score = Integer.parseInt(args[2]);
-                } else {
-                    sender.sendMessage(ChatColor.RED + args[2] + " is not a valid number!");
                     return true;
-                }
 
-                if (ply != null) {
-                    if (ply.isInMinigame()) {
-                        ply.setScore(score);
-                        ply.getMinigame().setScore(ply, ply.getScore());
-                        sender.sendMessage(ChatColor.GRAY + ply.getName() + "'s score has been set to " + score);
+                } // end case
 
-                        if (ply.getMinigame().getMaxScore() != 0 && score >= ply.getMinigame().getMaxScorePerPlayer()) {
-                            plugin.getPlayerManager().endMinigame(ply);
-                        }
-                    } else {
-                        sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
-                    }
-                } else {
+                case "set" -> {
                     if (args.length >= 4) {
-                        Minigame mg;
-                        if (plugin.getMinigameManager().hasMinigame(args[3])) {
-                            mg = plugin.getMinigameManager().getMinigame(args[3]);
-                        } else {
-                            sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[2]);
-                            return true;
-                        }
+                        if (args[3].matches("^[+\\-]?[0-9]+$")) {
+                            int score = Integer.parseInt(args[2]);
 
-                        TeamsModule tmod = TeamsModule.getMinigameModule(mg);
+                            if (ply != null) {
+                                if (ply.isInMinigame()) {
+                                    ply.setScore(score);
+                                    ply.getMinigame().setScore(ply, ply.getScore());
+                                    sender.sendMessage(ChatColor.GRAY + ply.getName() + "'s score has been set to " + score);
 
-                        if (mg.isTeamGame() && mg.hasPlayers()) {
-                            Team t;
-                            if (tmod.hasTeam(color)) {
-                                t = tmod.getTeam(color);
-                                t.setScore(score);
-                                sender.sendMessage(t.getChatColor() + t.getDisplayName() + ChatColor.GRAY + " score has been set to " + score);
-                            } else {
-                                sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
-                                return true;
-                            }
-
-                            if (mg.getMaxScore() != 0 && score >= mg.getMaxScorePerPlayer()) {
-                                List<MinigamePlayer> w = new ArrayList<>(t.getPlayers());
-                                List<MinigamePlayer> l = new ArrayList<>(mg.getPlayers().size() - t.getPlayers().size());
-                                for (Team te : tmod.getTeams()) {
-                                    if (te != t) {
-                                        l.addAll(te.getPlayers());
+                                    if (ply.getMinigame().getMaxScore() != 0 && score >= ply.getMinigame().getMaxScorePerPlayer()) {
+                                        plugin.getPlayerManager().endMinigame(ply);
                                     }
+                                } else {
+                                    sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
                                 }
-                                plugin.getPlayerManager().endMinigame(mg, w, l);
-                            }
-                        } else if (!mg.hasPlayers()) {
-                            sender.sendMessage(ChatColor.RED + mg.getName(false) + " has no players playing!");
-                        } else {
-                            sender.sendMessage(ChatColor.RED + mg.getName(false) + " is not a team Minigame!");
-                        }
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "This command requires a Minigame name as the last argument!");
-                    }
-                }
-                return true;
-            } else if (args[0].equalsIgnoreCase("add") && args.length >= 3) {
-                int score;
+                            } else if (mg.isTeamGame()) {
+                                TeamsModule tmod = TeamsModule.getMinigameModule(mg);
+                                if (mg.hasPlayers()) {
+                                    Team changedTeam;
 
-                if (args[2].matches("-?[0-9]+")) {
-                    score = Integer.parseInt(args[2]);
-                } else {
-                    score = 1;
-                }
+                                    if (tmod.hasTeam(color)) {
+                                        changedTeam = tmod.getTeam(color);
+                                        changedTeam.setScore(score);
+                                        sender.sendMessage(changedTeam.getChatColor() + changedTeam.getDisplayName() + ChatColor.GRAY + " score has been set to " + score);
 
-                if (ply != null) {
-                    if (ply.isInMinigame()) {
-                        ply.addScore(score);
-                        ply.getMinigame().setScore(ply, ply.getScore());
-                        sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + ply.getName() + "'s score, new score: " + ply.getScore());
+                                        // check new score
+                                        if (mg.getMaxScore() != 0 && score >= mg.getMaxScorePerPlayer()) {
+                                            List<MinigamePlayer> winners = new ArrayList<>(changedTeam.getPlayers());
+                                            List<MinigamePlayer> losers = new ArrayList<>(mg.getPlayers().size() - changedTeam.getPlayers().size());
+                                            for (Team team : tmod.getTeams()) {
+                                                if (team != changedTeam) {
+                                                    losers.addAll(team.getPlayers());
+                                                }
+                                            }
 
-                        if (ply.getMinigame().getMaxScore() != 0 && ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()) {
-                            plugin.getPlayerManager().endMinigame(ply);
-                        }
-                    } else {
-                        sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
-                    }
-                } else {
-                    Minigame mg;
-                    String mgName;
-
-                    if (args.length == 4) {
-                        mgName = args[3];
-                    } else {
-                        mgName = args[2];
-                    }
-
-
-                    if (plugin.getMinigameManager().hasMinigame(mgName)) {
-                        mg = plugin.getMinigameManager().getMinigame(mgName);
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + mgName);
-                        return true;
-                    }
-
-                    TeamsModule tmod = TeamsModule.getMinigameModule(mg);
-
-                    if (mg.isTeamGame() && mg.hasPlayers()) {
-                        Team team;
-                        if (tmod.hasTeam(color)) {
-                            team = tmod.getTeam(color);
-                            team.addScore(score);
-                            sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + team.getChatColor() + team.getDisplayName() +
-                                    ChatColor.GRAY + " score, new score: " + team.getScore());
-                        } else {
-                            sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
-                            return true;
-                        }
-
-                        if (mg.getMaxScore() != 0 && team.getScore() >= mg.getMaxScorePerPlayer()) {
-                            List<MinigamePlayer> w = new ArrayList<>(team.getPlayers());
-                            List<MinigamePlayer> l = new ArrayList<>(mg.getPlayers().size() - team.getPlayers().size());
-                            for (Team te : tmod.getTeams()) {
-                                if (te != team) {
-                                    l.addAll(te.getPlayers());
+                                            plugin.getPlayerManager().endMinigame(mg, winners, losers);
+                                        }
+                                    } else {
+                                        sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
+                                    }
+                                } else {
+                                    sender.sendMessage(ChatColor.RED + mg.getName(false) + " has no players playing!");
                                 }
+                            } else {
+                                sender.sendMessage(ChatColor.RED + mg.getName(false) + " is not a team Minigame!");
                             }
-                            plugin.getPlayerManager().endMinigame(mg, w, l);
+                        } else {
+                            sender.sendMessage(ChatColor.RED + args[2] + " is not a valid number!");
                         }
-                    } else if (!mg.hasPlayers()) {
-                        sender.sendMessage(ChatColor.RED + mg.getName(false) + " has no players playing!");
                     } else {
-                        sender.sendMessage(ChatColor.RED + mg.getName(false) + " is not a team Minigame!");
+                        sender.sendMessage(ChatColor.RED + "Not enough arguments!");
                     }
+
+                    return true;
+                } // end case
+
+                case "add" -> {
+                    if (args.length >= 4) {
+                        if (args[3].matches("^[+\\-]?[0-9]+$")) {
+                            int score = Integer.parseInt(args[2]);
+
+                            if (ply != null) {
+                                if (ply.isInMinigame()) {
+                                    ply.addScore(score);
+                                    ply.getMinigame().setScore(ply, ply.getScore());
+                                    sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + ply.getName() + "'s score, new score: " + ply.getScore());
+
+                                    if (ply.getMinigame().getMaxScore() != 0 && ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()) {
+                                        plugin.getPlayerManager().endMinigame(ply);
+                                    }
+                                } else {
+                                    sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
+                                }
+                            } else if (mg.isTeamGame()) {
+                                TeamsModule tmod = TeamsModule.getMinigameModule(mg);
+                                if (mg.hasPlayers()) {
+                                    if (tmod.hasTeam(color)) {
+                                        Team changedTeam = tmod.getTeam(color);
+                                        if (changedTeam != null) {
+                                            changedTeam.addScore(score);
+                                            sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + changedTeam.getChatColor() + changedTeam.getDisplayName() +
+                                                    ChatColor.GRAY + " score, new score: " + changedTeam.getScore());
+                                        } else {
+                                            sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
+                                            return true;
+                                        }
+
+                                        if (mg.getMaxScore() != 0 && changedTeam.getScore() >= mg.getMaxScorePerPlayer()) {
+                                            List<MinigamePlayer> winners = new ArrayList<>(changedTeam.getPlayers());
+                                            List<MinigamePlayer> losers = new ArrayList<>(mg.getPlayers().size() - changedTeam.getPlayers().size());
+                                            for (Team team : tmod.getTeams()) {
+                                                if (team != changedTeam) {
+                                                    losers.addAll(team.getPlayers());
+                                                }
+                                            }
+                                            plugin.getPlayerManager().endMinigame(mg, winners, losers);
+                                        }
+                                    } else {
+                                        sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
+                                    }
+                                } else {
+                                    sender.sendMessage(ChatColor.RED + mg.getName(false) + " has no players playing!");
+                                }
+                            } else {
+                                sender.sendMessage(ChatColor.RED + mg.getName(false) + " is not a team Minigame!");
+                            }
+                        } else {
+                            sender.sendMessage(ChatColor.RED + args[2] + " is not a valid number!");
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Not enough arguments!");
+                    }
+
+                    return true;
+                } // end case
+                default -> {
+                    sender.sendMessage(ChatColor.RED + "Invalid argument!");
                 }
-                return true;
-            }
+            } // end switch
+        } else {
+            sender.sendMessage(ChatColor.RED + "Not enough arguments!");
         }
         return false;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
-        if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("get", "set", "add"), args[0]);
-        } else if (args.length == 2) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @Nullable Minigame minigame,
+                                      @NotNull String alias, @NotNull String @Nullable [] args) {
+        if (args != null) {
+            switch (args.length) {
+                case 1 -> {
+                    return MinigameUtils.tabCompleteMatch(List.of("get", "set", "add"), args[0]);
+                }
+                case 2 -> {
+                    List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+                    return MinigameUtils.tabCompleteMatch(mgs, args[1]);
+                }
+                case 3 -> {
+                    List<String> pt = new ArrayList<>(plugin.getServer().getOnlinePlayers().size());
+                    for (Player pl : plugin.getServer().getOnlinePlayers()) {
+                        pt.add(pl.getName());
+                    }
 
-            List<String> pt = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 2);
-            for (Player pl : plugin.getServer().getOnlinePlayers()) {
-                pt.add(pl.getName());
-            }
-            pt.add("red");
-            pt.add("blue");
+                    Minigame mgm = plugin.getMinigameManager().getMinigame(args[1]);
 
-            return MinigameUtils.tabCompleteMatch(pt, args[1]);
-        }
-        List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
-        return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
+                    if (mgm != null && mgm.isTeamGame()) {
+                        pt.addAll(TeamsModule.getMinigameModule(mgm).getTeams().stream().map(t -> t.getColor().name()).toList());
+                    }
+
+                    return MinigameUtils.tabCompleteMatch(pt, args[2]);
+                }
+                case 4 -> {
+                    if (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add")) {
+                        if (args[3].matches("^[+\\-]?[0-9]+$")) {
+                            List<String> numbers = new ArrayList<>(10);
+
+                            for (int i = 0; i < 10; i++) {
+                                numbers.add(args[3] + i);
+                            }
+
+                            return MinigameUtils.tabCompleteMatch(numbers, args[3]);
+                        } // not a number
+                    } // not add / set
+                } // more than 4 arguments
+                default -> {
+                } // do nothing
+            } // end switch
+        } // args == null
+
+
+        return null;
     }
 
 }

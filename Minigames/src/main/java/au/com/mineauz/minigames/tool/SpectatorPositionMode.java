@@ -9,6 +9,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.List;
+
 public class SpectatorPositionMode implements ToolMode {
 
     @Override
@@ -22,8 +24,8 @@ public class SpectatorPositionMode implements ToolMode {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets the spectator;join position";
+    public List<String> getDescription() {
+        return List.of("Sets the spectator", "join position");
     }
 
     @Override
