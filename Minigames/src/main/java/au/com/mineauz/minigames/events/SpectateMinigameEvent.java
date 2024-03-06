@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.entity.Player;
 
-public class SpectateMinigameEvent extends AbstractCancellableMinigameEvent {
+public class SpectateMinigameEvent extends AbstractMinigameEvent {
     private final MinigamePlayer player;
 
     public SpectateMinigameEvent(MinigamePlayer player, Minigame minigame) {
@@ -19,4 +19,6 @@ public class SpectateMinigameEvent extends AbstractCancellableMinigameEvent {
     public Player getPlayer() {
         return player.getPlayer();
     }
+
+
 }

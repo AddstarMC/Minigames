@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.backend.BackendManager;
+import au.com.mineauz.minigames.blockRecorder.BasicRecorder;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.display.DisplayManager;
@@ -13,7 +14,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
-import au.com.mineauz.minigames.recorder.BasicRecorder;
 import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatValueField;

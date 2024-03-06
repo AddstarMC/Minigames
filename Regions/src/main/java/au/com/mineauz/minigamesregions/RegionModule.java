@@ -26,6 +26,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.*;
 
 public class RegionModule extends MinigameModule {
+
     private final Map<String, Region> regions = new HashMap<>();
     private final Map<String, Node> nodes = new HashMap<>();
 

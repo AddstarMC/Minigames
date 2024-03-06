@@ -202,44 +202,26 @@ public class RegionEvents implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    private void playersEndPhase(EndPhaseMinigameEvent event) {
+    private void playersEnd(EndMinigameEvent event) {
         if (RegionModule.getMinigameModule(event.getMinigame()) == null) {
             Minigames.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
             return;
         }
-
         for (MinigamePlayer ply : event.getWinners()) {
             Minigame mg = ply.getMinigame();
-
             for (Region r : RegionModule.getMinigameModule(mg).getRegions()) {
-                if (r.hasPlayer(ply)) {
+                if (r.hasPlayer(ply))
                     r.removePlayer(ply);
-                }
             }
         }
-
         for (Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()) {
-            node.execute(Triggers.getTrigger("GAME_ENDPHASE"), null);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void playersEnded(EndedMinigameEvent event) {
-        if (RegionModule.getMinigameModule(event.getMinigame()) == null) {
-            Minigames.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
-            return;
-        }
-        for (Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()) {
-            node.execute(Triggers.getTrigger("GAME_ENDED"), null);
-
-            for (NodeExecutor exec : node.getExecutors()) {
+            node.execute(Triggers.getTrigger("GAME_END"), null);
+            for (NodeExecutor exec : node.getExecutors())
                 exec.clearTriggers();
-            }
         }
         for (Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()) {
-            for (RegionExecutor exec : region.getExecutors()) {
+            for (RegionExecutor exec : region.getExecutors())
                 exec.clearTriggers();
-            }
         }
     }
 

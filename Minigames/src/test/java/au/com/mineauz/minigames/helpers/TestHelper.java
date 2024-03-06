@@ -31,11 +31,11 @@ public class TestHelper {
         game.setMechanic(mechanic.toString());
         game.setDeathDrops(true);
         Location quit = new Location(world, 0, 20, 0);
-        game.setQuitLocation(quit);
+        game.setQuitPosition(quit);
         Location lobby = new Location(world, 0, 5., 0);
-        game.setLobbyLocation(lobby);
+        game.setLobbyPosition(lobby);
         Location end = new Location(world, 0, 25, 0);
-        game.setEndLocation(end);
+        game.setEndPosition(end);
         game.setEnabled(true);
         game.setStartWaitTime(5);
         game.setTimer(5);

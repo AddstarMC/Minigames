@@ -3,7 +3,9 @@ package au.com.mineauz.minigames.events;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 
-public class TimerExpireEvent extends AbstractCancellableMinigameEvent {
+public class TimerExpireEvent extends AbstractMinigameEvent {
+
+
     public TimerExpireEvent(Minigame minigame) {
         super(minigame);
     }

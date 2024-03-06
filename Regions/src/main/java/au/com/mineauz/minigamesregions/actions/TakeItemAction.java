@@ -60,12 +60,7 @@ public class TakeItemAction extends AbstractAction {
     }
 
     private void execute(MinigamePlayer player) {
-        Material mat = Material.getMaterial(type.getFlag());
-
-        if (mat == null) {
-            return;
-        }
-        ItemStack match = new ItemStack(mat, count.getFlag());
+        ItemStack match = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag());
         ItemStack matched = null;
         boolean remove = false;
         int slot = 0;
@@ -85,9 +80,9 @@ public class TakeItemAction extends AbstractAction {
             slot++;
         }
 
-        if (remove) {
+        if (remove)
             player.getPlayer().getInventory().removeItem(matched);
-        } else {
+        else {
             player.getPlayer().getInventory().getItem(slot).setAmount(matched.getAmount());
         }
     }

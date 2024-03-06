@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InfectionModule extends MinigameModule {
+
     private final IntegerFlag infectedPercent = new IntegerFlag(18, "infectedPercent");
     private final StringFlag infectedTeam = new StringFlag("red", "infectedTeam");
     private final StringFlag survivorTeam = new StringFlag("blue", "survivorTeam");

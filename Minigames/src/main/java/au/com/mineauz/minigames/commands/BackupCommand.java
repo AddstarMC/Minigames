@@ -2,9 +2,9 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.recorder.RecorderData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -64,7 +64,7 @@ public class BackupCommand implements ICommand {
                 minigame = Minigames.getPlugin().getMinigameManager().getMinigame(args[0]);
                 if (!minigame.getRegenRegions().isEmpty()) {
                     if (args.length == 1) {
-                        if (minigame.getPlayers().isEmpty()) {
+                        if (minigame.getPlayers().size() == 0) {
                             minigame.setState(MinigameState.REGENERATING);
                             Minigames.getPlugin().getMinigameManager().addRegenDataToRecorder(minigame);
                             RecorderData d = minigame.getRecorderData();

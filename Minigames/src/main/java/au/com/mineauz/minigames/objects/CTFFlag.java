@@ -5,63 +5,49 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
-import net.kyori.adventure.text.Component;
 import org.bukkit.*;
-import org.bukkit.block.*;
-import org.bukkit.block.data.Directional;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
+import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * Flag of Capture the Flag.
  * Technical background for au.com.mineauz.minigames.signs.FlagSign
  */
 public class CTFFlag {
-    private final @NotNull BlockState spawnData;
-    private final @NotNull List<@NotNull Component> signText;
-    private final @NotNull Minigame minigame;
-    private final @NotNull Location spawnLocation;
-    private final @Nullable Location attachedToLocation;
-    private final @Nullable Team team;
-    private @Nullable Location currentLocation = null;
+    private Location spawnLocation = null;
+    private Location currentLocation = null;
+    private BlockState spawnData = null;
     private BlockState originalBlock = null;
+    private String[] signText = null;
     private boolean atHome = true;
+    private Team team = null;
     private int respawnTime = 60;
     private int taskID = -1;
+    private Minigame minigame = null;
     private int cParticleID = -1;
 
-    public CTFFlag(@NotNull Sign sign, @Nullable Team team, @NotNull Minigame minigame) {
-        sign.setWaxed(true);
-
-        this.spawnLocation = sign.getLocation().toBlockLocation();
-        this.spawnData = spawnLocation.getBlock().getState();
-        this.signText = sign.getSide(Side.FRONT).lines();
+    public CTFFlag(Location spawn, Team team, Minigame minigame) {
+        spawnLocation = spawn;
+        ((Sign) spawnLocation.getBlock().getState()).setWaxed(true);
+        spawnData = spawnLocation.getBlock().getState();
+        signText = ((Sign) spawnLocation.getBlock().getState()).getSide(Side.FRONT).getLines();
         this.team = team;
-        this.minigame = minigame;
-        this.respawnTime = Minigames.getPlugin().getConfig().getInt("multiplayer.ctf.flagrespawntime");
-
-        // get the location the sign was attached to
-        Block signBlock = sign.getBlock();
-        if (Tag.WALL_SIGNS.isTagged(signBlock.getType())) {
-            this.attachedToLocation = signBlock.getRelative(
-                            ((Directional) sign.getBlockData()).getFacing().getOppositeFace()).
-                    getLocation().toBlockLocation();
-        } else if (Tag.STANDING_SIGNS.isTagged(signBlock.getType())) {
-            this.attachedToLocation = signBlock.getRelative(BlockFace.DOWN).getLocation().toBlockLocation();
-        } else { // is hanging sign and therefor not depending on a block
-            attachedToLocation = null;
-        }
+        this.setMinigame(minigame);
+        respawnTime = Minigames.getPlugin().getConfig().getInt("multiplayer.ctf.flagrespawntime");
     }
 
-    public @NotNull Location getSpawnLocation() {
+    public Location getSpawnLocation() {
         return spawnLocation;
     }
 
-    public @Nullable Location getCurrentLocation() {
+    public void setSpawnLocation(Location spawnLocation) {
+        this.spawnLocation = spawnLocation;
+    }
+
+    public Location getCurrentLocation() {
         return currentLocation;
     }
 
@@ -77,12 +63,17 @@ public class CTFFlag {
         this.atHome = atHome;
     }
 
-    public @Nullable Team getTeam() {
+    public Team getTeam() {
         return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public Location spawnFlag(Location location) {
         Location blockBelow = location.clone();
+        Location newLocation = location.clone();
         blockBelow.setY(blockBelow.getBlockY() - 1);
 
         if (blockBelow.getBlock().getType() == Material.AIR) {
@@ -113,7 +104,7 @@ public class CTFFlag {
             blockBelow.setY(blockBelow.getY() + 1);
         }
 
-        Location newLocation = blockBelow.clone();
+        newLocation = blockBelow.clone();
         newLocation.setY(newLocation.getY() + 1);
 
         // Converting wall signs to normal signs, if necessary
@@ -132,7 +123,7 @@ public class CTFFlag {
         atHome = false;
 
         for (int i = 0; i < 4; i++) {
-            sign.getSide(Side.FRONT).line(i, signText.get(i));
+            sign.getSide(Side.FRONT).setLine(i, signText[i]);
         }
         sign.update();
         currentLocation = newLocation.clone();
@@ -169,7 +160,7 @@ public class CTFFlag {
         sign.setWaxed(true);
 
         for (int i = 0; i < 4; i++) {
-            sign.getSide(Side.FRONT).line(i, signText.get(i));
+            sign.getSide(Side.FRONT).setLine(i, signText[i]);
         }
         sign.update();
     }
@@ -180,8 +171,12 @@ public class CTFFlag {
         }
     }
 
-    public @NotNull Minigame getMinigame() {
+    public Minigame getMinigame() {
         return minigame;
+    }
+
+    public void setMinigame(Minigame minigame) {
+        this.minigame = minigame;
     }
 
     public void startReturnTimer() {
@@ -215,9 +210,5 @@ public class CTFFlag {
             Bukkit.getScheduler().cancelTask(cParticleID);
             cParticleID = -1;
         }
-    }
-
-    public @Nullable Location getAttachedToLocation() {
-        return attachedToLocation;
     }
 }

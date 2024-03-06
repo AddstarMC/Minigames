@@ -112,11 +112,7 @@ public class MatchTeamCondition extends ConditionInterface {
             case "DARK_BLUE" -> Material.BLUE_CONCRETE;
             case "DARK_GREEN" -> Material.GREEN_CONCRETE;
             case "DARK_PURPLE" -> Material.PURPLE_CONCRETE;
-            case "DARK_GRAY" -> Material.GRAY_CONCRETE;
             case "GRAY" -> Material.GRAY_WOOL;
-            case "ORANGE" -> Material.ORANGE_WOOL;
-            case "CYAN" -> Material.CYAN_WOOL;
-            case "LIGHT_BLUE" -> Material.LIGHT_BLUE_WOOL;
             default -> Material.WHITE_WOOL;
         };
     }

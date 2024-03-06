@@ -37,8 +37,8 @@ public class RegenAreaMode implements ToolMode {
     }
 
     @Override
-    public List<String> getDescription() {
-        return List.of("Selects an area", "for a regen region.", "Create via left click");
+    public String getDescription() {
+        return "Selects an area;for a regen region.;Create via left click";
     }
 
     @Override

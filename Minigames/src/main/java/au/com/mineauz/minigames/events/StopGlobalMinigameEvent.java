@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.events;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 
-public class StopGlobalMinigameEvent extends AbstractCancellableMinigameEvent {
+public class StopGlobalMinigameEvent extends AbstractMinigameEvent {
 
     private final String mechanic;
     private final MinigamePlayer caller;
