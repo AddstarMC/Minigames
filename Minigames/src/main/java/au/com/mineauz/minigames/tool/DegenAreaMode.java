@@ -12,6 +12,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.List;
+
 public class DegenAreaMode implements ToolMode {
 
     @Override
@@ -25,8 +27,8 @@ public class DegenAreaMode implements ToolMode {
     }
 
     @Override
-    public String getDescription() {
-        return "Selects the degeneration;area with right click;finalise with left";
+    public List<String> getDescription() {
+        return List.of("Selects the degeneration", "area with right click", "finalise with left");
     }
 
     @Override

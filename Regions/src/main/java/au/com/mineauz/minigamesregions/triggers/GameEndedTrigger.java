@@ -1,18 +1,15 @@
 package au.com.mineauz.minigamesregions.triggers;
 
-/**
- * This action fires if a TimedTriggerAction executes.
- */
-public class TimedRemoteTrigger implements Trigger {
+public class GameEndedTrigger implements Trigger {
 
     @Override
     public String getName() {
-        return "TIMED_REMOTE";
+        return "GAME_ENDED";
     }
 
     @Override
     public boolean useInRegions() {
-        return true;
+        return false;
     }
 
     @Override

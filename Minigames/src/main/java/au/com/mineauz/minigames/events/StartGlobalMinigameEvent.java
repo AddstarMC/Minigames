@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.events;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 
-public class StartGlobalMinigameEvent extends AbstractMinigameEvent {
+public class StartGlobalMinigameEvent extends AbstractCancellableMinigameEvent {
 
     private final String mechanic;
     private final MinigamePlayer caller;
@@ -13,7 +13,6 @@ public class StartGlobalMinigameEvent extends AbstractMinigameEvent {
         mechanic = mgm.getMechanicName();
         this.caller = caller;
     }
-
 
     public String getMechanic() {
         return mechanic;

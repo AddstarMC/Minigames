@@ -9,6 +9,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.List;
+
 public class LobbyPositionMode implements ToolMode {
 
     @Override
@@ -22,8 +24,8 @@ public class LobbyPositionMode implements ToolMode {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets the lobby;position";
+    public List<String> getDescription() {
+        return List.of("Sets the lobby", "position");
     }
 
     @Override
@@ -40,7 +42,7 @@ public class LobbyPositionMode implements ToolMode {
     @Override
     public void onRightClick(MinigamePlayer player, Minigame minigame,
                              Team team, PlayerInteractEvent event) {
-        minigame.setLobbyPosition(player.getLocation());
+        minigame.setLobbyLocation(player.getLocation());
         player.sendInfoMessage("Set lobby position.");
     }
 
@@ -56,8 +58,8 @@ public class LobbyPositionMode implements ToolMode {
 
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
-        if (minigame.getLobbyPosition() != null) {
-            player.getPlayer().sendBlockChange(minigame.getLobbyPosition(), Material.SKELETON_SKULL.createBlockData());
+        if (minigame.getLobbyLocation() != null) {
+            player.getPlayer().sendBlockChange(minigame.getLobbyLocation(), Material.SKELETON_SKULL.createBlockData());
             player.sendInfoMessage("Selected lobby position (marked with skull)");
         } else {
             player.sendMessage("No lobby position set!", MinigameMessageType.ERROR);
@@ -66,9 +68,9 @@ public class LobbyPositionMode implements ToolMode {
 
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-        if (minigame.getLobbyPosition() != null) {
-            player.getPlayer().sendBlockChange(minigame.getLobbyPosition(),
-                    minigame.getLobbyPosition().getBlock().getBlockData());
+        if (minigame.getLobbyLocation() != null) {
+            player.getPlayer().sendBlockChange(minigame.getLobbyLocation(),
+                    minigame.getLobbyLocation().getBlock().getBlockData());
             player.sendInfoMessage("Deselected lobby position");
         } else {
             player.sendMessage("No lobby position set!", MinigameMessageType.ERROR);

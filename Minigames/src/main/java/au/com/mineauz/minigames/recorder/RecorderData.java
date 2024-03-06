@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.blockRecorder;
+package au.com.mineauz.minigames.recorder;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
@@ -146,12 +146,12 @@ public class RecorderData implements Listener {
         return minigame;
     }
 
-    public MgBlockData addBlock(Block block, MinigamePlayer modifier) {
-        BlockStateSnapshotResult blockstate = PaperLib.getBlockState(block, true);
-        return addBlock(blockstate.getState(), modifier);
+    public MgBlockData addBlock(@NotNull Block block, @Nullable MinigamePlayer modifier) {
+        BlockStateSnapshotResult blockState = PaperLib.getBlockState(block, true);
+        return addBlock(blockState.getState(), modifier);
     }
 
-    public MgBlockData addBlock(BlockState block, MinigamePlayer modifier) {
+    public MgBlockData addBlock(@NotNull BlockState block, @Nullable MinigamePlayer modifier) {
         MgBlockData bdata = new MgBlockData(block, modifier);
         Position pos = Position.block(block.getLocation());
 
@@ -241,7 +241,7 @@ public class RecorderData implements Listener {
         entityData.clear();
     }
 
-    public void restoreBlocks(final MinigamePlayer modifier) {
+    public void restoreBlocks(final @Nullable MinigamePlayer modifier) {
         // When rolling back a single player's changes don't change the overall games state
         if (modifier == null) {
             minigame.setState(MinigameState.REGENERATING);
