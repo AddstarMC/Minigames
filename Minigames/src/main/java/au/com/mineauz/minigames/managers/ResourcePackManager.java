@@ -49,7 +49,7 @@ public class ResourcePackManager {
 
     private boolean loadEmptyPack() {
         try {
-            URL u = new URL("https://github.com/AddstarMC/Minigames/raw/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
+            URL u = new URL("https://github.com/AddstarMC/Minigames/blob/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
             ResourcePack empty = new ResourcePack("empty", u);
             addResourcePack(empty);
             return true;
