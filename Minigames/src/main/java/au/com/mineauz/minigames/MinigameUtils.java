@@ -238,7 +238,7 @@ public class MinigameUtils {
      * @return The translation. If not found, will return the argument.
      * @deprecated use {@link MessageManager#getUnformattedMessage(String, String)}
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static String getLang(String arg1) {
         String out;
         try {

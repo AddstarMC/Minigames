@@ -56,7 +56,7 @@ public class SpectateSign implements MinigameSign {
             Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
             if (mgm != null) {
                 if (mgm.isEnabled()) {
-                    plugin.getPlayerManager().spectateMinigame(player, mgm);
+                    plugin.getPlayerManager().spectateMinigame(mgm, player);
                     return true;
                 } else if (!mgm.isEnabled()) {
                     player.sendInfoMessage(MinigameUtils.getLang("minigame.error.notEnabled"));

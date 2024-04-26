@@ -34,6 +34,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,25 +44,25 @@ import java.util.*;
  * Manager Class of all players playing Minigames.
  **/
 public class MinigamePlayerManager {
-    private static final Minigames plugin = Minigames.getPlugin();
-    private final Map<String, MinigamePlayer> minigamePlayers = new HashMap<>();
-    private final List<MinigamePlayer> applyingPack = new ArrayList<>();
-    private final MinigameManager mgManager = plugin.getMinigameManager();
+    private static final @NotNull Minigames plugin = Minigames.getPlugin();
+    private final @NotNull Map<@NotNull UUID, @NotNull MinigamePlayer> minigamePlayers = new HashMap<>();
+    private final @NotNull List<@NotNull MinigamePlayer> applyingPack = new ArrayList<>();
+    private final @NotNull MinigameManager mgManager = plugin.getMinigameManager();
     private boolean partyMode = false;
-    private List<String> deniedCommands = new ArrayList<>();
+    private @NotNull List<@NotNull String> deniedCommands = new ArrayList<>();
 
     public MinigamePlayerManager() {
     }
 
-    public List<MinigamePlayer> getApplyingPack() {
+    public @NotNull List<@NotNull MinigamePlayer> getApplyingPack() {
         return applyingPack;
     }
 
-    public void needsResourcePack(MinigamePlayer player) {
+    public void needsResourcePack(@NotNull MinigamePlayer player) {
         applyingPack.add(player);
     }
 
-    public void joinMinigame(MinigamePlayer player, Minigame minigame, boolean isBetting, Double betAmount) {
+    public void joinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player, boolean isBetting, double betAmount) {
         MinigameType type = minigame.getType();
         JoinMinigameEvent event = new JoinMinigameEvent(player, minigame);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -71,14 +72,15 @@ public class MinigamePlayerManager {
         }
         if (!mgManager.minigameStartStateCheck(minigame, player)) return;
         //Do betting stuff
-        if (isBetting && !handleBets(minigame, player, betAmount)) {
+        if (isBetting && !handleMoneyBet(minigame, player, betAmount)) {
             return;
         }
         //Try teleport the player to their designated area.
         ResourcePack pack = getResourcePack(minigame);
         if (pack != null && pack.isValid()) {
-            if (player.applyResourcePack(pack))
+            if (player.applyResourcePack(pack)) {
                 player.sendInfoMessage(MinigameUtils.getLang("minigame.resourcepack.apply"));
+            }
         }
         //Check if Minigame is full
         if (minigame.isGameFull()) {
@@ -91,10 +93,11 @@ public class MinigamePlayerManager {
             return;
         }
         //Give them the game type name
-        if (minigame.getGameTypeName() == null)
+        if (minigame.getGameTypeName() == null) {
             player.sendMessage(MessageManager.getMinigamesMessage("player.join.plyInfo", minigame.getType().getName()), MinigameMessageType.WIN);
-        else
+        } else {
             player.sendMessage(MessageManager.getMinigamesMessage("player.join.plyInfo", minigame.getGameTypeName()), MinigameMessageType.WIN);
+        }
 
         //Give them the objective
         if (minigame.getObjective() != null) {
@@ -160,7 +163,7 @@ public class MinigamePlayerManager {
      * @param betAmount the amount in economy money. might be 0, if the player was betting an item
      * @return true if the player could successfully bet
      */
-    private boolean handleBets(Minigame minigame, MinigamePlayer player, Double betAmount) {
+    private boolean handleMoneyBet(@NotNull Minigame minigame, @NotNull MinigamePlayer player, double betAmount) {
         if (minigame.getMpBets() == null && (player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR || betAmount != 0)) {
             minigame.setMpBets(new MultiplayerBets());
         }
@@ -228,7 +231,7 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void spectateMinigame(MinigamePlayer player, Minigame minigame) {
+    public void spectateMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player) {
         SpectateMinigameEvent event = new SpectateMinigameEvent(player, minigame);
         Bukkit.getServer().getPluginManager().callEvent(event);
 
@@ -270,11 +273,11 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void startMPMinigame(Minigame minigame) {
+    public void startMPMinigame(@NotNull Minigame minigame) {
         startMPMinigame(minigame, LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart());
     }
 
-    public void startMPMinigame(Minigame minigame, boolean teleport) {
+    public void startMPMinigame(@NotNull Minigame minigame, boolean teleport) {
         List<MinigamePlayer> players = new ArrayList<>(minigame.getPlayers());
         for (MinigamePlayer ply : players) {
             if (minigame.getMaxScore() != 0)
@@ -313,7 +316,7 @@ public class MinigamePlayerManager {
         minigame.setState(MinigameState.STARTED);
     }
 
-    public List<MinigamePlayer> balanceGame(Minigame game) {
+    public List<MinigamePlayer> balanceGame(@NotNull Minigame game) {
         List<MinigamePlayer> result = null;
         if (game.isTeamGame()) {
             GameMechanicBase mech = GameMechanics.getGameMechanic(game.getMechanicName());
@@ -325,14 +328,14 @@ public class MinigamePlayerManager {
         return result;
     }
 
-    public void teleportToStart(Minigame minigame) {
+    public void teleportToStart(@NotNull Minigame minigame) {
         List<MinigamePlayer> findStart = new ArrayList<>();
         for (MinigamePlayer ply : minigame.getPlayers()) {
             if (ply.getStartPos() == null) {
                 findStart.add(ply);
             }
         }
-        if (findStart.size() != 0) {
+        if (!findStart.isEmpty()) {
             getStartLocations(findStart, minigame);
         }
 
@@ -342,7 +345,7 @@ public class MinigamePlayerManager {
         minigame.setPlayersAtStart(true);
     }
 
-    public ResourcePack getResourcePack(Minigame game) {
+    public ResourcePack getResourcePack(@NotNull Minigame game) {
         ResourcePackModule module = (ResourcePackModule) game.getModule("ResourcePack");
         if (module != null && module.isEnabled()) {
             ResourcePack pack = plugin.getResourceManager().getResourcePack(module.getResourcePackName());
@@ -355,7 +358,7 @@ public class MinigamePlayerManager {
         return null;
     }
 
-    public void clearResourcePack(Minigame game) {
+    public void clearResourcePack(@NotNull Minigame game) {
         ResourcePack pack = plugin.getResourceManager().getResourcePack("empty");
         if (pack != null && pack.isValid()) {
             for (MinigamePlayer player : game.getPlayers()) {
@@ -365,7 +368,7 @@ public class MinigamePlayerManager {
 
     }
 
-    public void getStartLocations(List<MinigamePlayer> players, Minigame game) {
+    public void getStartLocations(@NotNull List<@NotNull MinigamePlayer> players, @NotNull Minigame game) {
         mgManager.sendMinigameMessage(game, MinigameUtils.getLang("minigame.startRandomized"), MinigameMessageType.INFO, (List<MinigamePlayer>) null);
         Collections.shuffle(players);
         int pos = 0;
@@ -447,7 +450,7 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void revertToCheckpoint(MinigamePlayer player) {
+    public void revertToCheckpoint(@NotNull MinigamePlayer player) {
         RevertCheckpointEvent event = new RevertCheckpointEvent(player);
         Bukkit.getServer().getPluginManager().callEvent(event);
 
@@ -521,8 +524,9 @@ public class MinigamePlayerManager {
                 player.sendMessage(MessageManager.getMinigamesMessage("player.spectate.quit.plyMsg", minigame.getName(true)), MinigameMessageType.ERROR);
                 mgManager.sendMinigameMessage(minigame, MessageManager.getMinigamesMessage("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), MinigameMessageType.ERROR, player);
             } else {
-                if (player.getEndTime() == 0)
+                if (player.getEndTime() == 0) {
                     player.setEndTime(System.currentTimeMillis());
+                }
 
                 if (isWinner) {
                     GameOverModule.getMinigameModule(minigame).getWinners().remove(player);
@@ -669,7 +673,7 @@ public class MinigamePlayerManager {
                     player.getPlayer().showPlayer(plugin, pl.getPlayer());
                 }
 
-                if (minigame.getPlayers().size() == 0 && !minigame.isRegenerating()) {
+                if (minigame.getPlayers().isEmpty() && !minigame.isRegenerating()) {
                     HandlerList.unregisterAll(minigame.getRecorderData());
                 }
 
@@ -696,14 +700,14 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void endMinigame(MinigamePlayer player) {
+    public void endMinigame(@NotNull MinigamePlayer player) {
         List<MinigamePlayer> w = new ArrayList<>();
         List<MinigamePlayer> l = new ArrayList<>();
         w.add(player);
         endMinigame(player.getMinigame(), w, l);
     }
 
-    public void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers) {
+    public void endMinigame(@NotNull Minigame minigame, List<@NotNull MinigamePlayer> winners, List<@NotNull MinigamePlayer> losers) {
         //When the minigame ends, the flag for recognizing the start teleportation needs to be resetted
         minigame.setPlayersAtStart(false);
         EndPhaseMinigameEvent event = new EndPhaseMinigameEvent(winners, losers, minigame);
@@ -836,12 +840,12 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void broadcastEndGame(List<MinigamePlayer> winners, Minigame minigame) {
+    public void broadcastEndGame(@NotNull List<@NotNull MinigamePlayer> winners, @NotNull Minigame minigame) {
         if (plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()) {
             if (minigame.isTeamGame()) {
-                if (winners.size() > 0 || ((TeamsModule) minigame.getModule("Teams")).getDefaultWinner() != null) {
+                if (!winners.isEmpty() || ((TeamsModule) minigame.getModule("Teams")).getDefaultWinner() != null) {
                     Team team;
-                    if (winners.size() > 0)
+                    if (!winners.isEmpty())
                         team = winners.get(0).getTeam();
                     else
                         team = ((TeamsModule) minigame.getModule("Teams")).getTeam(((TeamsModule) minigame.getModule("Teams")).getDefaultWinner());
@@ -897,12 +901,7 @@ public class MinigamePlayerManager {
     }
 
     @Deprecated
-    public boolean playerInMinigame(Player player) {
-        return minigamePlayers.get(player.getName()).isInMinigame();
-    }
-
-    @Deprecated
-    public List<Player> playersInMinigame() {
+    public @NotNull List<@NotNull Player> playersInMinigame() {
         List<Player> players = new ArrayList<>();
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (hasMinigamePlayer(player.getUniqueId())) {
@@ -912,60 +911,57 @@ public class MinigamePlayerManager {
         return players;
     }
 
-    public void addMinigamePlayer(Player player) {
-        minigamePlayers.put(player.getName(), new MinigamePlayer(player));
+    public void addMinigamePlayer(@NotNull Player player) {
+        minigamePlayers.put(player.getUniqueId(), new MinigamePlayer(player));
     }
 
-    public void removeMinigamePlayer(Player player) {
-        minigamePlayers.remove(player.getName());
+    public void removeMinigamePlayer(@NotNull Player player) {
+        minigamePlayers.remove(player.getUniqueId());
     }
 
     /**
      * @return null, if the given player was null, the respecting MinigamePlayer object otherwise
      */
-    public @Nullable MinigamePlayer getMinigamePlayer(Player player) {
+    @Contract("null -> null; !null -> !null")
+    public @Nullable MinigamePlayer getMinigamePlayer(@Nullable Player player) {
         if (player == null) {
             return null;
         }
 
-        if (!minigamePlayers.containsKey(player.getName())) {
+        if (!minigamePlayers.containsKey(player.getUniqueId())) {
             addMinigamePlayer(player);
         }
 
-        return minigamePlayers.get(player.getName());
+        return minigamePlayers.get(player.getUniqueId());
     }
 
-    public @Nullable MinigamePlayer getMinigamePlayer(UUID uuid) {
-        for (MinigamePlayer p : minigamePlayers.values()) {
-            if (p.getUUID() == uuid) {
-                return p;
-            }
-        }
-
-        return getMinigamePlayer(Bukkit.getPlayer(uuid));
+    public @Nullable MinigamePlayer getMinigamePlayer(@NotNull UUID uuid) {
+        return minigamePlayers.get(uuid);
     }
 
-    public @Nullable MinigamePlayer getMinigamePlayer(String player) {
-        return minigamePlayers.get(player);
+    /**
+     * @see #getMinigamePlayer(UUID)
+     */
+    public @Nullable MinigamePlayer getMinigamePlayer(@NotNull String playerName) {
+        return minigamePlayers.values().stream().filter(mgPlayer -> mgPlayer.getPlayer().getName().equals(playerName)).findAny().orElse(null);
     }
 
-    public Collection<MinigamePlayer> getAllMinigamePlayers() {
+    public @NotNull Collection<@NotNull MinigamePlayer> getAllMinigamePlayers() {
         return minigamePlayers.values();
     }
 
-    public boolean hasMinigamePlayer(String name) {
-        return minigamePlayers.containsKey(name);
+    /**
+     * @see #hasMinigamePlayer(UUID)
+     */
+    public boolean hasMinigamePlayer(@NotNull String name) {
+        return minigamePlayers.values().stream().anyMatch(mgPlayer -> mgPlayer.getPlayer().getName().equals(name));
     }
 
     public boolean hasMinigamePlayer(UUID uuid) {
-        for (MinigamePlayer p : minigamePlayers.values()) {
-            if (p.getUUID() == uuid)
-                return true;
-        }
-        return false;
+        return minigamePlayers.containsKey(uuid);
     }
 
-    public List<String> checkRequiredFlags(MinigamePlayer player, String minigame) {
+    public List<String> checkRequiredFlags(@NotNull MinigamePlayer player, @NotNull String minigame) {
         List<String> checkpoints = new ArrayList<>(mgManager.getMinigame(minigame).getFlags());
         List<String> pchecks = player.getFlags();
 
@@ -984,7 +980,7 @@ public class MinigamePlayerManager {
         partyMode = mode;
     }
 
-    public void partyMode(MinigamePlayer player) {
+    public void partyMode(@NotNull MinigamePlayer player) {
         if (onPartyMode()) {
             Location loc = player.getPlayer().getLocation();
             Firework firework = (Firework) player.getPlayer().getWorld().spawnEntity(loc, EntityType.FIREWORK);
@@ -1005,34 +1001,28 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void partyMode(MinigamePlayer player, int amount, long delay) {
-        if (!onPartyMode()) return;
-        final int fcount = amount;
-        final MinigamePlayer fplayer = player;
-        final long fdelay = delay;
-        partyMode(fplayer);
+    public void partyMode(final @NotNull MinigamePlayer player, final int amount, final long delay) {
+        if (!onPartyMode()) {
+            return;
+        }
+        partyMode(player);
         if (amount == 1) return;
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            if (fplayer != null) {
-                partyMode(fplayer, fcount - 1, fdelay);
-            }
-
-        }, delay);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> partyMode(player, amount - 1, delay), delay);
     }
 
-    public List<String> getDeniedCommands() {
+    public @NotNull List<@NotNull String> getDeniedCommands() {
         return deniedCommands;
     }
 
-    public void setDeniedCommands(List<String> deniedCommands) {
+    public void setDeniedCommands(@NotNull List<@NotNull String> deniedCommands) {
         this.deniedCommands = deniedCommands;
     }
 
-    public void addDeniedCommand(String command) {
+    public void addDeniedCommand(@NotNull String command) {
         deniedCommands.add(command);
     }
 
-    public void removeDeniedCommand(String command) {
+    public void removeDeniedCommand(@NotNull String command) {
         deniedCommands.remove(command);
     }
 

@@ -60,7 +60,7 @@ public class JoinCommand implements ICommand {
             if (mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
                 if (!plugin.getPlayerManager().getMinigamePlayer(player).isInMinigame()) {
                     sender.sendMessage(ChatColor.GREEN + MessageManager.getMinigamesMessage("command.join.joining", mgm.getName(false)));
-                    plugin.getPlayerManager().joinMinigame(plugin.getPlayerManager().getMinigamePlayer(player), mgm, false, 0.0);
+                    plugin.getPlayerManager().joinMinigame(mgm, plugin.getPlayerManager().getMinigamePlayer(player), false, 0.0);
                 } else {
                     player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.join.alreadyPlaying"));
                 }

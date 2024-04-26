@@ -59,7 +59,7 @@ public class SpectateCommand implements ICommand {
             if (plugin.getMinigameManager().hasMinigame(args[0])) {
                 MinigamePlayer ply = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
                 Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
-                plugin.getPlayerManager().spectateMinigame(ply, mgm);
+                plugin.getPlayerManager().spectateMinigame(mgm, ply);
             } else {
                 sender.sendMessage(ChatColor.RED + "No Minigame found by the name: " + args[0]);
             }

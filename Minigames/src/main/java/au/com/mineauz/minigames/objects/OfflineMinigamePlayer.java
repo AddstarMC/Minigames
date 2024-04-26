@@ -8,25 +8,30 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+/**
+ * player data saved on disk
+ */
 public class OfflineMinigamePlayer {
-    private final UUID uuid;
-    private final ItemStack[] storedItems;
-    private final ItemStack[] storedArmour;
-    private int food = 20;
-    private double health = 20;
-    private float saturation = 15;
-    private float exp = -1; //TODO: Set to default value after 1.7
-    private int level = -1; //Set To default value after 1.7
-    private GameMode lastGM = GameMode.SURVIVAL;
-    private Location loginLocation;
+    private final @NotNull UUID uuid;
+    private final @Nullable ItemStack @Nullable [] storedItems;
+    private final @Nullable ItemStack @Nullable [] storedArmour;
+    private final int food;
+    private final double health;
+    private final float saturation;
+    private final float exp;
+    private final int level;
+    private @NotNull GameMode lastGM = GameMode.SURVIVAL;
+    private @Nullable Location loginLocation;
 
-    public OfflineMinigamePlayer(UUID uuid, ItemStack[] items,
-                                 ItemStack[] armour, int food, double health,
-                                 float saturation, GameMode lastGM, float exp, int level,
-                                 Location loginLocation) {
+    public OfflineMinigamePlayer(@NotNull UUID uuid, @Nullable ItemStack @Nullable [] items,
+                                 @Nullable ItemStack @Nullable [] armour, int food, double health,
+                                 float saturation, @NotNull GameMode lastGM, float exp, int level,
+                                 final @Nullable Location loginLocation) {
         this.uuid = uuid;
         storedItems = items;
         storedArmour = armour;
@@ -36,26 +41,30 @@ public class OfflineMinigamePlayer {
         this.lastGM = lastGM;
         this.exp = exp;
         this.level = level;
-        if (loginLocation != null && loginLocation.getWorld() == null)
-            loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
-        this.loginLocation = loginLocation;
+        if (loginLocation != null && loginLocation.getWorld() == null) {
+            this.loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+        } else {
+            this.loginLocation = loginLocation;
+        }
         if (Minigames.getPlugin().getConfig().getBoolean("saveInventory"))
             savePlayerData();
     }
 
-    public OfflineMinigamePlayer(UUID uuid) {
-        MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid.toString());
+    /**
+     * loads player data from disk
+     *
+     * @param uuid the uuid of the user to load
+     */
+    public OfflineMinigamePlayer(final @NotNull UUID uuid) {
+        MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid);
         FileConfiguration con = save.getConfig();
         this.uuid = uuid;
-        food = con.getInt("food");
-        health = con.getDouble("health");
-        saturation = con.getInt("saturation");
+        food = con.getInt("food", 20);
+        health = con.getDouble("health", 20);
+        saturation = con.getInt("saturation", 15);
         lastGM = GameMode.valueOf(con.getString("gamemode"));
-        if (con.contains("exp")) {
-            exp = ((Double) con.getDouble("exp")).floatValue();
-        }
-        if (con.contains("level"))
-            level = con.getInt("level");
+        exp = ((Double) con.getDouble("exp", 0)).floatValue();
+        level = con.getInt("level", 0);
         if (con.contains("location")) {
             loginLocation = new Location(Minigames.getPlugin().getServer().getWorld(con.getString("location.world")),
                     con.getDouble("location.x"),
@@ -63,10 +72,12 @@ public class OfflineMinigamePlayer {
                     con.getDouble("location.z"),
                     (float) con.getDouble("location.yaw"),
                     (float) con.getDouble("location.pitch"));
-            if (loginLocation.getWorld() == null)
+            if (loginLocation.getWorld() == null) {
                 loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
-        } else
+            }
+        } else {
             loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+        }
 
         ItemStack[] items = Minigames.getPlugin().getServer().createInventory(null, InventoryType.PLAYER).getContents();
         ItemStack[] armour = new ItemStack[4];
@@ -86,11 +97,11 @@ public class OfflineMinigamePlayer {
         return uuid;
     }
 
-    public ItemStack[] getStoredItems() {
+    public @Nullable ItemStack @Nullable [] getStoredItems() {
         return storedItems;
     }
 
-    public ItemStack[] getStoredArmour() {
+    public @Nullable ItemStack @Nullable [] getStoredArmour() {
         return storedArmour;
     }
 
@@ -106,15 +117,15 @@ public class OfflineMinigamePlayer {
         return saturation;
     }
 
-    public GameMode getLastGamemode() {
+    public @NotNull GameMode getLastGamemode() {
         return lastGM;
     }
 
-    public Location getLoginLocation() {
+    public @Nullable Location getLoginLocation() {
         return loginLocation;
     }
 
-    public void setLoginLocation(Location loc) {
+    public void setLoginLocation(@Nullable Location loc) {
         loginLocation = loc;
     }
 

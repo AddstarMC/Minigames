@@ -57,7 +57,7 @@ public class MinigamePlayerManagerTest {
         final PlayerMock mock = server.getPlayer(0);
         plugin.getPlayerManager().addMinigamePlayer(mock);
         Assertions.assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
-        plugin.getPlayerManager().joinMinigame(plugin.getPlayerManager().getMinigamePlayer(mock), game, false, 0.0);
+        plugin.getPlayerManager().joinMinigame(game, plugin.getPlayerManager().getMinigamePlayer(mock), false, 0.0);
         Assertions.assertTrue(plugin.getPlayerManager().getMinigamePlayer(mock.getUniqueId()).isInMinigame());
     }
 

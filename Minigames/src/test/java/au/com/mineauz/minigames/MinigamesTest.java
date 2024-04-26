@@ -67,7 +67,7 @@ public class MinigamesTest {
         Assertions.assertNotSame(player.getLocation(), game.getLobbyLocation());
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
-        plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0.0);
+        plugin.getPlayerManager().joinMinigame(game, mplayer, false, 0.0);
         LobbySettingsModule module = (LobbySettingsModule) game.getModule("LobbySettings");
         player.assertLocation(lobby, 0.0);
         Assertions.assertTrue(module.isTeleportOnStart());
@@ -82,7 +82,7 @@ public class MinigamesTest {
     public void onQuitMinigame() {
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
-        plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0D);
+        plugin.getPlayerManager().joinMinigame(game, mplayer, false, 0D);
         player.assertLocation(lobby, 0);
         Assertions.assertTrue(plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId()).isInMinigame());
         plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(player), false);

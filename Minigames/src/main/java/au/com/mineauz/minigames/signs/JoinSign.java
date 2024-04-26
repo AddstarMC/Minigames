@@ -106,7 +106,7 @@ public class JoinSign implements MinigameSign {
                             return false;
                         }
                     }
-                    plugin.getPlayerManager().joinMinigame(player, mgm, false, 0.0);
+                    plugin.getPlayerManager().joinMinigame(mgm, player, false, 0.0);
                     return true;
                 } else if (!mgm.isEnabled()) {
                     player.sendInfoMessage(ChatColor.WHITE + MessageManager.getMessage(null, "minigame.error.notEnabled"));

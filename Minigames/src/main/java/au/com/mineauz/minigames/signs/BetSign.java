@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -58,11 +59,11 @@ public class BetSign implements MinigameSign {
 
     @Override
     public boolean signUse(Sign sign, MinigamePlayer player) {
-        Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
+        Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getSide(Side.FRONT).getLine(2));
         if (mgm != null) {
             boolean invOk = true;
             boolean fullInv;
-            boolean moneyBet = sign.getLine(3).startsWith("$");
+            boolean moneyBet = sign.getSide(Side.FRONT).getLine(3).startsWith("$");
 
             if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
                 fullInv = true;
@@ -96,13 +97,13 @@ public class BetSign implements MinigameSign {
                         return false;
                     }
 
-                    if (!sign.getLine(3).startsWith("$")) {
-                        plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, 0.0);
+                    if (!sign.getSide(Side.FRONT).getLine(3).startsWith("$")) {
+                        plugin.getPlayerManager().joinMinigame(plugin.getMinigameManager().getMinigame(sign.getLine(2)), player, true, 0.0);
                     } else {
                         if (plugin.hasEconomy()) {
                             //todo use  plugin.getEconomy().currencyNamePlural()
-                            Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-                            plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, bet);
+                            double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
+                            plugin.getPlayerManager().joinMinigame(plugin.getMinigameManager().getMinigame(sign.getLine(2)), player, true, bet);
                             return true;
                         } else {
                             player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noVault"), MinigameMessageType.ERROR);

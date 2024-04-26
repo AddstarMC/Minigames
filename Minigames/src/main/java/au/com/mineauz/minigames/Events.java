@@ -38,15 +38,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.*;
 import java.util.function.Predicate;
 
 public class Events implements Listener {
-    private static final Minigames plugin = Minigames.getPlugin();
-    private final MinigamePlayerManager pdata = plugin.getPlayerManager();
-    private final MinigameManager mdata = plugin.getMinigameManager();
+    private static final @NotNull Minigames plugin = Minigames.getPlugin();
+    private final @NotNull MinigamePlayerManager pdata = plugin.getPlayerManager();
+    private final @NotNull MinigameManager mdata = plugin.getMinigameManager();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerResourcePack(PlayerResourcePackStatusEvent event) { //todo 1.20.3 + add ressource pack not set
@@ -173,15 +174,18 @@ public class Events implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerDisconnect(PlayerQuitEvent event) {
+    // the priority was changed to lowest, since having it to normal would mean worldguard
+    // would be served first unload the player and didn't allow them to teleport to the quit location inside a region. (pdata.quitMinigame)
+    @EventHandler(priority = EventPriority.LOWEST)
+    private void onPlayerDisconnect(PlayerQuitEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
         if (ply.isInMinigame()) {
             if (ply.getPlayer().isDead()) {
                 ply.getOfflineMinigamePlayer().setLoginLocation(ply.getMinigame().getQuitLocation());
                 ply.getOfflineMinigamePlayer().savePlayerData();
             }
-            pdata.quitMinigame(pdata.getMinigamePlayer(event.getPlayer()), false);
+
+            pdata.quitMinigame(ply, false);
         } else if (ply.isRequiredQuit()) {
             ply.getOfflineMinigamePlayer().setLoginLocation(ply.getQuitPos());
             ply.getOfflineMinigamePlayer().savePlayerData();
@@ -202,28 +206,28 @@ public class Events implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerConnect(PlayerJoinEvent event) {
+    private void onPlayerConnect(final @NotNull PlayerJoinEvent event) {
         pdata.addMinigamePlayer(event.getPlayer());
         File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getUniqueId() + ".yml");
-        final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+        final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (pldata.exists()) {
-            ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId()));
-            Location floc = ply.getOfflineMinigamePlayer().getLoginLocation();
-            ply.setRequiredQuit(true);
-            ply.setQuitPos(floc);
+            mgPlayer.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId()));
+            final Location floc = mgPlayer.getOfflineMinigamePlayer().getLoginLocation();
+            mgPlayer.setRequiredQuit(true);
+            mgPlayer.setQuitPos(floc);
 
-            if (!ply.getPlayer().isDead() && ply.isRequiredQuit()) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, ply::restorePlayerData);
-                ply.teleport(ply.getQuitPos());
+            if (!mgPlayer.getPlayer().isDead() && mgPlayer.isRequiredQuit()) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, mgPlayer::restorePlayerData);
+                mgPlayer.teleport(floc);
 
-                ply.setRequiredQuit(false);
-                ply.setQuitPos(null);
+                mgPlayer.setRequiredQuit(false);
+                mgPlayer.setQuitPos(null);
             }
 
-            plugin.getLogger().info(ply.getName() + "'s data has been restored from file.");
+            plugin.getLogger().info(mgPlayer.getName() + "'s data has been restored from file.");
         }
 
-        ply.loadClaimedRewards();
+        mgPlayer.loadClaimedRewards();
 
         if (Bukkit.getServer().getOnlinePlayers().size() == 1) {
             for (Minigame mgm : mdata.getAllMinigames().values()) {
