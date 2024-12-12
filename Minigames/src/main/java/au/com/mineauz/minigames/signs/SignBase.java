@@ -55,7 +55,7 @@ public class SignBase implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     private void takeFlag(@NotNull TakeFlagEvent event) {
-        if (event.getFlag().getAttachedToLocation() != null) {
+        if (event.getFlag() != null && event.getFlag().getAttachedToLocation() != null) {
             this.takenFlags.add(event.getFlag());
         }
     }
